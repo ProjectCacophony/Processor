@@ -18,22 +18,24 @@ import (
 )
 
 var (
-	token        string
-	awsRegion    string
-	started      time.Time
-	sqsClient    *sqs.SQS
-	sqsQueueUrl  string
-	dg           *discordgo.Session
-	redisAddress string
-	redisClient  *redis.Client
+	token           string
+	awsRegion       string
+	started         time.Time
+	sqsClient       *sqs.SQS
+	sqsQueueUrl     string
+	dg              *discordgo.Session
+	redisAddress    string
+	redisClient     *redis.Client
+	discordEndpoint string
 )
 
 func init() {
-	// Parse command line flags (-t DISCORD_BOT_TOKEN -aws-region AWS_REGION -redis REDIS_ADDRESS -sqs SQS_QUEUE_URL)
+	// Parse command line flags (-t DISCORD_BOT_TOKEN -aws-region AWS_REGION -redis REDIS_ADDRESS -sqs SQS_QUEUE_URL -discord-endpoint DISCORD_ENDPOINT)
 	flag.StringVar(&token, "t", "", "Discord Bot token")
 	flag.StringVar(&awsRegion, "aws-region", "", "AWS Region")
 	flag.StringVar(&redisAddress, "redis", "127.0.0.1:6379", "Redis Address")
 	flag.StringVar(&sqsQueueUrl, "sqs", "", "SQS Queue Url")
+	flag.StringVar(&discordEndpoint, "discord-endpoint", "https://discordapp.com/", "Discord Endpoint URL")
 	flag.Parse()
 	// overwrite with environment variables if set DISCORD_BOT_TOKEN=… AWS_REGION=… REDIS_ADDRESS=… SQS_QUEUE_URL=…
 	if os.Getenv("DISCORD_BOT_TOKEN") != "" {
@@ -47,6 +49,9 @@ func init() {
 	}
 	if os.Getenv("SQS_QUEUE_URL") != "" {
 		sqsQueueUrl = os.Getenv("SQS_QUEUE_URL")
+	}
+	if os.Getenv("DISCORD_ENDPOINT") != "" {
+		discordEndpoint = os.Getenv("DISCORD_ENDPOINT")
 	}
 }
 
@@ -67,6 +72,8 @@ func main() {
 	})
 
 	// create a new Discordgo Bot Client
+	dhelpers.SetDiscordEndpoints(discordEndpoint)
+	fmt.Println("Set Discord Endpoint API URL to", discordgo.EndpointAPI)
 	fmt.Println("Connecting to Discord, token Length:", len(token))
 	dg, err = discordgo.New("Bot " + token)
 	if err != nil {
@@ -105,7 +112,10 @@ func main() {
 			switch eventContainer.Type {
 			case dhelpers.MessageCreateEventType:
 				if strings.Contains(eventContainer.MessageCreate.Content, "ping") {
-					dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
+					_, err = dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
+					if err != nil {
+						fmt.Println(err.Error())
+					}
 				}
 			}
 		}
