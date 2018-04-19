@@ -37,7 +37,7 @@ func init() {
 	flag.StringVar(&sqsQueueUrl, "sqs", "", "SQS Queue Url")
 	flag.StringVar(&discordEndpoint, "discord-endpoint", "https://discordapp.com/", "Discord Endpoint URL")
 	flag.Parse()
-	// overwrite with environment variables if set DISCORD_BOT_TOKEN=… AWS_REGION=… REDIS_ADDRESS=… SQS_QUEUE_URL=…
+	// overwrite with environment variables if set DISCORD_BOT_TOKEN=… AWS_REGION=… REDIS_ADDRESS=… SQS_QUEUE_URL=… DISCORD_ENDPOINT=…
 	if os.Getenv("DISCORD_BOT_TOKEN") != "" {
 		token = os.Getenv("DISCORD_BOT_TOKEN")
 	}
