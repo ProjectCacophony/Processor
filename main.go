@@ -6,8 +6,6 @@ import (
 	"os"
 	"time"
 
-	"strings"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
@@ -111,10 +109,13 @@ func main() {
 			fmt.Println(eventContainer.Key)
 			switch eventContainer.Type {
 			case dhelpers.MessageCreateEventType:
-				if strings.Contains(eventContainer.MessageCreate.Content, "ping") {
-					_, err = dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
-					if err != nil {
-						fmt.Println(err.Error())
+				for _, destination := range eventContainer.Destinations {
+					switch destination {
+					case "ping":
+						_, err = dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
+						if err != nil {
+							fmt.Println(err.Error())
+						}
 					}
 				}
 			}
