@@ -12,23 +12,27 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/bwmarrin/discordgo"
+	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
 var (
-	token       string
-	awsRegion   string
-	started     time.Time
-	sqsClient   *sqs.SQS
-	sqsQueueUrl string
-	dg          *discordgo.Session
+	token        string
+	awsRegion    string
+	started      time.Time
+	sqsClient    *sqs.SQS
+	sqsQueueUrl  string
+	dg           *discordgo.Session
+	redisAddress string
+	redisClient  *redis.Client
 )
 
 func init() {
-	// Parse command line flags (-t DISCORD_BOT_TOKEN -aws-region AWS_REGION -sqs SQS_QUEUE_URL)
+	// Parse command line flags (-t DISCORD_BOT_TOKEN -aws-region AWS_REGION -redis REDIS_ADDRESS -sqs SQS_QUEUE_URL)
 	flag.StringVar(&token, "t", "", "Discord Bot token")
 	flag.StringVar(&awsRegion, "aws-region", "", "AWS Region")
+	flag.StringVar(&redisAddress, "redis", "127.0.0.1:6379", "Redis Address")
 	flag.StringVar(&sqsQueueUrl, "sqs", "", "SQS Queue Url")
 	flag.Parse()
 	// overwrite with environment variables if set DISCORD_BOT_TOKEN=… AWS_REGION=… REDIS_ADDRESS=… SQS_QUEUE_URL=…
@@ -37,6 +41,9 @@ func init() {
 	}
 	if os.Getenv("AWS_REGION") != "" {
 		awsRegion = os.Getenv("AWS_REGION")
+	}
+	if os.Getenv("REDIS_ADDRESS") != "" {
+		redisAddress = os.Getenv("REDIS_ADDRESS")
 	}
 	if os.Getenv("SQS_QUEUE_URL") != "" {
 		sqsQueueUrl = os.Getenv("SQS_QUEUE_URL")
@@ -52,6 +59,13 @@ func main() {
 	}))
 	sqsClient = sqs.New(sess)
 
+	// connect to redis
+	redisClient = redis.NewClient(&redis.Options{
+		Addr:     redisAddress,
+		Password: "",
+		DB:       0,
+	})
+
 	// create a new Discordgo Bot Client
 	fmt.Println("Connecting to Discord, token Length:", len(token))
 	dg, err = discordgo.New("Bot " + token)
@@ -64,7 +78,7 @@ func main() {
 		result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
 			QueueUrl:              aws.String(sqsQueueUrl),
 			MaxNumberOfMessages:   aws.Int64(10),
-			MessageAttributeNames: aws.StringSlice([]string{"All"}),
+			MessageAttributeNames: aws.StringSlice([]string{}),
 			WaitTimeSeconds:       aws.Int64(20),
 			VisibilityTimeout:     aws.Int64(60 * 60 * 12),
 		})
@@ -73,19 +87,25 @@ func main() {
 		}
 
 		for _, message := range result.Messages {
-			// pack the event data
+			// unpack the event data
 			var eventContainer dhelpers.EventContainer
 			err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
 			if err != nil {
 				fmt.Println(err.Error())
 				continue
 			}
+			// deduplication
+			if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
+				return
+			}
+
+			receivedAt := time.Now()
 
 			fmt.Println(eventContainer.Key)
 			switch eventContainer.Type {
 			case dhelpers.MessageCreateEventType:
 				if strings.Contains(eventContainer.MessageCreate.Content, "ping") {
-					dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong")
+					dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
 				}
 			}
 		}
