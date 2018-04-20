@@ -12,7 +12,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
-	"gitlab.com/project-d-collab/SqsProcessor/cache"
 	"gitlab.com/project-d-collab/SqsProcessor/modules"
 	"gitlab.com/project-d-collab/dhelpers"
 	dhelpersCache "gitlab.com/project-d-collab/dhelpers/cache"
@@ -82,7 +81,7 @@ func main() {
 		fmt.Println("error creating Discord session,", err.Error())
 		return
 	}
-	cache.SetDiscord(dg)
+	dhelpersCache.SetDiscord(dg)
 
 	for {
 		result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{

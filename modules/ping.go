@@ -7,7 +7,6 @@ import (
 
 	"strconv"
 
-	"gitlab.com/project-d-collab/SqsProcessor/cache"
 	"gitlab.com/project-d-collab/dhelpers"
 	"gitlab.com/project-d-collab/dhelpers/state"
 )
@@ -58,7 +57,7 @@ func Action(receivedAt time.Time, event dhelpers.EventContainer) {
 		message += "\n"
 	}
 
-	_, err = cache.GetDiscord().ChannelMessageSend(event.MessageCreate.ChannelID, message)
+	_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, message)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
