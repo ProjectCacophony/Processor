@@ -106,7 +106,7 @@ func main() {
 			}
 			// deduplication
 			if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
-				return
+				continue
 			}
 
 			receivedAt := time.Now()
