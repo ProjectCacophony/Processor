@@ -12,7 +12,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
+	"gitlab.com/project-d-collab/SqsProcessor/cache"
+	"gitlab.com/project-d-collab/SqsProcessor/modules"
 	"gitlab.com/project-d-collab/dhelpers"
+	dhelpersCache "gitlab.com/project-d-collab/dhelpers/cache"
 )
 
 var (
@@ -68,6 +71,7 @@ func main() {
 		Password: "",
 		DB:       0,
 	})
+	dhelpersCache.SetRedisClient(redisClient)
 
 	// create a new Discordgo Bot Client
 	dhelpers.SetDiscordEndpoints(discordEndpoint)
@@ -78,6 +82,7 @@ func main() {
 		fmt.Println("error creating Discord session,", err.Error())
 		return
 	}
+	cache.SetDiscord(dg)
 
 	for {
 		result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
@@ -106,17 +111,10 @@ func main() {
 
 			receivedAt := time.Now()
 
-			fmt.Println(eventContainer.Key)
-			switch eventContainer.Type {
-			case dhelpers.MessageCreateEventType:
-				for _, destination := range eventContainer.Destinations {
-					switch destination {
-					case "ping":
-						_, err = dg.ChannelMessageSend(eventContainer.MessageCreate.ChannelID, "pong, Gateway => SqsProcessor: "+receivedAt.Sub(eventContainer.ReceivedAt).String())
-						if err != nil {
-							fmt.Println(err.Error())
-						}
-					}
+			for _, destination := range eventContainer.Destinations {
+				switch destination {
+				case "ping":
+					modules.Action(receivedAt, eventContainer)
 				}
 			}
 		}
