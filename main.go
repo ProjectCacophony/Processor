@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -14,9 +13,11 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
+	"github.com/sirupsen/logrus"
 	"gitlab.com/project-d-collab/SqsProcessor/modules"
 	"gitlab.com/project-d-collab/dhelpers"
 	dhelpersCache "gitlab.com/project-d-collab/dhelpers/cache"
+	"gitlab.com/project-d-collab/dhelpers/components"
 )
 
 var (
@@ -29,6 +30,7 @@ var (
 	redisAddress    string
 	redisClient     *redis.Client
 	discordEndpoint string
+	logger          *logrus.Entry
 )
 
 func init() {
@@ -60,6 +62,11 @@ func init() {
 func main() {
 	started = time.Now()
 	var err error
+
+	// Set up components
+	components.InitLogger("SqsProcessor")
+	logger = dhelpersCache.GetLogger()
+
 	// connect to aws
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(awsRegion),
@@ -76,11 +83,11 @@ func main() {
 
 	// create a new Discordgo Bot Client
 	dhelpers.SetDiscordEndpoints(discordEndpoint)
-	fmt.Println("Set Discord Endpoint API URL to", discordgo.EndpointAPI)
-	fmt.Println("Connecting to Discord, token Length:", len(token))
+	logger.Infoln("Set Discord Endpoint API URL to", discordgo.EndpointAPI)
+	logger.Infoln("Connecting to Discord, token Length:", len(token))
 	dg, err = discordgo.New("Bot " + token)
 	if err != nil {
-		fmt.Println("error creating Discord session,", err.Error())
+		logger.Errorln("error creating Discord session,", err.Error())
 		return
 	}
 	dhelpersCache.SetDiscord(dg)
@@ -88,7 +95,7 @@ func main() {
 	// Setup all modules
 	modules.Init()
 
-	fmt.Println("Processor booting completed, took", time.Since(started).String())
+	logger.Infoln("Processor booting completed, took", time.Since(started).String())
 
 	// bot run loop
 	go func() {
@@ -110,7 +117,7 @@ func main() {
 				var eventContainer dhelpers.EventContainer
 				err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
 				if err != nil {
-					fmt.Println(err.Error())
+					logger.Errorln("Message unmarshal error: ", err.Error())
 					continue
 				}
 				// deduplication

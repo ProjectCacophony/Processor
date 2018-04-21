@@ -1,8 +1,6 @@
 package color
 
 import (
-	"fmt"
-
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -19,8 +17,6 @@ func (m *Module) GetDestinations() []string {
 
 // Action is the module entry point when event is triggered
 func (m *Module) Action(event dhelpers.EventContainer) {
-
-	fmt.Println("color event triggered")
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
@@ -33,10 +29,8 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 // Init is called on bot startup
 func (m *Module) Init() {
-	fmt.Println("Initializing color module")
 }
 
 // Uninit is called on normal bot shutdown
 func (m *Module) Uninit() {
-	fmt.Println("Uninitializing color module")
 }

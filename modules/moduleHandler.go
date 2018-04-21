@@ -1,11 +1,10 @@
 package modules
 
 import (
-	"fmt"
-
 	"strings"
 
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/cache"
 )
 
 // CallModules distributes events to their related modules based on event destination
@@ -27,9 +26,9 @@ func CallModules(event dhelpers.EventContainer) {
 								for _, errorHandlerType := range targetDest.ErrorHandlers {
 									switch errorHandlerType {
 									case dhelpers.SentryErrorHandler:
-										fmt.Printf("handle me via sentry: %+v\n", err) // TODO
+										cache.GetLogger().Errorln("handle me via sentry: ", err) // TODO
 									case dhelpers.DiscordErrorHandler:
-										fmt.Printf("handle me via discord: %+v\n", err) // TODO
+										cache.GetLogger().Errorln("handle me via discord: ", err) // TODO
 									}
 								}
 							}
@@ -45,20 +44,20 @@ func CallModules(event dhelpers.EventContainer) {
 
 // Init initializes all plugins
 func Init() {
-	fmt.Println("Initializing Modules....")
+	cache.GetLogger().Infoln("Initializing Modules....")
 
 	for _, module := range moduleList {
 		module.Init()
-		fmt.Println("Initialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
+		cache.GetLogger().Infoln("Initialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
 	}
 }
 
 // Uninit uninitialize all plugins on succesfull shutdown
 func Uninit() {
-	fmt.Println("Uninitializing Modules....")
+	cache.GetLogger().Infoln("Uninitializing Modules....")
 
 	for _, module := range moduleList {
 		module.Uninit()
-		fmt.Println("Uninitialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
+		cache.GetLogger().Infoln("Uninitialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
 	}
 }
