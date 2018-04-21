@@ -3,12 +3,15 @@ package color
 import (
 	"fmt"
 
+	"time"
+
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
+// Module is a struct for the module
 type Module struct{}
 
-// Define valid destinations for the module
+// GetDestinations defines valid destinations for the module
 func (m *Module) GetDestinations() []string {
 	return []string{
 		"color",
@@ -16,8 +19,8 @@ func (m *Module) GetDestinations() []string {
 	}
 }
 
-// Module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+// Action is the module entry point when event is triggered
+func (m *Module) Action(_ time.Time, event dhelpers.EventContainer) {
 
 	fmt.Print("color event triggered")
 	switch event.Type {
@@ -30,12 +33,12 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 	}
 }
 
-// Called on bot startup
+// Init is called on bot startup
 func (m *Module) Init() {
 	fmt.Println("Initializing color module")
 }
 
-// Called on normal bot shutdown
+// Uninit is called on normal bot shutdown
 func (m *Module) Uninit() {
 	fmt.Println("Uninitializing color module")
 }

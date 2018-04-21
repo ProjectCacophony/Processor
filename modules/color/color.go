@@ -37,13 +37,17 @@ func displayColor(event dhelpers.EventContainer) {
 	// make square image with given color
 	r := image.Rect(0, 0, 200, 200)
 	img := image.NewRGBA(r)
-	imageColor := color.RGBA{uint8(rgbArray[0]), uint8(rgbArray[1]), uint8(rgbArray[2]), 255}
+	imageColor := color.RGBA{R: rgbArray[0], G: rgbArray[1], B: rgbArray[2], A: 255}
 	draw.Draw(img, img.Bounds(), &image.Uniform{imageColor}, image.ZP, draw.Src)
 	finalImage := img.SubImage(r)
 
 	// send image
 	var buff bytes.Buffer
-	png.Encode(&buff, finalImage)
+	err = png.Encode(&buff, finalImage)
+	if err != nil {
+		fmt.Printf("Error encoding image: %s \n", err.Error())
+		return
+	}
 	_, err = dhelpers.SendFile(event.MessageCreate.ChannelID, "test.png", bytes.NewReader(buff.Bytes()), "Color: #"+hexText)
 	if err != nil {
 		fmt.Println("Error sending file: ", err.Error())

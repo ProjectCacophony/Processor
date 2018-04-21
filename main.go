@@ -24,7 +24,7 @@ var (
 	awsRegion       string
 	started         time.Time
 	sqsClient       *sqs.SQS
-	sqsQueueUrl     string
+	sqsQueueURL     string
 	dg              *discordgo.Session
 	redisAddress    string
 	redisClient     *redis.Client
@@ -36,7 +36,7 @@ func init() {
 	flag.StringVar(&token, "t", "", "Discord Bot token")
 	flag.StringVar(&awsRegion, "aws-region", "", "AWS Region")
 	flag.StringVar(&redisAddress, "redis", "127.0.0.1:6379", "Redis Address")
-	flag.StringVar(&sqsQueueUrl, "sqs", "", "SQS Queue Url")
+	flag.StringVar(&sqsQueueURL, "sqs", "", "SQS Queue Url")
 	flag.StringVar(&discordEndpoint, "discord-endpoint", "https://discordapp.com/", "Discord Endpoint URL")
 	flag.Parse()
 	// overwrite with environment variables if set DISCORD_BOT_TOKEN=… AWS_REGION=… REDIS_ADDRESS=… SQS_QUEUE_URL=… DISCORD_ENDPOINT=…
@@ -50,7 +50,7 @@ func init() {
 		redisAddress = os.Getenv("REDIS_ADDRESS")
 	}
 	if os.Getenv("SQS_QUEUE_URL") != "" {
-		sqsQueueUrl = os.Getenv("SQS_QUEUE_URL")
+		sqsQueueURL = os.Getenv("SQS_QUEUE_URL")
 	}
 	if os.Getenv("DISCORD_ENDPOINT") != "" {
 		discordEndpoint = os.Getenv("DISCORD_ENDPOINT")
@@ -88,12 +88,14 @@ func main() {
 	// Setup all modules
 	modules.Init()
 
+	fmt.Println("Processor booting completed, took", time.Since(started).String())
+
 	// bot run loop
 	go func() {
 
 		for {
 			result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
-				QueueUrl:              aws.String(sqsQueueUrl),
+				QueueUrl:              aws.String(sqsQueueURL),
 				MaxNumberOfMessages:   aws.Int64(10),
 				MessageAttributeNames: aws.StringSlice([]string{}),
 				WaitTimeSeconds:       aws.Int64(20),
@@ -104,6 +106,8 @@ func main() {
 			}
 
 			for _, message := range result.Messages {
+				dequeuedAt := time.Now()
+
 				// unpack the event data
 				var eventContainer dhelpers.EventContainer
 				err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
@@ -117,14 +121,14 @@ func main() {
 				}
 
 				// send to modules
-				modules.CallModules(eventContainer)
+				modules.CallModules(dequeuedAt, eventContainer)
 			}
 		}
 	}()
 
 	// channel for bot shutdown
 	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
 	// Uninit all modules

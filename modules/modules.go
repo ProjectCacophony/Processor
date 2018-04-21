@@ -1,22 +1,27 @@
 package modules
 
 import (
+	"time"
+
 	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
+// Module is an interface for all modules
 type Module interface {
 
-	// returns valid destinations for the module
+	// GetDestinations returns valid destinations for the module
 	GetDestinations() []string
 
-	// Bot startup/shutdown
+	// Init runs at processor startup
 	Init()
+
+	// Unit runs at processor shutdown
 	Uninit()
 
-	// Main entry point for module
-	Action(event dhelpers.EventContainer)
+	// Action is the main entry point for the module receiving all events
+	Action(dequedAt time.Time, event dhelpers.EventContainer)
 }
 
 var (

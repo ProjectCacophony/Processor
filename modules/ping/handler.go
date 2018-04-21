@@ -3,20 +3,23 @@ package ping
 import (
 	"fmt"
 
+	"time"
+
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
+// Module is a struct for the module
 type Module struct{}
 
-// Define valid destinations for the module
+// GetDestinations defines valid destinations for the module
 func (m *Module) GetDestinations() []string {
 	return []string{
 		"ping",
 	}
 }
 
-// Module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+// Action is the module entry point when event is triggered
+func (m *Module) Action(dequeuedAt time.Time, event dhelpers.EventContainer) {
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
@@ -24,20 +27,18 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 		switch event.Args[0] {
 		case "pong":
 			simplePing(event.MessageCreate.ChannelID, event.ReceivedAt)
-			break
 		case "ping":
-			pingInfo(event)
-			break
+			pingInfo(dequeuedAt, event)
 		}
 	}
 }
 
-// Called on bot startup
+// Init is called on bot startup
 func (m *Module) Init() {
 	fmt.Println("Initializing ping module")
 }
 
-// Called on normal bot shutdown
+// Uninit is called on normal bot shutdown
 func (m *Module) Uninit() {
 	fmt.Println("Uninitializing ping module")
 }

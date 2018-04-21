@@ -3,11 +3,15 @@ package modules
 import (
 	"fmt"
 
+	"strings"
+
+	"time"
+
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
-// Distributes events to their related modules based on event destination
-func CallModules(event dhelpers.EventContainer) {
+// CallModules distributes events to their related modules based on event destination
+func CallModules(dequeuedAt time.Time, event dhelpers.EventContainer) {
 
 	for _, module := range moduleList {
 
@@ -18,27 +22,29 @@ func CallModules(event dhelpers.EventContainer) {
 				if targetDest == validDest {
 
 					// todo: handle panics
-					go module.Action(event)
+					go module.Action(dequeuedAt, event)
 				}
 			}
 		}
 	}
 }
 
-// Initializes all plugins
+// Init initializes all plugins
 func Init() {
 	fmt.Println("Initializing Modules....")
 
 	for _, module := range moduleList {
 		module.Init()
+		fmt.Println("Initialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
 	}
 }
 
-// Uninitialize all plugins on succesful shutdown
+// Uninit uninitialize all plugins on succesfull shutdown
 func Uninit() {
 	fmt.Println("Uninitializing Modules....")
 
 	for _, module := range moduleList {
 		module.Uninit()
+		fmt.Println("Uninitialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
 	}
 }
