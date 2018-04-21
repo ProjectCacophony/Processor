@@ -11,7 +11,13 @@ type Module struct{}
 func (m *Module) GetDestinations() []string {
 	return []string{
 		"color",
-		"colour",
+	}
+}
+
+// GetTranslationFiles defines all translation files for the module
+func (m *Module) GetTranslationFiles() []string {
+	return []string{
+		"color.en.toml",
 	}
 }
 

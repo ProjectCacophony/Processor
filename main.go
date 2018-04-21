@@ -66,6 +66,7 @@ func main() {
 	// Set up components
 	components.InitLogger("SqsProcessor")
 	logger = dhelpersCache.GetLogger()
+	components.InitTranslator(nil)
 
 	// connect to aws
 	sess := session.Must(session.NewSession(&aws.Config{

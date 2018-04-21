@@ -12,6 +12,9 @@ type Module interface {
 	// GetDestinations returns valid destinations for the module
 	GetDestinations() []string
 
+	// GetTranslationFiles returns all translation files for the module
+	GetTranslationFiles() []string
+
 	// Init runs at processor startup
 	Init()
 

@@ -10,6 +10,7 @@ import (
 	"image/png"
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -46,7 +47,21 @@ func displayColor(event dhelpers.EventContainer) {
 	if err != nil {
 		panic(err)
 	}
-	_, err = dhelpers.SendFile(event.MessageCreate.ChannelID, "test.png", bytes.NewReader(buff.Bytes()), "Color: #"+hexText)
+
+	_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+		Embed: &discordgo.MessageEmbed{
+			Title: dhelpers.Tf("ColorResult", "hexcode", hexText),
+			Image: &discordgo.MessageEmbedImage{
+				URL: "attachment://" + hexText + ".png",
+			},
+		},
+		Files: []*discordgo.File{
+			{
+				Name:   hexText + ".png",
+				Reader: bytes.NewReader(buff.Bytes()),
+			},
+		},
+	})
 	if err != nil {
 		panic(err)
 	}

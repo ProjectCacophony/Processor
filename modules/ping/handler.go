@@ -15,6 +15,11 @@ func (m *Module) GetDestinations() []string {
 	}
 }
 
+// GetTranslationFiles defines all translation files for the module
+func (m *Module) GetTranslationFiles() []string {
+	return []string{}
+}
+
 // Action is the module entry point when event is triggered
 func (m *Module) Action(event dhelpers.EventContainer) {
 
