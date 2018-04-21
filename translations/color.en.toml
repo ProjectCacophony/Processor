@@ -1,2 +1,1 @@
-[ColorResult]
-One = "Color: #{{.hexcode}}"
+ColorResult = "Color: #{{.hexcode}}"
