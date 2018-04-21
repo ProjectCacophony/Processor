@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
 	"gitlab.com/project-d-collab/dhelpers"
 )
@@ -21,5 +22,6 @@ type Module interface {
 var (
 	moduleList = []Module{
 		&ping.Module{},
+		&color.Module{},
 	}
 )
