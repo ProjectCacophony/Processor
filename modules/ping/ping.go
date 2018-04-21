@@ -1,17 +1,21 @@
-package modules
+package ping
 
 import (
 	"fmt"
-
-	"time"
-
 	"strconv"
+	"time"
 
 	"gitlab.com/project-d-collab/dhelpers"
 	"gitlab.com/project-d-collab/dhelpers/state"
 )
 
-func Action(receivedAt time.Time, event dhelpers.EventContainer) {
+func simplePing(channelID string, eventReceivedAt time.Time) {
+	dhelpers.SendMessage(channelID, time.Now().Sub(eventReceivedAt).String())
+}
+
+func pingInfo(event dhelpers.EventContainer) {
+	receivedAt := time.Now()
+
 	message := "pong, Gateway => SqsProcessor: " + receivedAt.Sub(event.ReceivedAt).String() + "\n"
 
 	channel, err := state.Channel(event.MessageCreate.ChannelID)

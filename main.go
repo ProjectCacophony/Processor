@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -83,39 +85,48 @@ func main() {
 	}
 	dhelpersCache.SetDiscord(dg)
 
-	for {
-		result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
-			QueueUrl:              aws.String(sqsQueueUrl),
-			MaxNumberOfMessages:   aws.Int64(10),
-			MessageAttributeNames: aws.StringSlice([]string{}),
-			WaitTimeSeconds:       aws.Int64(20),
-			VisibilityTimeout:     aws.Int64(60 * 60 * 12),
-		})
-		if err != nil {
-			panic(err)
-		}
+	// Setup all modules
+	modules.Init()
 
-		for _, message := range result.Messages {
-			// unpack the event data
-			var eventContainer dhelpers.EventContainer
-			err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
+	// bot run loop
+	go func() {
+
+		for {
+			result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
+				QueueUrl:              aws.String(sqsQueueUrl),
+				MaxNumberOfMessages:   aws.Int64(10),
+				MessageAttributeNames: aws.StringSlice([]string{}),
+				WaitTimeSeconds:       aws.Int64(20),
+				VisibilityTimeout:     aws.Int64(60 * 60 * 12),
+			})
 			if err != nil {
-				fmt.Println(err.Error())
-				continue
-			}
-			// deduplication
-			if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
-				continue
+				panic(err)
 			}
 
-			receivedAt := time.Now()
-
-			for _, destination := range eventContainer.Destinations {
-				switch destination {
-				case "ping":
-					modules.Action(receivedAt, eventContainer)
+			for _, message := range result.Messages {
+				// unpack the event data
+				var eventContainer dhelpers.EventContainer
+				err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
+				if err != nil {
+					fmt.Println(err.Error())
+					continue
 				}
+				// deduplication
+				if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
+					continue
+				}
+
+				// send to modules
+				modules.CallModules(eventContainer)
 			}
 		}
-	}
+	}()
+
+	// channel for bot shutdown
+	sc := make(chan os.Signal, 1)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	<-sc
+
+	// Uninit all modules
+	modules.Uninit()
 }
