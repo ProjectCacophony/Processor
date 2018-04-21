@@ -19,10 +19,26 @@ func CallModules(dequeuedAt time.Time, event dhelpers.EventContainer) {
 
 			for _, targetDest := range event.Destinations {
 
-				if targetDest == validDest {
+				if targetDest.Name == validDest {
 
-					// todo: handle panics
-					go module.Action(dequeuedAt, event)
+					// send to module
+					go func(moduleModule Module, moduleDequeudAt time.Time, moduleEvent dhelpers.EventContainer) {
+						defer func() {
+							err := recover()
+							if err != nil {
+								for _, errorHandlerType := range targetDest.ErrorHandlers {
+									switch errorHandlerType {
+									case dhelpers.SentryErrorHandler:
+										fmt.Printf("handle me via sentry: %+v\n", err) // TODO
+									case dhelpers.DiscordErrorHandler:
+										fmt.Printf("handle me via discord: %+v\n", err) // TODO
+									}
+								}
+							}
+						}()
+
+						moduleModule.Action(moduleDequeudAt, moduleEvent)
+					}(module, dequeuedAt, event)
 				}
 			}
 		}

@@ -1,9 +1,10 @@
 package ping
 
 import (
-	"fmt"
 	"strconv"
 	"time"
+
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/project-d-collab/dhelpers"
@@ -13,7 +14,7 @@ import (
 func simplePing(channelID string, eventReceivedAt time.Time) {
 	_, err := dhelpers.SendMessage(channelID, time.Since(eventReceivedAt).String())
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 }
 
@@ -69,8 +70,11 @@ func pingInfo(dequeuedAt time.Time, event dhelpers.EventContainer) {
 		message += "\n"
 	}
 
+	message += "Args: `" + strings.Join(event.Args, "`, `") + "`\n"
+	message += "Prefix: `" + event.Prefix + "`\n"
+
 	_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, message)
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 }

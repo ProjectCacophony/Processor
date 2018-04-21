@@ -30,8 +30,7 @@ func displayColor(event dhelpers.EventContainer) {
 	// decode hex to rbg
 	rgbArray, err := hex.DecodeString(hexText)
 	if err != nil {
-		fmt.Printf("Error decoding hex string: %s \n", err.Error())
-		return
+		panic(err)
 	}
 
 	// make square image with given color
@@ -45,11 +44,10 @@ func displayColor(event dhelpers.EventContainer) {
 	var buff bytes.Buffer
 	err = png.Encode(&buff, finalImage)
 	if err != nil {
-		fmt.Printf("Error encoding image: %s \n", err.Error())
-		return
+		panic(err)
 	}
 	_, err = dhelpers.SendFile(event.MessageCreate.ChannelID, "test.png", bytes.NewReader(buff.Bytes()), "Color: #"+hexText)
 	if err != nil {
-		fmt.Println("Error sending file: ", err.Error())
+		panic(err)
 	}
 }

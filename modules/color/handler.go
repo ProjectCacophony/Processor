@@ -22,7 +22,7 @@ func (m *Module) GetDestinations() []string {
 // Action is the module entry point when event is triggered
 func (m *Module) Action(_ time.Time, event dhelpers.EventContainer) {
 
-	fmt.Print("color event triggered")
+	fmt.Println("color event triggered")
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
