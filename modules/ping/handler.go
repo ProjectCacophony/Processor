@@ -3,8 +3,6 @@ package ping
 import (
 	"fmt"
 
-	"time"
-
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -19,7 +17,7 @@ func (m *Module) GetDestinations() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(dequeuedAt time.Time, event dhelpers.EventContainer) {
+func (m *Module) Action(event dhelpers.EventContainer) {
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
@@ -28,7 +26,7 @@ func (m *Module) Action(dequeuedAt time.Time, event dhelpers.EventContainer) {
 		case "pong":
 			simplePing(event.MessageCreate.ChannelID, event.ReceivedAt)
 		case "ping":
-			pingInfo(dequeuedAt, event)
+			pingInfo(event)
 		}
 	}
 }

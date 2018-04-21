@@ -1,8 +1,6 @@
 package modules
 
 import (
-	"time"
-
 	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
 	"gitlab.com/project-d-collab/dhelpers"
@@ -21,7 +19,7 @@ type Module interface {
 	Uninit()
 
 	// Action is the main entry point for the module receiving all events
-	Action(dequedAt time.Time, event dhelpers.EventContainer)
+	Action(event dhelpers.EventContainer)
 }
 
 var (

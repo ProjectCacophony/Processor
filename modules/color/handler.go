@@ -3,8 +3,6 @@ package color
 import (
 	"fmt"
 
-	"time"
-
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -20,7 +18,7 @@ func (m *Module) GetDestinations() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(_ time.Time, event dhelpers.EventContainer) {
+func (m *Module) Action(event dhelpers.EventContainer) {
 
 	fmt.Println("color event triggered")
 	switch event.Type {

@@ -18,8 +18,8 @@ func simplePing(channelID string, eventReceivedAt time.Time) {
 	}
 }
 
-func pingInfo(dequeuedAt time.Time, event dhelpers.EventContainer) {
-	message := "pong, Gateway => SqsProcessor: " + dequeuedAt.Sub(event.ReceivedAt).String() + "\n"
+func pingInfo(event dhelpers.EventContainer) {
+	message := "pong, Gateway => SqsProcessor: " + time.Since(event.ReceivedAt).String() + "\n"
 
 	var err error
 	var channel *discordgo.Channel

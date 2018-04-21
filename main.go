@@ -106,8 +106,6 @@ func main() {
 			}
 
 			for _, message := range result.Messages {
-				dequeuedAt := time.Now()
-
 				// unpack the event data
 				var eventContainer dhelpers.EventContainer
 				err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
@@ -121,7 +119,7 @@ func main() {
 				}
 
 				// send to modules
-				modules.CallModules(dequeuedAt, eventContainer)
+				modules.CallModules(eventContainer)
 			}
 		}
 	}()

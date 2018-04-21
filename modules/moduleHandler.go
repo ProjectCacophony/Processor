@@ -5,13 +5,11 @@ import (
 
 	"strings"
 
-	"time"
-
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
 // CallModules distributes events to their related modules based on event destination
-func CallModules(dequeuedAt time.Time, event dhelpers.EventContainer) {
+func CallModules(event dhelpers.EventContainer) {
 
 	for _, module := range moduleList {
 
@@ -22,7 +20,7 @@ func CallModules(dequeuedAt time.Time, event dhelpers.EventContainer) {
 				if targetDest.Name == validDest {
 
 					// send to module
-					go func(moduleModule Module, moduleDequeudAt time.Time, moduleEvent dhelpers.EventContainer) {
+					go func(moduleModule Module, moduleEvent dhelpers.EventContainer) {
 						defer func() {
 							err := recover()
 							if err != nil {
@@ -37,8 +35,8 @@ func CallModules(dequeuedAt time.Time, event dhelpers.EventContainer) {
 							}
 						}()
 
-						moduleModule.Action(moduleDequeudAt, moduleEvent)
-					}(module, dequeuedAt, event)
+						moduleModule.Action(moduleEvent)
+					}(module, event)
 				}
 			}
 		}
