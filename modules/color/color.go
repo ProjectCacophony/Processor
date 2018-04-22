@@ -31,7 +31,17 @@ func displayColor(event dhelpers.EventContainer) {
 	// decode hex to rbg
 	rgbArray, err := hex.DecodeString(hexText)
 	if err != nil {
-		panic(err)
+		if strings.Contains(err.Error(), "odd length hex string") ||
+			strings.Contains(err.Error(), "invalid byte") {
+			dhelpers.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
+			return
+		}
+	}
+	dhelpers.CheckErr(err)
+
+	if len(rgbArray) < 3 {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
+		return
 	}
 
 	// make square image with given color
@@ -44,9 +54,7 @@ func displayColor(event dhelpers.EventContainer) {
 	// send image
 	var buff bytes.Buffer
 	err = png.Encode(&buff, finalImage)
-	if err != nil {
-		panic(err)
-	}
+	dhelpers.CheckErr(err)
 
 	_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
@@ -62,7 +70,5 @@ func displayColor(event dhelpers.EventContainer) {
 			},
 		},
 	})
-	if err != nil {
-		panic(err)
-	}
+	dhelpers.CheckErr(err)
 }

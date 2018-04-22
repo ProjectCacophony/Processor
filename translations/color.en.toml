@@ -1,1 +1,2 @@
 ColorResult = "Color: #{{.hexcode}}"
+ColorInvalidHex = "Your given hexcode seems to be invalid."
