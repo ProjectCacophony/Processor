@@ -3,6 +3,7 @@ package modules
 import (
 	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
+	"gitlab.com/project-d-collab/SqsProcessor/modules/stats"
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -29,5 +30,6 @@ var (
 	moduleList = []Module{
 		&ping.Module{},
 		&color.Module{},
+		&stats.Module{},
 	}
 )
