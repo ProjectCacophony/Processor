@@ -76,7 +76,7 @@ func displayStats(event dhelpers.EventContainer) {
 
 	// display sqs processor go version
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "♻ SqsP Go",
+		Name:   "📌 SqsP Go",
 		Value:  runtime.Version(),
 		Inline: true,
 	})
