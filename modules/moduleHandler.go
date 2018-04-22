@@ -1,8 +1,6 @@
 package modules
 
 import (
-	"fmt"
-	"runtime"
 	"strings"
 
 	"gitlab.com/project-d-collab/dhelpers"
@@ -25,20 +23,8 @@ func CallModules(event dhelpers.EventContainer) {
 						defer func() {
 							err := recover()
 							if err != nil {
-								// error handling
-								for _, errorHandlerType := range targetDest.ErrorHandlers {
-									switch errorHandlerType {
-									case dhelpers.SentryErrorHandler:
-										cache.GetLogger().Errorln("handle me via sentry:", err.(error).Error()) // TODO
-									case dhelpers.DiscordErrorHandler:
-										cache.GetLogger().Errorln("handle me via discord:", err.(error).Error()) // TODO
-									}
-								}
-								// print stacktrace
-								buf := make([]byte, 1<<16)
-								stackSize := runtime.Stack(buf, false)
-
-								fmt.Println(string(buf[0:stackSize]))
+								// handle errors
+								dhelpers.HandleErrWith("SqsProcessor", err.(error), targetDest.ErrorHandlers, &moduleEvent)
 							}
 						}()
 

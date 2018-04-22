@@ -67,6 +67,11 @@ func main() {
 	components.InitLogger("SqsProcessor")
 	logger = dhelpersCache.GetLogger()
 	components.InitTranslator(nil)
+	err = components.InitSentry()
+	if err != nil {
+		logger.Errorln("error setting up sentry,", err.Error())
+		return
+	}
 
 	// connect to aws
 	sess := session.Must(session.NewSession(&aws.Config{
