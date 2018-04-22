@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"gitlab.com/project-d-collab/SqsProcessor/metrics"
@@ -77,7 +79,7 @@ func displayStats(event dhelpers.EventContainer) {
 	// display sqs processor go version
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "📌 SqsP Go",
-		Value:  runtime.Version(),
+		Value:  strings.Replace(runtime.Version(), "go", "v", 1),
 		Inline: true,
 	})
 
