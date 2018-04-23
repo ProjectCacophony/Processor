@@ -23,12 +23,17 @@ func (m *Module) GetTranslationFiles() []string {
 
 // Action is the module entry point when event is triggered
 func (m *Module) Action(event dhelpers.EventContainer) {
+
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
-		switch event.Args[0] {
-		case "color", "colour":
-			displayColor(event)
+		for _, destination := range event.Destinations {
+
+			switch destination.Name {
+			case "color":
+				displayColor(event)
+				return
+			}
 		}
 	}
 }
