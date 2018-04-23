@@ -10,6 +10,8 @@ before_script:
   - ln -s ${CI_PROJECT_DIR}
   - cd ${CI_PROJECT_NAME}
   # install dependencies
+  - apt-get update
+  - apt-get install libcairo2-dev -y
   - go get -v ./...
   - go get -v golang.org/x/tools/cmd/goimports
   - go get -v gopkg.in/alecthomas/gometalinter.v2
