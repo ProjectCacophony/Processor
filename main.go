@@ -40,6 +40,7 @@ func main() {
 	components.InitRedis()
 	err = components.InitAwsSqs()
 	dhelpers.CheckErr(err)
+	components.InitLastFm()
 
 	// start metrics
 	metrics.Init()
