@@ -1,6 +1,8 @@
 package ping
 
 import (
+	"strings"
+
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -25,7 +27,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
-		switch event.Args[0] {
+		switch strings.ToLower(event.Args[0]) {
 		case "pong":
 			simplePing(event, event.ReceivedAt)
 		case "ping":
