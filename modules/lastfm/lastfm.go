@@ -472,7 +472,7 @@ func displayAbout(event dhelpers.EventContainer) {
 
 	// get basic embed for user
 	embed := getLastfmBaseEmbed(userInfo)
-	embed.Title = dhelpers.Tf("LastFmAboutTitle", "userData", userInfo)
+	embed.Author.Name = dhelpers.Tf("LastFmAboutTitle", "userData", userInfo)
 	dhelpers.CheckErr(err)
 
 	// add fields
