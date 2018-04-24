@@ -27,7 +27,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 		switch event.Args[0] {
 		case "pong":
-			simplePing(event.MessageCreate.ChannelID, event.ReceivedAt)
+			simplePing(event, event.ReceivedAt)
 		case "ping":
 			pingInfo(event)
 		}

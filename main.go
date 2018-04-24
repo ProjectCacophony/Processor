@@ -34,8 +34,6 @@ func main() {
 	components.InitLogger("SqsProcessor")
 	err = components.InitSentry()
 	dhelpers.CheckErr(err)
-	err = components.InitDiscord()
-	dhelpers.CheckErr(err)
 	components.InitTranslator(nil)
 	components.InitRedis()
 	err = components.InitMongoDB()

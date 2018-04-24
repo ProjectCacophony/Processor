@@ -33,14 +33,14 @@ func displayColor(event dhelpers.EventContainer) {
 	if err != nil {
 		if strings.Contains(err.Error(), "odd length hex string") ||
 			strings.Contains(err.Error(), "invalid byte") {
-			dhelpers.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
+			event.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
 			return
 		}
 	}
 	dhelpers.CheckErr(err)
 
 	if len(rgbArray) < 3 {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
+		event.SendMessage(event.MessageCreate.ChannelID, "ColorInvalidHex") // nolint: errcheck, gas
 		return
 	}
 
@@ -56,7 +56,7 @@ func displayColor(event dhelpers.EventContainer) {
 	err = png.Encode(&buff, finalImage)
 	dhelpers.CheckErr(err)
 
-	_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: dhelpers.Tf("ColorResult", "hexcode", hexText),
 			Image: &discordgo.MessageEmbedImage{

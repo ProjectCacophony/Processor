@@ -33,16 +33,16 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck, gas
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck, gas
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -56,7 +56,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(artists) < 1 {
-		_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -86,7 +86,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
-		_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
 					Name:   "LastFM-Collage.png",
@@ -109,7 +109,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 		}
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -132,16 +132,16 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -176,7 +176,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
-		_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
 					Name:   "LastFM-Collage.png",
@@ -190,7 +190,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	}
 
 	if len(tracks) < 1 {
-		_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -208,7 +208,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 		}
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -231,16 +231,16 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -254,7 +254,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(albums) < 1 {
-		_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -284,7 +284,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
-		_, err = dhelpers.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
 					Name:   "LastFM-Collage.png",
@@ -307,7 +307,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 		}
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -324,16 +324,16 @@ func displayRecent(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -347,7 +347,7 @@ func displayRecent(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(tracks) < 1 {
-		_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -367,7 +367,7 @@ func displayRecent(event dhelpers.EventContainer) {
 		embed.Description += "\n"
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -384,16 +384,16 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -407,7 +407,7 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(tracks) < 1 {
-		_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -439,7 +439,7 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 		})
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -456,16 +456,16 @@ func displayAbout(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
-	dhelpers.GoType(event.MessageCreate.ChannelID)
+	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
 	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
-		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
+		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
 	}
 	dhelpers.CheckErr(err)
@@ -510,7 +510,7 @@ func displayAbout(event dhelpers.EventContainer) {
 		}
 	}
 
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
 
@@ -531,6 +531,6 @@ func setUsername(event dhelpers.EventContainer) {
 	)
 	dhelpers.CheckErr(err)
 
-	_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUsernameSaved")
+	_, err = event.SendMessage(event.MessageCreate.ChannelID, "LastFmUsernameSaved")
 	dhelpers.CheckErr(err)
 }

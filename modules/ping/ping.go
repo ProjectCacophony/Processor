@@ -11,8 +11,8 @@ import (
 	"gitlab.com/project-d-collab/dhelpers/state"
 )
 
-func simplePing(channelID string, eventReceivedAt time.Time) {
-	_, err := dhelpers.SendMessage(channelID, time.Since(eventReceivedAt).String())
+func simplePing(event dhelpers.EventContainer, eventReceivedAt time.Time) {
+	_, err := event.SendMessage(event.MessageCreate.ChannelID, time.Since(eventReceivedAt).String())
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +73,7 @@ func pingInfo(event dhelpers.EventContainer) {
 	message += "Args: `" + strings.Join(event.Args, "`, `") + "`\n"
 	message += "Prefix: `" + event.Prefix + "`\n"
 
-	_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, message)
+	_, err = event.SendMessage(event.MessageCreate.ChannelID, message)
 	if err != nil {
 		panic(err)
 	}

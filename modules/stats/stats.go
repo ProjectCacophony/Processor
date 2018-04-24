@@ -123,6 +123,6 @@ func displayStats(event dhelpers.EventContainer) {
 	})
 
 	// send it
-	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, statsEmbed)
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, statsEmbed)
 	dhelpers.CheckErr(err)
 }
