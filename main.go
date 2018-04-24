@@ -38,6 +38,8 @@ func main() {
 	dhelpers.CheckErr(err)
 	components.InitTranslator(nil)
 	components.InitRedis()
+	err = components.InitMongoDB()
+	dhelpers.CheckErr(err)
 	err = components.InitAwsSqs()
 	dhelpers.CheckErr(err)
 	components.InitLastFm()

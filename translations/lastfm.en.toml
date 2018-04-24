@@ -13,3 +13,6 @@ LastFmTopTracksTitle = "{{.userData.Username}}'s top Tracks {{if (eq .period \"o
 LastFmAlbum = "[**{{.album.Name}}** by **{{.album.Artist}}**]({{.album.URL}}) ({{.scrobbles}} plays)"
 LastFmTopAlbumsTitle = "{{.userData.Username}}'s top Albums {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
 LastFmUserNotFound = "I wasn't able to find the User on Last.FM. <a:ablobfrown:394026913292615701>"
+LastFmNoUserPassed = "Please tell me which user I should look up on Last.FM."
+# TODO: ^ example set command, with prefix
+LastFmUsernameSaved = "I will remember your Last.FM username. <a:ablobsmile:393869335312990209>"

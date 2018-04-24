@@ -7,20 +7,40 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
+	"github.com/globalsign/mgo/bson"
+	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
 	"gitlab.com/project-d-collab/dhelpers/collage"
+	"gitlab.com/project-d-collab/dhelpers/mdb"
 )
 
 func displayTopArtists(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
-	if len(event.Args) < 3 {
+	var newArgs []string
+	var period dhelpers.LastFmPeriod
+	var makeCollage bool
+	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
+	makeCollage, newArgs = isCollageRequest(newArgs)
+
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(newArgs) >= 3 {
+		lastfmUsername = event.Args[2]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[2])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck, gas
 		return
@@ -32,7 +52,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 
 	// get top artists
 	var artists []dhelpers.LastfmArtistData
-	artists, err = dhelpers.LastFmGetTopArtists(userInfo.Username, 10, dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	artists, err = dhelpers.LastFmGetTopArtists(userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
 	if len(artists) < 1 {
@@ -42,9 +62,9 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	}
 
 	// set content
-	embed.Author.Name = dhelpers.Tf("LastFmTopArtistsTitle", "userData", userInfo, "period", dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	embed.Author.Name = dhelpers.Tf("LastFmTopArtistsTitle", "userData", userInfo, "period", period)
 
-	if isCollageRequest(event.Args) {
+	if makeCollage {
 		imageUrls := make([]string, 0)
 		artistNames := make([]string, 0)
 		for _, artist := range artists {
@@ -94,15 +114,32 @@ func displayTopArtists(event dhelpers.EventContainer) {
 }
 
 func displayTopTracks(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
-	if len(event.Args) < 3 {
+	var newArgs []string
+	var period dhelpers.LastFmPeriod
+	var makeCollage bool
+	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
+	makeCollage, newArgs = isCollageRequest(newArgs)
+
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(newArgs) >= 3 {
+		lastfmUsername = event.Args[2]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[2])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -114,10 +151,10 @@ func displayTopTracks(event dhelpers.EventContainer) {
 
 	// get top artists
 	var tracks []dhelpers.LastfmTrackData
-	tracks, err = dhelpers.LastFmGetTopTracks(userInfo.Username, 10, dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	tracks, err = dhelpers.LastFmGetTopTracks(userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
-	if isCollageRequest(event.Args) {
+	if makeCollage {
 		imageUrls := make([]string, 0)
 		trackNames := make([]string, 0)
 		for _, track := range tracks {
@@ -159,7 +196,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	}
 
 	// set content
-	embed.Author.Name = dhelpers.Tf("LastFmTopTracksTitle", "userData", userInfo, "period", dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	embed.Author.Name = dhelpers.Tf("LastFmTopTracksTitle", "userData", userInfo, "period", period)
 
 	for i, track := range tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmTrack", "track", track, "scrobbles", humanize.Comma(int64(track.Scrobbles))) + "\n"
@@ -176,15 +213,32 @@ func displayTopTracks(event dhelpers.EventContainer) {
 }
 
 func displayTopAlbums(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
-	if len(event.Args) < 3 {
+	var newArgs []string
+	var period dhelpers.LastFmPeriod
+	var makeCollage bool
+	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
+	makeCollage, newArgs = isCollageRequest(newArgs)
+
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(newArgs) >= 3 {
+		lastfmUsername = event.Args[2]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[2])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -196,7 +250,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 
 	// get top artists
 	var albums []dhelpers.LastfmAlbumData
-	albums, err = dhelpers.LastFmGetTopAlbums(userInfo.Username, 10, dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	albums, err = dhelpers.LastFmGetTopAlbums(userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
 	if len(albums) < 1 {
@@ -206,9 +260,9 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	}
 
 	// set content
-	embed.Author.Name = dhelpers.Tf("LastFmTopAlbumsTitle", "userData", userInfo, "period", dhelpers.LastFmGetPeriodFromArgs(event.Args))
+	embed.Author.Name = dhelpers.Tf("LastFmTopAlbumsTitle", "userData", userInfo, "period", period)
 
-	if isCollageRequest(event.Args) {
+	if makeCollage {
 		imageUrls := make([]string, 0)
 		albumNames := make([]string, 0)
 		for _, album := range albums {
@@ -258,15 +312,26 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 }
 
 func displayRecent(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
-	if len(event.Args) < 3 {
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(event.Args) >= 3 {
+		lastfmUsername = event.Args[2]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[2])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -307,15 +372,26 @@ func displayRecent(event dhelpers.EventContainer) {
 }
 
 func displayNowPlaying(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
-	if len(event.Args) < 3 {
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(event.Args) >= 3 {
+		lastfmUsername = event.Args[2]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[2])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -368,11 +444,26 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 }
 
 func displayAbout(event dhelpers.EventContainer) {
-	// TODO: lookup discord mention, or id and resolve
+	var lastfmUsername string
+	if len(event.MessageCreate.Mentions) > 0 {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+	}
+	if lastfmUsername == "" && len(event.Args) >= 2 {
+		lastfmUsername = event.Args[1]
+	}
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+	}
+
+	if lastfmUsername == "" {
+		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
+		return
+	}
+
 	dhelpers.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(event.Args[1])
+	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -420,5 +511,26 @@ func displayAbout(event dhelpers.EventContainer) {
 	}
 
 	_, err = dhelpers.SendEmbed(event.MessageCreate.ChannelID, &embed)
+	dhelpers.CheckErr(err)
+}
+
+func setUsername(event dhelpers.EventContainer) {
+	if len(event.Args) < 3 {
+		return
+	}
+
+	username := event.Args[2]
+
+	err := mdb.UpsertQuery(
+		models.LastFmTable,
+		bson.M{"userid": event.MessageCreate.Author.ID},
+		models.LastFmEntry{
+			UserID:         event.MessageCreate.Author.ID,
+			LastFmUsername: username,
+		},
+	)
+	dhelpers.CheckErr(err)
+
+	_, err = dhelpers.SendMessage(event.MessageCreate.ChannelID, "LastFmUsernameSaved")
 	dhelpers.CheckErr(err)
 }

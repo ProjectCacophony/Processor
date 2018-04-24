@@ -5,7 +5,10 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
+	"github.com/globalsign/mgo/bson"
+	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/mdb"
 )
 
 func getLastfmBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.MessageEmbed) {
@@ -30,12 +33,31 @@ func getLastfmBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.Messa
 	return embed
 }
 
-func isCollageRequest(args []string) (collage bool) {
-	for _, arg := range args {
+func isCollageRequest(args []string) (collage bool, newArgs []string) {
+	for i, arg := range args {
 		arg = strings.ToLower(arg)
 		if arg == "collage" || arg == "image" {
-			return true
+			// remove element from args slice
+			newArgs = append(args[:i], args[i+1:]...)
+			return true, newArgs
 		}
 	}
-	return false
+	return false, args
+}
+
+func getLastFmUsername(userID string) (username string) {
+	var entryBucket models.LastFmEntry
+	err := mdb.One(
+		models.LastFmTable.DB().Find(bson.M{"userid": userID}),
+		&entryBucket,
+	)
+
+	if err != nil {
+		if !mdb.ErrNotFound(err) {
+			logger().Errorln("error requesting user", err.Error())
+		}
+		return ""
+	}
+
+	return entryBucket.LastFmUsername
 }
