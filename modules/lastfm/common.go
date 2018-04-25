@@ -11,7 +11,7 @@ import (
 	"gitlab.com/project-d-collab/dhelpers/mdb"
 )
 
-func getLastfmBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.MessageEmbed) {
+func getLastfmUserBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.MessageEmbed) {
 	// set embed author
 	embed.Author = &discordgo.MessageEmbedAuthor{
 		URL: "https://www.last.fm/user/" + userInfo.Username,
@@ -26,6 +26,28 @@ func getLastfmBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.Messa
 	}
 	if userInfo.Scrobbles > 0 {
 		embed.Footer.Text += " | Total Plays " + humanize.Comma(int64(userInfo.Scrobbles))
+	}
+	// set embed colour
+	embed.Color = dhelpers.GetDiscordColorFromHex("#d51007")
+
+	return embed
+}
+
+func getLastfmGuildBaseEmbed(guild *discordgo.Guild, listeners int) (embed discordgo.MessageEmbed) {
+	// set embed author
+	embed.Author = &discordgo.MessageEmbedAuthor{
+		Name: guild.Name,
+	}
+	if guild.Icon != "" {
+		embed.Author.IconURL = discordgo.EndpointGuildIcon(guild.ID, guild.Icon)
+	}
+	// set embed footer
+	embed.Footer = &discordgo.MessageEmbedFooter{
+		Text:    "powered by last.fm",
+		IconURL: "https://i.imgur.com/p8wijg4.png",
+	}
+	if listeners > 0 {
+		embed.Footer.Text += " | Total Listeners " + humanize.Comma(int64(listeners))
 	}
 	// set embed colour
 	embed.Color = dhelpers.GetDiscordColorFromHex("#d51007")

@@ -8,10 +8,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/globalsign/mgo/bson"
+	"github.com/json-iterator/go"
 	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/cache"
 	"gitlab.com/project-d-collab/dhelpers/collage"
 	"gitlab.com/project-d-collab/dhelpers/mdb"
+	"gitlab.com/project-d-collab/dhelpers/state"
 )
 
 func displayTopArtists(event dhelpers.EventContainer) {
@@ -48,7 +51,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get top artists
 	var artists []dhelpers.LastfmArtistData
@@ -147,7 +150,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get top artists
 	var tracks []dhelpers.LastfmTrackData
@@ -246,7 +249,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get top artists
 	var albums []dhelpers.LastfmAlbumData
@@ -339,7 +342,7 @@ func displayRecent(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get recent tracks
 	var tracks []dhelpers.LastfmTrackData
@@ -399,7 +402,7 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get recent tracks
 	var tracks []dhelpers.LastfmTrackData
@@ -471,7 +474,7 @@ func displayAbout(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// get basic embed for user
-	embed := getLastfmBaseEmbed(userInfo)
+	embed := getLastfmUserBaseEmbed(userInfo)
 	embed.Author.Name = dhelpers.Tf("LastFmAboutTitle", "userData", userInfo)
 	dhelpers.CheckErr(err)
 
@@ -532,5 +535,59 @@ func setUsername(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	_, err = event.SendMessage(event.MessageCreate.ChannelID, "LastFmUsernameSaved")
+	dhelpers.CheckErr(err)
+}
+
+func displayServerTopTracks(event dhelpers.EventContainer) {
+	var err error
+	var period dhelpers.LastFmPeriod
+	period, _ = dhelpers.LastFmGetPeriodFromArgs(event.Args)
+
+	event.GoType(event.MessageCreate.ChannelID)
+
+	var channel *discordgo.Channel
+	channel, err = state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	var guild *discordgo.Guild
+	guild, err = state.Guild(channel.GuildID)
+	dhelpers.CheckErr(err)
+
+	// lookup stats
+	statsBytes, err := cache.GetRedisClient().Get(dhelpers.LastFmGuildTopTracksKey(guild.ID, period)).Bytes()
+	dhelpers.CheckErr(err)
+
+	var stats dhelpers.LastFmGuildTopTracks
+	err = jsoniter.Unmarshal(statsBytes, &stats)
+	dhelpers.CheckErr(err)
+
+	// get basic embed for user
+	embed := getLastfmGuildBaseEmbed(guild, stats.NumberOfUsers)
+
+	if len(stats.Tracks) < 1 {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNoScrobbles"))
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	// set content
+	embed.Author.Name = dhelpers.Tf("LastFmGuildTopTracksTitle", "guild", guild, "period", period)
+
+	for i, track := range stats.Tracks {
+		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf(
+			"LastFmTrack", "track", track, "scrobbles", humanize.Comma(int64(track.Scrobbles)), "users", humanize.Comma(int64(track.Users)),
+		) + "\n"
+		if i >= 9 {
+			break
+		}
+	}
+
+	if stats.Tracks[0].ImageURL != "" {
+		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
+			URL: stats.Tracks[0].ImageURL,
+		}
+	}
+
+	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
