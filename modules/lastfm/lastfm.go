@@ -8,6 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/globalsign/mgo/bson"
+	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
 	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
@@ -555,6 +556,11 @@ func displayServerTopTracks(event dhelpers.EventContainer) {
 
 	// lookup stats
 	statsBytes, err := cache.GetRedisClient().Get(dhelpers.LastFmGuildTopTracksKey(guild.ID, period)).Bytes()
+	if err == redis.Nil {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNoScrobbles"))
+		dhelpers.CheckErr(err)
+		return
+	}
 	dhelpers.CheckErr(err)
 
 	var stats dhelpers.LastFmGuildTopTracks
