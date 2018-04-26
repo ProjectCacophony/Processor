@@ -1,7 +1,6 @@
 package stats
 
 import (
-	"runtime"
 	"strconv"
 	"time"
 
@@ -9,7 +8,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
-	"gitlab.com/project-d-collab/SqsProcessor/metrics"
 	"gitlab.com/project-d-collab/dhelpers"
 	"gitlab.com/project-d-collab/dhelpers/apihelper"
 	"gitlab.com/project-d-collab/dhelpers/cache"
@@ -29,14 +27,7 @@ func displayStats(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	// read information from the runtime
-	var ram runtime.MemStats
-	runtime.ReadMemStats(&ram)
-
-	// read information from metrics
-	bootTime, err := strconv.ParseInt(metrics.Uptime.String(), 10, 64)
-	if err != nil {
-		bootTime = 0
-	}
+	sqsStats := apihelper.GenerateServiceInformation()
 
 	// read information from redis
 	var redisConnectedClients, redisUsedMemoryHuman string
@@ -59,7 +50,8 @@ func displayStats(event dhelpers.EventContainer) {
 
 	// read worker information
 	var workerText string
-	workersStatuses := apihelper.GetWorkerStatus()
+	workersStatuses := apihelper.ReadWorkerStatus()
+	workerText += "(" + strconv.Itoa(len(workersStatuses)) + ")\n"
 	for _, workersStatusesEntry := range workersStatuses {
 		if !workersStatusesEntry.Available {
 			workerText += "dead, "
@@ -68,9 +60,30 @@ func displayStats(event dhelpers.EventContainer) {
 			}
 			continue
 		}
-		workerText += strconv.Itoa(len(workersStatusesEntry.Entries)) + " Job(s), "
+		workerText += "Jobs " + strconv.Itoa(len(workersStatusesEntry.Entries)) + " "
+		workerText += "CR " + strconv.Itoa(workersStatusesEntry.Service.Coroutines) + " "
+		workerText += "Mem " + humanize.Bytes(workersStatusesEntry.Service.Heap) + "\n"
+		workerText += "Uptime " + dhelpers.HumanizeDuration(time.Since(workersStatusesEntry.Service.Launch)) + "\n"
 	}
-	workerText = strings.TrimRight(workerText, ", ")
+	workerText = strings.TrimRight(workerText, "\n")
+
+	// read gateway information
+	var gatewayText string
+	gatewayStatuses := apihelper.ReadGatewayStatus()
+	gatewayText += "(" + strconv.Itoa(len(gatewayStatuses)) + ")\n"
+	for _, gatewayStatusEntry := range gatewayStatuses {
+		if !gatewayStatusEntry.Available {
+			gatewayText += "dead, "
+			if !strings.HasPrefix(gatewayText, "⚠ ") {
+				gatewayText = "⚠ " + gatewayText
+			}
+			continue
+		}
+		gatewayText += "CR " + strconv.Itoa(gatewayStatusEntry.Service.Coroutines) + " "
+		gatewayText += "Mem " + humanize.Bytes(gatewayStatusEntry.Service.Heap) + "\n"
+		gatewayText += "Uptime " + dhelpers.HumanizeDuration(time.Since(gatewayStatusEntry.Service.Launch)) + "\n"
+	}
+	gatewayText = strings.TrimRight(gatewayText, "\n")
 
 	// build embed
 	statsEmbed := &discordgo.MessageEmbed{
@@ -89,45 +102,31 @@ func displayStats(event dhelpers.EventContainer) {
 		Inline: true,
 	})
 
-	// display gateway uptime
-	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "⌛ Gateway Uptime",
-		Value:  dhelpers.HumanizeDuration(time.Since(event.GatewayStarted)),
-		Inline: true,
-	})
-
 	// display sqs processor uptime
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "⌛ SqsP Uptime",
-		Value:  dhelpers.HumanizeDuration(time.Since(time.Unix(bootTime, 0))),
+		Value:  dhelpers.HumanizeDuration(time.Since(sqsStats.Launch)),
 		Inline: true,
 	})
 
 	// display sqs processor running coroutines
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "🔄 SqsP Coroutines",
-		Value:  strconv.Itoa(runtime.NumGoroutine()),
+		Value:  strconv.Itoa(sqsStats.Coroutines),
 		Inline: true,
 	})
 
 	// display sqs processor memory stats
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "💡 SqsP Memory",
-		Value:  "Heap " + humanize.Bytes(ram.Alloc) + "\nSys " + humanize.Bytes(ram.Sys),
+		Value:  humanize.Bytes(sqsStats.Heap) + " / " + humanize.Bytes(sqsStats.Sys),
 		Inline: true,
 	})
 
 	// display sqs processor garbage collected
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "♻ SqsP GC",
-		Value:  humanize.Bytes(ram.TotalAlloc),
-		Inline: true,
-	})
-
-	// display sqs processor go version
-	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "📌 SqsP Go",
-		Value:  strings.Replace(runtime.Version(), "go", "v", 1),
+		Value:  humanize.Bytes(sqsStats.GC),
 		Inline: true,
 	})
 
@@ -135,6 +134,13 @@ func displayStats(event dhelpers.EventContainer) {
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "👷 Worker",
 		Value:  workerText,
+		Inline: true,
+	})
+
+	// display gateway information
+	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
+		Name:   "🚪 Gateway",
+		Value:  gatewayText,
 		Inline: true,
 	})
 

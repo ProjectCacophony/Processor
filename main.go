@@ -9,7 +9,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/json-iterator/go"
-	"gitlab.com/project-d-collab/SqsProcessor/metrics"
 	"gitlab.com/project-d-collab/SqsProcessor/modules"
 	"gitlab.com/project-d-collab/dhelpers"
 	dhelpersCache "gitlab.com/project-d-collab/dhelpers/cache"
@@ -31,6 +30,7 @@ func main() {
 	var err error
 
 	// Set up components
+	components.InitMetrics()
 	components.InitLogger("SqsProcessor")
 	err = components.InitSentry()
 	dhelpers.CheckErr(err)
@@ -41,9 +41,6 @@ func main() {
 	err = components.InitAwsSqs()
 	dhelpers.CheckErr(err)
 	components.InitLastFm()
-
-	// start metrics
-	metrics.Init()
 
 	// Setup all modules
 	modules.Init()
