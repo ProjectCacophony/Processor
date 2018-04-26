@@ -1,10 +1,8 @@
 package lastfm
 
 import (
-	"strings"
-
 	"github.com/bwmarrin/discordgo"
-	humanize "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/globalsign/mgo/bson"
 	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
@@ -56,15 +54,11 @@ func getLastfmGuildBaseEmbed(guild *discordgo.Guild, listeners int) (embed disco
 }
 
 func isCollageRequest(args []string) (collage bool, newArgs []string) {
-	for i, arg := range args {
-		arg = strings.ToLower(arg)
-		if arg == "collage" || arg == "image" {
-			// remove element from args slice
-			newArgs = append(args[:i], args[i+1:]...)
-			return true, newArgs
-		}
-	}
-	return false, args
+	return dhelpers.SliceContainsLowerExclude(args, []string{"collage", "image"})
+}
+
+func isServerRequest(args []string) (collage bool, newArgs []string) {
+	return dhelpers.SliceContainsLowerExclude(args, []string{"server"})
 }
 
 func getLastFmUsername(userID string) (username string) {

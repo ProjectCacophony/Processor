@@ -58,7 +58,12 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 					displayTopArtists(event)
 					return
-				case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks": // [p]lastfm|lf toptracks|toptrack|top-track|top-tracks|track|tracks [<@user or user id or lastfm username>] [<timerange>] [<collage>]
+				case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks": // [p]lastfm|lf toptracks|toptrack|top-track|top-tracks|track|tracks [<@user or user id or lastfm username>] [<timerange>] [<collage>] [<server>]
+
+					if serverRequest, _ := isServerRequest(event.Args); serverRequest {
+						displayServerTopTracks(event)
+						return
+					}
 
 					displayTopTracks(event)
 					return
@@ -67,7 +72,6 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					displayTopAlbums(event)
 					return
 				case "server-top", "server-toptracks": // [p]lastfm|lf server-top|server-toptracks [<timerange>]
-					// TODO: better commands
 					displayServerTopTracks(event)
 					return
 				case "top":
@@ -77,14 +81,22 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 					switch strings.ToLower(event.Args[2]) {
 					case "artist", "artists": // [p]lastfm|lf top artist|artists [<@user or user id or lastfm username>] [<timerange>] [<period>]
+						event.Args = append(event.Args[:1], event.Args[1+1:]...)
 
 						displayTopArtists(event)
 						return
-					case "track", "tracks": // [p]lastfm|lf top track|tracks [<@user or user id or lastfm username>] [<timerange>] [<period>]
+					case "track", "tracks": // [p]lastfm|lf top track|tracks [<@user or user id or lastfm username>] [<timerange>] [<period>] [<server>]
+						event.Args = append(event.Args[:1], event.Args[1+1:]...)
+
+						if serverRequest, _ := isServerRequest(event.Args); serverRequest {
+							displayServerTopTracks(event)
+							return
+						}
 
 						displayTopTracks(event)
 						return
 					case "album", "albums": // [p]lastfm|lf top album|albums [<@user or user id or lastfm username>] [<timerange>] [<period>]
+						event.Args = append(event.Args[:1], event.Args[1+1:]...)
 
 						displayTopAlbums(event)
 						return
