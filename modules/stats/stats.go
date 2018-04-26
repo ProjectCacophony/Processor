@@ -11,6 +11,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"gitlab.com/project-d-collab/SqsProcessor/metrics"
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/apihelper"
 	"gitlab.com/project-d-collab/dhelpers/cache"
 	"gitlab.com/project-d-collab/dhelpers/state"
 )
@@ -55,6 +56,21 @@ func displayStats(event dhelpers.EventContainer) {
 			redisUsedMemoryHuman = args[1]
 		}
 	}
+
+	// read worker information
+	var workerText string
+	workersStatuses := apihelper.GetWorkerStatus()
+	for _, workersStatusesEntry := range workersStatuses {
+		if !workersStatusesEntry.Available {
+			workerText += "dead, "
+			if !strings.HasPrefix(workerText, "⚠ ") {
+				workerText = "⚠ " + workerText
+			}
+			continue
+		}
+		workerText += strconv.Itoa(len(workersStatusesEntry.Entries)) + " Job(s), "
+	}
+	workerText = strings.TrimRight(workerText, ", ")
 
 	// build embed
 	statsEmbed := &discordgo.MessageEmbed{
@@ -112,6 +128,13 @@ func displayStats(event dhelpers.EventContainer) {
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
 		Name:   "📌 SqsP Go",
 		Value:  strings.Replace(runtime.Version(), "go", "v", 1),
+		Inline: true,
+	})
+
+	// display worker information
+	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
+		Name:   "👷 Worker",
+		Value:  workerText,
 		Inline: true,
 	})
 

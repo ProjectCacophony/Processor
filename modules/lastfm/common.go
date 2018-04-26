@@ -57,7 +57,7 @@ func isCollageRequest(args []string) (collage bool, newArgs []string) {
 	return dhelpers.SliceContainsLowerExclude(args, []string{"collage", "image"})
 }
 
-func isServerRequest(args []string) (collage bool, newArgs []string) {
+func isServerRequest(args []string) (serverRequest bool, newArgs []string) { // nolint: unparam
 	return dhelpers.SliceContainsLowerExclude(args, []string{"server"})
 }
 
