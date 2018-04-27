@@ -96,6 +96,31 @@ func displayStats(event dhelpers.EventContainer) {
 			}
 			continue
 		}
+		totalEvents := gatewayStatusEntry.Events.EventsGuildCreate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildDelete
+		totalEvents += gatewayStatusEntry.Events.EventsGuildMemberAdd
+		totalEvents += gatewayStatusEntry.Events.EventsGuildMemberUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildMemberRemove
+		totalEvents += gatewayStatusEntry.Events.EventsGuildMembersChunk
+		totalEvents += gatewayStatusEntry.Events.EventsGuildRoleCreate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildRoleUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildRoleDelete
+		totalEvents += gatewayStatusEntry.Events.EventsGuildEmojisUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsChannelCreate
+		totalEvents += gatewayStatusEntry.Events.EventsChannelUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsChannelDelete
+		totalEvents += gatewayStatusEntry.Events.EventsMessageCreate
+		totalEvents += gatewayStatusEntry.Events.EventsMessageUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsMessageDelete
+		totalEvents += gatewayStatusEntry.Events.EventsPresenceUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsChannelPinsUpdate
+		totalEvents += gatewayStatusEntry.Events.EventsGuildBanAdd
+		totalEvents += gatewayStatusEntry.Events.EventsGuildBanRemove
+		totalEvents += gatewayStatusEntry.Events.EventsMessageReactionAdd
+		totalEvents += gatewayStatusEntry.Events.EventsMessageReactionRemove
+		totalEvents += gatewayStatusEntry.Events.EventsMessageReactionRemoveAll
+		gatewayText += "Events/D " + humanize.Comma(totalEvents) + " / " + humanize.Comma(gatewayStatusEntry.Events.EventsDiscarded) + "\n"
 		gatewayText += "CR " + strconv.Itoa(gatewayStatusEntry.Service.Coroutines) + " "
 		gatewayText += "Mem " + humanize.Bytes(gatewayStatusEntry.Service.Heap) + "\n"
 		gatewayText += "Uptime " + dhelpers.HumanizeDuration(time.Since(gatewayStatusEntry.Service.Launch)) + "\n"
