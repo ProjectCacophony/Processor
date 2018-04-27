@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -8,10 +9,12 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
+	restful "github.com/emicklei/go-restful"
 	"github.com/json-iterator/go"
+	"gitlab.com/project-d-collab/SqsProcessor/api"
 	"gitlab.com/project-d-collab/SqsProcessor/modules"
 	"gitlab.com/project-d-collab/dhelpers"
-	dhelpersCache "gitlab.com/project-d-collab/dhelpers/cache"
+	"gitlab.com/project-d-collab/dhelpers/cache"
 	"gitlab.com/project-d-collab/dhelpers/components"
 )
 
@@ -42,16 +45,23 @@ func main() {
 	dhelpers.CheckErr(err)
 	components.InitLastFm()
 
+	// start api
+	go func() {
+		restful.Add(api.New())
+		cache.GetLogger().Fatal(http.ListenAndServe(os.Getenv("API_ADDRESS"), nil))
+	}()
+	cache.GetLogger().Infoln("started API on", os.Getenv("API_ADDRESS"))
+
 	// Setup all modules
 	modules.Init()
 
-	dhelpersCache.GetLogger().Infoln("Processor booting completed, took", time.Since(started).String())
+	cache.GetLogger().Infoln("Processor booting completed, took", time.Since(started).String())
 
 	// bot run loop
 	go func() {
-		sqsClient := dhelpersCache.GetAwsSqsSession()
-		logger := dhelpersCache.GetLogger()
-		redisClient := dhelpersCache.GetRedisClient()
+		sqsClient := cache.GetAwsSqsSession()
+		logger := cache.GetLogger()
+		redisClient := cache.GetRedisClient()
 
 		for {
 			result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{

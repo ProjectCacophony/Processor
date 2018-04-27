@@ -23,11 +23,11 @@ func displayStats(event dhelpers.EventContainer) {
 	allGuildIDs, err := state.AllGuildIDs()
 	dhelpers.CheckErr(err)
 
-	allUserIDs, err := state.AllUserIDs()
+	allChannelIDs, err := state.AllChannelIDs()
 	dhelpers.CheckErr(err)
 
-	// read information from the runtime
-	sqsStats := apihelper.GenerateServiceInformation()
+	allUserIDs, err := state.AllUserIDs()
+	dhelpers.CheckErr(err)
 
 	// read information from redis
 	var redisConnectedClients, redisUsedMemoryHuman string
@@ -48,13 +48,30 @@ func displayStats(event dhelpers.EventContainer) {
 		}
 	}
 
+	// read sqsProcessor information
+	var sqsProcessorText string
+	sqsProcessorStatuses := apihelper.ReadSqsProcessorStatus()
+	sqsProcessorText += "(" + strconv.Itoa(len(sqsProcessorStatuses)) + ")\n"
+	for _, sqsProcessorStatusesEntry := range sqsProcessorStatuses {
+		if !sqsProcessorStatusesEntry.Available {
+			sqsProcessorText += "dead\n" // nolint: goconst
+			if !strings.HasPrefix(sqsProcessorText, "⚠ ") {
+				sqsProcessorText = "⚠ " + sqsProcessorText
+			}
+			continue
+		}
+		sqsProcessorText += "CR " + strconv.Itoa(sqsProcessorStatusesEntry.Service.Coroutines) + " "
+		sqsProcessorText += "Mem " + humanize.Bytes(sqsProcessorStatusesEntry.Service.Heap) + "\n"
+		sqsProcessorText += "Uptime " + dhelpers.HumanizeDuration(time.Since(sqsProcessorStatusesEntry.Service.Launch)) + "\n"
+	}
+
 	// read worker information
 	var workerText string
 	workersStatuses := apihelper.ReadWorkerStatus()
 	workerText += "(" + strconv.Itoa(len(workersStatuses)) + ")\n"
 	for _, workersStatusesEntry := range workersStatuses {
 		if !workersStatusesEntry.Available {
-			workerText += "dead, "
+			workerText += "dead\n" // nolint: goconst
 			if !strings.HasPrefix(workerText, "⚠ ") {
 				workerText = "⚠ " + workerText
 			}
@@ -73,7 +90,7 @@ func displayStats(event dhelpers.EventContainer) {
 	gatewayText += "(" + strconv.Itoa(len(gatewayStatuses)) + ")\n"
 	for _, gatewayStatusEntry := range gatewayStatuses {
 		if !gatewayStatusEntry.Available {
-			gatewayText += "dead, "
+			gatewayText += "dead\n" // nolint: goconst
 			if !strings.HasPrefix(gatewayText, "⚠ ") {
 				gatewayText = "⚠ " + gatewayText
 			}
@@ -96,37 +113,17 @@ func displayStats(event dhelpers.EventContainer) {
 
 	// display amount of guilds and channels
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name: "👥 Guilds / Users",
-		Value: humanize.Comma(int64(len(allGuildIDs))) + "\n" +
-			humanize.Comma(int64(len(allUserIDs))),
+		Name: "👥 State",
+		Value: "G " + humanize.Comma(int64(len(allGuildIDs))) + "\n" +
+			"C " + humanize.Comma(int64(len(allChannelIDs))) + "\n" +
+			"U " + humanize.Comma(int64(len(allUserIDs))),
 		Inline: true,
 	})
 
-	// display sqs processor uptime
+	// display worker information
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "⌛ SqsP Uptime",
-		Value:  dhelpers.HumanizeDuration(time.Since(sqsStats.Launch)),
-		Inline: true,
-	})
-
-	// display sqs processor running coroutines
-	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "🔄 SqsP Coroutines",
-		Value:  strconv.Itoa(sqsStats.Coroutines),
-		Inline: true,
-	})
-
-	// display sqs processor memory stats
-	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "💡 SqsP Memory",
-		Value:  humanize.Bytes(sqsStats.Heap) + " / " + humanize.Bytes(sqsStats.Sys),
-		Inline: true,
-	})
-
-	// display sqs processor garbage collected
-	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "♻ SqsP GC",
-		Value:  humanize.Bytes(sqsStats.GC),
+		Name:   "📠 SqsProcessor",
+		Value:  sqsProcessorText,
 		Inline: true,
 	})
 
