@@ -578,6 +578,8 @@ func displayServerTopTracks(event dhelpers.EventContainer) {
 
 	// set content
 	embed.Author.Name = dhelpers.Tf("LastFmGuildTopTracksTitle", "guild", guild, "period", period)
+	embed.Footer.Text += " | " + dhelpers.T("LastFmCachedAt")
+	embed.Timestamp = dhelpers.DiscordTime(stats.CachedAt)
 
 	for i, track := range stats.Tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf(
