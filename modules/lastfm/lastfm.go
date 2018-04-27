@@ -104,7 +104,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	}
 
 	for i, artist := range artists {
-		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmArtist", "artist", artist, "scrobbles", humanize.Comma(int64(artist.Scrobbles))) + "\n"
+		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmArtist", "artist", artist) + "\n"
 	}
 
 	if artists[0].ImageURL != "" {
@@ -203,7 +203,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	embed.Author.Name = dhelpers.Tf("LastFmTopTracksTitle", "userData", userInfo, "period", period)
 
 	for i, track := range tracks {
-		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmTrack", "track", track, "scrobbles", humanize.Comma(int64(track.Scrobbles))) + "\n"
+		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmTrack", "track", track) + "\n"
 	}
 
 	if tracks[0].ImageURL != "" {
@@ -302,7 +302,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	}
 
 	for i, album := range albums {
-		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmAlbum", "album", album, "scrobbles", humanize.Comma(int64(album.Scrobbles))) + "\n"
+		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmAlbum", "album", album) + "\n"
 	}
 
 	if albums[0].ImageURL != "" {
@@ -571,7 +571,7 @@ func displayServerTopTracks(event dhelpers.EventContainer) {
 	embed := getLastfmGuildBaseEmbed(guild, stats.NumberOfUsers)
 
 	if len(stats.Tracks) < 1 {
-		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNoScrobbles"))
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNo"))
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -583,8 +583,7 @@ func displayServerTopTracks(event dhelpers.EventContainer) {
 
 	for i, track := range stats.Tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf(
-			"LastFmTrack", "track", track, "scrobbles", humanize.Comma(int64(track.Scrobbles)), "users", humanize.Comma(int64(track.Users)),
-		) + "\n"
+			"LastFmTrack", "track", track) + "\n"
 		if i >= 9 {
 			break
 		}

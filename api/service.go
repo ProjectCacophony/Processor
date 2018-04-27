@@ -22,5 +22,5 @@ func getStats(_ *restful.Request, response *restful.Response) {
 	var result apihelper.SqsProcessorStatus
 	result.Service = apihelper.GenerateServiceInformation()
 	result.Available = true
-	response.WriteEntity(result) // nolint: errcheck
+	response.WriteEntity(result) // nolint: errcheck, gas
 }
