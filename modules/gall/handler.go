@@ -1,6 +1,8 @@
 package gall
 
 import (
+	"strings"
+
 	"gitlab.com/project-d-collab/dhelpers"
 )
 
@@ -36,9 +38,21 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					return
 				}
 
-				displayBoard(event)
+				switch strings.ToLower(event.Args[1]) {
+				case "add": // [p]gall add <board id> [<#target channel or channel id>]
+					addBoard(event)
+					return
 
-				return
+				case "list": // [p]gall list
+					return // TODO
+
+				case "remove", "delete": // [p]gall remove <board id>
+					return // TODO
+
+				default: // [p]gall <board id>
+					displayBoard(event)
+					return
+				}
 			}
 		}
 	}
