@@ -24,6 +24,11 @@ func displayBoard(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(posts) <= 0 {
+		posts, err = ginside.BoardMinorRecommendedPosts(boardID)
+		dhelpers.CheckErr(err)
+	}
+
+	if len(posts) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallNotFound")
 		dhelpers.CheckErr(err)
 		return
@@ -35,9 +40,9 @@ func displayBoard(event dhelpers.EventContainer) {
 		Title: dhelpers.Tf("GallBoardPostsTitle", "boardID", boardID),
 		Footer: &discordgo.MessageEmbedFooter{
 			Text:    dhelpers.T("GallEmbedFooter"),
-			IconURL: dhelpers.T("GallEmbedIcon"),
+			IconURL: GallIcon,
 		},
-		Color: color,
+		Color: GallColor,
 	}
 
 	// build embed description
@@ -65,10 +70,17 @@ func addBoard(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	boardID := event.Args[2]
+	var minorGallery bool
 
 	// get data
 	posts, err := ginside.BoardRecommendedPosts(boardID)
 	dhelpers.CheckErr(err)
+
+	if len(posts) <= 0 {
+		minorGallery = true
+		posts, err = ginside.BoardMinorRecommendedPosts(boardID)
+		dhelpers.CheckErr(err)
+	}
 
 	if len(posts) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallNotFound")
@@ -88,6 +100,7 @@ func addBoard(event dhelpers.EventContainer) {
 		AddedByUserID: event.MessageCreate.Author.ID,
 		BoardID:       boardID,
 		LastCheck:     time.Now(),
+		MinorGallery:  minorGallery,
 	})
 	dhelpers.CheckErr(err)
 

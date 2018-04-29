@@ -1,7 +1,6 @@
 GallBoardPostsTitle = "Most recent posts on {{.boardID}}"
 GallPostSummary = "[{{.post.Title}}]({{.post.URL}})\nby {{.post.Author}}, {{NumberCommas .post.Hits}} Hits, {{NumberCommas .post.Votes}} Votes - {{HumanizeTime .post.Date}}"
 GallEmbedFooter = "powered by gall.dcinside.com"
-GallEmbedIcon = "https://i.imgur.com/SkVJwJP.jpg"
 GallNotFound = "I wasn't able to find any posts for this board. <a:ablobcry:393869333740126219>"
 GallBoardFeedAdded = "I will post new posts from the board `{{.boardID}}` in <#{{.targetChannel.ID}}> now!"
 # TODO: ^ tell how to remove

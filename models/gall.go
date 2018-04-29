@@ -20,4 +20,5 @@ type GallFeedEntry struct {
 	AddedByUserID string
 	BoardID       string
 	LastCheck     time.Time
+	MinorGallery  bool
 }
