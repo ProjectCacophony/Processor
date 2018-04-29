@@ -11,3 +11,4 @@ GallFeedEntriesSummary = "_There are {{NumberCommas .feedEntryCount}} gall board
 # TODO: ^ tell how to remove
 GallFeedNotFound = "I wasn't able to find a feed for this board ID on this server. <a:ablobsadcloud:437572939701944322>"
 GallFeedEntryRemoved = "I removed `{{.feedEntry.BoardID}}` posting to <#{{.feedEntry.ChannelID}}>!"
+GallBoardFeedAlreadySetUp = "There is already a feed for `{{.boardID}}` set up in <#{{.targetChannel.ID}}>. <:blobstop:317034621953114112>"

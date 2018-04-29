@@ -47,7 +47,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					listFeeds(event)
 					return
 
-				case "remove", "delete": // [p]gall remove <board id>
+				case "remove", "delete", "rem", "del": // [p]gall remove|delete|rem|delete <board id>
 					removeFeed(event)
 					return
 

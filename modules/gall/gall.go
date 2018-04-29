@@ -94,6 +94,12 @@ func addBoard(event dhelpers.EventContainer) {
 		dhelpers.CheckErr(err)
 	}
 
+	if alreadySetUp(boardID, targetChannel.ID) {
+		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAlreadySetUp", "boardID", boardID, "targetChannel", targetChannel)
+		dhelpers.CheckErr(err)
+		return
+	}
+
 	_, err = mdb.Insert(models.GallTable, models.GallFeedEntry{
 		GuildID:       targetChannel.GuildID,
 		ChannelID:     targetChannel.ID,
