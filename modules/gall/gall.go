@@ -148,25 +148,31 @@ func removeFeed(event dhelpers.EventContainer) {
 
 	boardID := event.Args[2]
 
-	var feedEntry models.GallFeedEntry
-	err = mdb.One(
-		models.GallTable.DB().Find(
-			bson.M{
-				"boardid": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(boardID) + "$", Options: "i"}},
-				"guildid": sourceChannel.GuildID,
-			}),
-		&feedEntry,
-	)
-	if mdb.ErrNotFound(err) {
+	var feedEntries []models.GallFeedEntry
+	err = mdb.Iter(models.GallTable.DB().Find(bson.M{
+		"boardid": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(boardID) + "$", Options: "i"}},
+		"guildid": sourceChannel.GuildID,
+	})).All(&feedEntries)
+	if len(feedEntries) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallFeedNotFound")
 		dhelpers.CheckErr(err)
 		return
 	}
 	dhelpers.CheckErr(err)
 
-	err = mdb.DeleteID(models.GallTable, feedEntry.ID)
+	// figure out which one to delete
+	toDelete := feedEntries[0]
+	// delete in current channel first
+	for _, entry := range feedEntries {
+		if entry.ChannelID == sourceChannel.ID {
+			toDelete = entry
+			break
+		}
+	}
+
+	err = mdb.DeleteID(models.GallTable, toDelete.ID)
 	dhelpers.CheckErr(err)
 
-	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallFeedEntryRemoved", "feedEntry", feedEntry)
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallFeedEntryRemoved", "feedEntry", toDelete)
 	dhelpers.CheckErr(err)
 }
