@@ -53,7 +53,7 @@ func getLastfmGuildBaseEmbed(guild *discordgo.Guild, listeners int) (embed disco
 	return embed
 }
 
-func isCollageRequest(args []string) (collage bool, newArgs []string) {
+func isCollageRequest(args []string) (collage bool, newArLastFmNoUserPassedgs []string) {
 	return dhelpers.SliceContainsLowerExclude(args, []string{"collage", "image"})
 }
 

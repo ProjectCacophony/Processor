@@ -2,13 +2,10 @@ GallBoardPostsTitle = "Most recent posts on {{.boardID}}"
 GallPostSummary = "[{{.post.Title}}]({{.post.URL}})\nby {{.post.Author}}, {{NumberCommas .post.Hits}} Hits, {{NumberCommas .post.Votes}} Votes - {{HumanizeTime .post.Date}}"
 GallEmbedFooter = "powered by gall.dcinside.com"
 GallNotFound = "I wasn't able to find any posts for this board. <a:ablobcry:393869333740126219>"
-GallBoardFeedAdded = "I will post new posts from the board `{{.boardID}}` in <#{{.targetChannel.ID}}> now!"
-# TODO: ^ tell how to remove
-GallNoFeeds = "**There are no Gall Feeds set up on this server yet!** <a:ablobshocked:394026914076950539>"
-# TODO: ^ tell how to add
+GallBoardFeedAdded = "**I will post new posts from the board `{{.boardID}}` in <#{{.targetChannel.ID}}> now!** <a:ablobsunglasses:393869335657054210>\nIf you want to remove it you can use `{{PrefixE .event}}gall remove {{.boardID}}`."
+GallNoFeeds = "**There are no Gall Feeds set up on this server yet!** <a:ablobshocked:394026914076950539>\nYou can add one: `{{PrefixE .event}}gall add <gall board ID>`."
 GallFeedEntry = "`{{.feedEntry.BoardID}}` posting to <#{{.feedEntry.ChannelID}}>"
-GallFeedEntriesSummary = "_There are {{NumberCommas .feedEntryCount}} gall board feeds set up on this server._"
-# TODO: ^ tell how to remove
+GallFeedEntriesSummary = "_There {{if (gt .feedEntryCount 1)}}are {{NumberCommas .feedEntryCount}} gall board feeds{{else}}is one gall board feed{{end}} set up on this server._\n_To remove one use `{{PrefixE .event}}gall remove <gall board ID>`._"
 GallFeedNotFound = "I wasn't able to find a feed for this board ID on this server. <a:ablobsadcloud:437572939701944322>"
 GallFeedEntryRemoved = "I removed `{{.feedEntry.BoardID}}` posting to <#{{.feedEntry.ChannelID}}>!"
 GallBoardFeedAlreadySetUp = "There is already a feed for `{{.boardID}}` set up in <#{{.targetChannel.ID}}>. <:blobstop:317034621953114112>"
