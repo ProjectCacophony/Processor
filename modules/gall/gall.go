@@ -3,7 +3,7 @@ package gall
 import (
 	"time"
 
-	"regexp"
+	"strings"
 
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
@@ -15,7 +15,7 @@ import (
 )
 
 func displayBoard(event dhelpers.EventContainer) {
-	boardID := event.Args[1]
+	boardID := strings.ToLower(event.Args[1])
 
 	event.GoType(event.MessageCreate.ChannelID)
 
@@ -69,7 +69,7 @@ func addBoard(event dhelpers.EventContainer) {
 	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
 	dhelpers.CheckErr(err)
 
-	boardID := event.Args[2]
+	boardID := strings.ToLower(event.Args[2])
 	var minorGallery bool
 
 	// get data
@@ -146,11 +146,11 @@ func removeFeed(event dhelpers.EventContainer) {
 		return
 	}
 
-	boardID := event.Args[2]
+	boardID := strings.ToLower(event.Args[2])
 
 	var feedEntries []models.GallFeedEntry
 	err = mdb.Iter(models.GallTable.DB().Find(bson.M{
-		"boardid": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(boardID) + "$", Options: "i"}},
+		"boardid": boardID,
 		"guildid": sourceChannel.GuildID,
 	})).All(&feedEntries)
 	if len(feedEntries) <= 0 {
