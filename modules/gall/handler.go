@@ -44,10 +44,12 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					return
 
 				case "list": // [p]gall list
-					return // TODO
+					listFeeds(event)
+					return
 
 				case "remove", "delete": // [p]gall remove <board id>
-					return // TODO
+					removeFeed(event)
+					return
 
 				default: // [p]gall <board id>
 					displayBoard(event)

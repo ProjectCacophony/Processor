@@ -5,3 +5,10 @@ GallEmbedIcon = "https://i.imgur.com/SkVJwJP.jpg"
 GallNotFound = "I wasn't able to find any posts for this board. <a:ablobcry:393869333740126219>"
 GallBoardFeedAdded = "I will post new posts from the board `{{.boardID}}` in <#{{.targetChannel.ID}}> now!"
 # TODO: ^ tell how to remove
+GallNoFeeds = "**There are no Gall Feeds set up on this server yet!** <a:ablobshocked:394026914076950539>"
+# TODO: ^ tell how to add
+GallFeedEntry = "`{{.feedEntry.BoardID}}` posting to <#{{.feedEntry.ChannelID}}>"
+GallFeedEntriesSummary = "_There are {{NumberCommas .feedEntryCount}} gall board feeds set up on this server._"
+# TODO: ^ tell how to remove
+GallFeedNotFound = "I wasn't able to find a feed for this board ID on this server. <a:ablobsadcloud:437572939701944322>"
+GallFeedEntryRemoved = "I removed `{{.feedEntry.BoardID}}` posting to <#{{.feedEntry.ChannelID}}>!"

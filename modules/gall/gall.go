@@ -3,8 +3,11 @@ package gall
 import (
 	"time"
 
+	"regexp"
+
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
+	"github.com/globalsign/mgo/bson"
 	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
 	"gitlab.com/project-d-collab/dhelpers/mdb"
@@ -89,5 +92,62 @@ func addBoard(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAdded", "boardID", boardID, "targetChannel", targetChannel)
+	dhelpers.CheckErr(err)
+}
+
+func listFeeds(event dhelpers.EventContainer) {
+	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	var feedEntries []models.GallFeedEntry
+	err = mdb.Iter(models.GallTable.DB().Find(bson.M{"guildid": sourceChannel.GuildID})).All(&feedEntries)
+	dhelpers.CheckErr(err)
+
+	if len(feedEntries) <= 0 {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallNoFeeds")
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	var message string
+	for _, feedEntry := range feedEntries {
+		message += dhelpers.Tf("GallFeedEntry", "feedEntry", feedEntry) + "\n"
+	}
+	message += dhelpers.Tf("GallFeedEntriesSummary", "feedEntryCount", len(feedEntries))
+
+	_, err = event.SendMessage(event.MessageCreate.ChannelID, message)
+	dhelpers.CheckErr(err)
+}
+
+func removeFeed(event dhelpers.EventContainer) {
+	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	if len(event.Args) < 3 {
+		return
+	}
+
+	boardID := event.Args[2]
+
+	var feedEntry models.GallFeedEntry
+	err = mdb.One(
+		models.GallTable.DB().Find(
+			bson.M{
+				"boardid": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(boardID) + "$", Options: "i"}},
+				"guildid": sourceChannel.GuildID,
+			}),
+		&feedEntry,
+	)
+	if mdb.ErrNotFound(err) {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallFeedNotFound")
+		dhelpers.CheckErr(err)
+		return
+	}
+	dhelpers.CheckErr(err)
+
+	err = mdb.DeleteID(models.GallTable, feedEntry.ID)
+	dhelpers.CheckErr(err)
+
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallFeedEntryRemoved", "feedEntry", feedEntry)
 	dhelpers.CheckErr(err)
 }
