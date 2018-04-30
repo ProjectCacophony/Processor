@@ -1,0 +1,4 @@
+FeedNotFound = "**I was not able to find a feed at <{{.feedURL}}>!** <a:ablobfrown:394026913292615701>\nPlease check the URL. I can read RSS and ATOM feeds."
+FeedNetworkErr = "**I wasn't able to connect to <{{.feedURL}}>!** <a:ablobfrown:394026913292615701>\nPlease check the URL, if it is correct please try again in a few minutes."
+FeedInvalidURL = "**Looks like `{{.feedURL}}` is an invalid URL!** <a:ablobthinkingeyes:427405268603633664>\nPlease check if you submitted the correct URL."
+FeedItemSummary = "[{{.item.Title}}]({{MarkdownLinkEscape .item.Link}})\n{{if .item.Author}}by {{.item.Author.Name}} {{end}}{{if .item.PublishedParsed}}posted {{HumanizeTime .item.PublishedParsed}}{{end}}"

@@ -2,6 +2,7 @@ package modules
 
 import (
 	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
+	"gitlab.com/project-d-collab/SqsProcessor/modules/feed"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/gall"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/lastfm"
 	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
@@ -35,5 +36,6 @@ var (
 		&stats.Module{},
 		&lastfm.Module{},
 		&gall.Module{},
+		&feed.Module{},
 	}
 )
