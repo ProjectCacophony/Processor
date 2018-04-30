@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 // takes hex code and displays matching color

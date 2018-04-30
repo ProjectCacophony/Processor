@@ -8,10 +8,10 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/apihelper"
-	"gitlab.com/project-d-collab/dhelpers/cache"
-	"gitlab.com/project-d-collab/dhelpers/state"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/apihelper"
+	"gitlab.com/Cacophony/dhelpers/cache"
+	"gitlab.com/Cacophony/dhelpers/state"
 )
 
 // displays various bot stats

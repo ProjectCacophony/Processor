@@ -11,11 +11,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 	restful "github.com/emicklei/go-restful"
 	"github.com/json-iterator/go"
-	"gitlab.com/project-d-collab/SqsProcessor/api"
-	"gitlab.com/project-d-collab/SqsProcessor/modules"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/cache"
-	"gitlab.com/project-d-collab/dhelpers/components"
+	"gitlab.com/Cacophony/SqsProcessor/api"
+	"gitlab.com/Cacophony/SqsProcessor/modules"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/cache"
+	"gitlab.com/Cacophony/dhelpers/components"
 )
 
 var (

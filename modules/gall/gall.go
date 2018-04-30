@@ -8,10 +8,10 @@ import (
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
 	"github.com/globalsign/mgo/bson"
-	"gitlab.com/project-d-collab/SqsProcessor/models"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
-	"gitlab.com/project-d-collab/dhelpers/state"
+	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/state"
 )
 
 func displayBoard(event dhelpers.EventContainer) {

@@ -3,8 +3,8 @@ package modules
 import (
 	"strings"
 
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/cache"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/cache"
 )
 
 // CallModules distributes events to their related modules based on event destination

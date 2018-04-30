@@ -4,9 +4,9 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/globalsign/mgo/bson"
-	"gitlab.com/project-d-collab/SqsProcessor/models"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
+	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/mdb"
 )
 
 func getLastfmUserBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.MessageEmbed) {

@@ -3,7 +3,7 @@ package ping
 import (
 	"time"
 
-	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 func simplePing(event dhelpers.EventContainer, eventReceivedAt time.Time) {

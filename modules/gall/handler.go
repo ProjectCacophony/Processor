@@ -3,7 +3,7 @@ package gall
 import (
 	"strings"
 
-	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 // Module is a struct for the module

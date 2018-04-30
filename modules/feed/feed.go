@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/project-d-collab/SqsProcessor/models"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
-	"gitlab.com/project-d-collab/dhelpers/state"
+	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/state"
 )
 
 func displayFeed(event dhelpers.EventContainer) {

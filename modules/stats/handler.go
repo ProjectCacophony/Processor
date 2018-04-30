@@ -1,7 +1,7 @@
 package stats
 
 import (
-	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 // Module is a struct for the module

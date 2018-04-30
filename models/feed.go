@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/globalsign/mgo/bson"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/mdb"
 )
 
 const (

@@ -10,12 +10,12 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
-	"gitlab.com/project-d-collab/SqsProcessor/models"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/cache"
-	"gitlab.com/project-d-collab/dhelpers/collage"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
-	"gitlab.com/project-d-collab/dhelpers/state"
+	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/cache"
+	"gitlab.com/Cacophony/dhelpers/collage"
+	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/state"
 )
 
 func displayTopArtists(event dhelpers.EventContainer) {

@@ -13,9 +13,9 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
-	"gitlab.com/project-d-collab/SqsProcessor/models"
-	"gitlab.com/project-d-collab/dhelpers"
-	"gitlab.com/project-d-collab/dhelpers/mdb"
+	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/dhelpers"
+	"gitlab.com/Cacophony/dhelpers/mdb"
 )
 
 // GetFeed returns the gofeed.Feed for an URL (ATOM or RSS)

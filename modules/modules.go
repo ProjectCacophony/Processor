@@ -1,13 +1,13 @@
 package modules
 
 import (
-	"gitlab.com/project-d-collab/SqsProcessor/modules/color"
-	"gitlab.com/project-d-collab/SqsProcessor/modules/feed"
-	"gitlab.com/project-d-collab/SqsProcessor/modules/gall"
-	"gitlab.com/project-d-collab/SqsProcessor/modules/lastfm"
-	"gitlab.com/project-d-collab/SqsProcessor/modules/ping"
-	"gitlab.com/project-d-collab/SqsProcessor/modules/stats"
-	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/Cacophony/SqsProcessor/modules/color"
+	"gitlab.com/Cacophony/SqsProcessor/modules/feed"
+	"gitlab.com/Cacophony/SqsProcessor/modules/gall"
+	"gitlab.com/Cacophony/SqsProcessor/modules/lastfm"
+	"gitlab.com/Cacophony/SqsProcessor/modules/ping"
+	"gitlab.com/Cacophony/SqsProcessor/modules/stats"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 // Module is an interface for all modules
