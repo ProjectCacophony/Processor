@@ -7,10 +7,15 @@ import (
 
 	"net/url"
 
+	"regexp"
+
 	"github.com/PuerkitoBio/goquery"
+	"github.com/globalsign/mgo/bson"
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
+	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/mdb"
 )
 
 // GetFeed returns the gofeed.Feed for an URL (ATOM or RSS)
@@ -76,4 +81,14 @@ func getFeedURLFromPage(pageURL string) (feedURL string, err error) {
 	}
 
 	return "", errors.New("unable to find feed url")
+}
+
+// alreadySetUp returns true if the feed is already set up in the channel
+func alreadySetUp(feedURL, channelID string) (already bool) {
+	count, _ := mdb.Count(
+		models.FeedTable, bson.M{
+			"feedurl":   bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(feedURL) + "$", Options: "i"}},
+			"channelid": channelID,
+		})
+	return count > 0
 }

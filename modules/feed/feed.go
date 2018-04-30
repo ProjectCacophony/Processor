@@ -5,11 +5,18 @@ import (
 
 	"net/url"
 
+	"time"
+
 	"github.com/bwmarrin/discordgo"
+	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
+	"gitlab.com/project-d-collab/dhelpers/mdb"
+	"gitlab.com/project-d-collab/dhelpers/state"
 )
 
 func displayFeed(event dhelpers.EventContainer) {
+	event.GoType(event.MessageCreate.ChannelID)
+
 	feedURL := dhelpers.CleanURL(event.Args[1])
 
 	// check url is valid
@@ -99,5 +106,93 @@ func displayFeed(event dhelpers.EventContainer) {
 	}
 
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, embed)
+	dhelpers.CheckErr(err)
+}
+
+func addFeed(event dhelpers.EventContainer) {
+	if len(event.Args) < 3 {
+		return
+	}
+
+	event.GoType(event.MessageCreate.ChannelID)
+
+	feedURL := dhelpers.CleanURL(event.Args[2])
+
+	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	// check url is valid
+	if _, err := url.ParseRequestURI(feedURL); err != nil {
+		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedInvalidURL", "feedURL", feedURL)
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	// try to read feed
+	feed, err := GetFeed(feedURL)
+	if err != nil {
+		if dhelpers.IsNetworkErr(err) {
+			_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
+			dhelpers.CheckErr(err)
+			return
+		}
+		if strings.Contains(err.Error(), "Failed to detect feed type") {
+			// if no feed read, try to read feed url from html page
+			feedURL, err = getFeedURLFromPage(feedURL)
+			if err != nil {
+				if strings.Contains(err.Error(), "unable to find feed url") {
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
+					dhelpers.CheckErr(err)
+					return
+				}
+				if dhelpers.IsNetworkErr(err) {
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
+					dhelpers.CheckErr(err)
+					return
+				}
+			}
+			dhelpers.CheckErr(err)
+			// try to read new feed url
+			feed, err = GetFeed(feedURL)
+			if err != nil {
+				if strings.Contains(err.Error(), "Failed to detect feed type") {
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
+					dhelpers.CheckErr(err)
+					return
+				}
+				if dhelpers.IsNetworkErr(err) {
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
+					dhelpers.CheckErr(err)
+					return
+				}
+			}
+
+		}
+	}
+	dhelpers.CheckErr(err)
+
+	targetChannel := sourceChannel
+	if len(event.Args) >= 4 {
+		targetChannel, err = state.ChannelFromMention(sourceChannel.GuildID, event.Args[3])
+		dhelpers.CheckErr(err)
+	}
+
+	if alreadySetUp(feedURL, targetChannel.ID) {
+		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedAlreadySetUp", "feedURL", feedURL, "targetChannel", targetChannel)
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	_, err = mdb.Insert(models.FeedTable, models.FeedEntry{
+		GuildID:       targetChannel.GuildID,
+		ChannelID:     targetChannel.ID,
+		AddedByUserID: event.MessageCreate.Author.ID,
+		LastCheck:     time.Now(),
+		FeedURL:       feedURL,
+		FeedTitle:     feed.Title,
+	})
+	dhelpers.CheckErr(err)
+
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedAdded", "feed", feed, "feedURL", feedURL, "targetChannel", targetChannel, "event", event)
 	dhelpers.CheckErr(err)
 }

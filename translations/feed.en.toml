@@ -2,3 +2,5 @@ FeedNotFound = "**I was not able to find a feed at <{{.feedURL}}>!** <a:ablobfro
 FeedNetworkErr = "**I wasn't able to connect to <{{.feedURL}}>!** <a:ablobfrown:394026913292615701>\nPlease check the URL, if it is correct please try again in a few minutes."
 FeedInvalidURL = "**Looks like `{{.feedURL}}` is an invalid URL!** <a:ablobthinkingeyes:427405268603633664>\nPlease check if you submitted the correct URL."
 FeedItemSummary = "[{{.item.Title}}]({{MarkdownLinkEscape .item.Link}})\n{{if .item.Author}}by {{.item.Author.Name}} {{end}}{{if .item.PublishedParsed}}posted {{HumanizeTime .item.PublishedParsed}}{{end}}"
+FeedAlreadySetUp = "There is already a feed for <{{.feedURL}}> set up in <#{{.targetChannel.ID}}>. <:blobstop:317034621953114112>"
+FeedAdded = "**I will post new posts from `{{.feed.Title}}` (<{{.feedURL}}>) in <#{{.targetChannel.ID}}> now!** <a:ablobsunglasses:393869335657054210>\nIf you want to remove it you can use `{{PrefixE .event}}feed remove {{.feedURL}}`."

@@ -39,8 +39,8 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 				}
 
 				switch strings.ToLower(event.Args[1]) {
-				case "add": // [p]feed add <board id> [<#target channel or channel id>]
-					//addBoard(event)
+				case "add": // [p]feed add <feed url> [<#target channel or channel id>]
+					addFeed(event)
 					return
 
 				case "list": // [p]feed list

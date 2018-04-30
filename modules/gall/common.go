@@ -1,8 +1,6 @@
 package gall
 
 import (
-	"regexp"
-
 	"github.com/globalsign/mgo/bson"
 	"gitlab.com/project-d-collab/SqsProcessor/models"
 	"gitlab.com/project-d-collab/dhelpers"
@@ -24,7 +22,7 @@ var (
 func alreadySetUp(boardID, channelID string) (already bool) {
 	count, _ := mdb.Count(
 		models.GallTable, bson.M{
-			"boardid":   bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(boardID) + "$", Options: "i"}},
+			"boardid":   boardID,
 			"channelid": channelID,
 		})
 	return count > 0
