@@ -110,7 +110,7 @@ func addBoard(event dhelpers.EventContainer) {
 	})
 	dhelpers.CheckErr(err)
 
-	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAdded", "boardID", boardID, "targetChannel", targetChannel, "event", event)
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAdded", "boardID", boardID, "targetChannel", targetChannel)
 	dhelpers.CheckErr(err)
 }
 
@@ -123,7 +123,7 @@ func listFeeds(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	if len(feedEntries) <= 0 {
-		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallNoFeeds", "event", event)
+		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallNoFeeds")
 		dhelpers.CheckErr(err)
 		return
 	}
@@ -132,7 +132,7 @@ func listFeeds(event dhelpers.EventContainer) {
 	for _, feedEntry := range feedEntries {
 		message += dhelpers.Tf("GallFeedEntry", "feedEntry", feedEntry) + "\n"
 	}
-	message += dhelpers.Tf("GallFeedEntriesSummary", "feedEntryCount", len(feedEntries), "event", event)
+	message += event.Tf("GallFeedEntriesSummary", "feedEntryCount", len(feedEntries))
 
 	_, err = event.SendMessage(event.MessageCreate.ChannelID, message)
 	dhelpers.CheckErr(err)

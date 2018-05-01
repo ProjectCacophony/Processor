@@ -37,7 +37,7 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
@@ -136,7 +136,7 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
@@ -235,7 +235,7 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
@@ -328,7 +328,7 @@ func displayRecent(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
@@ -388,7 +388,7 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
@@ -460,7 +460,7 @@ func displayAbout(event dhelpers.EventContainer) {
 	}
 
 	if lastfmUsername == "" {
-		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed", "event", event) // nolint: errcheck
+		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
