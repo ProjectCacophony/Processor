@@ -9,6 +9,9 @@ import (
 
 	"regexp"
 
+	"strconv"
+	"time"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/globalsign/mgo/bson"
 	"github.com/mmcdole/gofeed"
@@ -20,8 +23,18 @@ import (
 
 // GetFeed returns the gofeed.Feed for an URL (ATOM or RSS)
 func GetFeed(feedURL string) (feed *gofeed.Feed, err error) {
+	parsedFeedURL, err := url.Parse(feedURL)
+	if err != nil {
+		return nil, err
+	}
+
+	// add cache busting
+	newQueries := parsedFeedURL.Query()
+	newQueries.Set("_", strconv.FormatInt(time.Now().Unix(), 10))
+	parsedFeedURL.RawQuery = newQueries.Encode()
+
 	var feedData []byte
-	feedData, err = dhelpers.NetGet(feedURL)
+	feedData, err = dhelpers.NetGet(parsedFeedURL.String())
 	if err != nil {
 		return nil, err
 	}
