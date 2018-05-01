@@ -7,7 +7,10 @@ import (
 
 	"time"
 
+	"regexp"
+
 	"github.com/bwmarrin/discordgo"
+	"github.com/globalsign/mgo/bson"
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
@@ -194,5 +197,68 @@ func addFeed(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 
 	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedAdded", "feed", feed, "feedURL", feedURL, "targetChannel", targetChannel, "event", event)
+	dhelpers.CheckErr(err)
+}
+
+func listFeeds(event dhelpers.EventContainer) {
+	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	var feedEntries []models.FeedEntry
+	err = mdb.Iter(models.FeedTable.DB().Find(bson.M{"guildid": sourceChannel.GuildID})).All(&feedEntries)
+	dhelpers.CheckErr(err)
+
+	if len(feedEntries) <= 0 {
+		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNoFeeds", "event", event)
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	var message string
+	for _, entry := range feedEntries {
+		message += dhelpers.Tf("FeedEntry", "entry", entry) + "\n"
+	}
+	message += dhelpers.Tf("FeedEntriesSummary", "feedEntryCount", len(feedEntries), "event", event)
+
+	_, err = event.SendMessage(event.MessageCreate.ChannelID, message)
+	dhelpers.CheckErr(err)
+}
+
+func removeFeed(event dhelpers.EventContainer) {
+	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
+	dhelpers.CheckErr(err)
+
+	if len(event.Args) < 3 {
+		return
+	}
+
+	feedURL := strings.ToLower(event.Args[2])
+
+	var feedEntries []models.FeedEntry
+	err = mdb.Iter(models.FeedTable.DB().Find(bson.M{
+		"feedurl": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(feedURL) + "$", Options: "i"}},
+		"guildid": sourceChannel.GuildID,
+	})).All(&feedEntries)
+	if len(feedEntries) <= 0 {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, "FeedEntryNotFound")
+		dhelpers.CheckErr(err)
+		return
+	}
+	dhelpers.CheckErr(err)
+
+	// figure out which one to delete
+	toDelete := feedEntries[0]
+	// delete in current channel first
+	for _, entry := range feedEntries {
+		if entry.ChannelID == sourceChannel.ID {
+			toDelete = entry
+			break
+		}
+	}
+
+	err = mdb.DeleteID(models.FeedTable, toDelete.ID)
+	dhelpers.CheckErr(err)
+
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedEntryRemoved", "entry", toDelete)
 	dhelpers.CheckErr(err)
 }

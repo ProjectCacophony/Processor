@@ -44,11 +44,11 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					return
 
 				case "list": // [p]feed list
-					//listFeeds(event)
+					listFeeds(event)
 					return
 
 				case "remove", "delete", "rem", "del": // [p]feed remove|delete|rem|delete <board id>
-					//removeFeed(event)
+					removeFeed(event)
 					return
 
 				default: // [p]feed <feed url>
