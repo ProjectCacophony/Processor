@@ -39,7 +39,8 @@ func displayFeed(event dhelpers.EventContainer) {
 		}
 		if strings.Contains(err.Error(), "Failed to detect feed type") {
 			// if no feed read, try to read feed url from html page
-			feedURL, err = getFeedURLFromPage(feedURL)
+			var feedURLNew string
+			feedURLNew, err = getFeedURLFromPage(feedURL)
 			if err != nil {
 				if strings.Contains(err.Error(), "unable to find feed url") {
 					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
@@ -54,15 +55,15 @@ func displayFeed(event dhelpers.EventContainer) {
 			}
 			dhelpers.CheckErr(err)
 			// try to read new feed url
-			feed, err = GetFeed(feedURL)
+			feed, err = GetFeed(feedURLNew)
 			if err != nil {
 				if strings.Contains(err.Error(), "Failed to detect feed type") {
-					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURLNew)
 					dhelpers.CheckErr(err)
 					return
 				}
 				if dhelpers.IsNetworkErr(err) {
-					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURLNew)
 					dhelpers.CheckErr(err)
 					return
 				}
@@ -141,7 +142,8 @@ func addFeed(event dhelpers.EventContainer) {
 		}
 		if strings.Contains(err.Error(), "Failed to detect feed type") {
 			// if no feed read, try to read feed url from html page
-			feedURL, err = getFeedURLFromPage(feedURL)
+			var feedURLNew string
+			feedURLNew, err = getFeedURLFromPage(feedURL)
 			if err != nil {
 				if strings.Contains(err.Error(), "unable to find feed url") {
 					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
@@ -156,15 +158,15 @@ func addFeed(event dhelpers.EventContainer) {
 			}
 			dhelpers.CheckErr(err)
 			// try to read new feed url
-			feed, err = GetFeed(feedURL)
+			feed, err = GetFeed(feedURLNew)
 			if err != nil {
 				if strings.Contains(err.Error(), "Failed to detect feed type") {
-					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURL)
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNotFound", "feedURL", feedURLNew)
 					dhelpers.CheckErr(err)
 					return
 				}
 				if dhelpers.IsNetworkErr(err) {
-					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
+					_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURLNew)
 					dhelpers.CheckErr(err)
 					return
 				}
