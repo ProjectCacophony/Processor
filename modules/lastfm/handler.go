@@ -54,11 +54,11 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 					displayRecent(event)
 					return
-				case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists": // [p]lastfm|lf topartists|topartist|top-artist|top-artists|artist|artists [<@user or user id or lastfm username>] [<timerange>] [<collage>]
+				case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists", "ta": // [p]lastfm|lf topartists|topartist|top-artist|top-artists|artist|artists|ta [<@user or user id or lastfm username>] [<timerange>] [<collage>]
 
 					displayTopArtists(event)
 					return
-				case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks": // [p]lastfm|lf toptracks|toptrack|top-track|top-tracks|track|tracks [<@user or user id or lastfm username>] [<timerange>] [<collage>] [<server>]
+				case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks", "tt", "ts": // [p]lastfm|lf toptracks|toptrack|top-track|top-tracks|track|tracks|tt|ts [<@user or user id or lastfm username>] [<timerange>] [<collage>] [<server>]
 
 					if serverRequest, _ := isServerRequest(event.Args); serverRequest {
 						displayServerTopTracks(event)
@@ -67,7 +67,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 					displayTopTracks(event)
 					return
-				case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums": // [p]lastfm|lf topalbums|topalbum|top-album|top-albums|album|albums [<@user or user id or lastfm username>] [<timerange>] [<collage>]
+				case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal": // [p]lastfm|lf topalbums|topalbum|top-album|top-albums|album|albums|tal [<@user or user id or lastfm username>] [<timerange>] [<collage>]
 
 					displayTopAlbums(event)
 					return
