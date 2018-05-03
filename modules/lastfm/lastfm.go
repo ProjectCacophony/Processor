@@ -546,12 +546,8 @@ func displayServerTopTracks(event dhelpers.EventContainer) {
 
 	event.GoType(event.MessageCreate.ChannelID)
 
-	var channel *discordgo.Channel
-	channel, err = state.Channel(event.MessageCreate.ChannelID)
-	dhelpers.CheckErr(err)
-
 	var guild *discordgo.Guild
-	guild, err = state.Guild(channel.GuildID)
+	guild, err = state.Guild(event.MessageCreate.GuildID)
 	dhelpers.CheckErr(err)
 
 	// lookup stats

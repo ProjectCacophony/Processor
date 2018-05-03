@@ -90,7 +90,7 @@ func addBoard(event dhelpers.EventContainer) {
 
 	targetChannel := sourceChannel
 	if len(event.Args) >= 4 {
-		targetChannel, err = state.ChannelFromMention(sourceChannel.GuildID, event.Args[3])
+		targetChannel, err = state.ChannelFromMention(event.MessageCreate.GuildID, event.Args[3])
 		dhelpers.CheckErr(err)
 	}
 
@@ -115,11 +115,9 @@ func addBoard(event dhelpers.EventContainer) {
 }
 
 func listFeeds(event dhelpers.EventContainer) {
-	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
-	dhelpers.CheckErr(err)
-
+	var err error
 	var feedEntries []models.GallFeedEntry
-	err = mdb.Iter(models.GallTable.DB().Find(bson.M{"guildid": sourceChannel.GuildID})).All(&feedEntries)
+	err = mdb.Iter(models.GallTable.DB().Find(bson.M{"guildid": event.MessageCreate.GuildID})).All(&feedEntries)
 	dhelpers.CheckErr(err)
 
 	if len(feedEntries) <= 0 {
@@ -139,8 +137,7 @@ func listFeeds(event dhelpers.EventContainer) {
 }
 
 func removeFeed(event dhelpers.EventContainer) {
-	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
-	dhelpers.CheckErr(err)
+	var err error
 
 	if len(event.Args) < 3 {
 		return
@@ -151,7 +148,7 @@ func removeFeed(event dhelpers.EventContainer) {
 	var feedEntries []models.GallFeedEntry
 	err = mdb.Iter(models.GallTable.DB().Find(bson.M{
 		"boardid": boardID,
-		"guildid": sourceChannel.GuildID,
+		"guildid": event.MessageCreate.GuildID,
 	})).All(&feedEntries)
 	if len(feedEntries) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallFeedNotFound")
@@ -164,7 +161,7 @@ func removeFeed(event dhelpers.EventContainer) {
 	toDelete := feedEntries[0]
 	// delete in current channel first
 	for _, entry := range feedEntries {
-		if entry.ChannelID == sourceChannel.ID {
+		if entry.ChannelID == event.MessageCreate.ChannelID {
 			toDelete = entry
 			break
 		}
