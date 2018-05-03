@@ -39,7 +39,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 				}
 
 				switch strings.ToLower(event.Args[1]) {
-				case "add": // [p]gall add <board id> [<#target channel or channel id>]
+				case "add": // [p]gall add <board id> [<#target channel or channel id>] [all]
 					addBoard(event)
 					return
 
@@ -51,7 +51,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					removeFeed(event)
 					return
 
-				default: // [p]gall <board id>
+				default: // [p]gall <board id> [all]
 					displayBoard(event)
 					return
 				}

@@ -21,4 +21,5 @@ type GallFeedEntry struct {
 	BoardID       string
 	LastCheck     time.Time
 	MinorGallery  bool
+	Recommended   bool
 }

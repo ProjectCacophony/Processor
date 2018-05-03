@@ -19,12 +19,20 @@ func displayBoard(event dhelpers.EventContainer) {
 
 	event.GoType(event.MessageCreate.ChannelID)
 
+	// get all posts, or just recommended (default)
+	recommended := true
+	if includes, _ := dhelpers.SliceContainsLowerExclude(event.Args, []string{"all"}); includes {
+		recommended = false
+	}
+
 	// get data
-	posts, err := ginside.BoardRecommendedPosts(boardID)
+	var err error
+	var posts []ginside.Post
+	posts, err = ginside.BoardPosts(boardID, recommended)
 	dhelpers.CheckErr(err)
 
 	if len(posts) <= 0 {
-		posts, err = ginside.BoardMinorRecommendedPosts(boardID)
+		posts, err = ginside.BoardMinorPosts(boardID, recommended)
 		dhelpers.CheckErr(err)
 	}
 
@@ -37,7 +45,7 @@ func displayBoard(event dhelpers.EventContainer) {
 	// build embed
 	embed := &discordgo.MessageEmbed{
 		URL:   friendlyBoardURL(boardID),
-		Title: dhelpers.Tf("GallBoardPostsTitle", "boardID", boardID),
+		Title: dhelpers.Tf("GallBoardPostsTitle", "boardID", boardID, "recommended", recommended),
 		Footer: &discordgo.MessageEmbedFooter{
 			Text:    dhelpers.T("GallEmbedFooter"),
 			IconURL: GallIcon,
@@ -66,6 +74,13 @@ func addBoard(event dhelpers.EventContainer) {
 
 	event.GoType(event.MessageCreate.ChannelID)
 
+	// get all posts, or just recommended (default)
+	recommended := true
+	var includes bool
+	if includes, event.Args = dhelpers.SliceContainsLowerExclude(event.Args, []string{"all"}); includes {
+		recommended = false
+	}
+
 	sourceChannel, err := state.Channel(event.MessageCreate.ChannelID)
 	dhelpers.CheckErr(err)
 
@@ -73,12 +88,12 @@ func addBoard(event dhelpers.EventContainer) {
 	var minorGallery bool
 
 	// get data
-	posts, err := ginside.BoardRecommendedPosts(boardID)
+	posts, err := ginside.BoardPosts(boardID, recommended)
 	dhelpers.CheckErr(err)
 
 	if len(posts) <= 0 {
 		minorGallery = true
-		posts, err = ginside.BoardMinorRecommendedPosts(boardID)
+		posts, err = ginside.BoardMinorPosts(boardID, recommended)
 		dhelpers.CheckErr(err)
 	}
 
@@ -100,17 +115,20 @@ func addBoard(event dhelpers.EventContainer) {
 		return
 	}
 
-	_, err = mdb.Insert(models.GallTable, models.GallFeedEntry{
+	entry := models.GallFeedEntry{
 		GuildID:       targetChannel.GuildID,
 		ChannelID:     targetChannel.ID,
 		AddedByUserID: event.MessageCreate.Author.ID,
 		BoardID:       boardID,
 		LastCheck:     time.Now(),
 		MinorGallery:  minorGallery,
-	})
+		Recommended:   recommended,
+	}
+
+	_, err = mdb.Insert(models.GallTable, entry)
 	dhelpers.CheckErr(err)
 
-	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAdded", "boardID", boardID, "targetChannel", targetChannel)
+	_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAdded", "entry", entry, "targetChannel", targetChannel)
 	dhelpers.CheckErr(err)
 }
 
