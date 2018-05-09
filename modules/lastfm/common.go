@@ -26,7 +26,7 @@ func getLastfmUserBaseEmbed(userInfo dhelpers.LastfmUserData) (embed discordgo.M
 		embed.Footer.Text += " | Total Plays " + humanize.Comma(int64(userInfo.Scrobbles))
 	}
 	// set embed colour
-	embed.Color = dhelpers.GetDiscordColorFromHex("#d51007")
+	embed.Color = dhelpers.HexToDecimal("#d51007")
 
 	return embed
 }
@@ -48,7 +48,7 @@ func getLastfmGuildBaseEmbed(guild *discordgo.Guild, listeners int) (embed disco
 		embed.Footer.Text += " | Total Listeners " + humanize.Comma(int64(listeners))
 	}
 	// set embed colour
-	embed.Color = dhelpers.GetDiscordColorFromHex("#d51007")
+	embed.Color = dhelpers.HexToDecimal("#d51007")
 
 	return embed
 }

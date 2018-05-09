@@ -9,7 +9,7 @@ import (
 
 var (
 	// GallColor is the discord colour used for Gall embeds
-	GallColor = dhelpers.GetDiscordColorFromHex("#4064D0")
+	GallColor = dhelpers.HexToDecimal("#4064D0")
 	// GallIcon is a Gall Logo
 	GallIcon = "https://i.imgur.com/tIYs6jt.png"
 

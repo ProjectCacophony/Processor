@@ -77,7 +77,7 @@ func displayStats(event dhelpers.EventContainer) {
 			}
 			continue
 		}
-		workerText += "Jobs " + strconv.Itoa(len(workersStatusesEntry.Entries)) + " "
+		workerText += "Jobs " + strconv.Itoa(len(workersStatusesEntry.Entries)) + "\n"
 		workerText += "CR " + strconv.Itoa(workersStatusesEntry.Service.Coroutines) + " "
 		workerText += "Mem " + humanize.Bytes(workersStatusesEntry.Service.Heap) + "\n"
 		workerText += "Uptime " + dhelpers.HumanizeDuration(time.Since(workersStatusesEntry.Service.Launch)) + "\n"
