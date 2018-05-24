@@ -3,6 +3,8 @@ package ping
 import (
 	"strings"
 
+	"context"
+
 	"gitlab.com/Cacophony/dhelpers"
 )
 
@@ -22,16 +24,17 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+func (m *Module) Action(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
 		switch strings.ToLower(event.Args[0]) {
 		case "pong":
-			simplePing(event, event.ReceivedAt)
+			simplePing(ctx, event.ReceivedAt)
 		case "ping":
-			pingInfo(event)
+			pingInfo(ctx)
 		}
 	}
 }

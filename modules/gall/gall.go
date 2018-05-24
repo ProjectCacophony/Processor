@@ -5,6 +5,8 @@ import (
 
 	"strings"
 
+	"context"
+
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
 	"github.com/globalsign/mgo/bson"
@@ -14,7 +16,9 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayBoard(event dhelpers.EventContainer) {
+func displayBoard(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	boardID := strings.ToLower(event.Args[1])
 
 	event.GoType(event.MessageCreate.ChannelID)
@@ -67,7 +71,9 @@ func displayBoard(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func addBoard(event dhelpers.EventContainer) {
+func addBoard(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	if len(event.Args) < 3 {
 		return
 	}
@@ -132,7 +138,9 @@ func addBoard(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func listFeeds(event dhelpers.EventContainer) {
+func listFeeds(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var err error
 	var feedEntries []models.GallFeedEntry
 	err = mdb.Iter(models.GallTable.DB().Find(bson.M{"guildid": event.MessageCreate.GuildID})).All(&feedEntries)
@@ -154,7 +162,9 @@ func listFeeds(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func removeFeed(event dhelpers.EventContainer) {
+func removeFeed(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var err error
 
 	if len(event.Args) < 3 {

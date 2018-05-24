@@ -3,6 +3,8 @@ package lastfm
 import (
 	"strings"
 
+	"context"
+
 	"github.com/sirupsen/logrus"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/cache"
@@ -26,7 +28,8 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+func (m *Module) Action(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
@@ -37,42 +40,42 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 			case "lastfm":
 				if len(event.Args) < 2 { // [p]lastfm|lf
 
-					displayAbout(event)
+					displayAbout(ctx)
 					return
 				}
 
 				switch strings.ToLower(event.Args[1]) {
 				case "set", "register", "save": // [p]lastfm|lf set|register|save <last.fm username>
 
-					setUsername(event)
+					setUsername(ctx)
 					return
 				case "np", "nowplaying", "now": // [p]lastfm|lf np|nowplaying|now [<@user or user id or lastfm username>]
 
-					displayNowPlaying(event)
+					displayNowPlaying(ctx)
 					return
 				case "recent", "recently", "last", "recents": // [p]lastfm|lf recent|recently|last|recents [<@user or user id or lastfm username>]
 
-					displayRecent(event)
+					displayRecent(ctx)
 					return
 				case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists", "ta": // [p]lastfm|lf topartists|topartist|top-artist|top-artists|artist|artists|ta [<@user or user id or lastfm username>] [<timerange>] [<collage>]
 
-					displayTopArtists(event)
+					displayTopArtists(ctx)
 					return
 				case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks", "tt", "ts": // [p]lastfm|lf toptracks|toptrack|top-track|top-tracks|track|tracks|tt|ts [<@user or user id or lastfm username>] [<timerange>] [<collage>] [<server>]
 
 					if serverRequest, _ := isServerRequest(event.Args); serverRequest {
-						displayServerTopTracks(event)
+						displayServerTopTracks(ctx)
 						return
 					}
 
-					displayTopTracks(event)
+					displayTopTracks(ctx)
 					return
 				case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal": // [p]lastfm|lf topalbums|topalbum|top-album|top-albums|album|albums|tal [<@user or user id or lastfm username>] [<timerange>] [<collage>]
 
-					displayTopAlbums(event)
+					displayTopAlbums(ctx)
 					return
 				case "server-top", "server-toptracks": // [p]lastfm|lf server-top|server-toptracks [<timerange>]
-					displayServerTopTracks(event)
+					displayServerTopTracks(ctx)
 					return
 				case "top":
 					if len(event.Args) < 3 {
@@ -83,28 +86,28 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 					case "artist", "artists": // [p]lastfm|lf top artist|artists [<@user or user id or lastfm username>] [<timerange>] [<period>]
 						event.Args = append(event.Args[:1], event.Args[1+1:]...)
 
-						displayTopArtists(event)
+						displayTopArtists(ctx)
 						return
 					case "track", "tracks": // [p]lastfm|lf top track|tracks [<@user or user id or lastfm username>] [<timerange>] [<period>] [<server>]
 						event.Args = append(event.Args[:1], event.Args[1+1:]...)
 
 						if serverRequest, _ := isServerRequest(event.Args); serverRequest {
-							displayServerTopTracks(event)
+							displayServerTopTracks(ctx)
 							return
 						}
 
-						displayTopTracks(event)
+						displayTopTracks(ctx)
 						return
 					case "album", "albums": // [p]lastfm|lf top album|albums [<@user or user id or lastfm username>] [<timerange>] [<period>]
 						event.Args = append(event.Args[:1], event.Args[1+1:]...)
 
-						displayTopAlbums(event)
+						displayTopAlbums(ctx)
 						return
 					}
 
 				default: // [p]lastfm|lf <@user or user id or lastfm username>
 
-					displayAbout(event)
+					displayAbout(ctx)
 					return
 				}
 			}

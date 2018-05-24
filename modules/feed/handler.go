@@ -3,6 +3,8 @@ package feed
 import (
 	"strings"
 
+	"context"
+
 	"gitlab.com/Cacophony/dhelpers"
 )
 
@@ -24,7 +26,8 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+func (m *Module) Action(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
@@ -40,19 +43,19 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 				switch strings.ToLower(event.Args[1]) {
 				case "add": // [p]feed add <feed url> [<#target channel or channel id>]
-					addFeed(event)
+					addFeed(ctx)
 					return
 
 				case "list": // [p]feed list
-					listFeeds(event)
+					listFeeds(ctx)
 					return
 
 				case "remove", "delete", "rem", "del": // [p]feed remove|delete|rem|delete <board id>
-					removeFeed(event)
+					removeFeed(ctx)
 					return
 
 				default: // [p]feed <feed url>
-					displayFeed(event)
+					displayFeed(ctx)
 					return
 				}
 			}

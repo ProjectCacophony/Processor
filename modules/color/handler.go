@@ -1,6 +1,8 @@
 package color
 
 import (
+	"context"
+
 	"gitlab.com/Cacophony/dhelpers"
 )
 
@@ -22,7 +24,8 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(event dhelpers.EventContainer) {
+func (m *Module) Action(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
 
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
@@ -31,7 +34,7 @@ func (m *Module) Action(event dhelpers.EventContainer) {
 
 			switch destination.Name {
 			case "color":
-				displayColor(event)
+				displayColor(ctx)
 				return
 			}
 		}

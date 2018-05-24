@@ -9,6 +9,8 @@ import (
 
 	"regexp"
 
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/globalsign/mgo/bson"
 	"gitlab.com/Cacophony/SqsProcessor/models"
@@ -17,7 +19,9 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayFeed(event dhelpers.EventContainer) {
+func displayFeed(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	event.GoType(event.MessageCreate.ChannelID)
 
 	feedURL := dhelpers.CleanURL(event.Args[1])
@@ -113,7 +117,9 @@ func displayFeed(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func addFeed(event dhelpers.EventContainer) {
+func addFeed(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	if len(event.Args) < 3 {
 		return
 	}
@@ -202,7 +208,9 @@ func addFeed(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func listFeeds(event dhelpers.EventContainer) {
+func listFeeds(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var err error
 	var feedEntries []models.FeedEntry
 	err = mdb.Iter(models.FeedTable.DB().Find(bson.M{"guildid": event.MessageCreate.GuildID})).All(&feedEntries)
@@ -224,7 +232,9 @@ func listFeeds(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func removeFeed(event dhelpers.EventContainer) {
+func removeFeed(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var err error
 
 	if len(event.Args) < 3 {

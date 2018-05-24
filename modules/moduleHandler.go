@@ -28,7 +28,7 @@ func CallModules(event dhelpers.EventContainer) {
 							}
 						}()
 
-						moduleModule.Action(moduleEvent)
+						moduleModule.Action(dhelpers.ContextWithEvent(event))
 					}(module, event)
 				}
 			}

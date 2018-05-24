@@ -6,6 +6,8 @@ import (
 
 	"strings"
 
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"gitlab.com/Cacophony/dhelpers"
@@ -15,7 +17,9 @@ import (
 )
 
 // displays various bot stats
-func displayStats(event dhelpers.EventContainer) {
+func displayStats(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	// read information from stats
 	botUser, err := state.User(event.BotUserID)
 	dhelpers.CheckErr(err)

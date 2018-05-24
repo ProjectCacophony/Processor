@@ -10,12 +10,16 @@ import (
 	"image/png"
 	"strings"
 
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/dhelpers"
 )
 
 // takes hex code and displays matching color
-func displayColor(event dhelpers.EventContainer) {
+func displayColor(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	if len(event.Args) < 2 {
 		return
 	}

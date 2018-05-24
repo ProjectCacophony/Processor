@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/globalsign/mgo/bson"
@@ -18,7 +20,9 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayTopArtists(event dhelpers.EventContainer) {
+func displayTopArtists(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
@@ -117,7 +121,9 @@ func displayTopArtists(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayTopTracks(event dhelpers.EventContainer) {
+func displayTopTracks(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
@@ -216,7 +222,9 @@ func displayTopTracks(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayTopAlbums(event dhelpers.EventContainer) {
+func displayTopAlbums(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
@@ -315,7 +323,9 @@ func displayTopAlbums(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayRecent(event dhelpers.EventContainer) {
+func displayRecent(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -375,7 +385,9 @@ func displayRecent(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayNowPlaying(event dhelpers.EventContainer) {
+func displayNowPlaying(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -447,7 +459,9 @@ func displayNowPlaying(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayAbout(event dhelpers.EventContainer) {
+func displayAbout(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -518,7 +532,9 @@ func displayAbout(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func setUsername(event dhelpers.EventContainer) {
+func setUsername(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	if len(event.Args) < 3 {
 		return
 	}
@@ -539,7 +555,9 @@ func setUsername(event dhelpers.EventContainer) {
 	dhelpers.CheckErr(err)
 }
 
-func displayServerTopTracks(event dhelpers.EventContainer) {
+func displayServerTopTracks(ctx context.Context) {
+	event := dhelpers.EventFromContext(ctx)
+
 	var err error
 	var period dhelpers.LastFmPeriod
 	period, _ = dhelpers.LastFmGetPeriodFromArgs(event.Args)
