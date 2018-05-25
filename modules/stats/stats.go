@@ -10,6 +10,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
+	"github.com/opentracing/opentracing-go"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/apihelper"
 	"gitlab.com/Cacophony/dhelpers/cache"
@@ -18,6 +19,11 @@ import (
 
 // displays various bot stats
 func displayStats(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "stats.displayStats")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	// read information from stats

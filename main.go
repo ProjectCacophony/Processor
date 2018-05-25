@@ -1,15 +1,17 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
-	restful "github.com/emicklei/go-restful"
 	"github.com/json-iterator/go"
 	"gitlab.com/Cacophony/SqsProcessor/api"
 	"gitlab.com/Cacophony/SqsProcessor/modules"
@@ -44,13 +46,27 @@ func main() {
 	err = components.InitAwsSqs()
 	dhelpers.CheckErr(err)
 	components.InitLastFm()
-	components.InitTracer("SqsProcessor")
-	defer components.UninitTracer()
+	err = components.InitTracer("SqsProcessor")
+	dhelpers.CheckErr(err)
+	defer func() {
+		uninitTracerErr := components.UninitTracer()
+		dhelpers.CheckErr(uninitTracerErr)
+	}()
 
-	// start api
+	// start api server
+	apiServer := &http.Server{
+		Addr: os.Getenv("API_ADDRESS"),
+		// Good practice to set timeouts to avoid Slowloris attacks.
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      api.New(),
+	}
 	go func() {
-		restful.Add(api.New())
-		cache.GetLogger().Fatal(http.ListenAndServe(os.Getenv("API_ADDRESS"), nil))
+		apiServerListenAndServeErr := apiServer.ListenAndServe()
+		if err != nil && !strings.Contains(err.Error(), "http: Server closed") {
+			cache.GetLogger().Fatal(apiServerListenAndServeErr)
+		}
 	}()
 	cache.GetLogger().Infoln("started API on", os.Getenv("API_ADDRESS"))
 
@@ -64,9 +80,10 @@ func main() {
 		sqsClient := cache.GetAwsSqsSession()
 		logger := cache.GetLogger()
 		redisClient := cache.GetRedisClient()
+		var result *sqs.ReceiveMessageOutput
 
 		for {
-			result, err := sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
+			result, err = sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
 				QueueUrl:              aws.String(sqsQueueURL),
 				MaxNumberOfMessages:   aws.Int64(10),
 				MessageAttributeNames: aws.StringSlice([]string{}),
@@ -100,6 +117,12 @@ func main() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+
+	// shutdown api server
+	apiServerShutdownContext, apiServerCancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer apiServerCancel()
+	err = apiServer.Shutdown(apiServerShutdownContext)
+	dhelpers.LogError(err)
 
 	// Uninit all modules
 	modules.Uninit()

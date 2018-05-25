@@ -13,6 +13,8 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/mmcdole/gofeed"
+	"github.com/opentracing/opentracing-go"
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
@@ -20,6 +22,11 @@ import (
 )
 
 func displayFeed(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.displayFeed")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	event.GoType(event.MessageCreate.ChannelID)
@@ -118,6 +125,11 @@ func displayFeed(ctx context.Context) {
 }
 
 func addFeed(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.addFeed")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
@@ -132,14 +144,16 @@ func addFeed(ctx context.Context) {
 	dhelpers.CheckErr(err)
 
 	// check url is valid
-	if _, err := url.ParseRequestURI(feedURL); err != nil {
+	_, err = url.ParseRequestURI(feedURL)
+	if err != nil {
 		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedInvalidURL", "feedURL", feedURL)
 		dhelpers.CheckErr(err)
 		return
 	}
 
 	// try to read feed
-	feed, err := GetFeed(feedURL)
+	var feed *gofeed.Feed
+	feed, err = GetFeed(feedURL)
 	if err != nil {
 		if dhelpers.IsNetworkErr(err) {
 			_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedNetworkErr", "feedURL", feedURL)
@@ -209,6 +223,11 @@ func addFeed(ctx context.Context) {
 }
 
 func listFeeds(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.listFeeds")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var err error
@@ -233,6 +252,11 @@ func listFeeds(ctx context.Context) {
 }
 
 func removeFeed(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.removeFeed")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var err error

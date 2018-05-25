@@ -12,6 +12,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
+	"github.com/opentracing/opentracing-go"
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/cache"
@@ -21,6 +22,11 @@ import (
 )
 
 func displayTopArtists(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopArtists")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
@@ -48,7 +54,7 @@ func displayTopArtists(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck, gas
 		return
@@ -60,7 +66,7 @@ func displayTopArtists(ctx context.Context) {
 
 	// get top artists
 	var artists []dhelpers.LastfmArtistData
-	artists, err = dhelpers.LastFmGetTopArtists(userInfo.Username, 10, period)
+	artists, err = dhelpers.LastFmGetTopArtists(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
 	if len(artists) < 1 {
@@ -84,6 +90,7 @@ func displayTopArtists(ctx context.Context) {
 		}
 
 		collageBytes := collage.FromUrls(
+			ctx,
 			imageUrls,
 			artistNames,
 			900, 900,
@@ -122,6 +129,11 @@ func displayTopArtists(ctx context.Context) {
 }
 
 func displayTopTracks(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopTracks")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
@@ -149,7 +161,7 @@ func displayTopTracks(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -161,7 +173,7 @@ func displayTopTracks(ctx context.Context) {
 
 	// get top artists
 	var tracks []dhelpers.LastfmTrackData
-	tracks, err = dhelpers.LastFmGetTopTracks(userInfo.Username, 10, period)
+	tracks, err = dhelpers.LastFmGetTopTracks(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
 	if makeCollage {
@@ -176,6 +188,7 @@ func displayTopTracks(ctx context.Context) {
 		}
 
 		collageBytes := collage.FromUrls(
+			ctx,
 			imageUrls,
 			trackNames,
 			900, 900,
@@ -223,6 +236,11 @@ func displayTopTracks(ctx context.Context) {
 }
 
 func displayTopAlbums(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopAlbums")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
@@ -250,7 +268,7 @@ func displayTopAlbums(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -262,7 +280,7 @@ func displayTopAlbums(ctx context.Context) {
 
 	// get top artists
 	var albums []dhelpers.LastfmAlbumData
-	albums, err = dhelpers.LastFmGetTopAlbums(userInfo.Username, 10, period)
+	albums, err = dhelpers.LastFmGetTopAlbums(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
 	if len(albums) < 1 {
@@ -286,6 +304,7 @@ func displayTopAlbums(ctx context.Context) {
 		}
 
 		collageBytes := collage.FromUrls(
+			ctx,
 			imageUrls,
 			albumNames,
 			900, 900,
@@ -324,6 +343,11 @@ func displayTopAlbums(ctx context.Context) {
 }
 
 func displayRecent(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayRecent(")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
@@ -345,7 +369,7 @@ func displayRecent(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -357,7 +381,7 @@ func displayRecent(ctx context.Context) {
 
 	// get recent tracks
 	var tracks []dhelpers.LastfmTrackData
-	tracks, err = dhelpers.LastFmGetRecentTracks(userInfo.Username, 10)
+	tracks, err = dhelpers.LastFmGetRecentTracks(ctx, userInfo.Username, 10)
 	dhelpers.CheckErr(err)
 
 	if len(tracks) < 1 {
@@ -386,6 +410,11 @@ func displayRecent(ctx context.Context) {
 }
 
 func displayNowPlaying(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayNowPlaying")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
@@ -407,7 +436,7 @@ func displayNowPlaying(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -419,7 +448,7 @@ func displayNowPlaying(ctx context.Context) {
 
 	// get recent tracks
 	var tracks []dhelpers.LastfmTrackData
-	tracks, err = dhelpers.LastFmGetRecentTracks(userInfo.Username, 2)
+	tracks, err = dhelpers.LastFmGetRecentTracks(ctx, userInfo.Username, 2)
 	dhelpers.CheckErr(err)
 
 	if len(tracks) < 1 {
@@ -460,6 +489,11 @@ func displayNowPlaying(ctx context.Context) {
 }
 
 func displayAbout(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayAbout")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
@@ -481,7 +515,7 @@ func displayAbout(ctx context.Context) {
 	event.GoType(event.MessageCreate.ChannelID)
 
 	// look user
-	userInfo, err := dhelpers.LastFmGetUserinfo(lastfmUsername)
+	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
 		return
@@ -533,6 +567,11 @@ func displayAbout(ctx context.Context) {
 }
 
 func setUsername(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.setUsername")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
@@ -556,6 +595,11 @@ func setUsername(ctx context.Context) {
 }
 
 func displayServerTopTracks(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayServerTopTracks")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var err error

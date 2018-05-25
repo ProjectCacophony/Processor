@@ -10,6 +10,7 @@ import (
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/opentracing/opentracing-go"
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
@@ -17,6 +18,11 @@ import (
 )
 
 func displayBoard(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.displayBoard")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	boardID := strings.ToLower(event.Args[1])
@@ -72,6 +78,11 @@ func displayBoard(ctx context.Context) {
 }
 
 func addBoard(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.addBoard")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
@@ -139,6 +150,11 @@ func addBoard(ctx context.Context) {
 }
 
 func listFeeds(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.listFeeds")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var err error
@@ -163,6 +179,11 @@ func listFeeds(ctx context.Context) {
 }
 
 func removeFeed(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.removeFeed")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	var err error

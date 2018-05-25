@@ -13,11 +13,17 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/opentracing/opentracing-go"
 	"gitlab.com/Cacophony/dhelpers"
 )
 
 // takes hex code and displays matching color
 func displayColor(ctx context.Context) {
+	// start tracing span
+	var span opentracing.Span
+	span, ctx = opentracing.StartSpanFromContext(ctx, "color.displayColor")
+	defer span.Finish()
+
 	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 2 {
