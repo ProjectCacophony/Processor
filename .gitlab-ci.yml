@@ -19,8 +19,7 @@ before_script:
   - apt-get update
   - apt-get install libcairo2-dev -y
   # install go dependencies
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-  - dep ensure
+  - go get -v ./...
   # install linters
   - go get -v golang.org/x/tools/cmd/goimports
   - go get -v gopkg.in/alecthomas/gometalinter.v2

@@ -44,6 +44,8 @@ func main() {
 	err = components.InitAwsSqs()
 	dhelpers.CheckErr(err)
 	components.InitLastFm()
+	components.InitTracer("SqsProcessor")
+	defer components.UninitTracer()
 
 	// start api
 	go func() {

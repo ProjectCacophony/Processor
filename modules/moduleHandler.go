@@ -3,6 +3,8 @@ package modules
 import (
 	"strings"
 
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/log"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/cache"
 )
@@ -19,7 +21,7 @@ func CallModules(event dhelpers.EventContainer) {
 				if targetDest.Name == validDest {
 
 					// send to module
-					go func(moduleModule Module, moduleEvent dhelpers.EventContainer) {
+					go func(destination string, moduleModule Module, moduleEvent dhelpers.EventContainer) {
 						defer func() {
 							err := recover()
 							if err != nil {
@@ -28,8 +30,14 @@ func CallModules(event dhelpers.EventContainer) {
 							}
 						}()
 
-						moduleModule.Action(dhelpers.ContextWithEvent(event))
-					}(module, event)
+						span, ctx := opentracing.StartSpanFromContext(dhelpers.ContextWithEvent(event), destination)
+						span.LogFields(
+							log.String("event", event.Key),
+						)
+						defer span.Finish()
+
+						moduleModule.Action(ctx)
+					}(targetDest.Name, module, event)
 				}
 			}
 		}
