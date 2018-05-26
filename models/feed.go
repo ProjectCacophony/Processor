@@ -21,4 +21,6 @@ type FeedEntry struct {
 	FeedURL       string
 	FeedTitle     string
 	LastCheck     time.Time
+	AddedAt       time.Time
+	PostedPostIDs []string
 }

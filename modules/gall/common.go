@@ -1,6 +1,7 @@
 package gall
 
 import (
+	"github.com/Seklfreak/ginside"
 	"github.com/globalsign/mgo/bson"
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
@@ -26,4 +27,12 @@ func alreadySetUp(boardID, channelID string) (already bool) {
 			"channelid": channelID,
 		})
 	return count > 0
+}
+
+// GetEntryID returns the ID for a Feed Entry (used for deduplication)
+func GetEntryID(entry ginside.Post) string {
+	if entry.ID != "" {
+		return entry.ID
+	}
+	return entry.URL
 }

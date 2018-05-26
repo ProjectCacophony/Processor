@@ -215,6 +215,7 @@ func addFeed(ctx context.Context) {
 		LastCheck:     time.Now(),
 		FeedURL:       feedURL,
 		FeedTitle:     feed.Title,
+		AddedAt:       time.Now(),
 	})
 	dhelpers.CheckErr(err)
 

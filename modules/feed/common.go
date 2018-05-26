@@ -105,3 +105,11 @@ func alreadySetUp(feedURL, channelID string) (already bool) {
 		})
 	return count > 0
 }
+
+// GetEntryID returns the ID for a Feed Entry (used for deduplication)
+func GetEntryID(entry *gofeed.Item) string {
+	if entry.GUID != "" {
+		return entry.GUID
+	}
+	return entry.Link
+}

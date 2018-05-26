@@ -137,9 +137,10 @@ func addBoard(ctx context.Context) {
 		ChannelID:     targetChannel.ID,
 		AddedByUserID: event.MessageCreate.Author.ID,
 		BoardID:       boardID,
-		LastCheck:     time.Now(),
 		MinorGallery:  minorGallery,
 		Recommended:   recommended,
+		LastCheck:     time.Now(),
+		AddedAt:       time.Now(),
 	}
 
 	_, err = mdb.Insert(models.GallTable, entry)

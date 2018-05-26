@@ -19,7 +19,9 @@ type GallFeedEntry struct {
 	ChannelID     string
 	AddedByUserID string
 	BoardID       string
-	LastCheck     time.Time
 	MinorGallery  bool
 	Recommended   bool
+	LastCheck     time.Time
+	AddedAt       time.Time
+	PostedPostIDs []string
 }
