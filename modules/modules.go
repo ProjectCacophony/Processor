@@ -9,6 +9,7 @@ import (
 	"gitlab.com/Cacophony/SqsProcessor/modules/lastfm"
 	"gitlab.com/Cacophony/SqsProcessor/modules/ping"
 	"gitlab.com/Cacophony/SqsProcessor/modules/stats"
+	"gitlab.com/Cacophony/dhelpers"
 )
 
 // Module is an interface for all modules
@@ -27,7 +28,7 @@ type Module interface {
 	Uninit()
 
 	// Action is the main entry point for the module receiving all events
-	Action(ctx context.Context)
+	Action(ctx context.Context, event dhelpers.EventContainer)
 }
 
 var (

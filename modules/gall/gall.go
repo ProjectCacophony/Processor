@@ -17,13 +17,11 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayBoard(ctx context.Context) {
+func displayBoard(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.displayBoard")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	boardID := strings.ToLower(event.Args[1])
 
@@ -77,13 +75,11 @@ func displayBoard(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func addBoard(ctx context.Context) {
+func addBoard(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.addBoard")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
 		return
@@ -150,13 +146,11 @@ func addBoard(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func listFeeds(ctx context.Context) {
+func listFeeds(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.listFeeds")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var err error
 	var feedEntries []models.GallFeedEntry
@@ -179,13 +173,11 @@ func listFeeds(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func removeFeed(ctx context.Context) {
+func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "gall.removeFeed")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var err error
 

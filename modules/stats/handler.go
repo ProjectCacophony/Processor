@@ -24,9 +24,7 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(ctx context.Context) {
-	event := dhelpers.EventFromContext(ctx)
-
+func (m *Module) Action(ctx context.Context, event dhelpers.EventContainer) {
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
@@ -34,7 +32,7 @@ func (m *Module) Action(ctx context.Context) {
 
 			switch destination.Name {
 			case "stats":
-				displayStats(ctx)
+				displayStats(ctx, event)
 				return
 			}
 		}

@@ -21,13 +21,11 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayFeed(ctx context.Context) {
+func displayFeed(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.displayFeed")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	event.GoType(event.MessageCreate.ChannelID)
 
@@ -124,13 +122,11 @@ func displayFeed(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func addFeed(ctx context.Context) {
+func addFeed(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.addFeed")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
 		return
@@ -223,13 +219,11 @@ func addFeed(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func listFeeds(ctx context.Context) {
+func listFeeds(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.listFeeds")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var err error
 	var feedEntries []models.FeedEntry
@@ -252,13 +246,11 @@ func listFeeds(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func removeFeed(ctx context.Context) {
+func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "feed.removeFeed")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var err error
 

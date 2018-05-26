@@ -18,13 +18,11 @@ import (
 )
 
 // takes hex code and displays matching color
-func displayColor(ctx context.Context) {
+func displayColor(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "color.displayColor")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 2 {
 		return

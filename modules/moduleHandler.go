@@ -3,6 +3,8 @@ package modules
 import (
 	"strings"
 
+	"context"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 	"gitlab.com/Cacophony/dhelpers"
@@ -30,13 +32,13 @@ func CallModules(event dhelpers.EventContainer) {
 							}
 						}()
 
-						span, ctx := opentracing.StartSpanFromContext(dhelpers.ContextWithEvent(event), destination)
+						span, ctx := opentracing.StartSpanFromContext(context.Background(), destination)
 						span.LogFields(
 							log.String("event", event.Key),
 						)
 						defer span.Finish()
 
-						moduleModule.Action(ctx)
+						moduleModule.Action(ctx, event)
 					}(targetDest.Name, module, event)
 				}
 			}

@@ -26,9 +26,7 @@ func (m *Module) GetTranslationFiles() []string {
 }
 
 // Action is the module entry point when event is triggered
-func (m *Module) Action(ctx context.Context) {
-	event := dhelpers.EventFromContext(ctx)
-
+func (m *Module) Action(ctx context.Context, event dhelpers.EventContainer) {
 	switch event.Type {
 	case dhelpers.MessageCreateEventType:
 
@@ -43,19 +41,19 @@ func (m *Module) Action(ctx context.Context) {
 
 				switch strings.ToLower(event.Args[1]) {
 				case "add": // [p]gall add <board id> [<#target channel or channel id>] [all]
-					addBoard(ctx)
+					addBoard(ctx, event)
 					return
 
 				case "list": // [p]gall list
-					listFeeds(ctx)
+					listFeeds(ctx, event)
 					return
 
 				case "remove", "delete", "rem", "del": // [p]gall remove|delete|rem|delete <board id>
-					removeFeed(ctx)
+					removeFeed(ctx, event)
 					return
 
 				default: // [p]gall <board id> [all]
-					displayBoard(ctx)
+					displayBoard(ctx, event)
 					return
 				}
 			}

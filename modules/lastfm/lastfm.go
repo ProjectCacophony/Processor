@@ -21,13 +21,11 @@ import (
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
-func displayTopArtists(ctx context.Context) {
+func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopArtists")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
@@ -128,13 +126,11 @@ func displayTopArtists(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayTopTracks(ctx context.Context) {
+func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopTracks")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
@@ -235,13 +231,11 @@ func displayTopTracks(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayTopAlbums(ctx context.Context) {
+func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopAlbums")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
@@ -342,13 +336,11 @@ func displayTopAlbums(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayRecent(ctx context.Context) {
+func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayRecent(")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
@@ -409,13 +401,11 @@ func displayRecent(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayNowPlaying(ctx context.Context) {
+func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayNowPlaying")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
@@ -488,13 +478,11 @@ func displayNowPlaying(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayAbout(ctx context.Context) {
+func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayAbout")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
@@ -566,13 +554,11 @@ func displayAbout(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func setUsername(ctx context.Context) {
+func setUsername(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.setUsername")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	if len(event.Args) < 3 {
 		return
@@ -594,13 +580,11 @@ func setUsername(ctx context.Context) {
 	dhelpers.CheckErr(err)
 }
 
-func displayServerTopTracks(ctx context.Context) {
+func displayServerTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayServerTopTracks")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	var err error
 	var period dhelpers.LastFmPeriod

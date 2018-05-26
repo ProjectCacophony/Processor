@@ -9,13 +9,11 @@ import (
 	"gitlab.com/Cacophony/dhelpers"
 )
 
-func simplePing(ctx context.Context, eventReceivedAt time.Time) {
+func simplePing(ctx context.Context, event dhelpers.EventContainer, eventReceivedAt time.Time) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "ping.simplePing")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	_, err := event.SendMessage(event.MessageCreate.ChannelID, time.Since(eventReceivedAt).String())
 	if err != nil {
@@ -23,13 +21,11 @@ func simplePing(ctx context.Context, eventReceivedAt time.Time) {
 	}
 }
 
-func pingInfo(ctx context.Context) {
+func pingInfo(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "ping.pingInfo")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	message := "pong, Gateway => SqsProcessor: " + time.Since(event.ReceivedAt).String() + "\n"
 

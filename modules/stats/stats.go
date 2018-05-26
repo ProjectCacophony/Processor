@@ -18,13 +18,11 @@ import (
 )
 
 // displays various bot stats
-func displayStats(ctx context.Context) {
+func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "stats.displayStats")
 	defer span.Finish()
-
-	event := dhelpers.EventFromContext(ctx)
 
 	// read information from stats
 	botUser, err := state.User(event.BotUserID)
