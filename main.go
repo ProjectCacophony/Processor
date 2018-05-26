@@ -73,7 +73,7 @@ func main() {
 	// Setup all modules
 	modules.Init()
 
-	cache.GetLogger().Infoln("Processor booting completed, took", time.Since(started).String())
+	cache.GetLogger().Infoln("SqsProcessor booting completed, took", time.Since(started).String())
 
 	// bot run loop
 	go func() {

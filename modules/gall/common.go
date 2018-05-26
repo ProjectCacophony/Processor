@@ -31,8 +31,5 @@ func alreadySetUp(boardID, channelID string) (already bool) {
 
 // GetEntryID returns the ID for a Feed Entry (used for deduplication)
 func GetEntryID(entry ginside.Post) string {
-	if entry.ID != "" {
-		return entry.ID
-	}
 	return entry.URL
 }
