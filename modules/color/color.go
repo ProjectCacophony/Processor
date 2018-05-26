@@ -21,7 +21,7 @@ import (
 func displayColor(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "color.displayColor")
+	span, _ = opentracing.StartSpanFromContext(ctx, "color.displayColor")
 	defer span.Finish()
 
 	if len(event.Args) < 2 {
@@ -59,11 +59,12 @@ func displayColor(ctx context.Context, event dhelpers.EventContainer) {
 	draw.Draw(img, img.Bounds(), &image.Uniform{imageColor}, image.ZP, draw.Src)
 	finalImage := img.SubImage(r)
 
-	// send image
+	// encode image
 	var buff bytes.Buffer
 	err = png.Encode(&buff, finalImage)
 	dhelpers.CheckErr(err)
 
+	// send image
 	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: dhelpers.Tf("ColorResult", "hexcode", hexText),

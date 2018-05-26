@@ -9,7 +9,7 @@ import (
 	"gitlab.com/Cacophony/dhelpers/apihelper"
 )
 
-// New creates a new restful Web Service for reporting information about the worker
+// New creates a new mux Web Service for reporting information about the SqsProcessor
 func New() *muxtrace.Router {
 	mux := muxtrace.NewRouter(muxtrace.WithServiceName("SqsProcessor-API"))
 

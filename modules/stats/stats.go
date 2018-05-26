@@ -21,7 +21,7 @@ import (
 func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "stats.displayStats")
+	span, _ = opentracing.StartSpanFromContext(ctx, "stats.displayStats")
 	defer span.Finish()
 
 	// read information from stats

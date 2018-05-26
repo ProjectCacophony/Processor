@@ -32,12 +32,15 @@ func CallModules(event dhelpers.EventContainer) {
 							}
 						}()
 
+						// start span from background
 						span, ctx := opentracing.StartSpanFromContext(context.Background(), destination)
+						// add fields
 						span.LogFields(
 							log.String("event", event.Key),
 						)
 						defer span.Finish()
 
+						// start action
 						moduleModule.Action(ctx, event)
 					}(targetDest.Name, module, event)
 				}
@@ -51,7 +54,9 @@ func Init() {
 	cache.GetLogger().Infoln("Initializing Modules....")
 
 	for _, module := range moduleList {
+		// initialise module
 		module.Init()
+		// load translation files for module
 		for _, translationFileName := range module.GetTranslationFiles() {
 			_, err := cache.GetLocalizationBundle().LoadMessageFile("./translations/" + translationFileName)
 			if err != nil {
@@ -68,6 +73,7 @@ func Uninit() {
 	cache.GetLogger().Infoln("Uninitializing Modules....")
 
 	for _, module := range moduleList {
+		// uninitialise module
 		module.Uninit()
 		cache.GetLogger().Infoln("Uninitialized Module for Destinations", "["+strings.Join(module.GetDestinations(), ", ")+"]")
 	}

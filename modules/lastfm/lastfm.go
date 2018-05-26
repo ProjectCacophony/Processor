@@ -24,15 +24,17 @@ import (
 func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopArtists")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopArtists")
 	defer span.Finish()
 
+	// initialise variables
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
 	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
 	makeCollage, newArgs = isCollageRequest(newArgs)
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -43,15 +45,16 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck, gas
@@ -67,6 +70,7 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	artists, err = dhelpers.LastFmGetTopArtists(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
+	// if no artists found, post error and stop
 	if len(artists) < 1 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
@@ -76,7 +80,9 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	// set content
 	embed.Author.Name = dhelpers.Tf("LastFmTopArtistsTitle", "userData", userInfo, "period", period)
 
+	// create collage if requested
 	if makeCollage {
+		// initialise variables
 		imageUrls := make([]string, 0)
 		artistNames := make([]string, 0)
 		for _, artist := range artists {
@@ -87,6 +93,7 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 			}
 		}
 
+		// create the collage
 		collageBytes := collage.FromUrls(
 			ctx,
 			imageUrls,
@@ -96,9 +103,11 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 			dhelpers.DiscordDarkThemeBackgroundColor,
 		)
 
+		// add collage image to embed
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
+		// send collage to discord and stop
 		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
@@ -112,16 +121,19 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 		return
 	}
 
+	// add artists to embed
 	for i, artist := range artists {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmArtist", "artist", artist) + "\n"
 	}
 
+	// add artists image to embed if possible
 	if artists[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL: artists[0].ImageURL,
 		}
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -129,15 +141,17 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopTracks")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopTracks")
 	defer span.Finish()
 
+	// initialise variables
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
 	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
 	makeCollage, newArgs = isCollageRequest(newArgs)
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -148,15 +162,16 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
@@ -167,12 +182,21 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// get basic embed for user
 	embed := getLastfmUserBaseEmbed(userInfo)
 
-	// get top artists
+	// get top tracks
 	var tracks []dhelpers.LastfmTrackData
 	tracks, err = dhelpers.LastFmGetTopTracks(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
+	// if no tracks found, post error and stop
+	if len(tracks) < 1 {
+		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
+		dhelpers.CheckErr(err)
+		return
+	}
+
+	// create collage if requested
 	if makeCollage {
+		// initialise variables
 		imageUrls := make([]string, 0)
 		trackNames := make([]string, 0)
 		for _, track := range tracks {
@@ -183,6 +207,7 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 			}
 		}
 
+		// create the collage
 		collageBytes := collage.FromUrls(
 			ctx,
 			imageUrls,
@@ -192,9 +217,11 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 			dhelpers.DiscordDarkThemeBackgroundColor,
 		)
 
+		// add collage image to embed
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
+		// send collage to discord and stop
 		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
@@ -208,25 +235,22 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 		return
 	}
 
-	if len(tracks) < 1 {
-		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
-		dhelpers.CheckErr(err)
-		return
-	}
-
-	// set content
+	// set embed title
 	embed.Author.Name = dhelpers.Tf("LastFmTopTracksTitle", "userData", userInfo, "period", period)
 
+	// add tracks to embed
 	for i, track := range tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmTrack", "track", track) + "\n"
 	}
 
+	// add track image to embed if possible
 	if tracks[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL: tracks[0].ImageURL,
 		}
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -234,15 +258,17 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopAlbums")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayTopAlbums")
 	defer span.Finish()
 
+	// initialise variables
 	var newArgs []string
 	var period dhelpers.LastFmPeriod
 	var makeCollage bool
 	period, newArgs = dhelpers.LastFmGetPeriodFromArgs(event.Args)
 	makeCollage, newArgs = isCollageRequest(newArgs)
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -253,15 +279,16 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
@@ -272,11 +299,12 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	// get basic embed for user
 	embed := getLastfmUserBaseEmbed(userInfo)
 
-	// get top artists
+	// get top albums
 	var albums []dhelpers.LastfmAlbumData
 	albums, err = dhelpers.LastFmGetTopAlbums(ctx, userInfo.Username, 10, period)
 	dhelpers.CheckErr(err)
 
+	// if no albums found, post error and stop
 	if len(albums) < 1 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
@@ -286,7 +314,9 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	// set content
 	embed.Author.Name = dhelpers.Tf("LastFmTopAlbumsTitle", "userData", userInfo, "period", period)
 
+	// create collage if requested
 	if makeCollage {
+		// initialise variables
 		imageUrls := make([]string, 0)
 		albumNames := make([]string, 0)
 		for _, album := range albums {
@@ -297,6 +327,7 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 			}
 		}
 
+		// create the collage
 		collageBytes := collage.FromUrls(
 			ctx,
 			imageUrls,
@@ -306,9 +337,11 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 			dhelpers.DiscordDarkThemeBackgroundColor,
 		)
 
+		// add collage image to embed
 		embed.Image = &discordgo.MessageEmbedImage{
 			URL: "attachment://LastFM-Collage.png",
 		}
+		// send collage to discord and stop
 		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
@@ -322,16 +355,19 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 		return
 	}
 
+	// add albums to embed
 	for i, album := range albums {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf("LastFmAlbum", "album", album) + "\n"
 	}
 
+	// add album image to embed if possible
 	if albums[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL: albums[0].ImageURL,
 		}
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -339,9 +375,10 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayRecent(")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayRecent(")
 	defer span.Finish()
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -352,15 +389,16 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
@@ -376,15 +414,17 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	tracks, err = dhelpers.LastFmGetRecentTracks(ctx, userInfo.Username, 10)
 	dhelpers.CheckErr(err)
 
+	// if no tracks found, post error and stop
 	if len(tracks) < 1 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
 
-	// set content
+	// set embed title
 	embed.Author.Name = dhelpers.Tf("LastFmRecentTitle", "userData", userInfo)
 
+	// add tracks to embed
 	for _, track := range tracks {
 		embed.Description += dhelpers.Tf("LastFmTrackLong", "track", track, "hidenp", true)
 
@@ -397,6 +437,7 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 		embed.Description += "\n"
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -404,9 +445,10 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayNowPlaying")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayNowPlaying")
 	defer span.Finish()
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -417,15 +459,16 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
@@ -441,17 +484,19 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	tracks, err = dhelpers.LastFmGetRecentTracks(ctx, userInfo.Username, 2)
 	dhelpers.CheckErr(err)
 
+	// if no tracks found, post error and stop
 	if len(tracks) < 1 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmNoScrobbles", "userData", userInfo))
 		dhelpers.CheckErr(err)
 		return
 	}
 
-	// set content
+	// set embed title
 	embed.Author.Name = dhelpers.Tf("LastFmNowPlayingTitle", "userData", userInfo, "tracks", tracks)
-
+	// set embed description
 	embed.Description = dhelpers.Tf("LastFmTrackLong", "track", tracks[0])
 
+	// add album information if possible
 	if tracks[0].Album != "" {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   dhelpers.T("LastFmAlbumTitle"),
@@ -460,12 +505,14 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 		})
 	}
 
+	// add image if possible
 	if tracks[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL: tracks[0].ImageURL,
 		}
 	}
 
+	// add previous track if possible
 	if len(tracks) >= 2 {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   dhelpers.T("LastFmListenedBeforeTitle"),
@@ -474,6 +521,7 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 		})
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -481,9 +529,10 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayAbout")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayAbout")
 	defer span.Finish()
 
+	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
@@ -494,15 +543,16 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 	if lastfmUsername == "" {
 		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
 	}
-
+	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.SendMessagef(event.MessageCreate.ChannelID, "LastFmNoUserPassed") // nolint: errcheck
 		return
 	}
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
-	// look user
+	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
 	if err != nil && strings.Contains(err.Error(), "User not found") {
 		event.SendMessage(event.MessageCreate.ChannelID, "LastFmUserNotFound") // nolint: errcheck
@@ -526,6 +576,7 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 		embed.Footer.Text = strings.TrimSpace(strings.SplitN(embed.Footer.Text, "|", 2)[0])
 	}
 
+	// add country to embed if possible
 	if userInfo.Country != "" {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   "🗺 Country",
@@ -534,6 +585,7 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 		})
 	}
 
+	// add account creation date to embed if possible
 	if !userInfo.AccountCreation.IsZero() {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   "🗓 Account creation",
@@ -550,6 +602,7 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 		}
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }
@@ -557,15 +610,18 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 func setUsername(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.setUsername")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.setUsername")
 	defer span.Finish()
 
+	// we need at least three args
 	if len(event.Args) < 3 {
 		return
 	}
 
+	// get last.fm username from args
 	username := event.Args[2]
 
+	// upsert username to db
 	err := mdb.UpsertQuery(
 		models.LastFmTable,
 		bson.M{"userid": event.MessageCreate.Author.ID},
@@ -576,6 +632,7 @@ func setUsername(ctx context.Context, event dhelpers.EventContainer) {
 	)
 	dhelpers.CheckErr(err)
 
+	// send to discord
 	_, err = event.SendMessage(event.MessageCreate.ChannelID, "LastFmUsernameSaved")
 	dhelpers.CheckErr(err)
 }
@@ -583,20 +640,23 @@ func setUsername(ctx context.Context, event dhelpers.EventContainer) {
 func displayServerTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// start tracing span
 	var span opentracing.Span
-	span, ctx = opentracing.StartSpanFromContext(ctx, "lastfm.displayServerTopTracks")
+	span, _ = opentracing.StartSpanFromContext(ctx, "lastfm.displayServerTopTracks")
 	defer span.Finish()
 
+	// initialise variables
 	var err error
 	var period dhelpers.LastFmPeriod
 	period, _ = dhelpers.LastFmGetPeriodFromArgs(event.Args)
 
+	// start typing
 	event.GoType(event.MessageCreate.ChannelID)
 
+	// get source guild
 	var guild *discordgo.Guild
 	guild, err = state.Guild(event.MessageCreate.GuildID)
 	dhelpers.CheckErr(err)
 
-	// lookup stats
+	// get stats data from redis and unmarshal
 	statsBytes, err := cache.GetRedisClient().Get(dhelpers.LastFmGuildTopTracksKey(guild.ID, period)).Bytes()
 	if err == redis.Nil {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNoScrobbles"))
@@ -612,17 +672,19 @@ func displayServerTopTracks(ctx context.Context, event dhelpers.EventContainer) 
 	// get basic embed for user
 	embed := getLastfmGuildBaseEmbed(guild, stats.NumberOfUsers)
 
+	// if no tracks found, post error and stop
 	if len(stats.Tracks) < 1 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, dhelpers.Tf("LastFmGuildNo"))
 		dhelpers.CheckErr(err)
 		return
 	}
 
-	// set content
+	// set embed title, footer, and timestamp
 	embed.Author.Name = dhelpers.Tf("LastFmGuildTopTracksTitle", "guild", guild, "period", period)
 	embed.Footer.Text += " | " + dhelpers.T("LastFmCachedAt")
 	embed.Timestamp = dhelpers.DiscordTime(stats.CachedAt)
 
+	// add tracks to embed
 	for i, track := range stats.Tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " + dhelpers.Tf(
 			"LastFmTrack", "track", track) + "\n"
@@ -631,12 +693,14 @@ func displayServerTopTracks(ctx context.Context, event dhelpers.EventContainer) 
 		}
 	}
 
+	// add track image to embed if possible
 	if stats.Tracks[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
 			URL: stats.Tracks[0].ImageURL,
 		}
 	}
 
+	// send to discord
 	_, err = event.SendEmbed(event.MessageCreate.ChannelID, &embed)
 	dhelpers.CheckErr(err)
 }

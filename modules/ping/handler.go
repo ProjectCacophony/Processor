@@ -30,7 +30,7 @@ func (m *Module) Action(ctx context.Context, event dhelpers.EventContainer) {
 
 		switch strings.ToLower(event.Args[0]) {
 		case "pong":
-			simplePing(ctx, event, event.ReceivedAt)
+			simplePing(ctx, event)
 		case "ping":
 			pingInfo(ctx, event)
 		}

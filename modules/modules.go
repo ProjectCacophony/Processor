@@ -32,6 +32,7 @@ type Module interface {
 }
 
 var (
+	// register modules
 	moduleList = []Module{
 		&ping.Module{},
 		&color.Module{},
