@@ -14,6 +14,7 @@ import (
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/apihelper"
 	"gitlab.com/Cacophony/dhelpers/cache"
+	cacophonyHumanize "gitlab.com/Cacophony/dhelpers/humanize"
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
@@ -70,7 +71,7 @@ func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 		}
 		sqsProcessorText += "CR " + strconv.Itoa(sqsProcessorStatusesEntry.Service.Coroutines) + " "
 		sqsProcessorText += "Mem " + humanize.Bytes(sqsProcessorStatusesEntry.Service.Heap) + "\n"
-		sqsProcessorText += "Uptime " + dhelpers.HumanizeDuration(time.Since(sqsProcessorStatusesEntry.Service.Launch)) + "\n"
+		sqsProcessorText += "Uptime " + cacophonyHumanize.Duration(time.Since(sqsProcessorStatusesEntry.Service.Launch)) + "\n"
 	}
 
 	// read worker information
@@ -88,7 +89,7 @@ func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 		workerText += "Jobs " + strconv.Itoa(len(workersStatusesEntry.Entries)) + "\n"
 		workerText += "CR " + strconv.Itoa(workersStatusesEntry.Service.Coroutines) + " "
 		workerText += "Mem " + humanize.Bytes(workersStatusesEntry.Service.Heap) + "\n"
-		workerText += "Uptime " + dhelpers.HumanizeDuration(time.Since(workersStatusesEntry.Service.Launch)) + "\n"
+		workerText += "Uptime " + cacophonyHumanize.Duration(time.Since(workersStatusesEntry.Service.Launch)) + "\n"
 	}
 	workerText = strings.TrimRight(workerText, "\n")
 
@@ -131,7 +132,7 @@ func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 		gatewayText += "Events/D " + humanize.Comma(totalEvents) + " / " + humanize.Comma(gatewayStatusEntry.Events.EventsDiscarded) + "\n"
 		gatewayText += "CR " + strconv.Itoa(gatewayStatusEntry.Service.Coroutines) + " "
 		gatewayText += "Mem " + humanize.Bytes(gatewayStatusEntry.Service.Heap) + "\n"
-		gatewayText += "Uptime " + dhelpers.HumanizeDuration(time.Since(gatewayStatusEntry.Service.Launch)) + "\n"
+		gatewayText += "Uptime " + cacophonyHumanize.Duration(time.Since(gatewayStatusEntry.Service.Launch)) + "\n"
 	}
 	gatewayText = strings.TrimRight(gatewayText, "\n")
 

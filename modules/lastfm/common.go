@@ -7,6 +7,7 @@ import (
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/slice"
 )
 
 // getLastfmUserBaseEmbed gets a discordgo embed base for a last.fm user
@@ -57,12 +58,12 @@ func getLastfmGuildBaseEmbed(guild *discordgo.Guild, listeners int) (embed disco
 
 // isCollageRequest returns true if the args contain an arg making it a collage request
 func isCollageRequest(args []string) (collage bool, newArLastFmNoUserPassedgs []string) {
-	return dhelpers.SliceContainsLowerExclude(args, []string{"collage", "image"})
+	return slice.ContainsLowerExclude(args, []string{"collage", "image"})
 }
 
 // isServerRequest returns true if the args contain an arg making it a server request
 func isServerRequest(args []string) (serverRequest bool, newArgs []string) { // nolint: unparam
-	return dhelpers.SliceContainsLowerExclude(args, []string{"server"})
+	return slice.ContainsLowerExclude(args, []string{"server"})
 }
 
 // getLastFmUsername gets the lastFM username for a specific discord userID, returns an empty string if none found

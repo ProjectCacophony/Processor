@@ -14,6 +14,7 @@ import (
 	"gitlab.com/Cacophony/SqsProcessor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/slice"
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
@@ -31,7 +32,7 @@ func displayBoard(ctx context.Context, event dhelpers.EventContainer) {
 
 	// get all posts (if requested), or just recommended (default)
 	recommended := true
-	if includes, _ := dhelpers.SliceContainsLowerExclude(event.Args, []string{"all"}); includes {
+	if includes, _ := slice.ContainsLowerExclude(event.Args, []string{"all"}); includes {
 		recommended = false
 	}
 
@@ -96,7 +97,7 @@ func addBoard(ctx context.Context, event dhelpers.EventContainer) {
 	// get all posts, or just recommended (default)
 	recommended := true
 	var includes bool
-	if includes, event.Args = dhelpers.SliceContainsLowerExclude(event.Args, []string{"all"}); includes {
+	if includes, event.Args = slice.ContainsLowerExclude(event.Args, []string{"all"}); includes {
 		recommended = false
 	}
 
