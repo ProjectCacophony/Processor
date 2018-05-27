@@ -7,13 +7,17 @@ import (
 	"github.com/json-iterator/go"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/apihelper"
+	"gitlab.com/Cacophony/dhelpers/middleware"
 )
 
 // New creates a new mux Web Service for reporting information about the SqsProcessor
-func New() *muxtrace.Router {
+func New() http.Handler {
 	mux := muxtrace.NewRouter(muxtrace.WithServiceName("SqsProcessor-API"))
 
 	mux.HandleFunc("/stats", getStats)
+
+	// gzip response if accepted
+	mux.Use(middleware.GzipMiddleware)
 
 	return mux
 }

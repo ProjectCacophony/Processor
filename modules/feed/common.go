@@ -17,8 +17,8 @@ import (
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/SqsProcessor/models"
-	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/net"
 )
 
 // GetFeed returns the gofeed.Feed for an URL (ATOM or RSS)
@@ -35,7 +35,7 @@ func GetFeed(feedURL string) (feed *gofeed.Feed, err error) {
 
 	// download feed page
 	var feedData []byte
-	feedData, err = dhelpers.NetGet(parsedFeedURL.String())
+	feedData, err = net.Get(parsedFeedURL.String())
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func getFeedURLFromPage(pageURL string) (feedURL string, err error) {
 
 	// download web page
 	var pageData []byte
-	pageData, err = dhelpers.NetGet(pageURL)
+	pageData, err = net.Get(pageURL)
 	if err != nil {
 		return "", err
 	}
