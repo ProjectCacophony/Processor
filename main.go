@@ -48,10 +48,6 @@ func main() {
 	components.InitLastFm()
 	err = components.InitTracer("SqsProcessor")
 	dhelpers.CheckErr(err)
-	defer func() {
-		uninitTracerErr := components.UninitTracer()
-		dhelpers.CheckErr(uninitTracerErr)
-	}()
 
 	// start api server
 	apiServer := &http.Server{
