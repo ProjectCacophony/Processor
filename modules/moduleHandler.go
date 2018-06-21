@@ -28,7 +28,7 @@ func CallModules(event dhelpers.EventContainer) {
 							err := recover()
 							if err != nil {
 								// handle errors
-								dhelpers.HandleErrWith("SqsProcessor", err.(error), targetDest.ErrorHandlers, &moduleEvent)
+								dhelpers.HandleErrWith("SqsProcessor", err.(error), &moduleEvent, targetDest.ErrorHandlers...)
 							}
 						}()
 
