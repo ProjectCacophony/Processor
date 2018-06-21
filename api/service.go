@@ -4,11 +4,12 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	chiMiddleware "github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/apihelper"
 	"gitlab.com/Cacophony/dhelpers/cache"
+	"gitlab.com/Cacophony/dhelpers/middleware"
 )
 
 // New creates a new mux Web Service for reporting information about the SqsProcessor
@@ -16,10 +17,11 @@ func New() http.Handler {
 	router := chi.NewRouter()
 
 	// setup middleware
+	chiMiddleware.DefaultLogger = chiMiddleware.RequestLogger(&chiMiddleware.DefaultLogFormatter{Logger: cache.GetLogger(), NoColor: false})
+	router.Use(chiMiddleware.Logger)
+	router.Use(middleware.Service("gateway"))
 	router.Use(middleware.Recoverer)
-	middleware.DefaultLogger = middleware.RequestLogger(&middleware.DefaultLogFormatter{Logger: cache.GetLogger(), NoColor: false})
-	router.Use(middleware.Logger)
-	router.Use(middleware.DefaultCompress)
+	router.Use(chiMiddleware.DefaultCompress)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 
 	router.HandleFunc("/stats", getStats)
