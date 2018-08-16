@@ -52,7 +52,7 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -169,7 +169,7 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -286,7 +286,7 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -396,7 +396,7 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -466,7 +466,7 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -550,7 +550,7 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// lookup user
 	userInfo, err := dhelpers.LastFmGetUserinfo(ctx, lastfmUsername)
@@ -649,7 +649,7 @@ func displayServerTopTracks(ctx context.Context, event dhelpers.EventContainer) 
 	period, _ = dhelpers.LastFmGetPeriodFromArgs(event.Args)
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// get source guild
 	var guild *discordgo.Guild

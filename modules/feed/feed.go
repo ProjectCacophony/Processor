@@ -28,7 +28,7 @@ func displayFeed(ctx context.Context, event dhelpers.EventContainer) {
 	defer span.Finish()
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// clean url from discord
 	feedURL := dhelpers.CleanURL(event.Args[1])
@@ -147,7 +147,7 @@ func addFeed(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	feedURL := dhelpers.CleanURL(event.Args[2])
 

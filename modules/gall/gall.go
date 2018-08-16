@@ -28,7 +28,7 @@ func displayBoard(ctx context.Context, event dhelpers.EventContainer) {
 	boardID := strings.ToLower(event.Args[1])
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// get all posts (if requested), or just recommended (default)
 	recommended := true
@@ -92,7 +92,7 @@ func addBoard(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// start typing
-	event.GoType(event.MessageCreate.ChannelID)
+	event.GoType()
 
 	// get all posts, or just recommended (default)
 	recommended := true
