@@ -10,6 +10,8 @@ import (
 
 	"strings"
 
+	"sync"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/json-iterator/go"
@@ -114,12 +116,42 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	// shutdown api server
-	apiServerShutdownContext, apiServerCancel := context.WithTimeout(context.Background(), time.Second*15)
-	defer apiServerCancel()
-	err = apiServer.Shutdown(apiServerShutdownContext)
-	dhelpers.LogError(err)
+	// create sync.WaitGroup for all shutdown goroutines
+	var exitGroup sync.WaitGroup
 
-	// Uninit all modules
-	modules.Uninit()
+	// modules uninit goroutine
+	exitGroup.Add(1)
+	go func() {
+		// uninit all modules
+		cache.GetLogger().Infoln("Uniniting all modules…")
+		modules.Uninit()
+		cache.GetLogger().Infoln("Uninited all modules")
+		exitGroup.Done()
+	}()
+
+	// API Server shutdown goroutine
+	exitGroup.Add(1)
+	go func() {
+		// shutdown api server
+		cache.GetLogger().Infoln("Shutting API server down…")
+		err = apiServer.Shutdown(context.Background())
+		dhelpers.LogError(err)
+		cache.GetLogger().Infoln("Shut API server down")
+		exitGroup.Done()
+	}()
+
+	// wait for all shutdown goroutines to finish and then close channel finished
+	finished := make(chan bool)
+	go func() {
+		exitGroup.Wait()
+		close(finished)
+	}()
+
+	// wait 60 second for everything to finish, or shut it down anyway
+	select {
+	case <-finished:
+		cache.GetLogger().Infoln("shutdown successful")
+	case <-time.After(60 * time.Second):
+		cache.GetLogger().Infoln("forcing shutdown after 60 seconds")
+	}
 }
