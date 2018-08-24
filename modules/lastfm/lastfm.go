@@ -9,15 +9,14 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
-	"github.com/globalsign/mgo/bson"
 	"github.com/go-redis/redis"
 	"github.com/json-iterator/go"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/opentracing/opentracing-go"
-	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/Processor/models"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/cache"
 	"gitlab.com/Cacophony/dhelpers/collage"
-	"gitlab.com/Cacophony/dhelpers/mdb"
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
@@ -37,13 +36,13 @@ func displayTopArtists(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(newArgs) >= 3 {
 		lastfmUsername = event.Args[2]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -154,13 +153,13 @@ func displayTopTracks(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(newArgs) >= 3 {
 		lastfmUsername = event.Args[2]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -271,13 +270,13 @@ func displayTopAlbums(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(newArgs) >= 3 {
 		lastfmUsername = event.Args[2]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -381,13 +380,13 @@ func displayRecent(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(event.Args) >= 3 {
 		lastfmUsername = event.Args[2]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -451,13 +450,13 @@ func displayNowPlaying(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(event.Args) >= 3 {
 		lastfmUsername = event.Args[2]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -535,13 +534,13 @@ func displayAbout(ctx context.Context, event dhelpers.EventContainer) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	if len(event.MessageCreate.Mentions) > 0 {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Mentions[0].ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
 	}
 	if lastfmUsername == "" && len(event.Args) >= 2 {
 		lastfmUsername = event.Args[1]
 	}
 	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.MessageCreate.Author.ID)
+		lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
 	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
@@ -622,13 +621,18 @@ func setUsername(ctx context.Context, event dhelpers.EventContainer) {
 	username := event.Args[2]
 
 	// upsert username to db
-	err := mdb.UpsertQuery(
-		models.LastFmTable,
-		bson.M{"userid": event.MessageCreate.Author.ID},
-		models.LastFmEntry{
-			UserID:         event.MessageCreate.Author.ID,
-			LastFmUsername: username,
-		},
+	err := models.LastFmRepository.Upsert(
+		ctx,
+		bson.NewDocument(bson.EC.String("userid", event.MessageCreate.Author.ID)),
+		bson.NewDocument(
+			bson.EC.Interface(
+				"$set",
+				models.LastFmEntry{
+					UserID:         event.MessageCreate.Author.ID,
+					LastFmUsername: username,
+				},
+			),
+		),
 	)
 	dhelpers.CheckErr(err)
 

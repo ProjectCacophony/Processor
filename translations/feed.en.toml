@@ -1,5 +1,5 @@
-FeedNotFound = "**I was not able to find a feed at <{{.feedURL}}>!** :frown:\nPlease check the URL. I can read RSS and ATOM feeds."
-FeedNetworkErr = "**I wasn't able to connect to <{{.feedURL}}>!** :frown:\nPlease check the URL, if it is correct please try again in a few minutes."
+FeedNotFound = "**I was not able to find a feed at <{{.feedURL}}>!** :weary:\nPlease check the URL. I can read RSS and ATOM feeds."
+FeedNetworkErr = "**I wasn't able to connect to <{{.feedURL}}>!** :weary:\nPlease check the URL, if it is correct please try again in a few minutes."
 FeedInvalidURL = "**Looks like `{{.feedURL}}` is an invalid URL!** :thinking: :ayayay:\nPlease check if you submitted the correct URL."
 FeedItemSummary = "[{{.item.Title}}]({{MarkdownLinkEscape .item.Link}})\n{{if .item.Author}}by {{.item.Author.Name}} {{end}}{{if .item.PublishedParsed}}posted {{HumanizeTime .item.PublishedParsed}}{{end}}"
 FeedAlreadySetUp = "There is already a feed for <{{.feedURL}}> set up in <#{{.targetChannel.ID}}>. :stop:"

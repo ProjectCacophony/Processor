@@ -1,18 +1,23 @@
 package models
 
 import (
-	"github.com/globalsign/mgo/bson"
-	"gitlab.com/Cacophony/dhelpers/mdb"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"gitlab.com/Cacophony/dhelpers/mongo"
 )
 
 const (
 	// LastFmTable is the MongoDB Collection for LastFmEntry entries
-	LastFmTable mdb.Collection = "lastfm"
+	LastFmTable mongo.Collection = "lastfm"
+)
+
+var (
+	// LastFmRepository contains the database logic for the table
+	LastFmRepository = mongo.NewRepository(LastFmTable)
 )
 
 // LastFmEntry is an entry for each Discord User
 type LastFmEntry struct {
-	ID             bson.ObjectId `bson:"_id,omitempty"`
+	ID             *objectid.ObjectID `bson:"_id,omitempty"`
 	UserID         string
 	LastFmUsername string
 }

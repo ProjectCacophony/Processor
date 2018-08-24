@@ -12,25 +12,17 @@ import (
 
 	"sync"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/json-iterator/go"
-	"gitlab.com/Cacophony/SqsProcessor/api"
-	"gitlab.com/Cacophony/SqsProcessor/modules"
+	"gitlab.com/Cacophony/Processor/api"
+	"gitlab.com/Cacophony/Processor/modules"
 	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/cache"
 	"gitlab.com/Cacophony/dhelpers/components"
 )
 
 var (
-	started     time.Time
-	sqsQueueURL string
+	started time.Time
 )
-
-func init() {
-	// parse environment variables
-	sqsQueueURL = os.Getenv("SQS_QUEUE_URL")
-}
 
 func main() {
 	started = time.Now()
@@ -38,17 +30,17 @@ func main() {
 
 	// Set up components
 	components.InitMetrics()
-	components.InitLogger("SqsProcessor")
+	components.InitLogger("Processor")
 	err = components.InitSentry()
 	dhelpers.CheckErr(err)
 	components.InitTranslator(nil)
 	components.InitRedis()
 	err = components.InitMongoDB()
 	dhelpers.CheckErr(err)
-	err = components.InitAwsSqs()
-	dhelpers.CheckErr(err)
 	components.InitLastFm()
-	err = components.InitTracer("SqsProcessor")
+	err = components.InitTracer("Processor")
+	dhelpers.CheckErr(err)
+	err = components.InitKafkaConsumerGroup()
 	dhelpers.CheckErr(err)
 
 	// start api server
@@ -71,43 +63,39 @@ func main() {
 	// Setup all modules
 	modules.Init()
 
-	cache.GetLogger().Infoln("SqsProcessor booting completed, took", time.Since(started).String())
+	cache.GetLogger().Infoln("Processor booting completed, took", time.Since(started).String())
 
 	// bot run loop
 	go func() {
-		sqsClient := cache.GetAwsSqsSession()
+		consumer := cache.GetKafkaConsumerGroup()
 		logger := cache.GetLogger()
 		redisClient := cache.GetRedisClient()
-		var result *sqs.ReceiveMessageOutput
 
-		for {
-			result, err = sqsClient.ReceiveMessage(&sqs.ReceiveMessageInput{
-				QueueUrl:              aws.String(sqsQueueURL),
-				MaxNumberOfMessages:   aws.Int64(10),
-				MessageAttributeNames: aws.StringSlice([]string{}),
-				WaitTimeSeconds:       aws.Int64(20),
-				VisibilityTimeout:     aws.Int64(60 * 60 * 12),
-			})
+		for event := range consumer.Messages() {
+			//for event := range saramaPartitionConsumer.Messages() {
+			// unpack the event data
+			var eventContainer dhelpers.EventContainer
+			err = jsoniter.Unmarshal(event.Value, &eventContainer)
 			if err != nil {
-				panic(err)
+				logger.Errorln("Message unmarshal error: ", err.Error())
+				continue
+			}
+			// deduplication
+			if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
+				continue
 			}
 
-			for _, message := range result.Messages {
-				// unpack the event data
-				var eventContainer dhelpers.EventContainer
-				err = jsoniter.Unmarshal([]byte(*message.Body), &eventContainer)
-				if err != nil {
-					logger.Errorln("Message unmarshal error: ", err.Error())
-					continue
-				}
-				// deduplication
-				if !dhelpers.IsNewEvent(redisClient, "sqs-processor", eventContainer.Key) {
-					continue
-				}
+			// send to modules
+			modules.CallModules(eventContainer)
+		}
+	}()
+	go func() {
+		consumer := cache.GetKafkaConsumerGroup()
+		logger := cache.GetLogger()
 
-				// send to modules
-				modules.CallModules(eventContainer)
-			}
+		for event := range consumer.Errors() {
+			//for event := range saramaPartitionConsumer.Errors() {
+			logger.WithError(event).Errorln("received error from Kafka Consumer for Partition")
 		}
 	}()
 
@@ -137,6 +125,18 @@ func main() {
 		err = apiServer.Shutdown(context.Background())
 		dhelpers.LogError(err)
 		cache.GetLogger().Infoln("Shut API server down")
+		exitGroup.Done()
+	}()
+
+	// Kafka Consumer Group shutdown goroutine
+	exitGroup.Add(1)
+	go func() {
+		// shutdown Kafka Consumer Group
+		cache.GetLogger().Infoln("Shutting Kafka Consumer Group down…")
+		err = cache.GetKafkaConsumerGroup().Close()
+		dhelpers.LogError(err)
+		cache.GetLogger().Infoln("Shut Kafka Consumer Group down")
+
 		exitGroup.Done()
 	}()
 

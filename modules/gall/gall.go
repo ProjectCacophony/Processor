@@ -9,11 +9,10 @@ import (
 
 	"github.com/Seklfreak/ginside"
 	"github.com/bwmarrin/discordgo"
-	"github.com/globalsign/mgo/bson"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/opentracing/opentracing-go"
-	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/Processor/models"
 	"gitlab.com/Cacophony/dhelpers"
-	"gitlab.com/Cacophony/dhelpers/mdb"
 	"gitlab.com/Cacophony/dhelpers/slice"
 	"gitlab.com/Cacophony/dhelpers/state"
 )
@@ -133,7 +132,7 @@ func addBoard(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// check if we already have this board set up
-	if alreadySetUp(boardID, targetChannel.ID) {
+	if alreadySetUp(ctx, boardID, targetChannel.ID) {
 		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "GallBoardFeedAlreadySetUp", "boardID", boardID, "targetChannel", targetChannel)
 		dhelpers.CheckErr(err)
 		return
@@ -152,7 +151,7 @@ func addBoard(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// insert gall feed entry into db
-	_, err = mdb.Insert(models.GallTable, entry)
+	_, err = models.GallRepository.Store(ctx, entry)
 	dhelpers.CheckErr(err)
 
 	// send success message
@@ -169,7 +168,9 @@ func listFeeds(ctx context.Context, event dhelpers.EventContainer) {
 	// get all gall feed entries on current server
 	var err error
 	var feedEntries []models.GallFeedEntry
-	err = mdb.Iter(models.GallTable.DB().Find(bson.M{"guildid": event.MessageCreate.GuildID})).All(&feedEntries)
+	err = models.GallRepository.Find(
+		ctx, bson.NewDocument(bson.EC.String("guildid", event.MessageCreate.GuildID)), &feedEntries,
+	)
 	dhelpers.CheckErr(err)
 
 	// if no entries found, post error and stop
@@ -209,10 +210,14 @@ func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 
 	// try finding gall feed entries with the given boardID on the current server
 	var feedEntries []models.GallFeedEntry
-	err = mdb.Iter(models.GallTable.DB().Find(bson.M{
-		"boardid": boardID,
-		"guildid": event.MessageCreate.GuildID,
-	})).All(&feedEntries)
+	err = models.GallRepository.Find(
+		ctx,
+		bson.NewDocument(
+			bson.EC.String("boardid", boardID),
+			bson.EC.String("guildid", event.MessageCreate.GuildID),
+		),
+		&feedEntries,
+	)
 	// if none found, post error and stop
 	if len(feedEntries) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "GallFeedNotFound")
@@ -232,7 +237,7 @@ func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// delete entry from DB
-	err = mdb.DeleteID(models.GallTable, toDelete.ID)
+	err = models.GallRepository.DeleteByID(ctx, *toDelete.ID)
 	dhelpers.CheckErr(err)
 
 	// send success message

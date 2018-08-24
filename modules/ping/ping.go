@@ -29,7 +29,7 @@ func pingInfo(ctx context.Context, event dhelpers.EventContainer) {
 	defer span.Finish()
 
 	// create message
-	message := "pong, Gateway => SqsProcessor: " + time.Since(event.ReceivedAt).String() + "\n"
+	message := "pong, Gateway => Processor: " + time.Since(event.ReceivedAt).String() + "\n"
 
 	// post message
 	_, err := event.SendMessage(event.MessageCreate.ChannelID, message)

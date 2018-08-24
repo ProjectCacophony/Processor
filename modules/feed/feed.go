@@ -12,12 +12,11 @@ import (
 	"context"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/globalsign/mgo/bson"
 	"github.com/mmcdole/gofeed"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/opentracing/opentracing-go"
-	"gitlab.com/Cacophony/SqsProcessor/models"
+	"gitlab.com/Cacophony/Processor/models"
 	"gitlab.com/Cacophony/dhelpers"
-	"gitlab.com/Cacophony/dhelpers/mdb"
 	"gitlab.com/Cacophony/dhelpers/state"
 )
 
@@ -221,14 +220,14 @@ func addFeed(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// post error if we have the feed set up in the target channel ready
-	if alreadySetUp(feedURL, targetChannel.ID) {
+	if alreadySetUp(ctx, feedURL, targetChannel.ID) {
 		_, err = event.SendMessagef(event.MessageCreate.ChannelID, "FeedAlreadySetUp", "feedURL", feedURL, "targetChannel", targetChannel)
 		dhelpers.CheckErr(err)
 		return
 	}
 
 	// insert new entry
-	_, err = mdb.Insert(models.FeedTable, models.FeedEntry{
+	_, err = models.FeedRepository.Store(ctx, models.FeedEntry{
 		GuildID:       targetChannel.GuildID,
 		ChannelID:     targetChannel.ID,
 		AddedByUserID: event.MessageCreate.Author.ID,
@@ -253,7 +252,9 @@ func listFeeds(ctx context.Context, event dhelpers.EventContainer) {
 	// request feeds on this guild
 	var err error
 	var feedEntries []models.FeedEntry
-	err = mdb.Iter(models.FeedTable.DB().Find(bson.M{"guildid": event.MessageCreate.GuildID})).All(&feedEntries)
+	err = models.FeedRepository.Find(
+		ctx, bson.NewDocument(bson.EC.String("guildid", event.MessageCreate.GuildID)), &feedEntries,
+	)
 	dhelpers.CheckErr(err)
 
 	// post error if no feed set up so far
@@ -293,10 +294,13 @@ func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 
 	// try to find feed with given feedURL (case insensitive) on current server
 	var feedEntries []models.FeedEntry
-	err = mdb.Iter(models.FeedTable.DB().Find(bson.M{
-		"feedurl": bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(feedURL) + "$", Options: "i"}},
-		"guildid": event.MessageCreate.GuildID,
-	})).All(&feedEntries)
+
+	err = models.FeedRepository.Find(ctx,
+		bson.NewDocument(
+			bson.EC.Regex("feedurl", "^"+regexp.QuoteMeta(feedURL)+"$", "i"),
+			bson.EC.String("guildid", event.MessageCreate.GuildID),
+		),
+		&feedEntries)
 	// if not found, post error and stop
 	if len(feedEntries) <= 0 {
 		_, err = event.SendMessage(event.MessageCreate.ChannelID, "FeedEntryNotFound")
@@ -316,7 +320,7 @@ func removeFeed(ctx context.Context, event dhelpers.EventContainer) {
 	}
 
 	// delete entry
-	err = mdb.DeleteID(models.FeedTable, toDelete.ID)
+	err = models.FeedRepository.DeleteByID(ctx, *toDelete.ID)
 	dhelpers.CheckErr(err)
 
 	// send success message

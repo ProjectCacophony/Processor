@@ -59,7 +59,7 @@ func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 
 	// read sqsProcessor information
 	var sqsProcessorText string
-	sqsProcessorStatuses := apihelper.ReadSqsProcessorStatus()
+	sqsProcessorStatuses := apihelper.ReadProcessorStatus()
 	sqsProcessorText += "(" + strconv.Itoa(len(sqsProcessorStatuses)) + ")\n"
 	for _, sqsProcessorStatusesEntry := range sqsProcessorStatuses {
 		if !sqsProcessorStatusesEntry.Available {
@@ -156,7 +156,7 @@ func displayStats(ctx context.Context, event dhelpers.EventContainer) {
 
 	// display worker information
 	statsEmbed.Fields = append(statsEmbed.Fields, &discordgo.MessageEmbedField{
-		Name:   "📠 SqsProcessor",
+		Name:   "📠 Processor",
 		Value:  sqsProcessorText,
 		Inline: true,
 	})

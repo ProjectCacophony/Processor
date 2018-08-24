@@ -1,12 +1,14 @@
 package lastfm
 
 import (
+	"context"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
-	"github.com/globalsign/mgo/bson"
-	"gitlab.com/Cacophony/SqsProcessor/models"
+	"github.com/mongodb/mongo-go-driver/bson"
+	"gitlab.com/Cacophony/Processor/models"
 	"gitlab.com/Cacophony/dhelpers"
-	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/dhelpers/mongo"
 	"gitlab.com/Cacophony/dhelpers/slice"
 )
 
@@ -67,18 +69,19 @@ func isServerRequest(args []string) (serverRequest bool, newArgs []string) { // 
 }
 
 // getLastFmUsername gets the lastFM username for a specific discord userID, returns an empty string if none found
-func getLastFmUsername(userID string) (username string) {
+func getLastFmUsername(ctx context.Context, userID string) (username string) {
 	var entryBucket models.LastFmEntry
-	err := mdb.One(
-		models.LastFmTable.DB().Find(bson.M{"userid": userID}),
+	err := models.LastFmRepository.FindOne(
+		ctx,
+		bson.NewDocument(bson.EC.String("userid", userID)),
 		&entryBucket,
 	)
 
 	if err != nil {
-		if !mdb.ErrNotFound(err) {
-			logger().Errorln("error requesting user", err.Error())
+		if err == mongo.ErrNotFound {
+			return ""
 		}
-		return ""
+		logger().Errorln("error requesting user", err.Error())
 	}
 
 	return entryBucket.LastFmUsername

@@ -3,18 +3,23 @@ package models
 import (
 	"time"
 
-	"github.com/globalsign/mgo/bson"
-	"gitlab.com/Cacophony/dhelpers/mdb"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"gitlab.com/Cacophony/dhelpers/mongo"
 )
 
 const (
 	// FeedTable is the MongoDB Collection for FeedEntry entries
-	FeedTable mdb.Collection = "feeds"
+	FeedTable mongo.Collection = "feeds"
+)
+
+var (
+	// FeedRepository contains the database logic for the table
+	FeedRepository = mongo.NewRepository(FeedTable)
 )
 
 // FeedEntry is an entry for each feed set up
 type FeedEntry struct {
-	ID            bson.ObjectId `bson:"_id,omitempty"`
+	ID            *objectid.ObjectID `bson:"_id,omitempty"`
 	GuildID       string
 	ChannelID     string
 	AddedByUserID string

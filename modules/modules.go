@@ -3,12 +3,12 @@ package modules
 import (
 	"context"
 
-	"gitlab.com/Cacophony/SqsProcessor/modules/color"
-	"gitlab.com/Cacophony/SqsProcessor/modules/feed"
-	"gitlab.com/Cacophony/SqsProcessor/modules/gall"
-	"gitlab.com/Cacophony/SqsProcessor/modules/lastfm"
-	"gitlab.com/Cacophony/SqsProcessor/modules/ping"
-	"gitlab.com/Cacophony/SqsProcessor/modules/stats"
+	"gitlab.com/Cacophony/Processor/modules/color"
+	"gitlab.com/Cacophony/Processor/modules/feed"
+	"gitlab.com/Cacophony/Processor/modules/gall"
+	"gitlab.com/Cacophony/Processor/modules/lastfm"
+	"gitlab.com/Cacophony/Processor/modules/ping"
+	"gitlab.com/Cacophony/Processor/modules/stats"
 	"gitlab.com/Cacophony/dhelpers"
 )
 

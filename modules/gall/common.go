@@ -1,11 +1,12 @@
 package gall
 
 import (
+	"context"
+
 	"github.com/Seklfreak/ginside"
-	"github.com/globalsign/mgo/bson"
-	"gitlab.com/Cacophony/SqsProcessor/models"
+	"github.com/mongodb/mongo-go-driver/bson"
+	"gitlab.com/Cacophony/Processor/models"
 	"gitlab.com/Cacophony/dhelpers"
-	"gitlab.com/Cacophony/dhelpers/mdb"
 )
 
 var (
@@ -20,12 +21,15 @@ var (
 )
 
 // alreadySetUp returns true if the board is already set up in the channel
-func alreadySetUp(boardID, channelID string) (already bool) {
-	count, _ := mdb.Count(
-		models.GallTable, bson.M{
-			"boardid":   boardID,
-			"channelid": channelID,
-		})
+func alreadySetUp(ctx context.Context, boardID, channelID string) (already bool) {
+	count, err := models.GallRepository.Count(
+		ctx,
+		bson.NewDocument(
+			bson.EC.String("boardid", boardID),
+			bson.EC.String("channelid", channelID),
+		),
+	)
+	dhelpers.LogError(err)
 	return count > 0
 }
 

@@ -12,12 +12,14 @@ import (
 	"strconv"
 	"time"
 
+	"context"
+
 	"github.com/PuerkitoBio/goquery"
-	"github.com/globalsign/mgo/bson"
 	"github.com/mmcdole/gofeed"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/pkg/errors"
-	"gitlab.com/Cacophony/SqsProcessor/models"
-	"gitlab.com/Cacophony/dhelpers/mdb"
+	"gitlab.com/Cacophony/Processor/models"
+	"gitlab.com/Cacophony/dhelpers"
 	"gitlab.com/Cacophony/dhelpers/net"
 )
 
@@ -104,13 +106,13 @@ func getFeedURLFromPage(pageURL string) (feedURL string, err error) {
 }
 
 // alreadySetUp returns true if the feed is already set up in the channel
-func alreadySetUp(feedURL, channelID string) (already bool) {
+func alreadySetUp(ctx context.Context, feedURL, channelID string) (already bool) {
 	// go to database, check if feedURL (casesensitive) is already set up for the given channel
-	count, _ := mdb.Count(
-		models.FeedTable, bson.M{
-			"feedurl":   bson.M{"$regex": bson.RegEx{Pattern: "^" + regexp.QuoteMeta(feedURL) + "$", Options: "i"}},
-			"channelid": channelID,
-		})
+	count, err := models.FeedRepository.Count(ctx, bson.NewDocument(
+		bson.EC.Regex("feedurl", "^"+regexp.QuoteMeta(feedURL)+"$", "i"),
+		bson.EC.String("channelid", channelID),
+	))
+	dhelpers.LogError(err)
 	// return true if one or more results
 	return count > 0
 }

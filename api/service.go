@@ -12,7 +12,7 @@ import (
 	"gitlab.com/Cacophony/dhelpers/middleware"
 )
 
-// New creates a new mux Web Service for reporting information about the SqsProcessor
+// New creates a new mux Web Service for reporting information about the Processor
 func New() http.Handler {
 	router := chi.NewRouter()
 
@@ -31,7 +31,7 @@ func New() http.Handler {
 
 func getStats(w http.ResponseWriter, r *http.Request) {
 	// gather data
-	var result apihelper.SqsProcessorStatus
+	var result apihelper.ProcessorStatus
 	result.Service = apihelper.GenerateServiceInformation()
 	result.Available = true
 

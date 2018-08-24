@@ -5,6 +5,8 @@ import (
 
 	"context"
 
+	"fmt"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 	"gitlab.com/Cacophony/dhelpers"
@@ -27,8 +29,11 @@ func CallModules(event dhelpers.EventContainer) {
 						defer func() {
 							err := recover()
 							if err != nil {
+								if _, ok := err.(error); !ok {
+									err = fmt.Errorf("%+v", err)
+								}
 								// handle errors
-								dhelpers.HandleErrWith("SqsProcessor", err.(error), &moduleEvent, targetDest.ErrorHandlers...)
+								dhelpers.HandleErrWith("Processor", err.(error), &moduleEvent, targetDest.ErrorHandlers...)
 							}
 						}()
 
