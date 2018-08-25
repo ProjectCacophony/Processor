@@ -7,6 +7,8 @@ import (
 
 	"fmt"
 
+	"time"
+
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/log"
 	"gitlab.com/Cacophony/dhelpers"
@@ -38,12 +40,16 @@ func CallModules(event dhelpers.EventContainer) {
 						}()
 
 						// start span from background
-						span, ctx := opentracing.StartSpanFromContext(context.Background(), destination)
+						var span opentracing.Span
+						ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+						span, ctx = opentracing.StartSpanFromContext(ctx, destination)
 						// add fields
 						span.LogFields(
 							log.String("event", event.Key),
 						)
+
 						defer span.Finish()
+						defer cancel()
 
 						// start action
 						moduleModule.Action(ctx, event)
