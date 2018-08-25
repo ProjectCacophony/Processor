@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 
+	"net/http/pprof"
+
 	"github.com/go-chi/chi"
 	chiMiddleware "github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -23,6 +25,9 @@ func New() http.Handler {
 	router.Use(middleware.Recoverer)
 	router.Use(chiMiddleware.DefaultCompress)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
+
+	router.HandleFunc("/debug/pprof/", pprof.Index)
+	router.HandleFunc("/debug/pprof/{}", pprof.Index)
 
 	router.HandleFunc("/stats", getStats)
 

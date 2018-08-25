@@ -32,16 +32,16 @@ func main() {
 	components.InitMetrics()
 	components.InitLogger("Processor")
 	err = components.InitSentry()
-	dhelpers.CheckErr(err)
+	dhelpers.CheckErr(err, "failed to initialise sentry")
 	components.InitTranslator(nil)
 	components.InitRedis()
 	err = components.InitMongoDB()
-	dhelpers.CheckErr(err)
+	dhelpers.CheckErr(err, "failed to initialise mongodb")
 	components.InitLastFm()
 	err = components.InitTracer("Processor")
-	dhelpers.CheckErr(err)
+	dhelpers.CheckErr(err, "failed to initialise tracer")
 	err = components.InitKafkaConsumerGroup()
-	dhelpers.CheckErr(err)
+	dhelpers.CheckErr(err, "failed to initialise kafka consumer group")
 
 	// start api server
 	apiServer := &http.Server{
