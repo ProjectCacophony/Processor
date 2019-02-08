@@ -124,6 +124,11 @@ func (p *Processor) Start() error {
 
 		if event.Type == events.MessageCreateEventType {
 			if event.MessageCreate.Author.Bot {
+				err = d.Ack(false)
+				if err != nil {
+					p.logger.Error("failed to ack event", zap.Error(err))
+				}
+
 				continue
 			}
 
@@ -138,7 +143,8 @@ func (p *Processor) Start() error {
 
 				_, _ = session.ChannelMessageSend(
 					event.MessageCreate.ChannelID,
-					"ping: "+time.Since(createdAt).String(),
+					"latency\ndiscord to gateway: "+event.ReceivedAt.Sub(createdAt).String()+"\n"+
+						"gateway to processor: "+time.Now().Sub(event.ReceivedAt).String(),
 				)
 			}
 		}
