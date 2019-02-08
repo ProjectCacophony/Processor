@@ -1,0 +1,42 @@
+variables:
+  DOCKER_IMAGE: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}"
+  DOCKER_IMAGE_PREV: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_BEFORE_SHA}"
+
+stages:
+  - test
+  - build
+
+Go Lint:
+  stage: test
+  image: golang:1.11
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - /go/
+  before_script:
+    - go mod download
+    - go get -u golang.org/x/tools/cmd/goimports
+    - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.13.2
+  script:
+    - make lint
+
+Docker Build:
+  stage: build
+  image: docker:latest
+  cache: {}
+  services:
+    - docker:dind
+  before_script:
+    - >
+      docker login
+      --username "${CI_REGISTRY_USER}"
+      --password "${CI_REGISTRY_PASSWORD}"
+      "${CI_REGISTRY}"
+  script:
+    - docker pull "${DOCKER_IMAGE_PREV}" || true
+    - >
+      docker build
+      --cache-from "${DOCKER_IMAGE_PREV}"
+      --tag "${DOCKER_IMAGE}"
+      "${PWD}"
+    - docker push "${DOCKER_IMAGE}"
