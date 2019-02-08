@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"gitlab.com/Cacophony/go-kit/api"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
@@ -63,6 +66,11 @@ func main() {
 		)
 	}
 
+	// init http server
+	httpRouter := api.NewRouter()
+	httpServer := api.NewHTTPServer(config.Port, httpRouter)
+
+	// start processor
 	go func() {
 		err := processor.Start()
 		if err != nil {
@@ -70,7 +78,20 @@ func main() {
 		}
 	}()
 
-	logger.Info("service is running")
+	// start http server
+	go func() {
+		err := httpServer.ListenAndServe()
+		if err != http.ErrServerClosed {
+			logger.Fatal("http server error",
+				zap.Error(err),
+				zap.String("feature", "http-server"),
+			)
+		}
+	}()
+
+	logger.Info("service is running",
+		zap.Int("port", config.Port),
+	)
 
 	// wait for CTRL+C to stop the service
 	quitChannel := make(chan os.Signal, 1)
@@ -79,10 +100,21 @@ func main() {
 
 	// shutdown features
 
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
+	defer cancel()
+
 	err = amqpConnection.Close()
 	if err != nil {
 		logger.Error("unable to close AMQP session",
 			zap.Error(err),
 		)
 	}
+
+	err = httpServer.Shutdown(ctx)
+	if err != nil {
+		logger.Error("unable to shutdown HTTP Server",
+			zap.Error(err),
+		)
+	}
+
 }
