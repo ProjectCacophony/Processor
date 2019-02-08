@@ -8,19 +8,19 @@ import (
 	"syscall"
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/api"
-
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
 	"gitlab.com/Cacophony/Processor/pkg/processing"
+	"gitlab.com/Cacophony/Processor/plugins"
+	"gitlab.com/Cacophony/go-kit/api"
 	"gitlab.com/Cacophony/go-kit/logging"
 	"go.uber.org/zap"
 )
 
 const (
 	// ServiceName is the name of the service
-	ServiceName = "gateway"
+	ServiceName = "processor"
 )
 
 func main() {
@@ -70,6 +70,9 @@ func main() {
 	httpRouter := api.NewRouter()
 	httpServer := api.NewHTTPServer(config.Port, httpRouter)
 
+	// init plugins
+	plugins.StartPlugins(logger.With(zap.String("feature", "start_plugins")))
+
 	// start processor
 	go func() {
 		err := processor.Start()
@@ -109,6 +112,8 @@ func main() {
 			zap.Error(err),
 		)
 	}
+
+	plugins.StopPlugins(logger.With(zap.String("feature", "stop_plugins")))
 
 	err = httpServer.Shutdown(ctx)
 	if err != nil {
