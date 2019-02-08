@@ -144,7 +144,7 @@ func (p *Processor) Start() error {
 				_, _ = session.ChannelMessageSend(
 					event.MessageCreate.ChannelID,
 					"latency\ndiscord to gateway: "+event.ReceivedAt.Sub(createdAt).String()+"\n"+
-						"gateway to processor: "+time.Now().Sub(event.ReceivedAt).String(),
+						"gateway to processor: "+time.Since(event.ReceivedAt).String(),
 				)
 			}
 		}
