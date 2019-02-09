@@ -5,6 +5,7 @@ import (
 
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"go.uber.org/zap"
 )
 
@@ -21,6 +22,8 @@ type Plugin interface {
 
 	Passthrough() bool
 
+	Localisations() []interfaces.Localisation
+
 	Action(event events.Event) bool
 }
 
@@ -29,6 +32,8 @@ var (
 	PluginList = []Plugin{
 		&ping.Ping{},
 	}
+
+	LocalisationsList []interfaces.Localisation
 )
 
 // nolint: gochecknoinits
@@ -46,6 +51,8 @@ func StartPlugins(logger *zap.Logger) {
 				zap.Error(err),
 			)
 		}
+
+		LocalisationsList = append(LocalisationsList, plugin.Localisations()...)
 	}
 }
 

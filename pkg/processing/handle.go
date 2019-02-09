@@ -21,6 +21,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	ctx := context.Background()
 
 	event.WithContext(ctx)
+	event.WithLocalisations(plugins.LocalisationsList)
 
 	err = delivery.Ack(false)
 	if err != nil {
