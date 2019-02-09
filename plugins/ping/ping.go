@@ -3,7 +3,6 @@ package ping
 import (
 	"time"
 
-	"gitlab.com/Cacophony/Processor/pkg/kit"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -30,7 +29,7 @@ func (p *Ping) Passthrough() bool {
 }
 
 func (p *Ping) Action(event events.Event) bool {
-	if event.Type != events.MessageCreateEventType {
+	if event.Type != events.MessageCreateType {
 		return false
 	}
 
@@ -38,15 +37,21 @@ func (p *Ping) Action(event events.Event) bool {
 		return false
 	}
 
-	createdAt, _ := event.MessageCreate.Timestamp.Parse()
+	createdAt, err := event.MessageCreate.Timestamp.Parse()
+	if err != nil {
+		event.Except(err)
+		return true
+	}
 
-	session, _ := kit.BotSession(event.BotUserID)
-
-	_, _ = session.ChannelMessageSend(
+	_, err = event.Discord().ChannelMessageSend(
 		event.MessageCreate.ChannelID,
 		"latency\ndiscord to gateway: "+event.ReceivedAt.Sub(createdAt).String()+"\n"+
 			"gateway to processor: "+time.Since(event.ReceivedAt).String(),
 	)
+	if err != nil {
+		event.Except(err)
+		return true
+	}
 
 	return true
 }

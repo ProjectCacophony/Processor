@@ -1,6 +1,7 @@
 package processing
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/pkg/errors"
@@ -17,6 +18,10 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 		return errors.Wrap(err, "failed to unmarshal event")
 	}
 
+	ctx := context.Background()
+
+	event.WithContext(ctx)
+
 	err = delivery.Ack(false)
 	if err != nil {
 		return errors.Wrap(err, "failed to ack event")
@@ -24,6 +29,8 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 
 	var handled bool
 	for _, plugin := range plugins.PluginList {
+		event.WithLogger(p.logger.With(zap.String("plugin", plugin.Name())))
+
 		if plugin.Passthrough() {
 			// if passthrough, continue with next plugin asap
 
