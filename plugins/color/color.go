@@ -7,16 +7,17 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"image/png"
+	"image/jpeg"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
 func handleColor(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Send(event.MessageCreate.ChannelID, "color.too-few-arguments") // nolint: errcheck
+		event.Respond("color.too-few-arguments") // nolint: errcheck
 		return
 	}
 
@@ -33,7 +34,7 @@ func handleColor(event *events.Event) {
 	if err != nil {
 		if strings.Contains(err.Error(), "odd length hex string") ||
 			strings.Contains(err.Error(), "invalid byte") {
-			event.Send(event.MessageCreate.ChannelID, "color.invalid-hex") // nolint: errcheck
+			event.Respond("color.invalid-hex") // nolint: errcheck
 			return
 		}
 
@@ -42,7 +43,7 @@ func handleColor(event *events.Event) {
 	}
 
 	if len(rgbArray) < 3 {
-		event.Send(event.MessageCreate.ChannelID, "color.invalid-hex") // nolint: errcheck
+		event.Respond("color.invalid-hex") // nolint: errcheck
 		return
 	}
 
@@ -55,23 +56,28 @@ func handleColor(event *events.Event) {
 
 	// encode image
 	var buff bytes.Buffer
-	err = png.Encode(&buff, finalImage)
+	err = jpeg.Encode(&buff, finalImage, nil)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
 	// send image
-	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
-			Title: event.Translate("color.result", "hexcode", hexText),
+			Title: event.Translate("color.result",
+				"hexcode", hexText,
+				"r", rgbArray[0],
+				"g", rgbArray[1],
+				"b", rgbArray[2],
+				"colorCode", discord.HexToColorCode(hexText)),
 			Image: &discordgo.MessageEmbedImage{
-				URL: "attachment://" + hexText + ".png",
+				URL: "attachment://" + hexText + ".jpg",
 			},
 		},
 		Files: []*discordgo.File{
 			{
-				Name:   hexText + ".png",
+				Name:   hexText + ".jpg",
 				Reader: bytes.NewReader(buff.Bytes()),
 			},
 		},

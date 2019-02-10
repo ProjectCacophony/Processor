@@ -1,3 +1,3 @@
 "color.too-few-arguments" = "Please tell me a hex code."
 "color.invalid-hex" = "You did not tell me a valid hex code."
-"color.result" = "Color #{{ToUpper  .hexcode}}"
+"color.result" = "Color `#{{ToUpper  .hexcode}}`\nRGB: `{{.r}}`, `{{.g}}`, `{{.b}}`\nDiscord Color Code: `{{.colorCode}}`"
