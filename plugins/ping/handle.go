@@ -1,8 +1,6 @@
 package ping
 
 import (
-	"time"
-
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
@@ -47,34 +45,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	switch event.Fields()[0] {
 	case "ping":
 
-		createdAt, err := event.MessageCreate.Timestamp.Parse()
-		if err != nil {
-			event.Except(err)
-			return true
-		}
-
-		_, err = event.Respondf(
-			"ping.ping-response",
-			"DiscordToGateway",
-			event.ReceivedAt.Sub(createdAt),
-			"GatewayToProcessor",
-			time.Since(event.ReceivedAt),
-		)
-		if err != nil {
-			event.Except(err)
-			return true
-		}
-
+		handlePing(event)
 		return true
-
 	case "pong":
 
-		_, err := event.Respond("ping.pong-response")
-		if err != nil {
-			event.Except(err)
-			return true
-		}
-
+		handlePong(event)
 		return true
 	}
 
