@@ -8,29 +8,29 @@ import (
 	"gitlab.com/Cacophony/go-kit/localisation"
 )
 
-type Ping struct{}
+type Plugin struct{}
 
-func (p *Ping) Name() string {
+func (p *Plugin) Name() string {
 	return "ping"
 }
 
-func (p *Ping) Start() error {
+func (p *Plugin) Start() error {
 	return nil
 }
 
-func (p *Ping) Stop() error {
+func (p *Plugin) Stop() error {
 	return nil
 }
 
-func (p *Ping) Priority() int {
+func (p *Plugin) Priority() int {
 	return 0
 }
 
-func (p *Ping) Passthrough() bool {
+func (p *Plugin) Passthrough() bool {
 	return false
 }
 
-func (p *Ping) Localisations() []interfaces.Localisation {
+func (p *Plugin) Localisations() []interfaces.Localisation {
 	local, err := localisation.NewFileSource("assets/translations/ping.en.toml", "en")
 	if err != nil {
 		panic(err) // TODO: handle error
@@ -39,12 +39,12 @@ func (p *Ping) Localisations() []interfaces.Localisation {
 	return []interfaces.Localisation{local}
 }
 
-func (p *Ping) Action(event events.Event) bool {
-	if event.Type != events.MessageCreateType {
+func (p *Plugin) Action(event *events.Event) bool {
+	if !event.Command() {
 		return false
 	}
 
-	switch event.MessageCreate.Content {
+	switch event.Fields()[0] {
 	case "ping":
 
 		createdAt, err := event.MessageCreate.Timestamp.Parse()
@@ -53,8 +53,7 @@ func (p *Ping) Action(event events.Event) bool {
 			return true
 		}
 
-		_, err = event.Sendf(
-			event.MessageCreate.ChannelID,
+		_, err = event.Respondf(
 			"ping.ping-response",
 			"DiscordToGateway",
 			event.ReceivedAt.Sub(createdAt),
@@ -70,7 +69,7 @@ func (p *Ping) Action(event events.Event) bool {
 
 	case "pong":
 
-		_, err := event.Send(event.MessageCreate.ChannelID, "ping.pong-response")
+		_, err := event.Respond("ping.pong-response")
 		if err != nil {
 			event.Except(err)
 			return true

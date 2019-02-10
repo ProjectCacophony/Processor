@@ -3,6 +3,7 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -24,13 +25,14 @@ type Plugin interface {
 
 	Localisations() []interfaces.Localisation
 
-	Action(event events.Event) bool
+	Action(event *events.Event) bool
 }
 
 // nolint: gochecknoglobals
 var (
 	PluginList = []Plugin{
-		&ping.Ping{},
+		&ping.Plugin{},
+		&color.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

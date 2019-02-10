@@ -23,6 +23,8 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	event.WithContext(ctx)
 	event.WithLocalisations(plugins.LocalisationsList)
 
+	event.Parse()
+
 	err = delivery.Ack(false)
 	if err != nil {
 		return errors.Wrap(err, "failed to ack event")
@@ -35,12 +37,12 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 		if plugin.Passthrough() {
 			// if passthrough, continue with next plugin asap
 
-			go p.executePlugin(plugin, event)
+			go p.executePlugin(plugin, &event)
 			continue
 		}
 
 		// else, wait for result, exit if handled
-		handled = p.executePlugin(plugin, event)
+		handled = p.executePlugin(plugin, &event)
 		if handled {
 			return nil
 		}
@@ -49,7 +51,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	return nil
 }
 
-func (p *Processor) executePlugin(plugin plugins.Plugin, event events.Event) bool {
+func (p *Processor) executePlugin(plugin plugins.Plugin, event *events.Event) bool {
 	defer func() {
 		err := recover()
 		if err != nil {
