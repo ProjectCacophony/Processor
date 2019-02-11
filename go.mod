@@ -8,8 +8,8 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
 	github.com/stretchr/objx v0.1.1 // indirect
-	gitlab.com/Cacophony/go-kit v0.0.0-20190210190854-62e6a305f703
+	gitlab.com/Cacophony/go-kit v0.0.0-20190211202426-cbbfba036ec7
 	go.uber.org/zap v1.9.1
-	golang.org/x/crypto v0.0.0-20190208162236-193df9c0f06f // indirect
+	golang.org/x/crypto v0.0.0-20190211182817-74369b46fc67 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )

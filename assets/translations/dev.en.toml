@@ -1,0 +1,2 @@
+"dev.no-subcommand" = "Please specify a valid sub-command. :nayoung:"
+"dev.emoji.list" = "**Here you go:**\n{{range $key, $value := .emojiList}}`:{{$key}}:`: {{range $emoji := $value}}<{{$emoji}}>{{end}}\n{{end}}"

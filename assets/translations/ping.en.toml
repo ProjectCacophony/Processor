@@ -1,7 +1,7 @@
-"ping.ping-response" = "**Latency:**\nDiscord to Gateway: **{{.DiscordToGateway}}**\nGateway to Processor: **{{.GatewayToProcessor}}**"
+"ping.ping-response" = "**:onfire: Latency:**\nDiscord to Gateway: **{{.DiscordToGateway}}**\nGateway to Processor: **{{.GatewayToProcessor}}**"
 
 "ping.pong-response" = [
-    "Pong!",
-    "🏓",
-    "🙄",
+    "Pong! :magic:",
+    ":ghost:",
+    ":kiss:",
 ]
