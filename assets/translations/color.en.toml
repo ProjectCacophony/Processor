@@ -1,3 +1,4 @@
+# handleColor
 "color.too-few-arguments" = "Please tell me a hex code. :detective:"
 "color.invalid-hex" = "You did not tell me a valid hex code. :neutral:"
 "color.result" = "Color `#{{ToUpper  .hexcode}}`\nRGB: `{{.r}}`, `{{.g}}`, `{{.b}}`\nDiscord Color Code: `{{.colorCode}}`"

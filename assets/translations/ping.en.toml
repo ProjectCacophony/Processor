@@ -1,5 +1,11 @@
-"ping.ping-response" = "**:onfire: Latency:**\nDiscord to Gateway: **{{.DiscordToGateway}}**\nGateway to Processor: **{{.GatewayToProcessor}}**"
+# handlePing
+"ping.ping-response.embed.title" = "**:onfire: Latency**"
+"ping.ping-response.embed.field.DiscordToGateway.title" = "Discord to Gateway"
+"ping.ping-response.embed.field.DiscordToGateway.vaue" = "**{{.DiscordToGateway}}**"
+"ping.ping-response.embed.field.GatewayToProcessor.title" = "Gateway to Processor"
+"ping.ping-response.embed.field.GatewayToProcessor.vaue" = "**{{.GatewayToProcessor}}**"
 
+# handlePong
 "ping.pong-response" = [
     "Pong! :magic:",
     ":ghost:",

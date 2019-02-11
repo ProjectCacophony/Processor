@@ -3,6 +3,8 @@ package ping
 import (
 	"time"
 
+	"github.com/bwmarrin/discordgo"
+
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -13,8 +15,24 @@ func handlePing(event *events.Event) {
 		return
 	}
 
-	_, err = event.Respond(
-		"ping.ping-response",
+	_, err = event.RespondComplex(
+		&discordgo.MessageSend{
+			Embed: &discordgo.MessageEmbed{
+				Title: "ping.ping-response.embed.title",
+				Fields: []*discordgo.MessageEmbedField{
+					{
+						Name:   "ping.ping-response.embed.field.DiscordToGateway.title",
+						Value:  "ping.ping-response.embed.field.DiscordToGateway.vaue",
+						Inline: true,
+					},
+					{
+						Name:   "ping.ping-response.embed.field.GatewayToProcessor.title",
+						Value:  "ping.ping-response.embed.field.GatewayToProcessor.vaue",
+						Inline: true,
+					},
+				},
+			},
+		},
 		"DiscordToGateway",
 		event.ReceivedAt.Sub(createdAt),
 		"GatewayToProcessor",
