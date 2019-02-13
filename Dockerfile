@@ -38,5 +38,8 @@ COPY ./assets ./assets
 # expose http server port
 #EXPOSE 8000
 
+# switch to user without permissions
+USER nobody
+
 # run the binary
 ENTRYPOINT [ "/gateway" ]

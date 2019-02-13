@@ -22,12 +22,12 @@ func handlePing(event *events.Event) {
 				Fields: []*discordgo.MessageEmbedField{
 					{
 						Name:   "ping.ping-response.embed.field.DiscordToGateway.title",
-						Value:  "ping.ping-response.embed.field.DiscordToGateway.vaue",
+						Value:  "ping.ping-response.embed.field.DiscordToGateway.value",
 						Inline: true,
 					},
 					{
 						Name:   "ping.ping-response.embed.field.GatewayToProcessor.title",
-						Value:  "ping.ping-response.embed.field.GatewayToProcessor.vaue",
+						Value:  "ping.ping-response.embed.field.GatewayToProcessor.value",
 						Inline: true,
 					},
 				},
