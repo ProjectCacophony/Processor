@@ -7,6 +7,7 @@
 # LOGGING_DISCORD_WEBHOOK
 # DISCORD_TOKEN_<BOT ID>
 # DOCKER_IMAGE_HASH
+# CONCURRENT_PROCESSING_LIMIT
 
 template="k8s/manifest.tmpl.yaml"
 target="k8s/manifest.yaml"
@@ -18,3 +19,4 @@ sed -i -e "s|{{AMQP_DSN}}|$AMQP_DSN|g" "$target"
 sed -i -e "s|{{LOGGING_DISCORD_WEBHOOK}}|$LOGGING_DISCORD_WEBHOOK|g" "$target"
 sed -i -e "s|{{DISCORD_TOKEN_545676292154982400}}|$DISCORD_TOKEN_545676292154982400|g" "$target"
 sed -i -e "s|{{DOCKER_IMAGE_HASH}}|$DOCKER_IMAGE_HASH|g" "$target"
+sed -i -e "s|{{CONCURRENT_PROCESSING_LIMIT}}|$CONCURRENT_PROCESSING_LIMIT|g" "$target"

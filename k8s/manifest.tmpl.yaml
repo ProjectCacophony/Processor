@@ -46,6 +46,8 @@ spec:
             value: "{{PORT}}"
           - name: ENVIRONMENT
             value: "{{ENVIRONMENT}}"
+          - name: CONCURRENT_PROCESSING_LIMIT
+            value: "{{CONCURRENT_PROCESSING_LIMIT}}"
           - name: DISCORD_TOKEN_545676292154982400
             valueFrom:
               secretKeyRef:
