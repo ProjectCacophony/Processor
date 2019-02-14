@@ -3,3 +3,7 @@
 
 # handleDevEmoji
 "dev.emoji.list" = "**Here you go:**\n{{range $key, $value := .emojiList}}`:{{$key}}:`: {{range $emoji := $value}}<{{$emoji}}>{{end}}\n{{end}}"
+
+# handleDevSleep
+"dev.sleep.start" = "I will sleep for {{.durationToSleep}}. :sleeping:"
+"dev.sleep.finished" = "I am done sleeping! :sweatsmile:"

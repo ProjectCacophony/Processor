@@ -47,9 +47,14 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	if event.Fields()[1] == "emoji" {
+	switch event.Fields()[1] {
+	case "emoji":
 
 		handleDevEmoji(event)
+		return true
+	case "sleep":
+
+		handleDevSleep(event)
 		return true
 	}
 
