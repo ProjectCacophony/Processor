@@ -95,6 +95,7 @@ func main() {
 
 	logger.Info("service is running",
 		zap.Int("port", config.Port),
+		zap.Int("concurrent_processing_limit", config.ConcurrentProcessingLimit),
 	)
 
 	// wait for CTRL+C to stop the service
