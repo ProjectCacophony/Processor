@@ -5,7 +5,7 @@ metadata:
   namespace: cacophony
 type: Opaque
 stringData:
-  discordToken545676292154982400: "{{DISCORD_TOKEN}}"
+  discordToken545676292154982400: "{{DISCORD_TOKEN_545676292154982400}}"
   amqpDSN: "{{AMQP_DSN}}"
   loggingDiscordWebhook: "{{LOGGING_DISCORD_WEBHOOK}}"
 ---
