@@ -36,6 +36,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 
 		if plugin.Passthrough() {
 			// if passthrough, continue with next plugin asap
+			// TODO: add workgroup to make sure we only finish handle() after event has been fully processed
 
 			go p.executePlugin(plugin, &event)
 			continue

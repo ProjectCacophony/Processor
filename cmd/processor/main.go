@@ -59,6 +59,7 @@ func main() {
 		amqpConnection,
 		"cacophony",
 		"cacophony.discord.#",
+		config.ConcurrentProcessingLimit,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",
@@ -112,6 +113,8 @@ func main() {
 			zap.Error(err),
 		)
 	}
+
+	// TODO: make sure processor is finished processing events before shutting down
 
 	plugins.StopPlugins(logger.With(zap.String("feature", "stop_plugins")))
 

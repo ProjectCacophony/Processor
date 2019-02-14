@@ -13,11 +13,12 @@ import (
 
 // Processor processes incoming events
 type Processor struct {
-	logger           *zap.Logger
-	serviceName      string
-	amqpConnection   *amqp.Connection
-	amqpExchangeName string
-	amqpRoutingKey   string
+	logger                    *zap.Logger
+	serviceName               string
+	amqpConnection            *amqp.Connection
+	amqpExchangeName          string
+	amqpRoutingKey            string
+	concurrentProcessingLimit int
 
 	amqpChannel *amqp.Channel
 	amqpQueue   *amqp.Queue
@@ -30,13 +31,15 @@ func NewProcessor(
 	amqpConnection *amqp.Connection,
 	amqpExchangeName string,
 	amqpRoutingKey string,
+	concurrentProcessingLimit int,
 ) (*Processor, error) {
 	processor := &Processor{
-		logger:           logger,
-		serviceName:      serviceName,
-		amqpConnection:   amqpConnection,
-		amqpExchangeName: amqpExchangeName,
-		amqpRoutingKey:   amqpRoutingKey,
+		logger:                    logger,
+		serviceName:               serviceName,
+		amqpConnection:            amqpConnection,
+		amqpExchangeName:          amqpExchangeName,
+		amqpRoutingKey:            amqpRoutingKey,
+		concurrentProcessingLimit: concurrentProcessingLimit,
 	}
 
 	err := processor.init()
@@ -110,8 +113,19 @@ func (p *Processor) Start() error {
 		return errors.Wrap(err, "cannot consume queue")
 	}
 
+	// keep semaphore channel to limit the amount of events being processed concurrently
+	semaphore := make(chan interface{}, p.concurrentProcessingLimit)
+
 	for delivery := range deliveries {
+		// wait for channel if channel buffer is full
+		semaphore <- nil
+
 		go func(d amqp.Delivery) {
+			defer func() {
+				// clear channel when completed
+				<-semaphore
+			}()
+
 			err := p.handle(d)
 			if err != nil {
 				p.logger.Error("failed to handle event",
@@ -119,6 +133,11 @@ func (p *Processor) Start() error {
 				)
 			}
 		}(delivery)
+	}
+
+	// try to fill channel with amount of buffer size, this makes sure we will wait for all events to finish processing
+	for i := 0; i < cap(semaphore); i++ {
+		semaphore <- nil
 	}
 
 	return nil
