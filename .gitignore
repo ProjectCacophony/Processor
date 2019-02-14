@@ -14,3 +14,5 @@
 bin/
 
 env.list
+
+k8s/manifest.yaml*
