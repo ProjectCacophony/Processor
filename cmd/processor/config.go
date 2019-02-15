@@ -10,4 +10,5 @@ type config struct {
 	AMQPDSN                   string              `envconfig:"AMQP_DSN" default:"amqp://guest:guest@localhost:5672/"`
 	LoggingDiscordWebhook     string              `envconfig:"LOGGING_DISCORD_WEBHOOK"`
 	ConcurrentProcessingLimit int                 `envconfig:"CONCURRENT_PROCESSING_LIMIT" default:"50"`
+	DiscordTokens             map[string]string   `envconfig:"DISCORD_TOKENS"`
 }

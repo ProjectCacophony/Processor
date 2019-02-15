@@ -60,6 +60,7 @@ func main() {
 		"cacophony",
 		"cacophony.discord.#",
 		config.ConcurrentProcessingLimit,
+		config.DiscordTokens,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",
@@ -96,6 +97,7 @@ func main() {
 	logger.Info("service is running",
 		zap.Int("port", config.Port),
 		zap.Int("concurrent_processing_limit", config.ConcurrentProcessingLimit),
+		zap.String("environment", string(config.Environment)),
 	)
 
 	// wait for CTRL+C to stop the service
