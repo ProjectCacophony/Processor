@@ -1,6 +1,6 @@
 .PHONY: all clean build lint
 
-NAME ?= gateway
+NAME ?= processor
 SOURCE ?= ./cmd/processor
 
 GOOS ?= linux
