@@ -1,6 +1,7 @@
 package processing
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -108,7 +109,9 @@ func (p *Processor) init() error {
 func (p *Processor) Start() error {
 	deliveries, err := p.amqpChannel.Consume(
 		p.amqpQueue.Name,
-		p.serviceName+time.Now().Format(time.RFC3339), // TODO: different consumer tag?
+		fmt.Sprintf(
+			"%s: launched %s", p.serviceName, time.Now().UTC().Format(time.RFC3339),
+		),
 		false,
 		false,
 		false,
