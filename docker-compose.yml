@@ -1,11 +1,8 @@
 version: "2.1"
 services:
-  # RabbitMQ is serving as the AMQP Broker
+  # RabbitMQ is serving as the AMQP Broker, credentials: guest:guest
   rabbitmq:
-    build: docker-compose-rabbitmq/.
-    environment:
-      RABBITMQ_DEFAULT_USER: "guest"
-      RABBITMQ_DEFAULT_PASS: "guest"
+    image: registry.gitlab.com/cacophony/dev-rabbitmq-image:latest
     ports:
       - "15672:15672"
       - "5672:5672"
