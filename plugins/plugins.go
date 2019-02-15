@@ -3,9 +3,8 @@ package plugins
 import (
 	"sort"
 
-	"gitlab.com/Cacophony/Processor/plugins/dev"
-
 	"gitlab.com/Cacophony/Processor/plugins/color"
+	"gitlab.com/Cacophony/Processor/plugins/dev"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -36,6 +35,8 @@ var (
 		&ping.Plugin{},
 		&color.Plugin{},
 		&dev.Plugin{},
+
+		// &template.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

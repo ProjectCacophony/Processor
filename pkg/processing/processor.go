@@ -9,7 +9,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// TODO: max in flight
 // TODO: shutdown logic
 
 // Processor processes incoming events
