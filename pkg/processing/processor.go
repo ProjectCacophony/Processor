@@ -19,6 +19,7 @@ type Processor struct {
 	amqpExchangeName          string
 	amqpRoutingKey            string
 	concurrentProcessingLimit int
+	processingDeadline        time.Duration
 	discordTokens             map[string]string
 
 	amqpChannel *amqp.Channel
@@ -33,6 +34,7 @@ func NewProcessor(
 	amqpExchangeName string,
 	amqpRoutingKey string,
 	concurrentProcessingLimit int,
+	processingDeadline time.Duration,
 	discordTokens map[string]string,
 ) (*Processor, error) {
 	processor := &Processor{
@@ -42,6 +44,7 @@ func NewProcessor(
 		amqpExchangeName:          amqpExchangeName,
 		amqpRoutingKey:            amqpRoutingKey,
 		concurrentProcessingLimit: concurrentProcessingLimit,
+		processingDeadline:        processingDeadline,
 		discordTokens:             discordTokens,
 	}
 

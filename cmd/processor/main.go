@@ -60,6 +60,7 @@ func main() {
 		"cacophony",
 		"cacophony.discord.#",
 		config.ConcurrentProcessingLimit,
+		config.ProcessingDeadline,
 		config.DiscordTokens,
 	)
 	if err != nil {

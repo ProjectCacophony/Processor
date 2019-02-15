@@ -3,6 +3,7 @@ package processing
 import (
 	"context"
 	"encoding/json"
+	"sync"
 
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
@@ -18,7 +19,8 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 		return errors.Wrap(err, "failed to unmarshal event")
 	}
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), p.processingDeadline)
+	defer cancel()
 
 	event.WithContext(ctx)
 	event.WithTokens(p.discordTokens)
@@ -31,15 +33,21 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 		return errors.Wrap(err, "failed to ack event")
 	}
 
+	var wg sync.WaitGroup
 	var handled bool
 	for _, plugin := range plugins.PluginList {
 		event.WithLogger(p.logger.With(zap.String("plugin", plugin.Name())))
 
 		if plugin.Passthrough() {
 			// if passthrough, continue with next plugin asap
-			// TODO: add workgroup to make sure we only finish handle() after event has been fully processed
 
-			go p.executePlugin(plugin, &event)
+			wg.Add(1)
+
+			go func(pl plugins.Plugin) {
+				defer wg.Done()
+
+				p.executePlugin(pl, &event)
+			}(plugin)
 			continue
 		}
 
@@ -49,6 +57,8 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 			return nil
 		}
 	}
+
+	wg.Wait()
 
 	return nil
 }
