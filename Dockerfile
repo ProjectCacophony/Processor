@@ -42,4 +42,4 @@ COPY ./assets ./assets
 USER nobody
 
 # run the binary
-ENTRYPOINT [ "/gateway" ]
+ENTRYPOINT [ "/processor" ]
