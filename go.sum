@@ -1,5 +1,7 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
+github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942/go.mod h1:XdwC3B7PxCkYCXs4AzYEtvQxjsi93vc/kSV09u+AFWw=
 github.com/bwmarrin/discordgo v0.19.0 h1:kMED/DB0NR1QhRcalb85w0Cu3Ep2OrGAqZH1R5awQiY=
 github.com/bwmarrin/discordgo v0.19.0/go.mod h1:O9S4p+ofTFwB02em7jkpkV8M3R0/PUVOwN61zSZ0r4Q=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -27,8 +29,8 @@ github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9/go.mod h1:1WNBiOZtZ
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-gitlab.com/Cacophony/go-kit v0.0.0-20190215210912-74d13e0750b2 h1:9qno73Dc4XPt79XnLLOW5jyPs7pK3nGdyw6DSpZL++g=
-gitlab.com/Cacophony/go-kit v0.0.0-20190215210912-74d13e0750b2/go.mod h1:RErg/MzlnzRoNT1S99qhLytBRkPP/pW/qZ1Dutsm81A=
+gitlab.com/Cacophony/go-kit v0.0.0-20190215225246-38ad830bc303 h1:sGi3kmjoP4dK3fZ6ec5/I7rRwXNXU/e1odCqPBODJVQ=
+gitlab.com/Cacophony/go-kit v0.0.0-20190215225246-38ad830bc303/go.mod h1:RErg/MzlnzRoNT1S99qhLytBRkPP/pW/qZ1Dutsm81A=
 go.uber.org/atomic v1.3.2 h1:2Oa65PReHzfn29GpvgsYwloV9AVFHPDk8tYxt2c2tr4=
 go.uber.org/atomic v1.3.2/go.mod h1:gD2HeocX3+yG+ygLZcrzQJaqmWj9AIm7n08wl/qW/PE=
 go.uber.org/multierr v1.1.0 h1:HoEmRHQPVSqub6w2z2d2EOVs2fjyFRGyofhKuyDq0QI=

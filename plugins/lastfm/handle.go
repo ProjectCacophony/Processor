@@ -1,18 +1,28 @@
-package template
+package lastfm
 
 import (
+	"strings"
+
+	"github.com/Seklfreak/lastfm-go/lastfm"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
 )
 
-type Plugin struct{}
+type Plugin struct {
+	lastfmClient *lastfm.Api
+}
 
 func (p *Plugin) Name() string {
-	return "<plugin name>" // TODO: change me
+	return "lastfm"
 }
 
 func (p *Plugin) Start() error {
+	p.lastfmClient = lastfm.New(
+		"57f55283a6b3d6e65c10192186871cba",
+		"46a19473b0482b854e32ada1032e62b6",
+	) // TODO: don't store plaintest
+
 	return nil
 }
 
@@ -29,7 +39,7 @@ func (p *Plugin) Passthrough() bool {
 }
 
 func (p *Plugin) Localisations() []interfaces.Localisation {
-	local, err := localisation.NewFileSource("assets/translations/<file name>.en.toml", "en") // TODO: change me
+	local, err := localisation.NewFileSource("assets/translations/lastfm.en.toml", "en")
 	if err != nil {
 		panic(err) // TODO: handle error
 	}
@@ -42,14 +52,20 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	switch event.Fields()[0] {
-	case "foo":
+	if event.Fields()[0] != "lastfm" &&
+		event.Fields()[0] != "lf" {
+		return false
+	}
 
-		handleFoo(event)
+	if len(event.Fields()) < 2 {
+		// TODO: send message
 		return true
-	case "bar":
+	}
 
-		handleBar(event)
+	switch strings.ToLower(event.Fields()[1]) {
+	case "np", "nowplaying", "now":
+
+		displayNowPlaying(event, p.lastfmClient)
 		return true
 	}
 

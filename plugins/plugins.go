@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/lastfm"
+
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
@@ -35,8 +37,7 @@ var (
 		&ping.Plugin{},
 		&color.Plugin{},
 		&dev.Plugin{},
-
-		// &template.Plugin{},
+		&lastfm.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation
