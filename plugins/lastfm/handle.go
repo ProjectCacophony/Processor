@@ -95,10 +95,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		handleTopTracks(event, p.lastfmClient)
 		return true
 
-	// case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal":
-	//
-	// 	hadnleTopAlbums(event, p.lastfmClient)
-	// 	return true
+	case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal":
+
+		handleTopAlbums(event, p.lastfmClient)
+		return true
 
 	// case "recent", "recently", "last", "recents":
 	//
