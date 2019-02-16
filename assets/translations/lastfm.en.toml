@@ -3,6 +3,13 @@
 "lastfm.user-not-found" = "Sorry, I could not find the Last.Fm User \"{{.username}}\". :shrug:"
 "lastfm.no-scrobbles" = "It looks like the user **{{.username}}** has no scrobbles. Start listening!"
 
+"lastfm.embed.footer.text" = "powered by last.fm"
+"lastfm.embed.footer.iconurl" = "https://i.imgur.com/p8wijg4.png"
+
+# user specific embeds
+"lastfm.embed.user.author.url" = "https://www.last.fm/user/{{.userData.Username}}"
+"lastfm.embed.user.footer.text" = "powered by last.fm{{if gt .userData.Scrobbles 0}} | Total Scrobbles {{HumanizeNumber64 .userData.Scrobbles}}{{end}}"
+
 "lastfm.album.title" = "Album"
 "lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{.track.Name}}** by **{{.track.Artist}}**]({{EscapeLink .track.URL}}){{if .track.Loved}} ❤{{end}}"
 

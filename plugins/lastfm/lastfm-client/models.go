@@ -7,7 +7,7 @@ type UserData struct {
 	Username        string
 	Name            string
 	Icon            string
-	Scrobbles       int
+	Scrobbles       int64
 	Country         string
 	AccountCreation time.Time
 }

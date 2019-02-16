@@ -20,7 +20,7 @@ func GetUserinfo(client *lastfm.Api, username string) (userData UserData, err er
 	userData.Name = lastfmUser.RealName
 	userData.Country = lastfmUser.Country
 	if lastfmUser.PlayCount != "" {
-		userData.Scrobbles, _ = strconv.Atoi(lastfmUser.PlayCount) // nolint: errcheck, gas
+		userData.Scrobbles, _ = strconv.ParseInt(lastfmUser.PlayCount, 10, 64) // nolint: errcheck, gas
 	}
 
 	if len(lastfmUser.Images) > 0 {

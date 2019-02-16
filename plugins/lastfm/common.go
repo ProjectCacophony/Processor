@@ -1,8 +1,6 @@
 package lastfm
 
 import (
-	"strconv"
-
 	"github.com/bwmarrin/discordgo"
 	lastfm_client "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/discord"
@@ -12,18 +10,15 @@ import (
 func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.MessageEmbed) {
 	// set embed author
 	embed.Author = &discordgo.MessageEmbedAuthor{
-		URL: "https://www.last.fm/user/" + userInfo.Username,
+		URL: "lastfm.embed.user.author.url",
 	}
 	if userInfo.Icon != "" {
 		embed.Author.IconURL = userInfo.Icon
 	}
 	// set embed footer
 	embed.Footer = &discordgo.MessageEmbedFooter{
-		Text:    "powered by last.fm",
-		IconURL: "https://i.imgur.com/p8wijg4.png",
-	}
-	if userInfo.Scrobbles > 0 {
-		embed.Footer.Text += " | Total Plays " + strconv.Itoa(userInfo.Scrobbles) // TODO: humanize
+		Text:    "lastfm.embed.user.footer.text",
+		IconURL: "lastfm.embed.footer.iconurl",
 	}
 	// set embed colour
 	embed.Color = discord.HexToColorCode("#d51007")
