@@ -8,6 +8,7 @@ stringData:
   discordTokens: "{{DISCORD_TOKENS}}"
   amqpDSN: "{{AMQP_DSN}}"
   loggingDiscordWebhook: "{{LOGGING_DISCORD_WEBHOOK}}"
+  dbDSN: "{{DB_DSN}}"
 
 
 ---
@@ -58,6 +59,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: amqpDSN
+          - name: DB_DSN
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: dbDSN
           - name: LOGGING_DISCORD_WEBHOOK
             valueFrom:
               secretKeyRef:
