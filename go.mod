@@ -5,6 +5,7 @@ require (
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/bwmarrin/discordgo v0.19.0
 	github.com/davecgh/go-spew v1.1.1
+	github.com/dustin/go-humanize v1.0.0
 	github.com/golang-migrate/migrate/v4 v4.2.4
 	github.com/gorilla/mux v1.7.0 // indirect
 	github.com/jinzhu/gorm v1.9.2

@@ -100,10 +100,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		handleTopAlbums(event, p.lastfmClient)
 		return true
 
-	// case "recent", "recently", "last", "recents":
-	//
-	// 	handleRecent(event, p.lastfmClient)
-	// 	return true
+	case "recent", "recently", "last", "recents":
+
+		handleRecent(event, p.lastfmClient)
+		return true
 
 	case "set", "register", "save":
 

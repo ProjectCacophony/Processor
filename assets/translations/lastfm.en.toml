@@ -20,7 +20,7 @@
 "lastfm.embed.user.footer.text" = "powered by last.fm{{if gt .userData.Scrobbles 0}} | Total Scrobbles {{HumanizeNumber64 .userData.Scrobbles}}{{end}}"
 
 # displayNowPlaying
-"lastfm.np.embed.title" = "{{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if .track.NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
+"lastfm.np.embed.title" = "{{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if (index .tracks 0).NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
 "lastfm.np.embed.listened-to-before" = "Listened to before"
 
 # setUsername
@@ -34,3 +34,7 @@
 
 # handleTopAlbums
 "lastfm.albums.embed.title" = "{{.userData.Username}}'s top Albums {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
+
+# handleRecent
+"lastfm.recent.embed.title" = "{{.userData.Username}} recently listened to"
+"lastfm.recent.nowplaying" = "now playing"
