@@ -4,6 +4,7 @@ require (
 	cloud.google.com/go v0.36.0 // indirect
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/bwmarrin/discordgo v0.19.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-redis/redis v6.15.1+incompatible
 	github.com/jinzhu/gorm v1.9.2

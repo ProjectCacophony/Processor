@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
