@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
