@@ -9,11 +9,11 @@
 
 "lastfm.album.title" = "Album"
 
-"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}){{if .track.Loved}} ❤{{end}}"
+"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{EscapeLink .track.URL}}){{if .track.Loved}} ❤{{end}}"
 
-"lastfm.artist.short" = "[**{{Escape .artist.Name}}**]({{Escape .artist.URL}}) ({{HumanizeNumber .artist.Scrobbles}} play{{if (not (eq .artist.Scrobbles 1))}}s{{end}})"
-"lastfm.album.short" = "[**{{Escape .album.Name}}** by **{{.album.Artist}}**]({{Escape .album.URL}}) ({{HumanizeNumber .album.Scrobbles}} play{{if (not (eq .album.Scrobbles 1))}}s{{end}})"
-"lastfm.track.short"=  "[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}) ({{HumanizeNumber .track.Scrobbles}} play{{if (not (eq .track.Scrobbles 1))}}s{{end}}{{if (gt .track.Users 0)}}, {{HumanizeNumber .track.Users}} listener{{if (not (eq .track.Users 1))}}s{{end}}{{end}})"
+"lastfm.artist.short" = "[**{{Escape .artist.Name}}**]({{EscapeLink .artist.URL}}) ({{HumanizeNumber .artist.Scrobbles}} play{{if (not (eq .artist.Scrobbles 1))}}s{{end}})"
+"lastfm.album.short" = "[**{{Escape .album.Name}}** by **{{.album.Artist}}**]({{EscapeLink .album.URL}}) ({{HumanizeNumber .album.Scrobbles}} play{{if (not (eq .album.Scrobbles 1))}}s{{end}})"
+"lastfm.track.short"=  "[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{EscapeLink .track.URL}}) ({{HumanizeNumber .track.Scrobbles}} play{{if (not (eq .track.Scrobbles 1))}}s{{end}}{{if (gt .track.Users 0)}}, {{HumanizeNumber .track.Users}} listener{{if (not (eq .track.Users 1))}}s{{end}}{{end}})"
 
 # user specific embeds
 "lastfm.embed.user.author.url" = "https://www.last.fm/user/{{.userData.Username}}"

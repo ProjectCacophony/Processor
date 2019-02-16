@@ -65,6 +65,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		handleDevState(event)
 		return true
+	case "translate":
+
+		handleDevTranslate(event)
+		return true
 	}
 
 	event.Respond("dev.no-subcommand") // nolint: errcheck

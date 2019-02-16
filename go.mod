@@ -45,7 +45,7 @@ require (
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/shurcooL/webdavfs v0.0.0-20181215192745-5988b2d638f6 // indirect
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190216163645-ccb6e3fde770
+	gitlab.com/Cacophony/go-kit v0.0.0-20190216171014-8729cae5040f
 	go.opencensus.io v0.19.0 // indirect
 	go.uber.org/zap v1.9.1
 	go4.org v0.0.0-20181109185143-00e24f1b2599 // indirect

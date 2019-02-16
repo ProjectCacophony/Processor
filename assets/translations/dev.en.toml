@@ -7,3 +7,6 @@
 # handleDevSleep
 "dev.sleep.start" = "I will sleep for {{.durationToSleep}}. :sleeping:"
 "dev.sleep.finished" = "I am done sleeping! :sweatsmile:"
+
+# handleDevTranslate
+"dev.translate.embed.description" = "```"
