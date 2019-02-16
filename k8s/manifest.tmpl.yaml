@@ -9,6 +9,8 @@ stringData:
   amqpDSN: "{{AMQP_DSN}}"
   loggingDiscordWebhook: "{{LOGGING_DISCORD_WEBHOOK}}"
   dbDSN: "{{DB_DSN}}"
+  lastfmKey: "{{LASTFM_KEY}}"
+  lastfmSecret: "{{LASTFM_SECRET}}"
 
 
 ---
@@ -69,6 +71,16 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: loggingDiscordWebhook
+          - name: LASTFM_KEY
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: lastfmKey
+          - name: LASTFM_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: lastfmSecret
 
 
 ---
