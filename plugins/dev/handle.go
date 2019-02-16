@@ -61,6 +61,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		handleDevSleep(event)
 		return true
+	case "state":
+
+		handleDevState(event)
+		return true
 	}
 
 	event.Respond("dev.no-subcommand") // nolint: errcheck

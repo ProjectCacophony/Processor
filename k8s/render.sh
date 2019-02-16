@@ -11,6 +11,8 @@
 # DB_DSN
 # LASTFM_KEY
 # LASTFM_SECRET
+# REDIS_ADDRESS
+# REDIS_PASSWORD
 
 template="k8s/manifest.tmpl.yaml"
 target="k8s/manifest.yaml"
@@ -26,3 +28,5 @@ sed -i -e "s|{{CONCURRENT_PROCESSING_LIMIT}}|$CONCURRENT_PROCESSING_LIMIT|g" "$t
 sed -i -e "s|{{DB_DSN}}|$DB_DSN|g" "$target"
 sed -i -e "s|{{LASTFM_KEY}}|$LASTFM_KEY|g" "$target"
 sed -i -e "s|{{LASTFM_SECRET}}|$LASTFM_SECRET|g" "$target"
+sed -i -e "s|{{REDIS_ADDRESS}}|$REDIS_ADDRESS|g" "$target"
+sed -i -e "s|{{REDIS_PASSWORD}}|$REDIS_PASSWORD|g" "$target"

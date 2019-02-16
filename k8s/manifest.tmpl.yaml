@@ -11,6 +11,7 @@ stringData:
   dbDSN: "{{DB_DSN}}"
   lastfmKey: "{{LASTFM_KEY}}"
   lastfmSecret: "{{LASTFM_SECRET}}"
+  redisPassword: "{{REDIS_PASSWORD}}"
 
 
 ---
@@ -51,6 +52,8 @@ spec:
             value: "{{ENVIRONMENT}}"
           - name: CONCURRENT_PROCESSING_LIMIT
             value: "{{CONCURRENT_PROCESSING_LIMIT}}"
+          - name: REDIS_ADDRESS
+            value: "{{REDIS_ADDRESS}}"
           - name: DISCORD_TOKENS
             valueFrom:
               secretKeyRef:
@@ -81,6 +84,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: lastfmSecret
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gateway-secret
+                key: redisPassword
 
 
 ---

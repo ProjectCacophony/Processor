@@ -26,6 +26,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	event.WithTokens(p.discordTokens)
 	event.WithLocalisations(plugins.LocalisationsList)
 	event.WithDB(p.db)
+	event.WithState(p.stateClient)
 
 	event.Parse()
 

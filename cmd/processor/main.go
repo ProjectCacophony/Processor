@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jinzhu/gorm"
-
+	"github.com/go-redis/redis"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
@@ -18,6 +18,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
 	"gitlab.com/Cacophony/go-kit/logging"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
@@ -47,6 +48,18 @@ func main() {
 		panic(errors.Wrap(err, "unable to initialise launcher"))
 	}
 
+	// init redis
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     config.RedisAddress,
+		Password: config.RedisPassword,
+	})
+	_, err = redisClient.Ping().Result()
+	if err != nil {
+		logger.Fatal("unable to connect to Redis",
+			zap.Error(err),
+		)
+	}
+
 	// init AMQP session
 	amqpConnection, err := amqp.Dial(config.AMQPDSN)
 	if err != nil {
@@ -65,6 +78,9 @@ func main() {
 	// gormDB.SetLogger(logger) TODO: write logger
 	defer gormDB.Close()
 
+	// init state
+	stateClient := state.NewSate(redisClient)
+
 	// init processor
 	processor, err := processing.NewProcessor(
 		logger.With(zap.String("feature", "processor")),
@@ -73,6 +89,7 @@ func main() {
 		"cacophony",
 		"cacophony.discord.#",
 		gormDB,
+		stateClient,
 		config.ConcurrentProcessingLimit,
 		config.ProcessingDeadline,
 		config.DiscordTokens,

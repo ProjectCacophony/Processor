@@ -16,4 +16,6 @@ type config struct {
 	ProcessingDeadline        time.Duration       `envconfig:"PROCESSING_DEADLINE" default:"5m"`
 	DiscordTokens             map[string]string   `envconfig:"DISCORD_TOKENS"`
 	DBDSN                     string              `envconfig:"DB_DSN" default:"postgres://postgres:postgres@localhost:5432/?sslmode=disable"`
+	RedisAddress              string              `envconfig:"REDIS_ADDRESS" default:"localhost:6379"`
+	RedisPassword             string              `envconfig:"REDIS_PASSWORD"`
 }
