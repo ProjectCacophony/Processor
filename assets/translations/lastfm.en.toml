@@ -1,6 +1,6 @@
 # common
 "lastfm.no-subcommand" = "Please specify a valid sub-command. :glare:"
-"lastfm.no-user" = "Please tell me a Last.Fm Username. :smile:"
+"lastfm.no-user" = "Please tell me a Last.Fm Username. :smile:\nYou can save your username using `{{.prefix}}lf set <username>`."
 "lastfm.user-not-found" = "Sorry, I could not find the Last.Fm User \"{{.username}}\". :shrug:"
 "lastfm.no-scrobbles" = "It looks like the user **{{.username}}** has no scrobbles. Start listening!"
 
