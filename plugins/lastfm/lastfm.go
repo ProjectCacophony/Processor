@@ -479,7 +479,7 @@ package lastfm
 // 	dhelpers.CheckErr(err)
 // }
 //
-// func setUsername(event *events.Event) {
+// func handleSet(event *events.Event) {
 // 	// we need at least three args
 // 	if len(event.Args) < 3 {
 // 		return

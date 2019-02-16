@@ -1,7 +1,10 @@
 package lastfm
 
 import (
+	"errors"
 	"strings"
+
+	"github.com/kelseyhightower/envconfig"
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
 
@@ -22,10 +25,20 @@ func (p *Plugin) Name() string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	params.DB.AutoMigrate(User{})
 
+	var config Config
+	err := envconfig.Process("", &config)
+	if err != nil {
+		return nil
+	}
+
+	if config.Key == "" || config.Secret == "" {
+		return errors.New("last.fm plugin configuration missing")
+	}
+
 	p.lastfmClient = lastfm.New(
-		"57f55283a6b3d6e65c10192186871cba",
-		"46a19473b0482b854e32ada1032e62b6",
-	) // TODO: don't store plaintest
+		config.Key,
+		config.Secret,
+	)
 
 	return nil
 }
@@ -69,12 +82,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 	switch strings.ToLower(event.Fields()[1]) {
 	case "np", "nowplaying", "now":
 
-		displayNowPlaying(event, p.lastfmClient)
+		handleNowPlaying(event, p.lastfmClient)
 		return true
 
 	case "set":
 
-		setUsername(event)
+		handleSet(event)
 		return true
 	}
 

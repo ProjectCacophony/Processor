@@ -9,7 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func displayNowPlaying(event *events.Event, lastfmClient *lastfm.Api) {
+func handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api) {
 	// get lastFM username to look up
 	var lastfmUsername string
 	// if len(event.MessageCreate.Mentions) > 0 {

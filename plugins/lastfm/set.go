@@ -4,7 +4,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func setUsername(event *events.Event) {
+func handleSet(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		return
 	}

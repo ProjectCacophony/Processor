@@ -61,6 +61,7 @@ func StartPlugins(logger *zap.Logger, db *gorm.DB) {
 				zap.Error(err),
 			)
 		}
+		// TODO: do not send events to plugins that failed to start
 
 		LocalisationsList = append(LocalisationsList, plugin.Localisations()...)
 	}
