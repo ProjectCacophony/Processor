@@ -72,33 +72,57 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
+	event.Typing()
+
 	if len(event.Fields()) < 2 {
-		event.Respond("lastfm.no-subcommand") // nolint: errcheck
+		handleNowPlaying(event, p.lastfmClient, 1)
 		return true
 	}
-
-	event.Typing()
 
 	switch strings.ToLower(event.Fields()[1]) {
 	case "np", "nowplaying", "now":
 
-		handleNowPlaying(event, p.lastfmClient)
+		handleNowPlaying(event, p.lastfmClient, 2)
 		return true
 
 	case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists", "ta":
 
-		handleTopArtists(event, p.lastfmClient)
+		handleTopArtists(event, p.lastfmClient, 2)
 		return true
 
 	case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks", "tt", "ts":
 
-		handleTopTracks(event, p.lastfmClient)
+		handleTopTracks(event, p.lastfmClient, 2)
 		return true
 
 	case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal":
 
-		handleTopAlbums(event, p.lastfmClient)
+		handleTopAlbums(event, p.lastfmClient, 2)
 		return true
+
+	case "top":
+		if len(event.Fields()) < 3 {
+			event.Respond("lastfm.no-subcommand") // nolint: errcheck
+			return true
+		}
+
+		switch strings.ToLower(event.Fields()[2]) {
+		case "artist", "artists":
+
+			handleTopArtists(event, p.lastfmClient, 3)
+			return true
+
+		case "track", "tracks":
+
+			handleTopTracks(event, p.lastfmClient, 3)
+			return true
+
+		case "album", "albums":
+
+			handleTopAlbums(event, p.lastfmClient, 3)
+			return true
+
+		}
 
 	case "recent", "recently", "last", "recents":
 
@@ -116,6 +140,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	event.Respond("lastfm.no-subcommand") // nolint: errcheck
+	handleNowPlaying(event, p.lastfmClient, 1)
 	return true
 }

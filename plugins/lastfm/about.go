@@ -36,7 +36,7 @@ func handleAbout(event *events.Event, lastfmClient *lastfm.Api) {
 	// replace scrobbles count in footer with field
 	embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 		Name:   "🎶 Scrobbles",
-		Value:  humanize.Comma(int64(userInfo.Scrobbles)),
+		Value:  humanize.Comma(userInfo.Scrobbles),
 		Inline: false,
 	})
 	if strings.Contains(embed.Footer.Text, "|") {

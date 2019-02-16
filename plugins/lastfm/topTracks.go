@@ -1,3 +1,4 @@
+// nolint: dupl
 package lastfm
 
 import (
@@ -10,8 +11,8 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleTopTracks(event *events.Event, lastfmClient *lastfm.Api) {
-	fields := event.Fields()[2:]
+func handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, offset int) {
+	fields := event.Fields()[offset:]
 
 	// var makeCollage bool
 	period, fields := lastfmclient.GetPeriodFromArgs(fields)

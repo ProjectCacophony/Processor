@@ -9,8 +9,8 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api) {
-	lastfmUsername, _ := extractUsername(event, event.Fields(), 2)
+func handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api, offset int) {
+	lastfmUsername, _ := extractUsername(event, event.Fields(), offset)
 	if lastfmUsername == "" {
 		event.Respond("lastfm.no-user") // nolint: errcheck
 		return
