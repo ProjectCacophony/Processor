@@ -9,6 +9,10 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
+const (
+	unavailablePlaceholder = "N/A"
+)
+
 func handleDevState(event *events.Event) {
 	targetUserID := event.MessageCreate.Author.ID
 	if len(event.Fields()) >= 3 {
@@ -32,7 +36,7 @@ func handleDevState(event *events.Event) {
 	}
 
 	user, _ := event.State().User(targetUserID)
-	usernameText := "N/A"
+	usernameText := unavailablePlaceholder
 	if user != nil {
 		usernameText = user.String()
 	}
@@ -41,8 +45,8 @@ func handleDevState(event *events.Event) {
 		event.MessageCreate.GuildID,
 		targetUserID,
 	)
-	memberRolesText := "N/A"
-	memberJoinedAtText := "N/A"
+	memberRolesText := unavailablePlaceholder
+	memberJoinedAtText := unavailablePlaceholder
 	if member != nil {
 		memberRolesText = strconv.Itoa(len(member.Roles))
 		memberJoinedAt, _ := member.JoinedAt.Parse()
@@ -110,5 +114,4 @@ func handleDevState(event *events.Event) {
 		},
 	})
 	event.Except(err)
-	return
 }
