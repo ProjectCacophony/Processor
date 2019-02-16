@@ -3,6 +3,8 @@ package lastfm
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/common"
+
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -17,7 +19,9 @@ func (p *Plugin) Name() string {
 	return "lastfm"
 }
 
-func (p *Plugin) Start() error {
+func (p *Plugin) Start(params common.StartParameters) error {
+	params.DB.AutoMigrate(User{})
+
 	p.lastfmClient = lastfm.New(
 		"57f55283a6b3d6e65c10192186871cba",
 		"46a19473b0482b854e32ada1032e62b6",
@@ -26,7 +30,7 @@ func (p *Plugin) Start() error {
 	return nil
 }
 
-func (p *Plugin) Stop() error {
+func (p *Plugin) Stop(params common.StopParameters) error {
 	return nil
 }
 
@@ -66,6 +70,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	case "np", "nowplaying", "now":
 
 		displayNowPlaying(event, p.lastfmClient)
+		return true
+
+	case "set":
+
+		setUsername(event)
 		return true
 	}
 

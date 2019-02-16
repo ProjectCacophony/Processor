@@ -53,23 +53,3 @@ func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.Me
 //
 // 	return embed
 // }
-
-// TODO: add username persistency
-// // getLastFmUsername gets the lastFM username for a specific discord userID, returns an empty string if none found
-// func getLastFmUsername(ctx context.Context, userID string) (username string) {
-// 	var entryBucket models.LastFmEntry
-// 	err := models.LastFmRepository.FindOne(
-// 		ctx,
-// 		bson.NewDocument(bson.EC.String("userid", userID)),
-// 		&entryBucket,
-// 	)
-//
-// 	if err != nil {
-// 		if err == mongo.ErrNotFound {
-// 			return ""
-// 		}
-// 		logger().Errorln("error requesting user", err.Error())
-// 	}
-//
-// 	return entryBucket.LastFmUsername
-// }

@@ -9,3 +9,6 @@
 # displayNowPlaying
 "lastfm.np.embed.title" = "{{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if .track.NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
 "lastfm.np.embed.listened-to-before" = "Listened to before"
+
+# setUsername
+"lastfm.set.saved" = "I will remember your username from now on! :idea:"

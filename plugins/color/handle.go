@@ -1,6 +1,7 @@
 package color
 
 import (
+	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
@@ -12,11 +13,15 @@ func (p *Plugin) Name() string {
 	return "color"
 }
 
-func (p *Plugin) Start() error {
+func (p *Plugin) DBModels() []interface{} {
 	return nil
 }
 
-func (p *Plugin) Stop() error {
+func (p *Plugin) Start(params common.StartParameters) error {
+	return nil
+}
+
+func (p *Plugin) Stop(params common.StopParameters) error {
 	return nil
 }
 

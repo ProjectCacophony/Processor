@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
@@ -18,6 +20,7 @@ type Processor struct {
 	amqpConnection            *amqp.Connection
 	amqpExchangeName          string
 	amqpRoutingKey            string
+	db                        *gorm.DB
 	concurrentProcessingLimit int
 	processingDeadline        time.Duration
 	discordTokens             map[string]string
@@ -33,6 +36,7 @@ func NewProcessor(
 	amqpConnection *amqp.Connection,
 	amqpExchangeName string,
 	amqpRoutingKey string,
+	db *gorm.DB,
 	concurrentProcessingLimit int,
 	processingDeadline time.Duration,
 	discordTokens map[string]string,
@@ -43,6 +47,7 @@ func NewProcessor(
 		amqpConnection:            amqpConnection,
 		amqpExchangeName:          amqpExchangeName,
 		amqpRoutingKey:            amqpRoutingKey,
+		db:                        db,
 		concurrentProcessingLimit: concurrentProcessingLimit,
 		processingDeadline:        processingDeadline,
 		discordTokens:             discordTokens,

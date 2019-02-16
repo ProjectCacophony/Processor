@@ -6,6 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/logging"
 )
 
+// nolint: lll
 type config struct {
 	Port                      int                 `envconfig:"PORT" default:"8000"`
 	Environment               logging.Environment `envconfig:"ENVIRONMENT" default:"development"`

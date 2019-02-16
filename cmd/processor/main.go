@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jinzhu/gorm"
+
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
@@ -16,7 +18,6 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
 	"gitlab.com/Cacophony/go-kit/logging"
-	"gitlab.com/Cacophony/go-kit/migrations"
 	"go.uber.org/zap"
 )
 
@@ -46,18 +47,6 @@ func main() {
 		panic(errors.Wrap(err, "unable to initialise launcher"))
 	}
 
-	// perform db migrations
-	err = migrations.Run(
-		logger.With(zap.String("module", "migrations")),
-		"migrations/",
-		config.DBDSN,
-	)
-	if err != nil {
-		logger.Fatal("error performing migrations",
-			zap.Error(err),
-		)
-	}
-
 	// init AMQP session
 	amqpConnection, err := amqp.Dial(config.AMQPDSN)
 	if err != nil {
@@ -66,6 +55,16 @@ func main() {
 		)
 	}
 
+	// init GORM
+	gormDB, err := gorm.Open("postgres", config.DBDSN)
+	if err != nil {
+		logger.Fatal("unable to initialise GORM session",
+			zap.Error(err),
+		)
+	}
+	// gormDB.SetLogger(logger) TODO: write logger
+	defer gormDB.Close()
+
 	// init processor
 	processor, err := processing.NewProcessor(
 		logger.With(zap.String("feature", "processor")),
@@ -73,6 +72,7 @@ func main() {
 		amqpConnection,
 		"cacophony",
 		"cacophony.discord.#",
+		gormDB,
 		config.ConcurrentProcessingLimit,
 		config.ProcessingDeadline,
 		config.DiscordTokens,
@@ -88,7 +88,10 @@ func main() {
 	httpServer := api.NewHTTPServer(config.Port, httpRouter)
 
 	// init plugins
-	plugins.StartPlugins(logger.With(zap.String("feature", "start_plugins")))
+	plugins.StartPlugins(
+		logger.With(zap.String("feature", "start_plugins")),
+		gormDB,
+	)
 
 	// start processor
 	go func() {
@@ -134,7 +137,10 @@ func main() {
 
 	// TODO: make sure processor is finished processing events before shutting down
 
-	plugins.StopPlugins(logger.With(zap.String("feature", "stop_plugins")))
+	plugins.StopPlugins(
+		logger.With(zap.String("feature", "stop_plugins")),
+		gormDB,
+	)
 
 	err = httpServer.Shutdown(ctx)
 	if err != nil {

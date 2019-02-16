@@ -18,9 +18,9 @@ func displayNowPlaying(event *events.Event, lastfmClient *lastfm.Api) {
 	if lastfmUsername == "" && len(event.Fields()) >= 3 {
 		lastfmUsername = event.Fields()[2]
 	}
-	// if lastfmUsername == "" {
-	// 	lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Author.ID)
-	// }
+	if lastfmUsername == "" {
+		lastfmUsername = getLastFmUsername(event.DB(), event.MessageCreate.Author.ID)
+	}
 	// if no username found, post error and stop
 	if lastfmUsername == "" {
 		event.Respond("lastfm.no-user") // nolint: errcheck

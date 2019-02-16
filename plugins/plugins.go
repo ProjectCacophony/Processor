@@ -3,10 +3,11 @@ package plugins
 import (
 	"sort"
 
-	"gitlab.com/Cacophony/Processor/plugins/lastfm"
-
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/color"
+	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
+	"gitlab.com/Cacophony/Processor/plugins/lastfm"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -17,10 +18,10 @@ type Plugin interface {
 	Name() string
 
 	// TODO: add context for deadline
-	Start() error
+	Start(common.StartParameters) error
 
 	// TODO: add context for deadline
-	Stop() error
+	Stop(common.StopParameters) error
 
 	Priority() int
 
@@ -49,10 +50,12 @@ func init() {
 	sort.Sort(ByPriority(PluginList))
 }
 
-func StartPlugins(logger *zap.Logger) {
+func StartPlugins(logger *zap.Logger, db *gorm.DB) {
 	var err error
 	for _, plugin := range PluginList {
-		err = plugin.Start()
+		err = plugin.Start(common.StartParameters{
+			DB: db,
+		})
 		if err != nil {
 			logger.Error("failed to start plugin",
 				zap.Error(err),
@@ -63,10 +66,12 @@ func StartPlugins(logger *zap.Logger) {
 	}
 }
 
-func StopPlugins(logger *zap.Logger) {
+func StopPlugins(logger *zap.Logger, db *gorm.DB) {
 	var err error
 	for _, plugin := range PluginList {
-		err = plugin.Stop()
+		err = plugin.Stop(common.StopParameters{
+			DB: db,
+		})
 		if err != nil {
 			logger.Error("failed to stop plugin",
 				zap.Error(err),
