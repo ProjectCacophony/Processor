@@ -1,5 +1,5 @@
 # common
-"lastfm.no-subcommand" = "Please specify a valid sub-command. :nayoung:"
+"lastfm.no-subcommand" = "Please specify a valid sub-command. :glare:"
 "lastfm.no-user" = "Please tell me a Last.Fm Username. :smile:"
 "lastfm.user-not-found" = "Sorry, I could not find the Last.Fm User \"{{.username}}\". :shrug:"
 "lastfm.no-scrobbles" = "It looks like the user **{{.username}}** has no scrobbles. Start listening!"
@@ -7,12 +7,13 @@
 "lastfm.embed.footer.text" = "powered by last.fm"
 "lastfm.embed.footer.iconurl" = "https://i.imgur.com/p8wijg4.png"
 
+"lastfm.album.title" = "Album"
+"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{.track.Name}}** by **{{.track.Artist}}**]({{EscapeLink .track.URL}}){{if .track.Loved}} ❤{{end}}"
+"lastfm.artist.long"= "[**{{.artist.Name}}**]({{EscapeLink .artist.URL}}) ({{HumanizeNumber .artist.Scrobbles}} play{{if (not (eq .artist.Scrobbles 1))}}s{{end}})"
+
 # user specific embeds
 "lastfm.embed.user.author.url" = "https://www.last.fm/user/{{.userData.Username}}"
 "lastfm.embed.user.footer.text" = "powered by last.fm{{if gt .userData.Scrobbles 0}} | Total Scrobbles {{HumanizeNumber64 .userData.Scrobbles}}{{end}}"
-
-"lastfm.album.title" = "Album"
-"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{.track.Name}}** by **{{.track.Artist}}**]({{EscapeLink .track.URL}}){{if .track.Loved}} ❤{{end}}"
 
 # displayNowPlaying
 "lastfm.np.embed.title" = "{{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if .track.NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
@@ -20,3 +21,6 @@
 
 # setUsername
 "lastfm.set.saved" = "I will remember your username from now on! :idea:"
+
+#
+"lastfm.artists.embed.title" = "{{.userData.Username}}'s top Artists {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"

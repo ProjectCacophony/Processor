@@ -29,29 +29,29 @@ type TrackData struct {
 	Users int
 }
 
-// // LastfmArtistData contains information about an Artist on LastFM
-// type LastfmArtistData struct {
-// 	Name      string
-// 	URL       string
-// 	ImageURL  string
-// 	Scrobbles int
-// }
-//
-// // LastfmAlbumData contains information about an Album on LastFM
-// type LastfmAlbumData struct {
-// 	Name      string
-// 	URL       string
-// 	ImageURL  string
-// 	Artist    string
-// 	ArtistURL string
-// 	Scrobbles int
-// }
-//
-// // LastFmGuildTopTracks contains the top tracks for a guild, it is built by the Worker and stored in redis
-// type LastFmGuildTopTracks struct {
+// ArtistData contains information about an Artist on LastFM
+type ArtistData struct {
+	Name      string
+	URL       string
+	ImageURL  string
+	Scrobbles int
+}
+
+// AlbumData contains information about an Album on LastFM
+type AlbumData struct {
+	Name      string
+	URL       string
+	ImageURL  string
+	Artist    string
+	ArtistURL string
+	Scrobbles int
+}
+
+// // GuildTopTracks contains the top tracks for a guild, it is built by the Worker and stored in redis
+// type GuildTopTracks struct {
 // 	GuildID       string
 // 	NumberOfUsers int
-// 	Period        LastFmPeriod
+// 	Period        Period
 // 	Tracks        []TrackData
 // 	CachedAt      time.Time
 // }

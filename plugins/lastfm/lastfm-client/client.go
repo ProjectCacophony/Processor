@@ -102,146 +102,145 @@ func GetRecentTracks(client *lastfm.Api, username string, limit int) (tracksData
 	return tracksData, nil
 }
 
-// nolint
-// // LastFmGetTopArtists returns the top artists of an user
-// func LastFmGetTopArtists(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period LastFmPeriod) (artistsData []LastfmArtistData, err error) {
-// 	// request data
-// 	var lastfmTopArtists lastfm.UserGetTopArtists
-// 	lastfmTopArtists, err = lastfmClient.User.GetTopArtists(lastfm.P{
-// 		"limit":  limit,
-// 		"user":   lastfmUsername,
-// 		"period": string(period),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	// parse fields
-// 	if lastfmTopArtists.Total > 0 {
-// 		for _, artist := range lastfmTopArtists.Artists {
-// 			lastArtist := LastfmArtistData{
-// 				Name: artist.Name,
-// 				URL:  artist.Url,
-// 			}
-// 			for _, image := range artist.Images {
-// 				if image.Size == lastFmTargetImageSize {
-// 					lastArtist.ImageURL = image.Url
-// 				}
-// 			}
-// 			lastArtist.Scrobbles, _ = strconv.Atoi(artist.PlayCount) // nolint: gas
-//
-// 			artistsData = append(artistsData, lastArtist)
-// 			if len(artistsData) >= limit {
-// 				break
-// 			}
-// 		}
-// 	}
-//
-// 	return artistsData, nil
-// }
-//
-// // LastFmGetTopTracks returns the top tracks of an user
-// func LastFmGetTopTracks(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period LastFmPeriod) (tracksData []TrackData, err error) {
-// 	// request data
-// 	var lastfmTopTracks lastfm.UserGetTopTracks
-// 	lastfmTopTracks, err = lastfmClient.User.GetTopTracks(lastfm.P{
-// 		"limit":  limit,
-// 		"user":   lastfmUsername,
-// 		"period": string(period),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	// parse fields
-// 	if lastfmTopTracks.Total > 0 {
-// 		for _, track := range lastfmTopTracks.Tracks {
-// 			lastTrack := TrackData{
-// 				Name:      track.Name,
-// 				URL:       track.Url,
-// 				Artist:    track.Artist.Name,
-// 				ArtistURL: track.Artist.Url,
-// 			}
-// 			for _, image := range track.Images {
-// 				if image.Size == lastFmTargetImageSize {
-// 					lastTrack.ImageURL = image.Url
-// 				}
-// 			}
-// 			lastTrack.Scrobbles, _ = strconv.Atoi(track.PlayCount) // nolint: gas
-//
-// 			tracksData = append(tracksData, lastTrack)
-// 			if len(tracksData) >= limit {
-// 				break
-// 			}
-// 		}
-// 	}
-//
-// 	return tracksData, nil
-// }
-//
-// // LastFmGetTopAlbums returns the top albums of an user
-// func LastFmGetTopAlbums(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period LastFmPeriod) (albumsData []LastfmAlbumData, err error) {
-// 	// request data
-// 	var lastfmTopAlbums lastfm.UserGetTopAlbums
-// 	lastfmTopAlbums, err = lastfmClient.User.GetTopAlbums(lastfm.P{
-// 		"limit":  limit,
-// 		"user":   lastfmUsername,
-// 		"period": string(period),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-//
-// 	// parse fields
-// 	if lastfmTopAlbums.Total > 0 {
-// 		for _, album := range lastfmTopAlbums.Albums {
-// 			lastAlbum := LastfmAlbumData{
-// 				Name:      album.Name,
-// 				URL:       album.Url,
-// 				Artist:    album.Artist.Name,
-// 				ArtistURL: album.Artist.Url,
-// 			}
-// 			for _, image := range album.Images {
-// 				if image.Size == lastFmTargetImageSize {
-// 					lastAlbum.ImageURL = image.Url
-// 				}
-// 			}
-// 			lastAlbum.Scrobbles, _ = strconv.Atoi(album.PlayCount) // nolint: gas
-//
-// 			albumsData = append(albumsData, lastAlbum)
-// 			if len(albumsData) >= limit {
-// 				break
-// 			}
-// 		}
-// 	}
-//
-// 	return albumsData, nil
-// }
-//
-// // LastFmGetPeriodFromArgs parses args to figure out the correct period
-// func LastFmGetPeriodFromArgs(args []string) (LastFmPeriod, []string) {
-// 	for i, arg := range args {
-// 		switch arg {
-// 		case "7day", "7days", "week", "7", "seven":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriod7day, args
-// 		case "1month", "month", "1", "one":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriod1month, args
-// 		case "3month", "threemonths", "quarter", "3", "three":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriod3month, args
-// 		case "6month", "halfyear", "half", "sixmonths", "6", "six":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriod6month, args
-// 		case "12month", "year", "twelvemonths", "12", "twelve":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriod12month, args
-// 		case "overall", "all", "alltime", "all-time":
-// 			args = append(args[:i], args[i+1:]...)
-// 			return LastFmPeriodOverall, args
-// 		}
-// 	}
-//
-// 	return LastFmPeriodOverall, args
-// }
+// GetTopArtists returns the top artists of an user
+func GetTopArtists(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (artistsData []ArtistData, err error) {
+	// request data
+	var lastfmTopArtists lastfm.UserGetTopArtists
+	lastfmTopArtists, err = lastfmClient.User.GetTopArtists(lastfm.P{
+		"limit":  limit,
+		"user":   lastfmUsername,
+		"period": string(period),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// parse fields
+	if lastfmTopArtists.Total > 0 {
+		for _, artist := range lastfmTopArtists.Artists {
+			lastArtist := ArtistData{
+				Name: artist.Name,
+				URL:  artist.Url,
+			}
+			for _, image := range artist.Images {
+				if image.Size == lastFmTargetImageSize {
+					lastArtist.ImageURL = image.Url
+				}
+			}
+			lastArtist.Scrobbles, _ = strconv.Atoi(artist.PlayCount) // nolint: gas
+
+			artistsData = append(artistsData, lastArtist)
+			if len(artistsData) >= limit {
+				break
+			}
+		}
+	}
+
+	return artistsData, nil
+}
+
+// GetTopTracks returns the top tracks of an user
+func GetTopTracks(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (tracksData []TrackData, err error) {
+	// request data
+	var lastfmTopTracks lastfm.UserGetTopTracks
+	lastfmTopTracks, err = lastfmClient.User.GetTopTracks(lastfm.P{
+		"limit":  limit,
+		"user":   lastfmUsername,
+		"period": string(period),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// parse fields
+	if lastfmTopTracks.Total > 0 {
+		for _, track := range lastfmTopTracks.Tracks {
+			lastTrack := TrackData{
+				Name:      track.Name,
+				URL:       track.Url,
+				Artist:    track.Artist.Name,
+				ArtistURL: track.Artist.Url,
+			}
+			for _, image := range track.Images {
+				if image.Size == lastFmTargetImageSize {
+					lastTrack.ImageURL = image.Url
+				}
+			}
+			lastTrack.Scrobbles, _ = strconv.Atoi(track.PlayCount) // nolint: gas
+
+			tracksData = append(tracksData, lastTrack)
+			if len(tracksData) >= limit {
+				break
+			}
+		}
+	}
+
+	return tracksData, nil
+}
+
+// LastFmGetTopAlbums returns the top albums of an user
+func GetTopAlbums(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (albumsData []AlbumData, err error) {
+	// request data
+	var lastfmTopAlbums lastfm.UserGetTopAlbums
+	lastfmTopAlbums, err = lastfmClient.User.GetTopAlbums(lastfm.P{
+		"limit":  limit,
+		"user":   lastfmUsername,
+		"period": string(period),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// parse fields
+	if lastfmTopAlbums.Total > 0 {
+		for _, album := range lastfmTopAlbums.Albums {
+			lastAlbum := AlbumData{
+				Name:      album.Name,
+				URL:       album.Url,
+				Artist:    album.Artist.Name,
+				ArtistURL: album.Artist.Url,
+			}
+			for _, image := range album.Images {
+				if image.Size == lastFmTargetImageSize {
+					lastAlbum.ImageURL = image.Url
+				}
+			}
+			lastAlbum.Scrobbles, _ = strconv.Atoi(album.PlayCount) // nolint: gas
+
+			albumsData = append(albumsData, lastAlbum)
+			if len(albumsData) >= limit {
+				break
+			}
+		}
+	}
+
+	return albumsData, nil
+}
+
+// GetPeriodFromArgs parses args to figure out the correct period
+func GetPeriodFromArgs(args []string) (Period, []string) {
+	for i, arg := range args {
+		switch arg {
+		case "7day", "7days", "week", "7", "seven":
+			args = append(args[:i], args[i+1:]...)
+			return Period7day, args
+		case "1month", "month", "1", "one":
+			args = append(args[:i], args[i+1:]...)
+			return Period1month, args
+		case "3month", "threemonths", "quarter", "3", "three":
+			args = append(args[:i], args[i+1:]...)
+			return Period3month, args
+		case "6month", "halfyear", "half", "sixmonths", "6", "six":
+			args = append(args[:i], args[i+1:]...)
+			return Period6month, args
+		case "12month", "year", "twelvemonths", "12", "twelve":
+			args = append(args[:i], args[i+1:]...)
+			return Period12month, args
+		case "overall", "all", "alltime", "all-time":
+			args = append(args[:i], args[i+1:]...)
+			return PeriodOverall, args
+		}
+	}
+
+	return PeriodOverall, args
+}

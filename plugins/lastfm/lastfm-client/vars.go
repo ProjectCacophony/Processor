@@ -1,17 +1,17 @@
 package lastfmclient
 
-// // LastFmPeriod is a type for periods used for Last.FM requests
-// type LastFmPeriod string
-//
-// // defines possible LastFM periods
-// const (
-// 	LastFmPeriodOverall LastFmPeriod = "overall"
-// 	LastFmPeriod7day    LastFmPeriod = "7day"
-// 	LastFmPeriod1month  LastFmPeriod = "1month"
-// 	LastFmPeriod3month  LastFmPeriod = "3month"
-// 	LastFmPeriod6month  LastFmPeriod = "6month"
-// 	LastFmPeriod12month LastFmPeriod = "12month"
-// )
+// Period is a type for periods used for Last.FM requests
+type Period string
+
+// defines possible LastFM periods
+const (
+	PeriodOverall Period = "overall"
+	Period7day    Period = "7day"
+	Period1month  Period = "1month"
+	Period3month  Period = "3month"
+	Period6month  Period = "6month"
+	Period12month Period = "12month"
+)
 
 const (
 	lastFmTargetImageSize = "extralarge"

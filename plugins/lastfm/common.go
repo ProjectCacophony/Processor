@@ -18,8 +18,14 @@ func extractUsername(event *events.Event, args []string, pos int) (string, []str
 		}
 	}
 	// try field at pos
-	if len(event.Fields()) > pos {
-		username = event.Fields()[pos]
+	if pos < 0 {
+		pos = len(args) - 1
+		if pos < 0 {
+			pos = 0
+		}
+	}
+	if len(args) > pos {
+		username = args[pos]
 
 		if username != "" {
 			return username, append(args[:pos], args[pos+1:]...)

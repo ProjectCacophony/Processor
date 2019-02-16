@@ -85,6 +85,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 		handleNowPlaying(event, p.lastfmClient)
 		return true
 
+	case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists", "ta":
+
+		handleTopArtists(event, p.lastfmClient)
+		return true
+
 	case "set":
 
 		handleSet(event)
