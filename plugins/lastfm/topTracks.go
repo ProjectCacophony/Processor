@@ -10,7 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleTopArtists(event *events.Event, lastfmClient *lastfm.Api) {
+func handleTopTracks(event *events.Event, lastfmClient *lastfm.Api) {
 	fields := event.Fields()[2:]
 
 	// var makeCollage bool
@@ -31,9 +31,6 @@ func handleTopArtists(event *events.Event, lastfmClient *lastfm.Api) {
 		return
 	}
 
-	// get basic embed for user
-	embed := getLastfmUserBaseEmbed(userInfo)
-
 	// get top artists
 	var artists []lastfmclient.ArtistData
 	artists, err = lastfmclient.GetTopArtists(lastfmClient, userInfo.Username, 10, period)
@@ -49,17 +46,35 @@ func handleTopArtists(event *events.Event, lastfmClient *lastfm.Api) {
 		return
 	}
 
-	// set content
-	embed.Author.Name = "lastfm.artists.embed.title"
+	// get basic embed for user
+	embed := getLastfmUserBaseEmbed(userInfo)
+
+	// get top tracks
+	var tracks []lastfmclient.TrackData
+	tracks, err = lastfmclient.GetTopTracks(lastfmClient, userInfo.Username, 10, period)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	// if no tracks found, post error and stop
+	if len(tracks) < 1 {
+		_, err = event.Respond("lastfm.no-scrobbles", "username", username)
+		event.Except(err)
+		return
+	}
+
+	// set embed title
+	embed.Author.Name = "lastfm.tracks.embed.title"
 
 	// // create collage if requested
 	// if makeCollage {
 	// 	// initialise variables
 	// 	imageUrls := make([]string, 0)
-	// 	artistNames := make([]string, 0)
-	// 	for _, artist := range artists {
-	// 		imageUrls = append(imageUrls, artist.ImageURL)
-	// 		artistNames = append(artistNames, artist.Name)
+	// 	trackNames := make([]string, 0)
+	// 	for _, track := range tracks {
+	// 		imageUrls = append(imageUrls, track.ImageURL)
+	// 		trackNames = append(trackNames, track.Name)
 	// 		if len(imageUrls) >= 9 {
 	// 			break
 	// 		}
@@ -69,7 +84,7 @@ func handleTopArtists(event *events.Event, lastfmClient *lastfm.Api) {
 	// 	collageBytes := collage.FromUrls(
 	// 		ctx,
 	// 		imageUrls,
-	// 		artistNames,
+	// 		trackNames,
 	// 		900, 900,
 	// 		300, 300,
 	// 		dhelpers.DiscordDarkThemeBackgroundColor,
@@ -93,17 +108,17 @@ func handleTopArtists(event *events.Event, lastfmClient *lastfm.Api) {
 	// 	return
 	// }
 
-	// add artists to embed
-	for i, artist := range artists {
+	// add tracks to embed
+	for i, track := range tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " +
-			event.Translate("lastfm.artist.short", "artist", artist) +
+			event.Translate("lastfm.track.short", "track", track) +
 			"\n"
 	}
 
-	// add artists image to embed if possible
-	if artists[0].ImageURL != "" {
+	// add track image to embed if possible
+	if tracks[0].ImageURL != "" {
 		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
-			URL: artists[0].ImageURL,
+			URL: tracks[0].ImageURL,
 		}
 	}
 

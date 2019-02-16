@@ -103,12 +103,14 @@ func GetRecentTracks(client *lastfm.Api, username string, limit int) (tracksData
 }
 
 // GetTopArtists returns the top artists of an user
-func GetTopArtists(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (artistsData []ArtistData, err error) {
+func GetTopArtists(client *lastfm.Api, username string, limit int, period Period) ([]ArtistData, error) {
 	// request data
+	var artistsData []ArtistData
+	var err error
 	var lastfmTopArtists lastfm.UserGetTopArtists
-	lastfmTopArtists, err = lastfmClient.User.GetTopArtists(lastfm.P{
+	lastfmTopArtists, err = client.User.GetTopArtists(lastfm.P{
 		"limit":  limit,
-		"user":   lastfmUsername,
+		"user":   username,
 		"period": string(period),
 	})
 	if err != nil {
@@ -140,12 +142,15 @@ func GetTopArtists(lastfmClient *lastfm.Api, lastfmUsername string, limit int, p
 }
 
 // GetTopTracks returns the top tracks of an user
-func GetTopTracks(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (tracksData []TrackData, err error) {
+// nolint: dupl
+func GetTopTracks(client *lastfm.Api, username string, limit int, period Period) ([]TrackData, error) {
+	var tracksData []TrackData
+	var err error
 	// request data
 	var lastfmTopTracks lastfm.UserGetTopTracks
-	lastfmTopTracks, err = lastfmClient.User.GetTopTracks(lastfm.P{
+	lastfmTopTracks, err = client.User.GetTopTracks(lastfm.P{
 		"limit":  limit,
-		"user":   lastfmUsername,
+		"user":   username,
 		"period": string(period),
 	})
 	if err != nil {
@@ -179,12 +184,15 @@ func GetTopTracks(lastfmClient *lastfm.Api, lastfmUsername string, limit int, pe
 }
 
 // LastFmGetTopAlbums returns the top albums of an user
-func GetTopAlbums(lastfmClient *lastfm.Api, lastfmUsername string, limit int, period Period) (albumsData []AlbumData, err error) {
+// nolint: dupl
+func GetTopAlbums(client *lastfm.Api, username string, limit int, period Period) ([]AlbumData, error) {
+	var albumsData []AlbumData
+	var err error
 	// request data
 	var lastfmTopAlbums lastfm.UserGetTopAlbums
-	lastfmTopAlbums, err = lastfmClient.User.GetTopAlbums(lastfm.P{
+	lastfmTopAlbums, err = client.User.GetTopAlbums(lastfm.P{
 		"limit":  limit,
-		"user":   lastfmUsername,
+		"user":   username,
 		"period": string(period),
 	})
 	if err != nil {

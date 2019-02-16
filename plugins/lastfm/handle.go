@@ -90,7 +90,22 @@ func (p *Plugin) Action(event *events.Event) bool {
 		handleTopArtists(event, p.lastfmClient)
 		return true
 
-	case "set":
+	case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks", "tt", "ts":
+
+		handleTopTracks(event, p.lastfmClient)
+		return true
+
+	// case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal":
+	//
+	// 	hadnleTopAlbums(event, p.lastfmClient)
+	// 	return true
+
+	// case "recent", "recently", "last", "recents":
+	//
+	// 	handleRecent(event, p.lastfmClient)
+	// 	return true
+
+	case "set", "register", "save":
 
 		handleSet(event)
 		return true
