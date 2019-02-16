@@ -9,18 +9,18 @@
 
 "lastfm.album.title" = "Album"
 
-"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{.track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}){{if .track.Loved}} ❤{{end}}"
+"lastfm.track.long" = "{{if (and .track.NowPlaying (not .hidenp))}}🎵 {{end}}[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}){{if .track.Loved}} ❤{{end}}"
 
-"lastfm.artist.short" = "[**{{.artist.Name}}**]({{Escape .artist.URL}}) ({{HumanizeNumber .artist.Scrobbles}} play{{if (not (eq .artist.Scrobbles 1))}}s{{end}})"
-"lastfm.album.short" = "[**{{.album.Name}}** by **{{.album.Artist}}**]({{Escape .album.URL}}) ({{HumanizeNumber .album.Scrobbles}} play{{if (not (eq .album.Scrobbles 1))}}s{{end}})"
-"lastfm.track.short"=  "[**{{.track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}) ({{HumanizeNumber .track.Scrobbles}} play{{if (not (eq .track.Scrobbles 1))}}s{{end}}{{if (gt .track.Users 0)}}, {{HumanizeNumber .track.Users}} listener{{if (not (eq .track.Users 1))}}s{{end}}{{end}})"
+"lastfm.artist.short" = "[**{{Escape .artist.Name}}**]({{Escape .artist.URL}}) ({{HumanizeNumber .artist.Scrobbles}} play{{if (not (eq .artist.Scrobbles 1))}}s{{end}})"
+"lastfm.album.short" = "[**{{Escape .album.Name}}** by **{{.album.Artist}}**]({{Escape .album.URL}}) ({{HumanizeNumber .album.Scrobbles}} play{{if (not (eq .album.Scrobbles 1))}}s{{end}})"
+"lastfm.track.short"=  "[**{{Escape .track.Name}}** by **{{.track.Artist}}**]({{Escape .track.URL}}) ({{HumanizeNumber .track.Scrobbles}} play{{if (not (eq .track.Scrobbles 1))}}s{{end}}{{if (gt .track.Users 0)}}, {{HumanizeNumber .track.Users}} listener{{if (not (eq .track.Users 1))}}s{{end}}{{end}})"
 
 # user specific embeds
 "lastfm.embed.user.author.url" = "https://www.last.fm/user/{{.userData.Username}}"
 "lastfm.embed.user.footer.text" = "powered by last.fm{{if gt .userData.Scrobbles 0}} | Total Scrobbles {{HumanizeNumber64 .userData.Scrobbles}}{{end}}"
 
 # displayNowPlaying
-"lastfm.np.embed.title" = "{{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if (index .tracks 0).NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
+"lastfm.np.embed.title" = "{{if .userData.Name}}{{Escape .userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} {{if (index .tracks 0).NowPlaying}}is currently listening to{{else}}last listened to{{end}}:"
 "lastfm.np.embed.listened-to-before" = "Listened to before"
 
 # setUsername
@@ -40,4 +40,4 @@
 "lastfm.recent.nowplaying" = "now playing"
 
 # handleAbout
-"lastfm.about.embed.title" = "About {{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} on Last.FM"
+"lastfm.about.embed.title" = "About {{if .userData.Name}}{{Escape .userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} on Last.FM"
