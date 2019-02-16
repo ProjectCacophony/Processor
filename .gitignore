@@ -16,3 +16,6 @@ bin/
 env.list
 
 k8s/manifest.yaml*
+
+win_build/
+vendor/
