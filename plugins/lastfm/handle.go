@@ -109,6 +109,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		handleSet(event)
 		return true
+
+	case "about", "user", "u":
+
+		handleAbout(event, p.lastfmClient)
+		return true
 	}
 
 	event.Respond("lastfm.no-subcommand") // nolint: errcheck

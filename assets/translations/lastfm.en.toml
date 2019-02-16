@@ -38,3 +38,6 @@
 # handleRecent
 "lastfm.recent.embed.title" = "{{.userData.Username}} recently listened to"
 "lastfm.recent.nowplaying" = "now playing"
+
+# handleAbout
+"lastfm.about.embed.title" = "About {{if .userData.Name}}{{.userData.Name}} ({{.userData.Username}}){{else}}{{.userData.Username}}{{end}} on Last.FM"
