@@ -10,18 +10,7 @@ import (
 )
 
 func handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api) {
-	// get lastFM username to look up
-	var lastfmUsername string
-	// if len(event.MessageCreate.Mentions) > 0 {
-	// 	lastfmUsername = getLastFmUsername(ctx, event.MessageCreate.Mentions[0].ID)
-	// }
-	if lastfmUsername == "" && len(event.Fields()) >= 3 {
-		lastfmUsername = event.Fields()[2]
-	}
-	if lastfmUsername == "" {
-		lastfmUsername = getLastFmUsername(event.DB(), event.MessageCreate.Author.ID)
-	}
-	// if no username found, post error and stop
+	lastfmUsername, _ := extractUsername(event, event.Fields(), 2)
 	if lastfmUsername == "" {
 		event.Respond("lastfm.no-user") // nolint: errcheck
 		return

@@ -4,11 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/kelseyhightower/envconfig"
-
-	"gitlab.com/Cacophony/Processor/plugins/common"
-
 	"github.com/Seklfreak/lastfm-go/lastfm"
+	"github.com/kelseyhightower/envconfig"
+	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
@@ -75,9 +73,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	if len(event.Fields()) < 2 {
-		// TODO: send message
+		event.Respond("lastfm.no-subcommand") // nolint: errcheck
 		return true
 	}
+
+	event.Typing()
 
 	switch strings.ToLower(event.Fields()[1]) {
 	case "np", "nowplaying", "now":
@@ -91,5 +91,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	return false
+	event.Respond("lastfm.no-subcommand") // nolint: errcheck
+	return true
 }

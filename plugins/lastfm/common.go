@@ -4,7 +4,31 @@ import (
 	"github.com/bwmarrin/discordgo"
 	lastfm_client "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/events"
 )
+
+func extractUsername(event *events.Event, args []string, pos int) (string, []string) {
+	var username string
+	// try any mentions in the command
+	if len(event.MessageCreate.Mentions) > 0 {
+		username = getLastFmUsername(event.DB(), event.MessageCreate.Mentions[0].ID)
+
+		if username != "" {
+			return username, args
+		}
+	}
+	// try field at pos
+	if len(event.Fields()) > pos {
+		username = event.Fields()[pos]
+
+		if username != "" {
+			return username, append(args[:pos], args[pos+1:]...)
+		}
+	}
+
+	username = getLastFmUsername(event.DB(), event.MessageCreate.Author.ID)
+	return username, args
+}
 
 // getLastfmUserBaseEmbed gets a discordgo embed base for a last.fm user
 func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.MessageEmbed) {
