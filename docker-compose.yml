@@ -12,6 +12,14 @@ services:
       timeout: 5s
       retries: 100
 
+  # Postgres, credentials: postgres:postgres
+  postgres:
+    image: postgres:11.2
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+
   # The Gateway Receives Discord Events and sends them to the AMQP Broker
   gateway:
     image: registry.gitlab.com/cacophony/gateway:latest

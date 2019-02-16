@@ -14,4 +14,5 @@ type config struct {
 	ConcurrentProcessingLimit int                 `envconfig:"CONCURRENT_PROCESSING_LIMIT" default:"50"`
 	ProcessingDeadline        time.Duration       `envconfig:"PROCESSING_DEADLINE" default:"5m"`
 	DiscordTokens             map[string]string   `envconfig:"DISCORD_TOKENS"`
+	DBDSN                     string              `envconfig:"DB_DSN" default:"postgres://postgres:postgres@localhost:5432/?sslmode=disable"`
 }

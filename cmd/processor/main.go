@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
@@ -15,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
 	"gitlab.com/Cacophony/go-kit/logging"
+	"gitlab.com/Cacophony/go-kit/migrations"
 	"go.uber.org/zap"
 )
 
@@ -42,6 +44,18 @@ func main() {
 	)
 	if err != nil {
 		panic(errors.Wrap(err, "unable to initialise launcher"))
+	}
+
+	// perform db migrations
+	err = migrations.Run(
+		logger.With(zap.String("module", "migrations")),
+		"migrations/",
+		config.DBDSN,
+	)
+	if err != nil {
+		logger.Fatal("error performing migrations",
+			zap.Error(err),
+		)
 	}
 
 	// init AMQP session
