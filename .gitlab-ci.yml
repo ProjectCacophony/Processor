@@ -7,10 +7,10 @@ stages:
   - staging
 
 Go Lint:
-  extends: .Go Lint
+  extends: ".Go Lint"
 
 Docker Build:
-  extends: .Docker Build
+  extends: ".Docker Build"
 
 Deploy Staging:
-  extends: .Deploy Staging
+  extends: ".Deploy Staging"
