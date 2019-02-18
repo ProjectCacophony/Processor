@@ -35,6 +35,7 @@ Docker Build:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
       - .go/
+    policy: pull
   services:
     - docker:dind
   before_script:
