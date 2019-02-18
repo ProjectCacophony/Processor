@@ -10,12 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # workdir /src because we have to be out of go path to use go modules
 WORKDIR /src
 
-# fetch dependencies in own step to support caching it
-COPY ./go.mod ./go.sum ./
-RUN go mod download
-
 # copy source code
 COPY ./ ./
+
+# download deps
+RUN go mod download
 
 # build binary
 RUN make all
