@@ -4,7 +4,10 @@ variables:
   DOCKER_IMAGE_HASH: "${CI_COMMIT_SHA}"
   DOCKER_RELEASE_IMAGE: "${CI_REGISTRY_IMAGE}:latest"
 
-  GOPATH: ${CI_PROJECT_DIR}/go
+  # redefine GOPATH to cache it, and adds new Go bin path to PATH
+  # see https://gitlab.com/gitlab-org/gitlab-ce/issues/4431
+  GOPATH: ${CI_PROJECT_DIR}/.go
+  PATH: ${PATH}:${CI_PROJECT_DIR}/.go/bin
 
 stages:
   - test
@@ -17,8 +20,9 @@ Go Lint:
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - go/
+      - .go/
   before_script:
+    - echo $PATH
     - go env
     - go mod download
     - go get -u golang.org/x/tools/cmd/goimports
