@@ -7,7 +7,6 @@ variables:
   # redefine GOPATH to cache it, but keeps the old GOBIN path, as it is in the $PATH
   # see https://gitlab.com/gitlab-org/gitlab-ce/issues/4431
   GOPATH: ${CI_PROJECT_DIR}/go
-  GOBIN: /go/bin
 
 stages:
   - test
@@ -22,6 +21,7 @@ Go Lint:
     paths:
       - go/
   before_script:
+    - export PATH=$PATH:"${CI_PROJECT_DIR}/.go/bin"
     - go mod download
     - go get -u golang.org/x/tools/cmd/goimports
     - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b ${GOBIN} v1.13.2
