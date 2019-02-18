@@ -43,7 +43,7 @@ COPY --from=builder /src/bin/linux.amd64 /
 COPY ./assets ./assets
 
 # expose http server port
-#EXPOSE 8000
+EXPOSE 8000
 
 # switch to user without permissions
 USER nobody
