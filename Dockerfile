@@ -18,6 +18,10 @@ COPY ./ ./
 ENV GOPATH /src/go
 ENV PATH $PATH:/src/go/bin
 
+# insert goproxy
+ARG goproxy_input
+ENV GOPROXY=$goproxy_input
+
 # download deps
 RUN go mod download
 

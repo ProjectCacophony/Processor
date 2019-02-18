@@ -50,6 +50,7 @@ Docker Build:
       docker build
       --cache-from "${DOCKER_IMAGE_PREV}"
       --tag "${DOCKER_IMAGE}"
+      --build-arg goproxy_input="${GOPROXY}"
       "${PWD}"
     - docker push "${DOCKER_IMAGE}"
     - docker tag "${DOCKER_IMAGE}" "${DOCKER_RELEASE_IMAGE}"
