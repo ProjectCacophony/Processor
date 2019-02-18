@@ -21,7 +21,7 @@ Go Lint:
     paths:
       - .go/
   before_script:
-    - export $PATH=$PATH:"${CI_PROJECT_DIR}/.go/bin"
+    - export PATH=$PATH:"${CI_PROJECT_DIR}/.go/bin"
     - echo $PATH
     - go env
     - go mod download
