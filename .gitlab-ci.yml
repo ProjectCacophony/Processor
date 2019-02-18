@@ -7,7 +7,7 @@ variables:
   # redefine GOPATH to cache it, and adds new Go bin path to PATH
   # see https://gitlab.com/gitlab-org/gitlab-ce/issues/4431
   GOPATH: ${CI_PROJECT_DIR}/.go
-  PATH: ${PATH}:${CI_PROJECT_DIR}/.go/bin
+  GOBIN: /go/bin
 
 stages:
   - test
