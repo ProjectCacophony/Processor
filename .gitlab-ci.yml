@@ -4,6 +4,8 @@ variables:
   DOCKER_IMAGE_HASH: "${CI_COMMIT_SHA}"
   DOCKER_RELEASE_IMAGE: "${CI_REGISTRY_IMAGE}:latest"
 
+  GOPATH: ${CI_PROJECT_DIR}/go
+
 stages:
   - test
   - build
@@ -17,7 +19,7 @@ Go Lint:
     paths:
       - go/
   before_script:
-    - ln -d /go ./go # hard linking the go path for caching
+    - go env
     - go mod download
     - go get -u golang.org/x/tools/cmd/goimports
     - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.13.2
