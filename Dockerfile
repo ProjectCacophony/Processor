@@ -14,7 +14,7 @@ WORKDIR /src
 COPY ./ ./
 
 # change GOPATH to ./go as we copy the cache into there on CI
-# update PATH to include /src/go/bin
+# update PATH to include ./go/bin
 ENV GOPATH /src/go
 ENV PATH $PATH:/src/go/bin
 
