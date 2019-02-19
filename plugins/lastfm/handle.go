@@ -21,10 +21,13 @@ func (p *Plugin) Name() string {
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
-	params.DB.AutoMigrate(User{})
+	err := params.DB.AutoMigrate(User{}).Error
+	if err != nil {
+		return err
+	}
 
 	var config Config
-	err := envconfig.Process("", &config)
+	err = envconfig.Process("", &config)
 	if err != nil {
 		return nil
 	}

@@ -72,6 +72,7 @@ func (p *Processor) executePlugin(plugin plugins.Plugin, event *events.Event) bo
 			p.logger.Error("plugin failed to handle event",
 				zap.String("plugin", plugin.Name()),
 				zap.String("event_type", string(event.Type)),
+				zap.Any("error", err),
 			)
 		}
 	}()

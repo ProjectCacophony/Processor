@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod"
+
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
@@ -39,6 +41,7 @@ var (
 		&color.Plugin{},
 		&dev.Plugin{},
 		&lastfm.Plugin{},
+		&automod.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation
