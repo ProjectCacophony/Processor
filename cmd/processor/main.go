@@ -13,7 +13,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
-	"github.com/streadway/amqp"
 	"gitlab.com/Cacophony/Processor/pkg/processing"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
@@ -60,14 +59,6 @@ func main() {
 		)
 	}
 
-	// init AMQP session
-	amqpConnection, err := amqp.Dial(config.AMQPDSN)
-	if err != nil {
-		logger.Fatal("unable to initialise AMQP session",
-			zap.Error(err),
-		)
-	}
-
 	// init GORM
 	gormDB, err := gorm.Open("postgres", config.DBDSN)
 	if err != nil {
@@ -91,7 +82,7 @@ func main() {
 	processor, err := processing.NewProcessor(
 		logger.With(zap.String("feature", "processor")),
 		ServiceName,
-		amqpConnection,
+		config.AMQPDSN,
 		"cacophony",
 		"cacophony.discord.#",
 		gormDB,
@@ -150,13 +141,6 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*15)
 	defer cancel()
-
-	err = amqpConnection.Close()
-	if err != nil {
-		logger.Error("unable to close AMQP session",
-			zap.Error(err),
-		)
-	}
 
 	// TODO: make sure processor is finished processing events before shutting down
 
