@@ -89,7 +89,7 @@ func (p *Processor) startReconnector() {
 			continue
 		}
 
-		p.logger.Error(
+		p.logger.Warn(
 			"looks like we lost the connection to the AMQP Broker, will attempt to reconnect",
 			zap.Any("amqp_err", amqpErr),
 		)
@@ -123,6 +123,8 @@ func (p *Processor) reconnect() {
 				p.logger.Fatal("processor error received", zap.Error(err))
 			}
 		}()
+
+		return
 	}
 
 	p.logger.Fatal("could not reconnect")
