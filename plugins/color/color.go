@@ -3,11 +3,14 @@ package color
 import (
 	"bytes"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
 	"image/jpeg"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -21,8 +24,23 @@ func handleColor(event *events.Event) {
 		return
 	}
 
+	re := regexp.MustCompile("[0-9]+")
+
 	// remove # if needed
 	hexText := strings.TrimPrefix(event.Fields()[1], "#")
+
+	// if more than one field was passed to command, combine and attempt to parse out rgb values
+	if len(event.Fields()) > 2 {
+
+		var err error
+		parsedNums := re.FindAllString(strings.Join(event.Fields(), ","), -1)
+		hexText, err = getHexFromRGB(parsedNums)
+
+		if err != nil {
+			event.Respond("color.invalid-color") // nolint: errcheck
+			return
+		}
+	}
 
 	// handle size 3 hex codes. eg. #345
 	if len(hexText) == 3 {
@@ -32,18 +50,27 @@ func handleColor(event *events.Event) {
 	// decode hex to rbg
 	rgbArray, err := hex.DecodeString(hexText)
 	if err != nil {
-		if strings.Contains(err.Error(), "odd length hex string") ||
-			strings.Contains(err.Error(), "invalid byte") {
-			event.Respond("color.invalid-hex") // nolint: errcheck
+
+		// if hex decode failed, attempt to parse rgb values from string. ex: 255,255,255
+		hexText, _ = getHexFromRGB(re.FindAllString(event.Fields()[1], -1))
+
+		rgbArray, err = hex.DecodeString(hexText)
+
+		// if attempt failed, continue processing error from hex decode
+		if err != nil {
+			if strings.Contains(err.Error(), "odd length hex string") ||
+				strings.Contains(err.Error(), "invalid byte") {
+				event.Respond("color.invalid-color") // nolint: errcheck
+				return
+			}
+
+			event.Except(err)
 			return
 		}
-
-		event.Except(err)
-		return
 	}
 
 	if len(rgbArray) < 3 {
-		event.Respond("color.invalid-hex") // nolint: errcheck
+		event.Respond("color.invalid-color") // nolint: errcheck
 		return
 	}
 
@@ -85,4 +112,34 @@ func handleColor(event *events.Event) {
 	if err != nil {
 		event.Except(err)
 	}
+}
+
+func getHexFromRGB(rgbValues []string) (string, error) {
+	if len(rgbValues) != 3 {
+		return "", errors.New("invalid rgb array size. expected size: 3")
+	}
+
+	validRGB := true
+	hexArray := make([]string, 3)
+	for _, rgbValue := range rgbValues {
+
+		rgbNum, err := strconv.Atoi(rgbValue)
+		if err != nil || rgbNum < 0 || rgbNum > 255 {
+			validRGB = false
+			break
+		}
+
+		hexValue := fmt.Sprintf("%X", rgbNum)
+		if len(hexValue) == 1 {
+			hexValue = "0" + hexValue
+		}
+
+		hexArray = append(hexArray, hexValue)
+	}
+
+	if !validRGB {
+		return "", errors.New("rgb values not valid")
+	}
+
+	return strings.Join(hexArray, ""), nil
 }
