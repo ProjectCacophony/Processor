@@ -49,15 +49,22 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-	process := handle(event)
+	process := p.handleAsCommand(event)
+	if process {
+		return true
+	}
+
+	process = handle(event)
 
 	// if we do not want to further process it, return true to stop further processing
 	if !process {
 		return true
 	}
 
-	// from here on treat as normal command
+	return false
+}
 
+func (p *Plugin) handleAsCommand(event *events.Event) bool {
 	if !event.Command() {
 		return false
 	}
@@ -66,16 +73,23 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.Fields()[0] != "am" {
 		return false
 	}
-
 	if len(event.Fields()) < 2 {
 		cmdStatus(event)
 
 		return true
 	}
 
-	if event.Fields()[1] == "add" {
+	switch event.Fields()[1] {
+
+	case "add":
 
 		cmdAdd(event)
+		return true
+
+	case "remove", "delete":
+
+		cmdRemove(event)
+		return true
 	}
 
 	// TODO: display unknown command message
