@@ -6,8 +6,8 @@ import (
 
 type Rule struct {
 	gorm.Model
-	GuildID string `gorm:"not null"`
-	Name    string `gorm:"unique;not null"`
+	GuildID string `gorm:"index;not null;unique_index:idx_automod_rules_guildid_name"`
+	Name    string `gorm:"not null;unique_index:idx_automod_rules_guildid_name"`
 	Trigger string `gorm:"not null"`
 	Filters []RuleFilter
 	Actions []RuleAction

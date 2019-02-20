@@ -1,6 +1,8 @@
 package automod
 
 import (
+	"strings"
+
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -77,6 +79,10 @@ func cmdAdd(event *events.Event) {
 
 	err = event.DB().Save(&newRule).Error
 	if err != nil {
+		if strings.Contains(err.Error(), "idx_automod_rules_guildid_name") {
+			event.Respond("automod.add.name-in-use") // nolint: errcheck
+			return
+		}
 		event.Except(err)
 		return
 	}
