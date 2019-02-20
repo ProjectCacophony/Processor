@@ -62,6 +62,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 		handleDevSleep(event)
 		return true
 	case "state":
+		if len(event.Fields()) > 2 {
+			if event.Fields()[2] == "guilds" {
+				handleDevStateGuilds(event)
+				return true
+			}
+		}
 
 		handleDevState(event)
 		return true

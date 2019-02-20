@@ -115,3 +115,26 @@ func handleDevState(event *events.Event) {
 	})
 	event.Except(err)
 }
+
+func handleDevStateGuilds(event *events.Event) {
+	allGuilds, err := event.State().AllGuildIDs()
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	var resp string
+	for _, guildID := range allGuilds {
+		guild, err := event.State().Guild(guildID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		resp += fmt.Sprintf("**%s** (`#%s`)\n", guild.Name, guild.ID)
+	}
+	resp += fmt.Sprintf("in total **%d** guilds.\n", len(allGuilds))
+
+	_, err = event.Respond(resp)
+	event.Except(err)
+}

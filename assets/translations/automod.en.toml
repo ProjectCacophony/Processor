@@ -11,5 +11,10 @@
 "automod.remove.success" = "I removed the rule `{{.rule.Name}}`."
 
 # cmdStatus
-"automod.status.response" = "```\n{{range $ruleText := .ruleTexts}}{{$ruleText}}\n{{end}}```"
-# TODO: handle empty
+"automod.status.response" = "\
+{{if gt (len .ruleTexts) 0}} \
+{{range $ruleText := .ruleTexts}}```\n{{$ruleText}}\n```{{end}} \
+{{else}} \
+**Looks like there are no rules on this server so far.** :thinking:\n\
+You can create the first rule: `{{.prefix}}automod add […]` \
+{{end}}"
