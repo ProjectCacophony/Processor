@@ -57,11 +57,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 	process = handle(event)
 
 	// if we do not want to further process it, return true to stop further processing
-	if !process {
-		return true
-	}
-
-	return false
+	return !process
 }
 
 func (p *Plugin) handleAsCommand(event *events.Event) bool {
