@@ -7,7 +7,7 @@
 "automod.add.invalid-action-value" = "The action value you told me is invalid: `{{.error}}.`"
 "automote.add.success" = "I added the rule!"
 "automod.add.name-in-use" = "There is already a rule with that name on this server."
-"automod.remove.too-few" = "Please tell me the name of the ruel to remove."
+"automod.remove.too-few" = "Please tell me the name of the rule to remove."
 "automod.remove.success" = "I removed the rule `{{.rule.Name}}`."
 
 # cmdStatus
