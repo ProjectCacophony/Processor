@@ -5,7 +5,8 @@
 "automod.add.invalid-filter-value" = "The filter value you told me is invalid: `{{.error}}.`"
 "automod.add.invalid-action-name" = "I was not able to find an action with that name."
 "automod.add.invalid-action-value" = "The action value you told me is invalid: `{{.error}}.`"
-"automote.add.success" = "I added the rule!"
+"automote.add.success" = "**I added the rule!**\n\
+Please keep in mind that it can take up to one minute until the rule will be applied."
 "automod.add.name-in-use" = "There is already a rule with that name on this server."
 
 # cmdRemove

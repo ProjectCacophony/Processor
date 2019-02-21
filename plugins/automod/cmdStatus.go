@@ -3,11 +3,12 @@ package automod
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
 func cmdStatus(event *events.Event) {
-	var rules []Rule
+	var rules []models.Rule
 	err := event.DB().
 		Preload("Filters").
 		Preload("Actions").

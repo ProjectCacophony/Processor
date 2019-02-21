@@ -1,11 +1,16 @@
 package common
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
+)
 
 type StartParameters struct {
-	DB *gorm.DB
+	Logger *zap.Logger
+	DB     *gorm.DB
 }
 
 type StopParameters struct {
-	DB *gorm.DB
+	Logger *zap.Logger
+	DB     *gorm.DB
 }

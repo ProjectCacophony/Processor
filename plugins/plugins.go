@@ -3,9 +3,8 @@ package plugins
 import (
 	"sort"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod"
-
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/Processor/plugins/automod"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
@@ -57,7 +56,8 @@ func StartPlugins(logger *zap.Logger, db *gorm.DB) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Start(common.StartParameters{
-			DB: db,
+			Logger: logger,
+			DB:     db,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -74,7 +74,8 @@ func StopPlugins(logger *zap.Logger, db *gorm.DB) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Stop(common.StopParameters{
-			DB: db,
+			Logger: logger,
+			DB:     db,
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",

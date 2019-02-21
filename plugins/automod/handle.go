@@ -1,6 +1,8 @@
 package automod
 
 import (
+	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -8,6 +10,7 @@ import (
 )
 
 type Plugin struct {
+	handler *handler.Handler
 }
 
 func (p *Plugin) Name() string {
@@ -16,15 +19,16 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Start(params common.StartParameters) error {
 	err := params.DB.AutoMigrate(
-		Rule{},
-		RuleFilter{},
-		RuleAction{},
+		models.Rule{},
+		models.RuleFilter{},
+		models.RuleAction{},
 	).Error
 	if err != nil {
 		return err
 	}
 
-	return nil
+	p.handler, err = handler.NewHandler(params.Logger, params.DB)
+	return err
 }
 
 func (p *Plugin) Stop(params common.StopParameters) error {
@@ -54,10 +58,8 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	process = handle(event)
-
 	// if we do not want to further process it, return true to stop further processing
-	return !process
+	return !p.handler.Handle(event)
 }
 
 func (p *Plugin) handleAsCommand(event *events.Event) bool {

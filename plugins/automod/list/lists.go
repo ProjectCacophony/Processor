@@ -1,4 +1,4 @@
-package automod
+package list
 
 import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/actions"
@@ -9,15 +9,15 @@ import (
 
 // nolint: gochecknoglobals
 var (
-	triggerList = []interfaces.TriggerInterface{
+	TriggerList = []interfaces.TriggerInterface{
 		triggers.Message{},
 	}
 
-	filtersList = []interfaces.FilterInterface{
+	FiltersList = []interfaces.FilterInterface{
 		filters.RegexMessageContent{},
 	}
 
-	actionsList = []interfaces.ActionInterface{
+	ActionsList = []interfaces.ActionInterface{
 		actions.SendMessage{},
 		actions.ApplyRole{},
 	}

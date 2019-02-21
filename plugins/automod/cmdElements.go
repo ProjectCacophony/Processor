@@ -4,6 +4,7 @@ import (
 	"sort"
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -32,19 +33,19 @@ func (d sortByName) Less(i, j int) bool {
 func cmdElements(event *events.Event) {
 	printMap := make(map[string][]printValues)
 
-	for _, item := range triggerList {
+	for _, item := range list.TriggerList {
 		printMap["triggers"] = append(printMap["triggers"], printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
 		})
 	}
-	for _, item := range filtersList {
+	for _, item := range list.FiltersList {
 		printMap["filters"] = append(printMap["filters"], printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
 		})
 	}
-	for _, item := range actionsList {
+	for _, item := range list.ActionsList {
 		printMap["actions"] = append(printMap["actions"], printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),

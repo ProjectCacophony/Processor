@@ -3,6 +3,7 @@ package automod
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -16,7 +17,7 @@ func cmdAdd(event *events.Event) {
 	// TODO: support adding multiple triggers
 
 	var err error
-	var newRule Rule
+	var newRule models.Rule
 	newRule.GuildID = event.MessageCreate.GuildID
 	newRule.Name = event.Fields()[2]
 
@@ -26,7 +27,7 @@ func cmdAdd(event *events.Event) {
 		UserID:  event.MessageCreate.Author.ID,
 	}
 
-	for _, trigger := range triggerList {
+	for _, trigger := range list.TriggerList {
 		if trigger.Name() != event.Fields()[3] {
 			continue
 		}
@@ -38,8 +39,8 @@ func cmdAdd(event *events.Event) {
 		return
 	}
 
-	var newFilter RuleFilter
-	for _, filter := range filtersList {
+	var newFilter models.RuleFilter
+	for _, filter := range list.FiltersList {
 		if filter.Name() != event.Fields()[4] {
 			continue
 		}
@@ -57,10 +58,10 @@ func cmdAdd(event *events.Event) {
 		event.Respond("automod.add.invalid-filter-name") // nolint: errcheck
 		return
 	}
-	newRule.Filters = []RuleFilter{newFilter}
+	newRule.Filters = []models.RuleFilter{newFilter}
 
-	var newAction RuleAction
-	for _, action := range actionsList {
+	var newAction models.RuleAction
+	for _, action := range list.ActionsList {
 		if action.Name() != event.Fields()[6] {
 			continue
 		}
@@ -78,7 +79,7 @@ func cmdAdd(event *events.Event) {
 		event.Respond("automod.add.invalid-action-name") // nolint: errcheck
 		return
 	}
-	newRule.Actions = []RuleAction{newAction}
+	newRule.Actions = []models.RuleAction{newAction}
 
 	if event.Fields()[len(event.Fields())-1] == "continue" {
 		newRule.Process = true

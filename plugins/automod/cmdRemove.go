@@ -3,6 +3,7 @@ package automod
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -12,7 +13,7 @@ func cmdRemove(event *events.Event) {
 		return
 	}
 
-	var ruleToDelete Rule
+	var ruleToDelete models.Rule
 	err := event.DB().Where("guild_id = ? AND name = ?",
 		event.MessageCreate.GuildID, event.Fields()[2]).First(&ruleToDelete).Error
 	if err != nil {

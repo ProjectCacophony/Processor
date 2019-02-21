@@ -12,7 +12,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190221152952-e5189ae8ccfd
+	gitlab.com/Cacophony/go-kit v0.0.0-20190221182621-4834afe48529
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190219172222-a4c6cb3142f2 // indirect
 	golang.org/x/net v0.0.0-20190213061140-3a22650c66bd // indirect

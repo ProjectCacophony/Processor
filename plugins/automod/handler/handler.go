@@ -1,39 +1,54 @@
-package automod
+package handler
 
 import (
+	"sync"
+
+	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.uber.org/zap"
 )
 
-func handle(event *events.Event) bool {
+type Handler struct {
+	logger *zap.Logger
+	db     *gorm.DB
+
+	rules     map[string][]models.Rule
+	rulesLock sync.RWMutex
+}
+
+func NewHandler(logger *zap.Logger, db *gorm.DB) (*Handler, error) {
+	handler := &Handler{
+		logger: logger,
+		db:     db,
+	}
+
+	err := handler.startRulesCaching()
+
+	return handler, err
+}
+
+func (h *Handler) Handle(event *events.Event) (process bool) {
 	env := &models.Env{
 		Event: event,
 		State: event.State(),
 	}
-
-	var guildID string
 
 	if event.Type == events.MessageCreateType {
 		if event.MessageCreate.Author.Bot {
 			return false
 		}
 
-		guildID = event.MessageCreate.GuildID
-
 		env.GuildID = event.MessageCreate.GuildID
 		env.UserID = event.MessageCreate.Author.ID
 	}
 
-	// TODO: cache rules
-	var rules []Rule
-	err := event.DB().
-		Preload("Filters").
-		Preload("Actions").
-		Where("guild_id = ?", guildID).
-		Find(&rules).Error
-	if err != nil {
-		event.Except(err) // TODO: handle errors silently
-		return false
+	h.rulesLock.RLock()
+	rules, ok := h.rules[env.GuildID]
+	h.rulesLock.RUnlock()
+	if !ok {
+		return true
 	}
 
 	var triggerMatched bool
@@ -41,7 +56,7 @@ func handle(event *events.Event) bool {
 	for _, rule := range rules {
 		triggerMatched = false
 
-		for _, trigger := range triggerList {
+		for _, trigger := range list.TriggerList {
 			if trigger.Name() != rule.Trigger {
 				continue
 			}
@@ -59,7 +74,7 @@ func handle(event *events.Event) bool {
 
 		filtersMatched = true
 
-		for _, filter := range filtersList {
+		for _, filter := range list.FiltersList {
 			for _, ruleFilter := range rule.Filters {
 				if filter.Name() != ruleFilter.Name {
 					continue
@@ -67,7 +82,7 @@ func handle(event *events.Event) bool {
 
 				item, err := filter.NewItem(env, ruleFilter.Value)
 				if err != nil {
-					event.Except(err) // TODO: handle errors silently
+					event.ExceptSilent(err)
 					return false
 				}
 
@@ -81,7 +96,7 @@ func handle(event *events.Event) bool {
 			continue
 		}
 
-		for _, action := range actionsList {
+		for _, action := range list.ActionsList {
 			for _, ruleAction := range rule.Actions {
 				if action.Name() != ruleAction.Name {
 					continue
@@ -89,7 +104,7 @@ func handle(event *events.Event) bool {
 
 				item, err := action.NewItem(env, ruleAction.Value)
 				if err != nil {
-					event.Except(err) // TODO: handle errors silently
+					event.ExceptSilent(err)
 					return false
 				}
 
