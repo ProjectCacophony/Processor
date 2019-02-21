@@ -19,5 +19,6 @@ var (
 
 	actionsList = []interfaces.ActionInterface{
 		actions.SendMessage{},
+		actions.ApplyRole{},
 	}
 )

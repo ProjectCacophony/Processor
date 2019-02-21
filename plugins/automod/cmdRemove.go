@@ -1,6 +1,8 @@
 package automod
 
 import (
+	"strings"
+
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -14,6 +16,10 @@ func cmdRemove(event *events.Event) {
 	err := event.DB().Where("guild_id = ? AND name = ?",
 		event.MessageCreate.GuildID, event.Fields()[2]).First(&ruleToDelete).Error
 	if err != nil {
+		if strings.Contains(err.Error(), "record not found") {
+			event.Respond("automod.remove.not-found") // nolint: errcheck
+			return
+		}
 		event.Except(err)
 		return
 	}

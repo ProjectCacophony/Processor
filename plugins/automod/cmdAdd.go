@@ -3,6 +3,7 @@ package automod
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -18,6 +19,12 @@ func cmdAdd(event *events.Event) {
 	var newRule Rule
 	newRule.GuildID = event.MessageCreate.GuildID
 	newRule.Name = event.Fields()[2]
+
+	env := &models.Env{
+		State:   event.State(),
+		GuildID: event.MessageCreate.GuildID,
+		UserID:  event.MessageCreate.Author.ID,
+	}
 
 	for _, trigger := range triggerList {
 		if trigger.Name() != event.Fields()[3] {
@@ -37,7 +44,7 @@ func cmdAdd(event *events.Event) {
 			continue
 		}
 
-		_, err = filter.NewItem(event.Fields()[5])
+		_, err = filter.NewItem(env, event.Fields()[5])
 		if err != nil {
 			event.Respond("automod.add.invalid-filter-value", "error", err) // nolint: errcheck
 			return
@@ -58,7 +65,7 @@ func cmdAdd(event *events.Event) {
 			continue
 		}
 
-		_, err = action.NewItem(event.Fields()[7])
+		_, err = action.NewItem(env, event.Fields()[7])
 		if err != nil {
 			event.Respond("automod.add.invalid-action-value", "error", err) // nolint: errcheck
 			return

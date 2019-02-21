@@ -16,7 +16,7 @@ func (f RegexMessageContent) Name() string {
 	return "if_message_content_regex"
 }
 
-func (f RegexMessageContent) NewItem(value string) (interfaces.FilterItemInterface, error) {
+func (f RegexMessageContent) NewItem(env *models.Env, value string) (interfaces.FilterItemInterface, error) {
 	regex, err := regexp.Compile(value)
 	if err != nil {
 		return nil, err

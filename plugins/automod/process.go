@@ -6,6 +6,11 @@ import (
 )
 
 func handle(event *events.Event) bool {
+	env := &models.Env{
+		Event: event,
+		State: event.State(),
+	}
+
 	var guildID string
 
 	if event.Type == events.MessageCreateType {
@@ -14,6 +19,9 @@ func handle(event *events.Event) bool {
 		}
 
 		guildID = event.MessageCreate.GuildID
+
+		env.GuildID = event.MessageCreate.GuildID
+		env.UserID = event.MessageCreate.Author.ID
 	}
 
 	// TODO: cache rules
@@ -28,10 +36,6 @@ func handle(event *events.Event) bool {
 		return false
 	}
 
-	env := &models.Env{
-		Event: event,
-	}
-
 	var triggerMatched bool
 	var filtersMatched bool
 	for _, rule := range rules {
@@ -42,7 +46,7 @@ func handle(event *events.Event) bool {
 				continue
 			}
 
-			item := trigger.NewItem()
+			item := trigger.NewItem(env)
 
 			if item.Match(env) {
 				triggerMatched = true
@@ -61,7 +65,7 @@ func handle(event *events.Event) bool {
 					continue
 				}
 
-				item, err := filter.NewItem(ruleFilter.Value)
+				item, err := filter.NewItem(env, ruleFilter.Value)
 				if err != nil {
 					event.Except(err) // TODO: handle errors silently
 					return false
@@ -83,7 +87,7 @@ func handle(event *events.Event) bool {
 					continue
 				}
 
-				item, err := action.NewItem(ruleAction.Value)
+				item, err := action.NewItem(env, ruleAction.Value)
 				if err != nil {
 					event.Except(err) // TODO: handle errors silently
 					return false

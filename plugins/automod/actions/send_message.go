@@ -12,7 +12,7 @@ func (t SendMessage) Name() string {
 	return "send_message"
 }
 
-func (t SendMessage) NewItem(value string) (interfaces.ActionItemInterface, error) {
+func (t SendMessage) NewItem(env *models.Env, value string) (interfaces.ActionItemInterface, error) {
 	return &SendMessageItem{
 		Message: value,
 	}, nil
