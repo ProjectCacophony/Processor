@@ -17,6 +17,10 @@ func (t Message) NewItem(env *models.Env) interfaces.TriggerItemInterface {
 	return &MessageItem{}
 }
 
+func (t Message) Description() string {
+	return "automod.triggers.when_message"
+}
+
 type MessageItem struct {
 }
 

@@ -7,6 +7,7 @@ import (
 type TriggerInterface interface {
 	Name() string
 	NewItem(*models.Env) TriggerItemInterface
+	Description() string
 }
 
 type TriggerItemInterface interface {

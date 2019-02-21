@@ -21,3 +21,21 @@
 **Looks like there are no rules on this server so far.** :thinking:\n\
 You can create the first rule: `{{.prefix}}automod add […]` \
 {{end}}"
+
+# cmdElements
+"automod.elements.response" = "\
+{{range $title, $items := .itemsMap}}\
+**{{Title $title}}**\n\
+{{range $item := $items}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
+{{end}}\
+"
+
+# Triggers
+"automod.triggers.when_message" = "Triggers when a new message is sent."
+
+# Filters
+"automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content."
+
+# Actions
+"automod.actions.apply_role" = "Applies the given role."
+"automod.actions.send_message" = "Sends the given message."

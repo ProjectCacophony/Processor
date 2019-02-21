@@ -27,6 +27,10 @@ func (f RegexMessageContent) NewItem(env *models.Env, value string) (interfaces.
 	}, nil
 }
 
+func (f RegexMessageContent) Description() string {
+	return "automod.filters.if_message_content_regex"
+}
+
 type RegexMessageContentItem struct {
 	regexp *regexp.Regexp
 }

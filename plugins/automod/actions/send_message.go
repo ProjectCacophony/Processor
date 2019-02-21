@@ -18,6 +18,10 @@ func (t SendMessage) NewItem(env *models.Env, value string) (interfaces.ActionIt
 	}, nil
 }
 
+func (t SendMessage) Description() string {
+	return "automod.actions.send_message"
+}
+
 type SendMessageItem struct {
 	Message string
 }

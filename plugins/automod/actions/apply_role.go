@@ -23,6 +23,10 @@ func (t ApplyRole) NewItem(env *models.Env, value string) (interfaces.ActionItem
 	}, nil
 }
 
+func (t ApplyRole) Description() string {
+	return "automod.actions.apply_role"
+}
+
 type ApplyRoleItem struct {
 	RoleID string
 }

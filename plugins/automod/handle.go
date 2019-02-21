@@ -77,6 +77,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 
 	switch event.Fields()[1] {
 
+	case "elements", "actions", "filters", "triggers":
+		cmdElements(event)
+
+		return true
 	case "add":
 
 		cmdAdd(event)

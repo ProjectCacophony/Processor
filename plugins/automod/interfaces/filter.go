@@ -7,6 +7,7 @@ import (
 type FilterInterface interface {
 	Name() string
 	NewItem(*models.Env, string) (FilterItemInterface, error)
+	Description() string
 }
 
 type FilterItemInterface interface {
