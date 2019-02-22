@@ -34,17 +34,23 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 "
 
 # Triggers
-"automod.triggers.when_message" = "Triggers when a new message is sent. []"
-"automod.triggers.when_bucket_updated" = "Triggers when a bucket is updated. [tag]"
-"automod.triggers.when_join" = "Triggers when a user joins the server. []"
+"automod.triggers.when_message" = "Triggers when a new Message is sent.\n\
+Does not trigger for Messages sent by Bots.\n\
+Adds the senders User and messages Channel to the Rule context. []"
+"automod.triggers.when_bucket_updated" = "Triggers when a Bucket is updated.\n\
+Restores User and Channel from the Bucket into the Rule Context. [tag]"
+"automod.triggers.when_join" = "Triggers when a user joins the server.\n\
+Does not trigger for Messages sent by Bots.\n\
+Adds the User to the Rule Context. []"
 
 # Filters
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
 "automod.filters.if_true" = "Always matches."
-"automod.filters.if_bucket_gt" = "Matches when the bucket size is greater than the given amount. [amount]"
+"automod.filters.if_bucket_gt" = "Matches when the Bucket size is greater than the given amount. [amount]"
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"
-"automod.actions.send_message" = "Sends the given message. [message]"
-"automod.actions.incr_bucket" = "Increases a leaky bucket. [tag, type, decay, amount]"
+"automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
+"automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
+Stores eventual Users and Channels in the Rule Context. [tag, type, decay, amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"

@@ -121,7 +121,8 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 		// TODO: publish event?
 		// TODO: async
 		env.Handler.Handle(&events.Event{
-			Type: events.CacophonyBucketUpdate,
+			GuildID: env.GuildID,
+			Type:    events.CacophonyBucketUpdate,
 			BucketUpdate: &events.BucketUpdate{
 				Tag:       t.TagSuffix,
 				GuildID:   env.GuildID,

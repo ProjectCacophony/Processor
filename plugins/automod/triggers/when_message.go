@@ -37,5 +37,13 @@ func (t *MessageItem) Match(env *models.Env) bool {
 		return false
 	}
 
+	if env.Event.MessageCreate.Author.Bot {
+		return false
+	}
+
+	env.GuildID = env.Event.MessageCreate.GuildID
+	env.UserID = append(env.UserID, env.Event.MessageCreate.Author.ID)
+	env.ChannelID = append(env.ChannelID, env.Event.MessageCreate.ChannelID)
+
 	return true
 }

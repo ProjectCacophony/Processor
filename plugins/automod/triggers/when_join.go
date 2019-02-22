@@ -37,5 +37,12 @@ func (t *JoinItem) Match(env *models.Env) bool {
 		return false
 	}
 
+	if env.Event.GuildMemberAdd.User.Bot {
+		return false
+	}
+
+	env.GuildID = env.Event.GuildMemberAdd.GuildID
+	env.UserID = append(env.UserID, env.Event.GuildMemberAdd.User.ID)
+
 	return true
 }

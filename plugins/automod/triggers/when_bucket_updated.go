@@ -2,6 +2,7 @@ package triggers
 
 import (
 	"errors"
+	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -50,5 +51,29 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 		return false
 	}
 
+	env.GuildID = env.Event.BucketUpdate.GuildID
+
+	for _, value := range env.Event.BucketUpdate.Values {
+		userIDs, channelIDs, GuildID := extractBucketValues(value)
+		env.GuildID = GuildID
+		env.ChannelID = append(env.ChannelID, channelIDs...)
+		env.UserID = append(env.UserID, userIDs...)
+	}
+
 	return true
+}
+
+func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string) {
+	parts := strings.Split(value, "|")
+	if len(parts) < 3 {
+		return
+	}
+
+	guildID = parts[0]
+
+	channelIDs = strings.Split(parts[1], ";")
+
+	userIDs = strings.Split(parts[2], ";")
+
+	return
 }

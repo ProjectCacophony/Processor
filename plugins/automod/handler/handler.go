@@ -1,17 +1,14 @@
 package handler
 
 import (
-	"strings"
 	"sync"
 
-	"gitlab.com/Cacophony/go-kit/state"
-
 	"github.com/go-redis/redis"
-
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
@@ -55,35 +52,12 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		Tokens:  h.tokens,
 	}
 
-	switch event.Type {
-	case events.MessageCreateType:
-		if event.MessageCreate.Author.Bot {
-			return false
-		}
-
-		env.GuildID = event.MessageCreate.GuildID
-		env.UserID = []string{event.MessageCreate.Author.ID}
-		env.ChannelID = []string{event.MessageCreate.ChannelID}
-	case events.GuildMemberAddType:
-		if event.GuildMemberAdd.User.Bot {
-			return false
-		}
-
-		env.GuildID = event.GuildMemberAdd.GuildID
-		env.UserID = []string{event.GuildMemberAdd.User.ID}
-	case events.CacophonyBucketUpdate:
-		env.GuildID = event.BucketUpdate.GuildID
-
-		for _, value := range event.BucketUpdate.Values {
-			userIDs, channelIDs, GuildID := extractBucketValues(value)
-			env.GuildID = GuildID
-			env.ChannelID = append(env.ChannelID, channelIDs...)
-			env.UserID = append(env.UserID, userIDs...)
-		}
+	if event.GuildID == "" {
+		return true
 	}
 
 	h.rulesLock.RLock()
-	rules, ok := h.rules[env.GuildID]
+	rules, ok := h.rules[event.GuildID]
 	h.rulesLock.RUnlock()
 	if !ok {
 		return true
@@ -160,19 +134,4 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	}
 
 	return continueAfter
-}
-
-func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string) {
-	parts := strings.Split(value, "|")
-	if len(parts) < 3 {
-		return
-	}
-
-	guildID = parts[0]
-
-	channelIDs = strings.Split(parts[1], ";")
-
-	userIDs = strings.Split(parts[2], ";")
-
-	return
 }
