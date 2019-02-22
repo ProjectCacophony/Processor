@@ -54,13 +54,14 @@ func init() {
 	sort.Sort(ByPriority(PluginList))
 }
 
-func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client) {
+func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Start(common.StartParameters{
 			Logger: logger,
 			DB:     db,
 			Redis:  redis,
+			Tokens: tokens,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -73,13 +74,14 @@ func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client) {
 	}
 }
 
-func StopPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client) {
+func StopPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Stop(common.StopParameters{
 			Logger: logger,
 			DB:     db,
 			Redis:  redis,
+			Tokens: tokens,
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",

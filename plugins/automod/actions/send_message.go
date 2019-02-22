@@ -3,6 +3,9 @@ package actions
 import (
 	"errors"
 
+	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
@@ -37,5 +40,37 @@ type SendMessageItem struct {
 }
 
 func (t *SendMessageItem) Do(env *models.Env) {
-	env.Event.Respond(t.Message) // nolint: errcheck
+	doneChannelIDs := make(map[string]interface{})
+
+	for _, channelID := range env.ChannelID {
+		if doneChannelIDs[channelID] != nil {
+			continue
+		}
+
+		_, err := env.State.Channel(channelID)
+		if err != nil {
+			continue
+		}
+
+		botID, err := env.State.BotForGuild(env.GuildID)
+		if err != nil {
+			continue
+		}
+
+		session, err := discord.NewSession(env.Tokens, botID)
+		if err != nil {
+			continue
+		}
+
+		// nolint: errcheck
+		discord.SendComplexWithVars(session,
+			nil,
+			channelID,
+			&discordgo.MessageSend{
+				Content: t.Message,
+			},
+		)
+
+		doneChannelIDs[channelID] = true
+	}
 }

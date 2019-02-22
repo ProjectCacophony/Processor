@@ -3,6 +3,8 @@ package actions
 import (
 	"errors"
 
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
@@ -42,5 +44,30 @@ type ApplyRoleItem struct {
 }
 
 func (t *ApplyRoleItem) Do(env *models.Env) {
-	env.Event.Discord().GuildMemberRoleAdd(env.GuildID, env.UserID, t.RoleID) // nolint: errcheck
+	doneUserIDs := make(map[string]interface{})
+
+	for _, userID := range env.UserID {
+		if doneUserIDs[userID] != nil {
+			continue
+		}
+
+		_, err := env.State.Member(env.GuildID, userID)
+		if err != nil {
+			continue
+		}
+
+		botID, err := env.State.BotForGuild(env.GuildID)
+		if err != nil {
+			continue
+		}
+
+		session, err := discord.NewSession(env.Tokens, botID)
+		if err != nil {
+			continue
+		}
+
+		session.GuildMemberRoleAdd(env.GuildID, userID, t.RoleID) // nolint: errcheck
+
+		doneUserIDs[userID] = true
+	}
 }

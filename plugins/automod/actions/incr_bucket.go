@@ -2,14 +2,14 @@ package actions
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
+	"strings"
 	"time"
-
-	"gitlab.com/Cacophony/go-kit/bucket"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/bucket"
+	"gitlab.com/Cacophony/go-kit/events"
 )
 
 type IncrBucket struct {
@@ -44,9 +44,10 @@ func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionIt
 	// TODO: sanitize bucket tag
 
 	return &IncrBucketItem{
-		Tag:    bucketTag(args[0]),
-		Decay:  decay,
-		Amount: amount,
+		GuildID: env.GuildID,
+		Tag:     bucketTag(env.GuildID, args[0]),
+		Decay:   decay,
+		Amount:  amount,
 	}, nil
 }
 
@@ -55,21 +56,55 @@ func (t IncrBucket) Description() string {
 }
 
 type IncrBucketItem struct {
-	Tag    string
-	Decay  time.Duration
-	Amount int
+	Tag     string
+	Decay   time.Duration
+	Amount  int
+	GuildID string
 }
 
 func (t *IncrBucketItem) Do(env *models.Env) {
 	// TODO: add support for amount
-	amount, _ := bucket.Add(
+	valueList, _ := bucket.AddWithValue(
 		env.Redis,
 		t.Tag,
+		bucketContent(env),
 		t.Decay,
 	)
-	fmt.Println("bucket", t.Tag, "is now at", amount)
+
+	values := make([]string, len(valueList))
+
+	for i, value := range valueList {
+		stringValue, ok := value.Member.(string)
+		if !ok {
+			continue
+		}
+
+		values[i] = stringValue
+	}
+
+	// TODO: remove State and stuff from event, should be inserted on plugin launch
+	event := &events.Event{
+		Type: events.CacophonyBucketUpdate,
+		BucketUpdate: &events.BucketUpdate{
+			Tag:     t.Tag,
+			GuildID: t.GuildID,
+			Values:  values,
+		},
+	}
+	event.WithState(env.State)
+
+	env.Handler.Handle(event)
 }
 
-func bucketTag(tag string) string {
-	return "automod:" + tag
+func bucketTag(guildID, tag string) string {
+	return "automod:" + guildID + ":" + tag
 }
+
+func bucketContent(env *models.Env) string {
+	return env.GuildID + "|" +
+		strings.Join(env.ChannelID, ";") + "|" +
+		strings.Join(env.UserID, ";") + "|" +
+		strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+}
+
+// TODO: allow user channel, or user specific buckets (change bucket tag?)

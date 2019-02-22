@@ -31,6 +31,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		params.Logger,
 		params.DB,
 		params.Redis,
+		params.Tokens,
 	)
 	return err
 }

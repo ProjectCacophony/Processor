@@ -11,10 +11,12 @@ import (
 var (
 	TriggerList = []interfaces.TriggerInterface{
 		triggers.Message{},
+		triggers.BucketUpdated{},
 	}
 
 	FiltersList = []interfaces.FilterInterface{
 		filters.RegexMessageContent{},
+		filters.True{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{

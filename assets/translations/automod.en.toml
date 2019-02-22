@@ -26,17 +26,21 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 
 # cmdElements
 "automod.elements.response" = "\
-{{range $title, $items := .itemsMap}}\
-**{{Title $title}}**\n\
-{{range $item := $items}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
-{{end}}\
+**Triggers**\n\
+{{range $item := .triggers}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
+**Filters**\n\
+{{range $item := .filters}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
+**Actions**\n\
+{{range $item := .actions}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
 "
 
 # Triggers
 "automod.triggers.when_message" = "Triggers when a new message is sent. []"
+"automod.triggers.when_bucket_updated" = "Triggers when a bucket is updated. [tag]"
 
 # Filters
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
+"automod.filters.if_true" = "Always matches."
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"

@@ -6,10 +6,17 @@ import (
 	"gitlab.com/Cacophony/go-kit/state"
 )
 
+type HandlerInterface interface {
+	Handle(event *events.Event) (process bool)
+}
+
 type Env struct {
-	Event   *events.Event
-	State   *state.State
-	Redis   *redis.Client
-	GuildID string
-	UserID  string
+	Event     *events.Event
+	State     *state.State
+	Redis     *redis.Client
+	Handler   HandlerInterface
+	GuildID   string
+	ChannelID []string
+	UserID    []string
+	Tokens    map[string]string
 }

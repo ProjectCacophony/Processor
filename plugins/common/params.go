@@ -10,10 +10,12 @@ type StartParameters struct {
 	Logger *zap.Logger
 	DB     *gorm.DB
 	Redis  *redis.Client
+	Tokens map[string]string
 }
 
 type StopParameters struct {
 	Logger *zap.Logger
 	DB     *gorm.DB
 	Redis  *redis.Client
+	Tokens map[string]string
 }

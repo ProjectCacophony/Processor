@@ -22,7 +22,7 @@ func cmdAdd(event *events.Event) {
 	env := &models.Env{
 		State:   event.State(),
 		GuildID: event.MessageCreate.GuildID,
-		UserID:  event.MessageCreate.Author.ID,
+		UserID:  []string{event.MessageCreate.Author.ID},
 	}
 
 	triggerName, triggerArgs, fields := extractTrigger(fields)

@@ -31,33 +31,37 @@ func (d sortByName) Less(i, j int) bool {
 }
 
 func cmdElements(event *events.Event) {
-	printMap := make(map[string][]printValues)
 
-	for _, item := range list.TriggerList {
-		printMap["triggers"] = append(printMap["triggers"], printValues{
+	triggers := make([]printValues, len(list.TriggerList))
+	for i, item := range list.TriggerList {
+		triggers[i] = printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		})
+		}
 	}
-	for _, item := range list.FiltersList {
-		printMap["filters"] = append(printMap["filters"], printValues{
+	filters := make([]printValues, len(list.FiltersList))
+	for i, item := range list.FiltersList {
+		filters[i] = printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		})
+		}
 	}
-	for _, item := range list.ActionsList {
-		printMap["actions"] = append(printMap["actions"], printValues{
+	actions := make([]printValues, len(list.ActionsList))
+	for i, item := range list.ActionsList {
+		actions[i] = printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		})
+		}
 	}
 
-	sort.Sort(sortByName(printMap["triggers"]))
-	sort.Sort(sortByName(printMap["filters"]))
-	sort.Sort(sortByName(printMap["actions"]))
+	sort.Sort(sortByName(triggers))
+	sort.Sort(sortByName(filters))
+	sort.Sort(sortByName(actions))
 
 	_, err := event.Respond("automod.elements.response",
-		"itemsMap", printMap,
+		"triggers", triggers,
+		"filters", filters,
+		"actions", actions,
 	)
 	event.Except(err)
 }

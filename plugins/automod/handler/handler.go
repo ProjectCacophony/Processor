@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strings"
 	"sync"
 
 	"github.com/go-redis/redis"
@@ -16,16 +17,18 @@ type Handler struct {
 	logger *zap.Logger
 	db     *gorm.DB
 	redis  *redis.Client
+	tokens map[string]string
 
 	rules     map[string][]models.Rule
 	rulesLock sync.RWMutex
 }
 
-func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client) (*Handler, error) {
+func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) (*Handler, error) {
 	handler := &Handler{
 		logger: logger,
 		db:     db,
 		redis:  redis,
+		tokens: tokens,
 	}
 
 	err := handler.startRulesCaching()
@@ -35,18 +38,31 @@ func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client) (*Handler,
 
 func (h *Handler) Handle(event *events.Event) (process bool) {
 	env := &models.Env{
-		Event: event,
-		State: event.State(),
-		Redis: h.redis,
+		Event:   event,
+		State:   event.State(),
+		Redis:   h.redis,
+		Handler: h,
+		Tokens:  h.tokens,
 	}
 
-	if event.Type == events.MessageCreateType {
+	switch event.Type {
+	case events.MessageCreateType:
 		if event.MessageCreate.Author.Bot {
 			return false
 		}
 
 		env.GuildID = event.MessageCreate.GuildID
-		env.UserID = event.MessageCreate.Author.ID
+		env.UserID = []string{event.MessageCreate.Author.ID}
+		env.ChannelID = []string{event.MessageCreate.ChannelID}
+	case events.CacophonyBucketUpdate:
+		env.GuildID = event.BucketUpdate.GuildID
+
+		for _, value := range event.BucketUpdate.Values {
+			userIDs, channelIDs, GuildID := extractBucketValues(value)
+			env.GuildID = GuildID
+			env.ChannelID = append(env.ChannelID, channelIDs...)
+			env.UserID = append(env.UserID, userIDs...)
+		}
 	}
 
 	h.rulesLock.RLock()
@@ -127,4 +143,19 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	}
 
 	return true
+}
+
+func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string) {
+	parts := strings.Split(value, "|")
+	if len(parts) < 3 {
+		return
+	}
+
+	guildID = parts[0]
+
+	channelIDs = strings.Split(parts[1], ";")
+
+	userIDs = strings.Split(parts[2], ";")
+
+	return
 }
