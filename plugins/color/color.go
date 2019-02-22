@@ -18,7 +18,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleColor(event *events.Event) {
+func (p *Plugin) handleColor(event *events.Event) {
 	if len(event.Fields()) < 2 {
 		event.Respond("color.too-few-arguments") // nolint: errcheck
 		return

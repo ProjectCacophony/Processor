@@ -7,7 +7,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleDevSleep(event *events.Event) {
+func (p *Plugin) handleDevSleep(event *events.Event) {
 	var secondsToSleep int
 	if len(event.Fields()) >= 3 {
 		secondsToSleep, _ = strconv.Atoi(event.Fields()[2])

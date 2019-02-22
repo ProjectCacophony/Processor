@@ -59,11 +59,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	switch event.Fields()[1] {
 	case "emoji":
 
-		handleDevEmoji(event)
+		p.handleDevEmoji(event)
 		return true
 	case "sleep":
 
-		handleDevSleep(event)
+		p.handleDevSleep(event)
 		return true
 	case "state":
 		if len(event.Fields()) > 2 {
@@ -77,7 +77,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	case "translate":
 
-		handleDevTranslate(event)
+		p.handleDevTranslate(event)
 		return true
 	}
 

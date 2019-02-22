@@ -49,7 +49,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	switch event.Fields()[0] {
 	case "color", "colour":
-		handleColor(event)
+		p.handleColor(event)
 
 		return true
 

@@ -6,7 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleDevEmoji(event *events.Event) {
+func (p *Plugin) handleDevEmoji(event *events.Event) {
 	// translating and sending message manually, to avoid automatic replacing of the emoji codes
 	// should usually be avoided!
 	message := event.Translate("dev.emoji.list", "emojiList", emoji.List)
