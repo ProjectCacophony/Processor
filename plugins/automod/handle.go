@@ -1,16 +1,20 @@
 package automod
 
 import (
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 type Plugin struct {
 	handler *handler.Handler
+	state   *state.State
+	db      *gorm.DB
 }
 
 func (p *Plugin) Name() string {
@@ -32,7 +36,10 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		params.DB,
 		params.Redis,
 		params.Tokens,
+		params.State,
 	)
+	p.state = params.State
+	p.db = params.DB
 	return err
 }
 
@@ -81,7 +88,7 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		return false
 	}
 	if len(event.Fields()) < 2 {
-		cmdStatus(event)
+		p.cmdStatus(event)
 
 		return true
 	}
@@ -89,17 +96,17 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 	switch event.Fields()[1] {
 
 	case "elements", "actions", "filters", "triggers":
-		cmdElements(event)
+		p.cmdElements(event)
 
 		return true
 	case "add":
 
-		cmdAdd(event)
+		p.cmdAdd(event)
 		return true
 
 	case "remove", "delete":
 
-		cmdRemove(event)
+		p.cmdRemove(event)
 		return true
 	}
 

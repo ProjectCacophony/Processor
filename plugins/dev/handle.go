@@ -5,9 +5,12 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
-type Plugin struct{}
+type Plugin struct {
+	state *state.State
+}
 
 func (p *Plugin) Name() string {
 	return "dev"
@@ -18,6 +21,7 @@ func (p *Plugin) DBModels() []interface{} {
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
+	p.state = params.State
 	return nil
 }
 
@@ -64,12 +68,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 	case "state":
 		if len(event.Fields()) > 2 {
 			if event.Fields()[2] == "guilds" {
-				handleDevStateGuilds(event)
+				p.handleDevStateGuilds(event)
 				return true
 			}
 		}
 
-		handleDevState(event)
+		p.handleDevState(event)
 		return true
 	case "translate":
 

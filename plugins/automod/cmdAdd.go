@@ -8,7 +8,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func cmdAdd(event *events.Event) {
+func (p *Plugin) cmdAdd(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		event.Respond("automod.add.too-few") // nolint: errcheck
 		return
@@ -20,7 +20,7 @@ func cmdAdd(event *events.Event) {
 	fields := event.Fields()[3:]
 
 	env := &models.Env{
-		State:   event.State(),
+		State:   p.state,
 		GuildID: event.MessageCreate.GuildID,
 		UserID:  []string{event.MessageCreate.Author.ID},
 	}
@@ -112,7 +112,7 @@ func cmdAdd(event *events.Event) {
 		break
 	}
 
-	err := event.DB().Save(&newRule).Error
+	err := p.db.Save(&newRule).Error
 	if err != nil {
 		if strings.Contains(err.Error(), "idx_automod_rules_guildid_name") {
 			event.Respond("automod.add.name-in-use") // nolint: errcheck

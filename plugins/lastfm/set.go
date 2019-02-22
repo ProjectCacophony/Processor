@@ -4,7 +4,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleSet(event *events.Event) {
+func (p *Plugin) handleSet(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		return
 	}
@@ -14,7 +14,7 @@ func handleSet(event *events.Event) {
 	// TODO: first validate if user exists
 
 	// upsert username to db
-	err := setLastFmUsername(event.DB(), event.MessageCreate.Author.ID, username)
+	err := setLastFmUsername(p.db, event.MessageCreate.Author.ID, username)
 	if err != nil {
 		event.Except(err)
 		return

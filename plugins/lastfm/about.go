@@ -11,11 +11,11 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleAbout(event *events.Event, lastfmClient *lastfm.Api) {
+func (p *Plugin) handleAbout(event *events.Event, lastfmClient *lastfm.Api) {
 	fields := event.Fields()[2:]
 
 	// get lastFM username to look up
-	username, _ := extractUsername(event, fields, -1)
+	username, _ := extractUsername(event, p.db, fields, -1)
 
 	// lookup user
 	userInfo, err := lastfmclient.GetUserinfo(lastfmClient, username)

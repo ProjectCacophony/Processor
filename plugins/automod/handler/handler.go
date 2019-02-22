@@ -4,6 +4,8 @@ import (
 	"strings"
 	"sync"
 
+	"gitlab.com/Cacophony/go-kit/state"
+
 	"github.com/go-redis/redis"
 
 	"github.com/jinzhu/gorm"
@@ -18,17 +20,25 @@ type Handler struct {
 	db     *gorm.DB
 	redis  *redis.Client
 	tokens map[string]string
+	state  *state.State
 
 	rules     map[string][]models.Rule
 	rulesLock sync.RWMutex
 }
 
-func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) (*Handler, error) {
+func NewHandler(
+	logger *zap.Logger,
+	db *gorm.DB,
+	redis *redis.Client,
+	tokens map[string]string,
+	state *state.State,
+) (*Handler, error) {
 	handler := &Handler{
 		logger: logger,
 		db:     db,
 		redis:  redis,
 		tokens: tokens,
+		state:  state,
 	}
 
 	err := handler.startRulesCaching()
@@ -39,7 +49,7 @@ func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map
 func (h *Handler) Handle(event *events.Event) (process bool) {
 	env := &models.Env{
 		Event:   event,
-		State:   event.State(),
+		State:   h.state,
 		Redis:   h.redis,
 		Handler: h,
 		Tokens:  h.tokens,

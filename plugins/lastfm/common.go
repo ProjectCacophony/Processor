@@ -2,16 +2,17 @@ package lastfm
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/jinzhu/gorm"
 	lastfm_client "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func extractUsername(event *events.Event, args []string, pos int) (string, []string) {
+func extractUsername(event *events.Event, db *gorm.DB, args []string, pos int) (string, []string) {
 	var username string
 	// try any mentions in the command
 	if len(event.MessageCreate.Mentions) > 0 {
-		username = getLastFmUsername(event.DB(), event.MessageCreate.Mentions[0].ID)
+		username = getLastFmUsername(db, event.MessageCreate.Mentions[0].ID)
 
 		if username != "" {
 			return username, args
@@ -32,7 +33,7 @@ func extractUsername(event *events.Event, args []string, pos int) (string, []str
 		}
 	}
 
-	username = getLastFmUsername(event.DB(), event.MessageCreate.Author.ID)
+	username = getLastFmUsername(db, event.MessageCreate.Author.ID)
 	return username, args
 }
 

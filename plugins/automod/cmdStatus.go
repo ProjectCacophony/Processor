@@ -7,9 +7,9 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func cmdStatus(event *events.Event) {
+func (p *Plugin) cmdStatus(event *events.Event) {
 	var rules []models.Rule
-	err := event.DB().
+	err := p.db.
 		Preload("Filters").
 		Preload("Actions").
 		Where("guild_id = ?", event.MessageCreate.GuildID).

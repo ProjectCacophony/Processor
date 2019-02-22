@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/go-kit/state"
+
 	"github.com/go-redis/redis"
 
 	"github.com/jinzhu/gorm"
@@ -54,7 +56,13 @@ func init() {
 	sort.Sort(ByPriority(PluginList))
 }
 
-func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) {
+func StartPlugins(
+	logger *zap.Logger,
+	db *gorm.DB,
+	redis *redis.Client,
+	tokens map[string]string,
+	state *state.State,
+) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Start(common.StartParameters{
@@ -62,6 +70,7 @@ func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens m
 			DB:     db,
 			Redis:  redis,
 			Tokens: tokens,
+			State:  state,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -74,7 +83,13 @@ func StartPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens m
 	}
 }
 
-func StopPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens map[string]string) {
+func StopPlugins(
+	logger *zap.Logger,
+	db *gorm.DB,
+	redis *redis.Client,
+	tokens map[string]string,
+	state *state.State,
+) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Stop(common.StopParameters{
@@ -82,6 +97,7 @@ func StopPlugins(logger *zap.Logger, db *gorm.DB, redis *redis.Client, tokens ma
 			DB:     db,
 			Redis:  redis,
 			Tokens: tokens,
+			State:  state,
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",

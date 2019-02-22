@@ -7,14 +7,14 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func cmdRemove(event *events.Event) {
+func (p *Plugin) cmdRemove(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		event.Respond("automod.remove.too-few") // nolint: errcheck
 		return
 	}
 
 	var ruleToDelete models.Rule
-	err := event.DB().Where("guild_id = ? AND name = ?",
+	err := p.db.Where("guild_id = ? AND name = ?",
 		event.MessageCreate.GuildID, event.Fields()[2]).First(&ruleToDelete).Error
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
@@ -25,7 +25,7 @@ func cmdRemove(event *events.Event) {
 		return
 	}
 
-	err = event.DB().Delete(&ruleToDelete).Error
+	err = p.db.Delete(&ruleToDelete).Error
 	if err != nil {
 		event.Except(err)
 		return

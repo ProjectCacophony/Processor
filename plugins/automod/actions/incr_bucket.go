@@ -82,18 +82,15 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 		values[i] = stringValue
 	}
 
-	// TODO: remove State and stuff from event, should be inserted on plugin launch
-	event := &events.Event{
+	// TODO: publish event?
+	env.Handler.Handle(&events.Event{
 		Type: events.CacophonyBucketUpdate,
 		BucketUpdate: &events.BucketUpdate{
 			Tag:     t.Tag,
 			GuildID: t.GuildID,
 			Values:  values,
 		},
-	}
-	event.WithState(env.State)
-
-	env.Handler.Handle(event)
+	})
 }
 
 func bucketTag(guildID, tag string) string {

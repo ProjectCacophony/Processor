@@ -13,35 +13,35 @@ const (
 	unavailablePlaceholder = "N/A"
 )
 
-func handleDevState(event *events.Event) {
+func (p *Plugin) handleDevState(event *events.Event) {
 	targetUserID := event.MessageCreate.Author.ID
 	if len(event.Fields()) >= 3 {
 		targetUserID = event.Fields()[2]
 	}
 
-	allGuilds, err := event.State().AllGuildIDs()
+	allGuilds, err := p.state.AllGuildIDs()
 	if err != nil {
 		event.Except(err)
 		return
 	}
-	allChannels, err := event.State().AllChannelIDs()
+	allChannels, err := p.state.AllChannelIDs()
 	if err != nil {
 		event.Except(err)
 		return
 	}
-	allUsers, err := event.State().AllUserIDs()
+	allUsers, err := p.state.AllUserIDs()
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	user, _ := event.State().User(targetUserID)
+	user, _ := p.state.User(targetUserID)
 	usernameText := unavailablePlaceholder
 	if user != nil {
 		usernameText = user.String()
 	}
 
-	member, _ := event.State().Member(
+	member, _ := p.state.Member(
 		event.MessageCreate.GuildID,
 		targetUserID,
 	)
@@ -56,7 +56,7 @@ func handleDevState(event *events.Event) {
 		}
 		memberJoinedAtText = humanize.Time(memberJoinedAt)
 	}
-	memberIs, err := event.State().IsMember(
+	memberIs, err := p.state.IsMember(
 		event.MessageCreate.GuildID,
 		targetUserID,
 	)
@@ -64,7 +64,7 @@ func handleDevState(event *events.Event) {
 		event.Except(err)
 		return
 	}
-	botID, err := event.State().BotForGuild(event.MessageCreate.GuildID)
+	botID, err := p.state.BotForGuild(event.MessageCreate.GuildID)
 	if err != nil {
 		event.Except(err)
 		return
@@ -116,8 +116,8 @@ func handleDevState(event *events.Event) {
 	event.Except(err)
 }
 
-func handleDevStateGuilds(event *events.Event) {
-	allGuilds, err := event.State().AllGuildIDs()
+func (p *Plugin) handleDevStateGuilds(event *events.Event) {
+	allGuilds, err := p.state.AllGuildIDs()
 	if err != nil {
 		event.Except(err)
 		return
@@ -125,7 +125,7 @@ func handleDevStateGuilds(event *events.Event) {
 
 	var resp string
 	for _, guildID := range allGuilds {
-		guild, err := event.State().Guild(guildID)
+		guild, err := p.state.Guild(guildID)
 		if err != nil {
 			event.Except(err)
 			return

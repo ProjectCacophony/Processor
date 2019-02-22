@@ -107,6 +107,7 @@ func main() {
 		gormDB,
 		redisClient,
 		config.DiscordTokens,
+		stateClient,
 	)
 
 	// start processor
@@ -151,6 +152,7 @@ func main() {
 		gormDB,
 		redisClient,
 		config.DiscordTokens,
+		stateClient,
 	)
 
 	err = httpServer.Shutdown(ctx)

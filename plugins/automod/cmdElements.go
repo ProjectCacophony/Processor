@@ -30,7 +30,7 @@ func (d sortByName) Less(i, j int) bool {
 	return strings.ToLower(d[i].Name) < strings.ToLower(d[j].Name)
 }
 
-func cmdElements(event *events.Event) {
+func (p *Plugin) cmdElements(event *events.Event) {
 
 	triggers := make([]printValues, len(list.TriggerList))
 	for i, item := range list.TriggerList {

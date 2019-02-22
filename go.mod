@@ -10,7 +10,7 @@ require (
 	github.com/lib/pq v1.0.0
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190222133011-25b783d42a1b
+	gitlab.com/Cacophony/go-kit v0.0.0-20190222142652-ee8d56c7c987
 	go.uber.org/zap v1.9.1
 	golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223 // indirect
 )

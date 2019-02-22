@@ -11,7 +11,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, offset int) {
+func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, offset int) {
 	fields := event.Fields()[offset:]
 
 	// var makeCollage bool
@@ -19,7 +19,7 @@ func handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, offset int) 
 	// makeCollage, newArgs = isCollageRequest(newArgs)
 
 	// get lastFM username to look up
-	username, _ := extractUsername(event, fields, -1)
+	username, _ := extractUsername(event, p.db, fields, -1)
 
 	// lookup user
 	userInfo, err := lastfmclient.GetUserinfo(lastfmClient, username)

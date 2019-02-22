@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
@@ -13,6 +15,7 @@ import (
 )
 
 type Plugin struct {
+	db           *gorm.DB
 	lastfmClient *lastfm.Api
 }
 
@@ -40,6 +43,8 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		config.Key,
 		config.Secret,
 	)
+
+	p.db = params.DB
 
 	return nil
 }
@@ -78,29 +83,29 @@ func (p *Plugin) Action(event *events.Event) bool {
 	event.Typing()
 
 	if len(event.Fields()) < 2 {
-		handleNowPlaying(event, p.lastfmClient, 1)
+		p.handleNowPlaying(event, p.lastfmClient, 1)
 		return true
 	}
 
 	switch strings.ToLower(event.Fields()[1]) {
 	case "np", "nowplaying", "now":
 
-		handleNowPlaying(event, p.lastfmClient, 2)
+		p.handleNowPlaying(event, p.lastfmClient, 2)
 		return true
 
 	case "topartists", "topartist", "top-artist", "top-artists", "artist", "artists", "ta":
 
-		handleTopArtists(event, p.lastfmClient, 2)
+		p.handleTopArtists(event, p.lastfmClient, 2)
 		return true
 
 	case "toptracks", "toptrack", "top-track", "top-tracks", "track", "tracks", "tt", "ts":
 
-		handleTopTracks(event, p.lastfmClient, 2)
+		p.handleTopTracks(event, p.lastfmClient, 2)
 		return true
 
 	case "topalbums", "topalbum", "top-album", "top-albums", "album", "albums", "tal":
 
-		handleTopAlbums(event, p.lastfmClient, 2)
+		p.handleTopAlbums(event, p.lastfmClient, 2)
 		return true
 
 	case "top":
@@ -112,37 +117,37 @@ func (p *Plugin) Action(event *events.Event) bool {
 		switch strings.ToLower(event.Fields()[2]) {
 		case "artist", "artists":
 
-			handleTopArtists(event, p.lastfmClient, 3)
+			p.handleTopArtists(event, p.lastfmClient, 3)
 			return true
 
 		case "track", "tracks":
 
-			handleTopTracks(event, p.lastfmClient, 3)
+			p.handleTopTracks(event, p.lastfmClient, 3)
 			return true
 
 		case "album", "albums":
 
-			handleTopAlbums(event, p.lastfmClient, 3)
+			p.handleTopAlbums(event, p.lastfmClient, 3)
 			return true
 
 		}
 
 	case "recent", "recently", "last", "recents":
 
-		handleRecent(event, p.lastfmClient)
+		p.handleRecent(event, p.lastfmClient)
 		return true
 
 	case "set", "register", "save":
 
-		handleSet(event)
+		p.handleSet(event)
 		return true
 
 	case "about", "user", "u":
 
-		handleAbout(event, p.lastfmClient)
+		p.handleAbout(event, p.lastfmClient)
 		return true
 	}
 
-	handleNowPlaying(event, p.lastfmClient, 1)
+	p.handleNowPlaying(event, p.lastfmClient, 1)
 	return true
 }
