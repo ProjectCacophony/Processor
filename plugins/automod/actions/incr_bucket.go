@@ -20,20 +20,32 @@ func (t IncrBucket) Name() string {
 }
 
 func (t IncrBucket) Args() int {
-	return 3
+	return 4
 }
 
 func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
-	if len(args) < 3 {
+	if len(args) < 4 {
 		return nil, errors.New("too few arguments")
 	}
 
-	decay, err := time.ParseDuration(args[1])
+	var bucketType events.BucketType
+	switch args[1] {
+	case "guild":
+		bucketType = events.GuildBucketType
+	case "channel":
+		bucketType = events.ChannelBucketType
+	case "user":
+		bucketType = events.UserBucketType
+	default:
+		return nil, errors.New("invalid bucket type")
+	}
+
+	decay, err := time.ParseDuration(args[2])
 	if err != nil {
 		return nil, err
 	}
 
-	amount, err := strconv.Atoi(args[2])
+	amount, err := strconv.Atoi(args[3])
 	if err != nil {
 		return nil, err
 	}
@@ -44,10 +56,10 @@ func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionIt
 	// TODO: sanitize bucket tag
 
 	return &IncrBucketItem{
-		GuildID: env.GuildID,
-		Tag:     bucketTag(env.GuildID, args[0]),
-		Decay:   decay,
-		Amount:  amount,
+		Decay:     decay,
+		Amount:    amount,
+		Type:      bucketType, // TODO: support setting other types
+		TagSuffix: args[0],
 	}, nil
 }
 
@@ -56,45 +68,72 @@ func (t IncrBucket) Description() string {
 }
 
 type IncrBucketItem struct {
-	Tag     string
-	Decay   time.Duration
-	Amount  int
-	GuildID string
+	Decay     time.Duration
+	Amount    int
+	TagSuffix string
+	Type      events.BucketType
 }
 
 func (t *IncrBucketItem) Do(env *models.Env) {
-	// TODO: add support for amount
-	valueList, _ := bucket.AddWithValue(
-		env.Redis,
-		t.Tag,
-		bucketContent(env),
-		t.Decay,
-	)
-
-	values := make([]string, len(valueList))
-
-	for i, value := range valueList {
-		stringValue, ok := value.Member.(string)
-		if !ok {
-			continue
+	var keys []string
+	switch t.Type {
+	case events.GuildBucketType:
+		keys = []string{bucketTag(env.GuildID, "", "", t.TagSuffix)}
+	case events.ChannelBucketType:
+		for _, channelID := range env.ChannelID {
+			keys = []string{bucketTag(env.GuildID, channelID, "", t.TagSuffix)}
 		}
-
-		values[i] = stringValue
+	case events.UserBucketType:
+		for _, userID := range env.UserID {
+			keys = []string{bucketTag(env.GuildID, "", userID, t.TagSuffix)}
+		}
 	}
 
-	// TODO: publish event?
-	env.Handler.Handle(&events.Event{
-		Type: events.CacophonyBucketUpdate,
-		BucketUpdate: &events.BucketUpdate{
-			Tag:     t.Tag,
-			GuildID: t.GuildID,
-			Values:  values,
-		},
-	})
+	for _, key := range keys {
+		// TODO: add support for amount
+		valueList, _ := bucket.AddWithValue(
+			env.Redis,
+			key,
+			bucketContent(env),
+			t.Decay,
+		)
+
+		values := make([]string, len(valueList))
+
+		for i, value := range valueList {
+			stringValue, ok := value.Member.(string)
+			if !ok {
+				continue
+			}
+
+			values[i] = stringValue
+		}
+
+		// TODO: publish event?
+		// TODO: async
+		env.Handler.Handle(&events.Event{
+			Type: events.CacophonyBucketUpdate,
+			BucketUpdate: &events.BucketUpdate{
+				Tag:       t.TagSuffix,
+				GuildID:   env.GuildID,
+				Values:    values,
+				Type:      t.Type,
+				KeySuffix: key,
+			},
+		})
+	}
 }
 
-func bucketTag(guildID, tag string) string {
-	return "automod:" + guildID + ":" + tag
+func bucketTag(guildID, channelID, userID, tag string) string {
+	key := "automod:guild:" + guildID
+	if channelID != "" {
+		key += ":channel:" + channelID
+	}
+	if userID != "" {
+		key += ":user:" + userID
+	}
+	key += ":" + tag
+	return key
 }
 
 func bucketContent(env *models.Env) string {

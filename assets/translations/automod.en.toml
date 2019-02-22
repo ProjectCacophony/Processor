@@ -8,7 +8,6 @@
 "automod.add.invalid-action-value" = "The action values you told me are invalid: `{{.error}}.`"
 "automote.add.success" = "**I added the rule!**\n\
 Please keep in mind that it can take up to one minute until the rule will be applied."
-"automod.add.name-in-use" = "There is already a rule with that name on this server."
 
 # cmdRemove
 "automod.remove.too-few" = "Please tell me the name of the rule to remove."

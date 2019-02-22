@@ -25,7 +25,7 @@ func (t BucketUpdated) NewItem(env *models.Env, args []string) (interfaces.Trigg
 	}
 
 	return &BucketUpdatedItem{
-		Tag: bucketTag(env.GuildID, args[0]),
+		Tag: args[0],
 	}, nil
 }
 
@@ -51,8 +51,4 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 	}
 
 	return true
-}
-
-func bucketTag(guildID, tag string) string {
-	return "automod:" + guildID + ":" + tag
 }

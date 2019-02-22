@@ -7,8 +7,8 @@ import (
 
 type Rule struct {
 	gorm.Model
-	GuildID       string         `gorm:"index;not null;unique_index:idx_automod_rules_guildid_name"`
-	Name          string         `gorm:"not null;unique_index:idx_automod_rules_guildid_name"`
+	GuildID       string         `gorm:"index;not null"`
+	Name          string         `gorm:"not null"`
 	TriggerName   string         `gorm:"not null"`
 	TriggerValues pq.StringArray `gorm:"type:varchar[]"`
 	Filters       []RuleFilter
