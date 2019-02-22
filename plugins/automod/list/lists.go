@@ -20,6 +20,7 @@ var (
 		filters.True{},
 		filters.BucketGT{},
 		filters.RegexUserName{},
+		filters.AccountAgeLT{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{

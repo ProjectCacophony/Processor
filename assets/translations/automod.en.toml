@@ -49,10 +49,11 @@ Adds the User to the Rule Context. []"
 "automod.filters.if_bucket_gt" = "Matches when the Bucket size is greater than the given amount. [amount]"
 "automod.filters.if_user_name_regex" = "Matches when the given RegEx matches with the Username.\n\
 Does not include the User Discriminator. [regex]"
+"automod.filters.if_account_age_lt" = "Matches if the Users Account Age is less than the given duration. [duration]"
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"
 "automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
-Stores eventual Users and Channels in the Rule Context. [tag, type, decay, amount]"
+Stores eventual Users and Channels in the Rule Context. [tag, type, decay duration, amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"
