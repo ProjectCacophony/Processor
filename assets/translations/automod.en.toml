@@ -47,6 +47,8 @@ Adds the User to the Rule Context. []"
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
 "automod.filters.if_true" = "Always matches."
 "automod.filters.if_bucket_gt" = "Matches when the Bucket size is greater than the given amount. [amount]"
+"automod.filters.if_user_name_regex" = "Matches when the given RegEx matches with the Username.\n\
+Does not include the User Discriminator. [regex]"
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"

@@ -19,6 +19,7 @@ var (
 		filters.RegexMessageContent{},
 		filters.True{},
 		filters.BucketGT{},
+		filters.RegexUserName{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
