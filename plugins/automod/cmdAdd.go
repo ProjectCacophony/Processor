@@ -3,7 +3,6 @@ package automod
 import (
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -112,8 +111,6 @@ func cmdAdd(event *events.Event) {
 		newRule.Process = true
 		break
 	}
-
-	spew.Dump(newRule)
 
 	err := event.DB().Save(&newRule).Error
 	if err != nil {

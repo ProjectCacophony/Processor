@@ -25,6 +25,7 @@ func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client) (*Handler,
 	handler := &Handler{
 		logger: logger,
 		db:     db,
+		redis:  redis,
 	}
 
 	err := handler.startRulesCaching()
