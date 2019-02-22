@@ -2,6 +2,7 @@ package actions
 
 import (
 	"errors"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
@@ -60,6 +61,7 @@ func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionIt
 		Amount:    amount,
 		Type:      bucketType, // TODO: support setting other types
 		TagSuffix: args[0],
+		Random:    rand.New(rand.NewSource(time.Now().UnixNano())),
 	}, nil
 }
 
@@ -72,6 +74,7 @@ type IncrBucketItem struct {
 	Amount    int
 	TagSuffix string
 	Type      events.BucketType
+	Random    *rand.Rand
 }
 
 func (t *IncrBucketItem) Do(env *models.Env) {
@@ -89,24 +92,30 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 		}
 	}
 
+	var values []string
+
 	for _, key := range keys {
-		// TODO: add support for amount
-		valueList, _ := bucket.AddWithValue(
-			env.Redis,
-			key,
-			bucketContent(env),
-			t.Decay,
-		)
 
-		values := make([]string, len(valueList))
+		for i := 0; i < t.Amount; i++ {
 
-		for i, value := range valueList {
-			stringValue, ok := value.Member.(string)
-			if !ok {
-				continue
+			// TODO: add support for amount
+			valueList, _ := bucket.AddWithValue(
+				env.Redis,
+				key,
+				bucketContent(env),
+				t.Decay,
+			)
+
+			values = make([]string, len(valueList))
+
+			for i, value := range valueList {
+				stringValue, ok := value.Member.(string)
+				if !ok {
+					continue
+				}
+
+				values[i] = stringValue
 			}
-
-			values[i] = stringValue
 		}
 
 		// TODO: publish event?
@@ -122,6 +131,7 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 			},
 		})
 	}
+
 }
 
 func bucketTag(guildID, channelID, userID, tag string) string {
@@ -136,11 +146,20 @@ func bucketTag(guildID, channelID, userID, tag string) string {
 	return key
 }
 
+// nolint: gochecknoglobals
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
+
+func randomLetters(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
 func bucketContent(env *models.Env) string {
 	return env.GuildID + "|" +
 		strings.Join(env.ChannelID, ";") + "|" +
 		strings.Join(env.UserID, ";") + "|" +
-		strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+		randomLetters(10)
 }
-
-// TODO: allow user channel, or user specific buckets (change bucket tag?)
