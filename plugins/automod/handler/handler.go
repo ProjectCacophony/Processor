@@ -82,6 +82,8 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		return true
 	}
 
+	continueAfter := true
+
 	var triggerMatched bool
 	var filtersMatched bool
 	for _, rule := range rules {
@@ -147,12 +149,10 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			}
 		}
 
-		if !rule.Process {
-			return false
-		}
+		continueAfter = false
 	}
 
-	return true
+	return continueAfter
 }
 
 func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string) {

@@ -17,6 +17,7 @@ var (
 	FiltersList = []interfaces.FilterInterface{
 		filters.RegexMessageContent{},
 		filters.True{},
+		filters.BucketGT{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
