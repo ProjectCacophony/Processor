@@ -64,6 +64,13 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		env.GuildID = event.MessageCreate.GuildID
 		env.UserID = []string{event.MessageCreate.Author.ID}
 		env.ChannelID = []string{event.MessageCreate.ChannelID}
+	case events.GuildMemberAddType:
+		if event.GuildMemberAdd.User.Bot {
+			return false
+		}
+
+		env.GuildID = event.GuildMemberAdd.GuildID
+		env.UserID = []string{event.GuildMemberAdd.User.ID}
 	case events.CacophonyBucketUpdate:
 		env.GuildID = event.BucketUpdate.GuildID
 

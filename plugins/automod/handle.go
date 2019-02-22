@@ -65,13 +65,11 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-	if event.Type != events.MessageCreateType {
-		return false
-	}
-
-	process := p.handleAsCommand(event)
-	if process {
-		return true
+	if event.Type == events.MessageCreateType {
+		process := p.handleAsCommand(event)
+		if process {
+			return true
+		}
 	}
 
 	// if we do not want to further process it, return true to stop further processing

@@ -36,6 +36,7 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 # Triggers
 "automod.triggers.when_message" = "Triggers when a new message is sent. []"
 "automod.triggers.when_bucket_updated" = "Triggers when a bucket is updated. [tag]"
+"automod.triggers.when_join" = "Triggers when a user joins the server. []"
 
 # Filters
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
@@ -46,3 +47,4 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 "automod.actions.apply_role" = "Applies the given role. [role]"
 "automod.actions.send_message" = "Sends the given message. [message]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket. [tag, type, decay, amount]"
+"automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"
