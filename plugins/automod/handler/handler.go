@@ -3,6 +3,8 @@ package handler
 import (
 	"sync"
 
+	"github.com/go-redis/redis"
+
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -13,12 +15,13 @@ import (
 type Handler struct {
 	logger *zap.Logger
 	db     *gorm.DB
+	redis  *redis.Client
 
 	rules     map[string][]models.Rule
 	rulesLock sync.RWMutex
 }
 
-func NewHandler(logger *zap.Logger, db *gorm.DB) (*Handler, error) {
+func NewHandler(logger *zap.Logger, db *gorm.DB, redis *redis.Client) (*Handler, error) {
 	handler := &Handler{
 		logger: logger,
 		db:     db,
@@ -33,6 +36,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	env := &models.Env{
 		Event: event,
 		State: event.State(),
+		Redis: h.redis,
 	}
 
 	if event.Type == events.MessageCreateType {
@@ -57,11 +61,15 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		triggerMatched = false
 
 		for _, trigger := range list.TriggerList {
-			if trigger.Name() != rule.Trigger {
+			if trigger.Name() != rule.TriggerName {
 				continue
 			}
 
-			item := trigger.NewItem(env)
+			item, err := trigger.NewItem(env, rule.TriggerValues)
+			if err != nil {
+				event.ExceptSilent(err)
+				return false
+			}
 
 			if item.Match(env) {
 				triggerMatched = true
@@ -80,7 +88,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 					continue
 				}
 
-				item, err := filter.NewItem(env, ruleFilter.Value)
+				item, err := filter.NewItem(env, ruleFilter.Values)
 				if err != nil {
 					event.ExceptSilent(err)
 					return false
@@ -102,7 +110,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 					continue
 				}
 
-				item, err := action.NewItem(env, ruleAction.Value)
+				item, err := action.NewItem(env, ruleAction.Values)
 				if err != nil {
 					event.ExceptSilent(err)
 					return false

@@ -1,10 +1,11 @@
 # cmdAdd
 "automod.add.too-few" = "You didn't tell me enough information."
 "automod.add.invalid-trigger-name" = "I was not able to find a trigger with that name."
+"automod.add.invalid-trigger-value" = "The trigger values you told me are invalid: `{{.error}}.`"
 "automod.add.invalid-filter-name" = "I was not able to find a filter with that name."
-"automod.add.invalid-filter-value" = "The filter value you told me is invalid: `{{.error}}.`"
+"automod.add.invalid-filter-value" = "The filter values you told me are invalid: `{{.error}}.`"
 "automod.add.invalid-action-name" = "I was not able to find an action with that name."
-"automod.add.invalid-action-value" = "The action value you told me is invalid: `{{.error}}.`"
+"automod.add.invalid-action-value" = "The action values you told me are invalid: `{{.error}}.`"
 "automote.add.success" = "**I added the rule!**\n\
 Please keep in mind that it can take up to one minute until the rule will be applied."
 "automod.add.name-in-use" = "There is already a rule with that name on this server."
@@ -32,11 +33,12 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 "
 
 # Triggers
-"automod.triggers.when_message" = "Triggers when a new message is sent."
+"automod.triggers.when_message" = "Triggers when a new message is sent. []"
 
 # Filters
-"automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content."
+"automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
 
 # Actions
-"automod.actions.apply_role" = "Applies the given role."
-"automod.actions.send_message" = "Sends the given message."
+"automod.actions.apply_role" = "Applies the given role. [role]"
+"automod.actions.send_message" = "Sends the given message. [message]"
+"automod.actions.incr_bucket" = "Increases a leaky bucket. [tag, decay, amount]"

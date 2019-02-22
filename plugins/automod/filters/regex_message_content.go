@@ -1,6 +1,7 @@
 package filters
 
 import (
+	"errors"
 	"regexp"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -16,8 +17,16 @@ func (f RegexMessageContent) Name() string {
 	return "if_message_content_regex"
 }
 
-func (f RegexMessageContent) NewItem(env *models.Env, value string) (interfaces.FilterItemInterface, error) {
-	regex, err := regexp.Compile(value)
+func (f RegexMessageContent) Args() int {
+	return 1
+}
+
+func (f RegexMessageContent) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
+	if len(args) < 1 {
+		return nil, errors.New("too few arguments")
+	}
+
+	regex, err := regexp.Compile(args[0])
 	if err != nil {
 		return nil, err
 	}

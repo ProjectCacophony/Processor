@@ -4,7 +4,8 @@ import "gitlab.com/Cacophony/Processor/plugins/automod/models"
 
 type ActionInterface interface {
 	Name() string
-	NewItem(*models.Env, string) (ActionItemInterface, error)
+	Args() int
+	NewItem(*models.Env, []string) (ActionItemInterface, error)
 	Description() string
 }
 

@@ -13,8 +13,12 @@ func (t Message) Name() string {
 	return "when_message"
 }
 
-func (t Message) NewItem(env *models.Env) interfaces.TriggerItemInterface {
-	return &MessageItem{}
+func (t Message) Args() int {
+	return 0
+}
+
+func (t Message) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
+	return &MessageItem{}, nil
 }
 
 func (t Message) Description() string {

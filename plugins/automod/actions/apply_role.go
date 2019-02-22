@@ -1,6 +1,8 @@
 package actions
 
 import (
+	"errors"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
@@ -12,8 +14,16 @@ func (t ApplyRole) Name() string {
 	return "apply_role"
 }
 
-func (t ApplyRole) NewItem(env *models.Env, value string) (interfaces.ActionItemInterface, error) {
-	role, err := env.State.RoleFromMention(env.GuildID, value)
+func (t ApplyRole) Args() int {
+	return 1
+}
+
+func (t ApplyRole) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
+	if len(args) < 1 {
+		return nil, errors.New("too few arguments")
+	}
+
+	role, err := env.State.RoleFromMention(env.GuildID, args[0])
 	if err != nil {
 		return nil, err
 	}

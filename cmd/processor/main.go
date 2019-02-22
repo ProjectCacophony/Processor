@@ -105,6 +105,7 @@ func main() {
 	plugins.StartPlugins(
 		logger.With(zap.String("feature", "start_plugins")),
 		gormDB,
+		redisClient,
 	)
 
 	// start processor
@@ -147,6 +148,7 @@ func main() {
 	plugins.StopPlugins(
 		logger.With(zap.String("feature", "stop_plugins")),
 		gormDB,
+		redisClient,
 	)
 
 	err = httpServer.Shutdown(ctx)

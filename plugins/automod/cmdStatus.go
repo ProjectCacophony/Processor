@@ -19,19 +19,18 @@ func cmdStatus(event *events.Event) {
 		return
 	}
 
-	// TODO: support displaying multiple triggers
-
 	ruleTexts := make([]string, len(rules))
 	for i, rule := range rules {
 		ruleTexts[i] += addQuotesIfSpaces(rule.Name) + " "
-		ruleTexts[i] += addQuotesIfSpaces(rule.Trigger) + " "
+		ruleTexts[i] += addQuotesIfSpaces(rule.TriggerName) + " "
+		ruleTexts[i] += argsString(rule.TriggerValues)
 		for _, filter := range rule.Filters {
 			ruleTexts[i] += addQuotesIfSpaces(filter.Name) + " "
-			ruleTexts[i] += addQuotesIfSpaces(filter.Value) + " "
+			ruleTexts[i] += argsString(filter.Values)
 		}
 		for _, action := range rule.Actions {
 			ruleTexts[i] += addQuotesIfSpaces(action.Name) + " "
-			ruleTexts[i] += addQuotesIfSpaces(action.Value) + " "
+			ruleTexts[i] += argsString(action.Values)
 		}
 		if rule.Process {
 			ruleTexts[i] += "continue "
@@ -48,4 +47,12 @@ func addQuotesIfSpaces(input string) string {
 	}
 
 	return input
+}
+
+func argsString(input []string) string {
+	var result string
+	for _, item := range input {
+		result += addQuotesIfSpaces(item) + " "
+	}
+	return result
 }

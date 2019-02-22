@@ -27,7 +27,11 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		return err
 	}
 
-	p.handler, err = handler.NewHandler(params.Logger, params.DB)
+	p.handler, err = handler.NewHandler(
+		params.Logger,
+		params.DB,
+		params.Redis,
+	)
 	return err
 }
 
@@ -53,6 +57,10 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type != events.MessageCreateType {
+		return false
+	}
+
 	process := p.handleAsCommand(event)
 	if process {
 		return true

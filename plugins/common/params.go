@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -8,9 +9,11 @@ import (
 type StartParameters struct {
 	Logger *zap.Logger
 	DB     *gorm.DB
+	Redis  *redis.Client
 }
 
 type StopParameters struct {
 	Logger *zap.Logger
 	DB     *gorm.DB
+	Redis  *redis.Client
 }

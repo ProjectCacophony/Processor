@@ -20,5 +20,6 @@ var (
 	ActionsList = []interfaces.ActionInterface{
 		actions.SendMessage{},
 		actions.ApplyRole{},
+		actions.IncrBucket{},
 	}
 )
