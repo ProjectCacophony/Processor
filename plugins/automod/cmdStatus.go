@@ -1,11 +1,29 @@
 package automod
 
 import (
+	"sort"
 	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
+
+type sortRulesByName []models.Rule
+
+// Len is part of sort.Interface
+func (d sortRulesByName) Len() int {
+	return len(d)
+}
+
+// Swap is part of sort.Interface
+func (d sortRulesByName) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}
+
+// Less is part of sort.Interface
+func (d sortRulesByName) Less(i, j int) bool {
+	return strings.ToLower(d[i].Name) < strings.ToLower(d[j].Name)
+}
 
 func (p *Plugin) cmdStatus(event *events.Event) {
 	var rules []models.Rule
@@ -18,6 +36,8 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 		event.Except(err)
 		return
 	}
+
+	sort.Sort(sortRulesByName(rules))
 
 	ruleTexts := make([]string, len(rules))
 	for i, rule := range rules {

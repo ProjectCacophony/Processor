@@ -13,20 +13,20 @@ type printValues struct {
 	Description string
 }
 
-type sortByName []printValues
+type sortPrintValuesByName []printValues
 
-// Len is part of sort.Interface.
-func (d sortByName) Len() int {
+// Len is part of sort.Interface
+func (d sortPrintValuesByName) Len() int {
 	return len(d)
 }
 
-// Swap is part of sort.Interface.
-func (d sortByName) Swap(i, j int) {
+// Swap is part of sort.Interface
+func (d sortPrintValuesByName) Swap(i, j int) {
 	d[i], d[j] = d[j], d[i]
 }
 
-// Less is part of sort.Interface. We use count as the value to sort by
-func (d sortByName) Less(i, j int) bool {
+// Less is part of sort.Interface
+func (d sortPrintValuesByName) Less(i, j int) bool {
 	return strings.ToLower(d[i].Name) < strings.ToLower(d[j].Name)
 }
 
@@ -54,9 +54,9 @@ func (p *Plugin) cmdElements(event *events.Event) {
 		}
 	}
 
-	sort.Sort(sortByName(triggers))
-	sort.Sort(sortByName(filters))
-	sort.Sort(sortByName(actions))
+	sort.Sort(sortPrintValuesByName(triggers))
+	sort.Sort(sortPrintValuesByName(filters))
+	sort.Sort(sortPrintValuesByName(actions))
 
 	_, err := event.Respond("automod.elements.response",
 		"triggers", triggers,
