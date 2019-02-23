@@ -6,10 +6,12 @@ import (
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
 	"gitlab.com/Cacophony/go-kit/state"
+	"go.uber.org/zap"
 )
 
 type Plugin struct {
-	state *state.State
+	state  *state.State
+	logger *zap.Logger
 }
 
 func (p *Plugin) Name() string {
@@ -22,6 +24,7 @@ func (p *Plugin) DBModels() []interface{} {
 
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
+	p.logger = params.Logger
 	return nil
 }
 
@@ -40,7 +43,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Localisations() []interfaces.Localisation {
 	local, err := localisation.NewFileSource("assets/translations/dev.en.toml", "en")
 	if err != nil {
-		panic(err) // TODO: handle error
+		p.logger.Error("failed to load localisation", zap.Error(err))
 	}
 
 	return []interfaces.Localisation{local}

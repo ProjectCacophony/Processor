@@ -9,9 +9,11 @@ import (
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
 	"gitlab.com/Cacophony/go-kit/state"
+	"go.uber.org/zap"
 )
 
 type Plugin struct {
+	logger  *zap.Logger
 	handler *handler.Handler
 	state   *state.State
 	db      *gorm.DB
@@ -40,6 +42,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	)
 	p.state = params.State
 	p.db = params.DB
+	p.logger = params.Logger
 	return err
 }
 
@@ -58,7 +61,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Localisations() []interfaces.Localisation {
 	local, err := localisation.NewFileSource("assets/translations/automod.en.toml", "en")
 	if err != nil {
-		panic(err) // TODO: handle error
+		p.logger.Error("failed to load localisation", zap.Error(err))
 	}
 
 	return []interfaces.Localisation{local}
@@ -73,7 +76,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	// if we do not want to further process it, return true to stop further processing
-	return !p.handler.Handle(event)
+	return p.handler.Handle(event)
 }
 
 func (p *Plugin) handleAsCommand(event *events.Event) bool {

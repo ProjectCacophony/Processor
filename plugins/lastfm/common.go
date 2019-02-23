@@ -72,7 +72,7 @@ func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.Me
 // 		IconURL: "https://i.imgur.com/p8wijg4.png",
 // 	}
 // 	if listeners > 0 {
-// 		embed.Footer.Text += " | Total Listeners " + strconv.Itoa(listeners) // TODO: humanize
+// 		embed.Footer.Text += " | Total Listeners " + strconv.Itoa(listeners)
 // 	}
 // 	// set embed colour
 // 	embed.Color = discord.HexToColorCode("#d51007")

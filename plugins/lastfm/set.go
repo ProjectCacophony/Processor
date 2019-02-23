@@ -1,6 +1,7 @@
 package lastfm
 
 import (
+	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -11,10 +12,14 @@ func (p *Plugin) handleSet(event *events.Event) {
 
 	username := event.Fields()[2]
 
-	// TODO: first validate if user exists
+	_, err := lastfmclient.GetUserinfo(p.lastfmClient, username)
+	if err != nil {
+		event.Respond("lastfm.user-not-found", "username", username) // nolint: errcheck
+		return
+	}
 
 	// upsert username to db
-	err := setLastFmUsername(p.db, event.MessageCreate.Author.ID, username)
+	err = setLastFmUsername(p.db, event.MessageCreate.Author.ID, username)
 	if err != nil {
 		event.Except(err)
 		return

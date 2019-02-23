@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 
+	"go.uber.org/zap"
+
 	"github.com/jinzhu/gorm"
 
 	"github.com/Seklfreak/lastfm-go/lastfm"
@@ -15,6 +17,7 @@ import (
 )
 
 type Plugin struct {
+	logger       *zap.Logger
 	db           *gorm.DB
 	lastfmClient *lastfm.Api
 }
@@ -45,6 +48,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	)
 
 	p.db = params.DB
+	p.logger = params.Logger
 
 	return nil
 }
@@ -64,7 +68,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Localisations() []interfaces.Localisation {
 	local, err := localisation.NewFileSource("assets/translations/lastfm.en.toml", "en")
 	if err != nil {
-		panic(err) // TODO: handle error
+		p.logger.Error("failed to load localisation", zap.Error(err))
 	}
 
 	return []interfaces.Localisation{local}
