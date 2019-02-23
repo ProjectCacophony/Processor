@@ -44,6 +44,8 @@ func NewHandler(
 }
 
 func (h *Handler) Handle(event *events.Event) (process bool) {
+	process = false
+
 	env := &models.Env{
 		Event:   event,
 		State:   h.state,
@@ -53,17 +55,15 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	}
 
 	if event.GuildID == "" {
-		return true
+		return
 	}
 
 	h.rulesLock.RLock()
 	rules, ok := h.rules[event.GuildID]
 	h.rulesLock.RUnlock()
 	if !ok {
-		return true
+		return
 	}
-
-	continueAfter := true
 
 	var triggerMatched bool
 	var filtersMatched bool
@@ -78,7 +78,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			item, err := trigger.NewItem(env, rule.TriggerValues)
 			if err != nil {
 				event.ExceptSilent(err)
-				return true
+				return
 			}
 
 			if item.Match(env) {
@@ -101,7 +101,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 				item, err := filter.NewItem(env, ruleFilter.Values)
 				if err != nil {
 					event.ExceptSilent(err)
-					return true
+					return
 				}
 
 				if !item.Match(env) {
@@ -123,7 +123,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 				item, err := action.NewItem(env, ruleAction.Values)
 				if err != nil {
 					event.ExceptSilent(err)
-					return true
+					return
 				}
 
 				item.Do(env)
@@ -131,9 +131,9 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		}
 
 		if !rule.Process {
-			continueAfter = false
+			process = true
 		}
 	}
 
-	return continueAfter
+	return
 }
