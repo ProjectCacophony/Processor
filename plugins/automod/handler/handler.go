@@ -78,7 +78,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			item, err := trigger.NewItem(env, rule.TriggerValues)
 			if err != nil {
 				event.ExceptSilent(err)
-				return false
+				return true
 			}
 
 			if item.Match(env) {
@@ -101,7 +101,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 				item, err := filter.NewItem(env, ruleFilter.Values)
 				if err != nil {
 					event.ExceptSilent(err)
-					return false
+					return true
 				}
 
 				if !item.Match(env) {
@@ -123,7 +123,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 				item, err := action.NewItem(env, ruleAction.Values)
 				if err != nil {
 					event.ExceptSilent(err)
-					return false
+					return true
 				}
 
 				item.Do(env)
