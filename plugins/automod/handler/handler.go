@@ -130,7 +130,9 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			}
 		}
 
-		continueAfter = false
+		if !rule.Process {
+			continueAfter = false
+		}
 	}
 
 	return continueAfter
