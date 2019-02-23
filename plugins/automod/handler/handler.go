@@ -43,6 +43,7 @@ func NewHandler(
 	return handler, err
 }
 
+// nolint: nakedret
 func (h *Handler) Handle(event *events.Event) (process bool) {
 	process = false
 
