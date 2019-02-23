@@ -21,6 +21,7 @@ var (
 		filters.BucketGT{},
 		filters.RegexUserName{},
 		filters.AccountAgeLT{},
+		filters.MentionsCount{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
