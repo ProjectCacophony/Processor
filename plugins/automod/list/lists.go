@@ -18,9 +18,9 @@ var (
 	FiltersList = []interfaces.FilterInterface{
 		filters.RegexMessageContent{},
 		filters.True{},
-		filters.BucketGT{},
+		filters.BucketAmount{},
 		filters.RegexUserName{},
-		filters.AccountAgeLT{},
+		filters.AccountAge{},
 		filters.MentionsCount{},
 	}
 

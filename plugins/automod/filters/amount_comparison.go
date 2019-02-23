@@ -23,5 +23,5 @@ func extractAmountComparisonType(field string) (AmountComparisonType, error) {
 		return AmountComparisonEQ, nil
 	}
 
-	return "", errors.New("invalid Comparison type, try \"lt\", \"eq\", or \"gt\"")
+	return "", errors.New("invalid Comparison type, try \"<\", \"=\", or \">\"")
 }

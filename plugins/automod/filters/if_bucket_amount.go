@@ -10,18 +10,18 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type MentionsCount struct {
+type BucketAmount struct {
 }
 
-func (f MentionsCount) Name() string {
-	return "if_mentions_count"
+func (f BucketAmount) Name() string {
+	return "if_bucket_amount"
 }
 
-func (f MentionsCount) Args() int {
+func (f BucketAmount) Args() int {
 	return 2
 }
 
-func (f MentionsCount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
+func (f BucketAmount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
 	}
@@ -40,37 +40,37 @@ func (f MentionsCount) NewItem(env *models.Env, args []string) (interfaces.Filte
 		return nil, errors.New("amount has to be 0 or greater")
 	}
 
-	return &MentionsCountItem{
+	return &BucketAmountItem{
 		Amount:     amount,
 		Comparison: comparisonType,
 	}, nil
 }
 
-func (f MentionsCount) Description() string {
-	return "automod.filters.if_mentions_count"
+func (f BucketAmount) Description() string {
+	return "automod.filters.if_bucket_amount"
 }
 
-type MentionsCountItem struct {
+type BucketAmountItem struct {
 	Amount     int
 	Comparison AmountComparisonType
 }
 
-func (f *MentionsCountItem) Match(env *models.Env) bool {
+func (f *BucketAmountItem) Match(env *models.Env) bool {
 	if env.Event == nil {
 		return false
 	}
 
-	if env.Event.Type != events.MessageCreateType {
+	if env.Event.Type != events.CacophonyBucketUpdate {
 		return false
 	}
 
 	switch f.Comparison {
 	case AmountComparisonLT:
-		return len(env.Event.MessageCreate.Mentions) < f.Amount
+		return len(env.Event.BucketUpdate.Values) < f.Amount
 	case AmountComparisonEQ:
-		return len(env.Event.MessageCreate.Mentions) == f.Amount
+		return len(env.Event.BucketUpdate.Values) == f.Amount
 	case AmountComparisonGT:
-		return len(env.Event.MessageCreate.Mentions) > f.Amount
+		return len(env.Event.BucketUpdate.Values) > f.Amount
 	}
 
 	return false
