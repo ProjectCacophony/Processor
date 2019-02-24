@@ -14,6 +14,7 @@ stringData:
   redisPassword: "{{REDIS_PASSWORD}}"
   featureflagUnleashURL: "{{FEATUREFLAG_UNLEASH_URL}}"
   featureflagUnleashInstanceID: "{{FEATUREFLAG_UNLEASH_INSTANCE_ID}}"
+  errortrackingRavenDSN: "{{ERRORTRACKING_RAVEN_DSN}}"
 
 
 ---
@@ -58,6 +59,8 @@ spec:
             value: "{{REDIS_ADDRESS}}"
           - name: CLUSTER_ENVIRONMENT
             value: "{{CLUSTER_ENVIRONMENT}}"
+          - name: HASH
+            value: "{{HASH}}"
           - name: DISCORD_TOKENS
             valueFrom:
               secretKeyRef:
@@ -103,6 +106,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: featureflagUnleashInstanceID
+          - name: ERRORTRACKING_RAVEN_DSN
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: errortrackingRavenDSN
 
 
 ---

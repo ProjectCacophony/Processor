@@ -16,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/Processor/pkg/processing"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
+	"gitlab.com/Cacophony/go-kit/errortracking"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/logging"
 	"gitlab.com/Cacophony/go-kit/state"
@@ -35,6 +36,8 @@ func main() {
 		panic(errors.Wrap(err, "unable to load configuration"))
 	}
 	config.FeatureFlag.Environment = config.ClusterEnvironment
+	config.ErrorTracking.Version = config.Hash
+	config.ErrorTracking.Environment = config.ClusterEnvironment
 
 	// init logger
 	logger, err := logging.NewLogger(
@@ -47,6 +50,14 @@ func main() {
 	)
 	if err != nil {
 		panic(errors.Wrap(err, "unable to initialise launcher"))
+	}
+
+	// init raven
+	err = errortracking.Init(&config.ErrorTracking)
+	if err != nil {
+		logger.Error("unable to initialise errortracking",
+			zap.Error(err),
+		)
 	}
 
 	// init redis
@@ -81,7 +92,7 @@ func main() {
 	stateClient := state.NewSate(redisClient, botIDs)
 
 	// init feature flagger
-	featureFlagger, err := featureflag.NewFeatureFlagger(&config.FeatureFlag)
+	featureFlagger, err := featureflag.New(&config.FeatureFlag)
 	if err != nil {
 		logger.Fatal("unable to initialise feature flagger",
 			zap.Error(err),
