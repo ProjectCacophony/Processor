@@ -102,12 +102,10 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 	}
 
 	for _, field := range fields {
-		if field != "continue" {
-			continue
-		}
 
-		newRule.Process = true
-		break
+		if field == "stop" {
+			newRule.Stop = true
+		}
 	}
 
 	err := p.db.Save(&newRule).Error

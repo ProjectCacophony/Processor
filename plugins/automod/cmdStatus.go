@@ -52,8 +52,8 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 			ruleTexts[i] += addQuotesIfSpaces(action.Name) + " "
 			ruleTexts[i] += argsString(action.Values)
 		}
-		if rule.Process {
-			ruleTexts[i] += "continue "
+		if rule.Stop {
+			ruleTexts[i] += "stop "
 		}
 	}
 

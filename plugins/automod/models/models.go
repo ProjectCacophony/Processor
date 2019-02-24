@@ -13,7 +13,7 @@ type Rule struct {
 	TriggerValues pq.StringArray `gorm:"type:varchar[]"`
 	Filters       []RuleFilter
 	Actions       []RuleAction
-	Process       bool
+	Stop          bool
 }
 
 func (*Rule) TableName() string {
@@ -25,6 +25,7 @@ type RuleFilter struct {
 	RuleID uint
 	Name   string         `gorm:"not null"`
 	Values pq.StringArray `gorm:"type:varchar[]"`
+	Not    bool
 }
 
 func (*RuleFilter) TableName() string {

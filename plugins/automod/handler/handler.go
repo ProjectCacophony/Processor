@@ -131,7 +131,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			}
 		}
 
-		if !rule.Process {
+		if rule.Stop {
 			process = true
 		}
 	}
