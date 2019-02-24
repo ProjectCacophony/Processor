@@ -50,3 +50,10 @@ func handlePong(event *events.Event) {
 		event.Except(err)
 	}
 }
+
+func handlePang(event *events.Event) {
+	_, err := event.Respond("ping.pang-response")
+	if err != nil {
+		event.Except(err)
+	}
+}

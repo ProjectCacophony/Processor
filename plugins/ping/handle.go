@@ -60,6 +60,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		handlePong(event)
 		return true
+	case "pang":
+
+		handlePang(event)
+		return true
 	}
 
 	return false
