@@ -2,6 +2,7 @@
 package lastfm
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -14,12 +15,16 @@ import (
 func (p *Plugin) handleTopArtists(event *events.Event, lastfmClient *lastfm.Api, offset int) {
 	fields := event.Fields()[offset:]
 
-	// var makeCollage bool
+	var makeCollage bool
 	period, fields := lastfmclient.GetPeriodFromArgs(fields)
-	// makeCollage, newArgs = isCollageRequest(newArgs)
+	makeCollage, fields = isCollageRequest(fields)
 
 	// get lastFM username to look up
 	username, _ := extractUsername(event, p.db, fields, -1)
+	if username == "" {
+		event.Respond("lastfm.no-user") // nolint: errcheck
+		return
+	}
 
 	// lookup user
 	userInfo, err := lastfmclient.GetUserinfo(lastfmClient, username)
@@ -53,46 +58,49 @@ func (p *Plugin) handleTopArtists(event *events.Event, lastfmClient *lastfm.Api,
 	// set content
 	embed.Author.Name = "lastfm.artists.embed.title"
 
-	// // create collage if requested
-	// if makeCollage {
-	// 	// initialise variables
-	// 	imageUrls := make([]string, 0)
-	// 	artistNames := make([]string, 0)
-	// 	for _, artist := range artists {
-	// 		imageUrls = append(imageUrls, artist.ImageURL)
-	// 		artistNames = append(artistNames, artist.Name)
-	// 		if len(imageUrls) >= 9 {
-	// 			break
-	// 		}
-	// 	}
-	//
-	// 	// create the collage
-	// 	collageBytes := collage.FromUrls(
-	// 		ctx,
-	// 		imageUrls,
-	// 		artistNames,
-	// 		900, 900,
-	// 		300, 300,
-	// 		dhelpers.DiscordDarkThemeBackgroundColor,
-	// 	)
-	//
-	// 	// add collage image to embed
-	// 	embed.Image = &discordgo.MessageEmbedImage{
-	// 		URL: "attachment://LastFM-Collage.png",
-	// 	}
-	// 	// send collage to discord and stop
-	// 	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-	// 		Files: []*discordgo.File{
-	// 			{
-	// 				Name:   "LastFM-Collage.png",
-	// 				Reader: bytes.NewReader(collageBytes),
-	// 			},
-	// 		},
-	// 		Embed: &embed,
-	// 	})
-	// 	dhelpers.CheckErr(err)
-	// 	return
-	// }
+	// create collage if requested
+	if makeCollage {
+		// initialise variables
+		imageURLs := make([]string, 9)
+		artistNames := make([]string, 9)
+		for i, artist := range artists {
+			imageURLs[i] = artist.ImageURL
+			artistNames[i] = artist.Name
+			if i >= 8 {
+				break
+			}
+		}
+
+		// create the collage
+		collageBytes, err := CollageFromURLs(
+			p.httpClient,
+			imageURLs,
+			artistNames,
+			900, 900,
+			300, 300,
+		)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		// add collage image to embed
+		embed.Image = &discordgo.MessageEmbedImage{
+			URL: "attachment://Cacophony-LastFM-Collage.png",
+		}
+		// send collage to discord and stop
+		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
+			Files: []*discordgo.File{
+				{
+					Name:   "Cacophony-LastFM-Collage.png",
+					Reader: bytes.NewReader(collageBytes),
+				},
+			},
+			Embed: &embed,
+		}, "userData", userInfo, "period", period)
+		event.Except(err)
+		return
+	}
 
 	// add artists to embed
 	for i, artist := range artists {

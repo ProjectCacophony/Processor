@@ -1,6 +1,8 @@
 package lastfm
 
 import (
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/jinzhu/gorm"
 	lastfm_client "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
@@ -79,3 +81,18 @@ func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.Me
 //
 // 	return embed
 // }
+
+// isCollageRequest returns true if the args contain an arg making it a collage request
+func isCollageRequest(args []string) (bool, []string) {
+	for i, arg := range args {
+		arg = strings.ToLower(arg)
+
+		if arg != "collage" {
+			continue
+		}
+
+		return true, append(args[:i], args[i+1:]...)
+	}
+	return false, args
+
+}

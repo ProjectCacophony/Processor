@@ -10,6 +10,7 @@ require (
 	github.com/go-redis/redis v6.15.1+incompatible
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
 	github.com/jinzhu/now v1.0.0 // indirect
@@ -18,9 +19,10 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190224105024-1863ac086c54
+	gitlab.com/Cacophony/go-kit v0.0.0-20190224152316-acfd93a48e13
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190222235706-ffb98f73852f // indirect
+	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9
 	golang.org/x/sys v0.0.0-20190222171317-cd391775e71e // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 )
