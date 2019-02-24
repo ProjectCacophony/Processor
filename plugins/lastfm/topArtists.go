@@ -86,13 +86,13 @@ func (p *Plugin) handleTopArtists(event *events.Event, lastfmClient *lastfm.Api,
 
 		// add collage image to embed
 		embed.Image = &discordgo.MessageEmbedImage{
-			URL: "attachment://Cacophony-LastFM-Collage.png",
+			URL: "attachment://Cacophony-LastFM-Collage.jpg",
 		}
 		// send collage to discord and stop
 		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
 			Files: []*discordgo.File{
 				{
-					Name:   "Cacophony-LastFM-Collage.png",
+					Name:   "Cacophony-LastFM-Collage.jpg",
 					Reader: bytes.NewReader(collageBytes),
 				},
 			},

@@ -12,11 +12,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/golang/freetype"
-
-	"golang.org/x/image/font"
-
+	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/draw"
+	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
 )
 
 // Creates a Collage PNG Image from internet image urls (PNG or JPEG).
@@ -81,24 +80,18 @@ func CollageFromBytes(
 		return nil, err
 	}
 
-	fontType, err := freetype.ParseFont(fontBytes)
+	fontType, err := truetype.Parse(fontBytes)
 	if err != nil {
 		return nil, err
 	}
-
-	freetypeContext := freetype.NewContext()
-	freetypeContext.SetFont(fontType)
-	freetypeContext.SetDPI(72)
-	freetypeContext.SetHinting(font.HintingFull)
-	freetypeContext.SetSrc(image.White)
-	freetypeContext.SetDst(img)
-	freetypeContext.SetClip(img.Bounds())
 
 	fontOffsetX := (tileWidth / 100) * 2
 	fontOffsetY := (tileHeight / 100) * 2
 	var posX, posY int
 	var tileRectangle image.Rectangle
-	var fontSize float64
+	var fontSize int
+	var textPosX, textPosY int
+	var textLength int
 	for i, imageItemData := range imageDataArray {
 		// switch tile to new line if required
 		if posX > 0 && posX+tileWidth > width {
@@ -117,17 +110,28 @@ func CollageFromBytes(
 		}
 
 		if len(descriptions) > i {
-			fontSize = 36
+			for fontSize = (tileHeight / 100) * 15; fontSize > 1; fontSize-- {
 
-			// TODO: measure text, and reduce size if needed
-			// wait for https://godoc.org/golang.org/x/image/font/opentype ?
-			// TODO: Border for better readability
+				textPosX = posX + fontOffsetX
+				textPosY = posY + fontOffsetY + fontSize - 5
 
-			freetypeContext.SetFontSize(fontSize)
-			freetypeContext.SetClip(tileRectangle.Bounds())
-			pt := freetype.Pt(posX+fontOffsetX, posY+fontOffsetY+int(freetypeContext.PointToFixed(fontSize)>>6))
+				textLength, _ = measureString(
+					fontType, descriptions[i],
+					fontSize,
+				)
+				if textLength < tileWidth-fontOffsetY {
+					break
+				}
+			}
 
-			freetypeContext.DrawString(descriptions[i], pt) // nolint: errcheck
+			drawStringWithOutline(
+				img,
+				image.White, image.Black,
+				fontType, descriptions[i],
+				fontSize,
+				textPosX, textPosY,
+				5.0,
+			)
 		}
 
 		posX += tileWidth
@@ -143,4 +147,75 @@ func CollageFromBytes(
 	}
 
 	return buffer.Bytes(), nil
+}
+
+func drawStringWithOutline(
+	dst draw.Image,
+	outlineSrc image.Image,
+	textSrc image.Image,
+	fontType *truetype.Font,
+	text string,
+	fontSize int,
+	x, y int,
+	outlineSize int,
+) {
+	for dy := -outlineSize; dy <= outlineSize; dy++ {
+		for dx := -outlineSize; dx <= outlineSize; dx++ {
+			if dx*dx+dy*dy >= outlineSize*outlineSize {
+				// give it rounded corners
+				continue
+			}
+
+			drawString(
+				dst, outlineSrc,
+				fontType, text,
+				fontSize,
+				x+dx, y+dy,
+			)
+		}
+	}
+
+	drawString(
+		dst, textSrc,
+		fontType, text,
+		fontSize,
+		x, y,
+	)
+}
+
+func drawString(
+	dst draw.Image,
+	src image.Image,
+	fontType *truetype.Font,
+	text string,
+	fontSize int,
+	x, y int,
+) {
+	drawer := &font.Drawer{
+		Dst: dst,
+		Src: src,
+		Face: truetype.NewFace(fontType, &truetype.Options{
+			Size:    float64(fontSize),
+			Hinting: font.HintingFull,
+		}),
+		Dot: fixed.P(x, y),
+	}
+
+	drawer.DrawString(text)
+}
+
+func measureString(
+	fontType *truetype.Font,
+	text string,
+	fontSize int,
+) (int, int) {
+	drawer := &font.Drawer{
+		Face: truetype.NewFace(fontType, &truetype.Options{
+			Size:    float64(fontSize),
+			Hinting: font.HintingFull,
+		}),
+	}
+
+	res := drawer.MeasureString(text)
+	return res.Round(), fontSize
 }
