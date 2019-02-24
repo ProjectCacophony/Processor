@@ -3,10 +3,7 @@ package plugins
 import (
 	"sort"
 
-	"gitlab.com/Cacophony/go-kit/state"
-
 	"github.com/go-redis/redis"
-
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
 	"gitlab.com/Cacophony/Processor/plugins/color"
@@ -15,7 +12,9 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/lastfm"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
@@ -62,15 +61,17 @@ func StartPlugins(
 	redis *redis.Client,
 	tokens map[string]string,
 	state *state.State,
+	featureFlagger *featureflag.FeatureFlagger,
 ) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Start(common.StartParameters{
-			Logger: logger,
-			DB:     db,
-			Redis:  redis,
-			Tokens: tokens,
-			State:  state,
+			Logger:         logger,
+			DB:             db,
+			Redis:          redis,
+			Tokens:         tokens,
+			State:          state,
+			FeatureFlagger: featureFlagger,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -89,15 +90,17 @@ func StopPlugins(
 	redis *redis.Client,
 	tokens map[string]string,
 	state *state.State,
+	featureFlagger *featureflag.FeatureFlagger,
 ) {
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Stop(common.StopParameters{
-			Logger: logger,
-			DB:     db,
-			Redis:  redis,
-			Tokens: tokens,
-			State:  state,
+			Logger:         logger,
+			DB:             db,
+			Redis:          redis,
+			Tokens:         tokens,
+			State:          state,
+			FeatureFlagger: featureFlagger,
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",

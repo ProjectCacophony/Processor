@@ -16,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/Processor/pkg/processing"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
+	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/logging"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
@@ -33,6 +34,7 @@ func main() {
 	if err != nil {
 		panic(errors.Wrap(err, "unable to load configuration"))
 	}
+	config.FeatureFlag.Environment = config.ClusterEnvironment
 
 	// init logger
 	logger, err := logging.NewLogger(
@@ -78,6 +80,14 @@ func main() {
 	}
 	stateClient := state.NewSate(redisClient, botIDs)
 
+	// init feature flagger
+	featureFlagger, err := featureflag.NewFeatureFlagger(&config.FeatureFlag)
+	if err != nil {
+		logger.Fatal("unable to initialise feature flagger",
+			zap.Error(err),
+		)
+	}
+
 	// init processor
 	processor, err := processing.NewProcessor(
 		logger.With(zap.String("feature", "processor")),
@@ -90,6 +100,7 @@ func main() {
 		config.ConcurrentProcessingLimit,
 		config.ProcessingDeadline,
 		config.DiscordTokens,
+		featureFlagger,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",
@@ -108,6 +119,7 @@ func main() {
 		redisClient,
 		config.DiscordTokens,
 		stateClient,
+		featureFlagger,
 	)
 
 	// start processor
@@ -153,6 +165,7 @@ func main() {
 		redisClient,
 		config.DiscordTokens,
 		stateClient,
+		featureFlagger,
 	)
 
 	err = httpServer.Shutdown(ctx)

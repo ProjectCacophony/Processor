@@ -12,6 +12,8 @@ stringData:
   lastfmKey: "{{LASTFM_KEY}}"
   lastfmSecret: "{{LASTFM_SECRET}}"
   redisPassword: "{{REDIS_PASSWORD}}"
+  featureflagUnleashURL: "{{FEATUREFLAG_UNLEASH_URL}}"
+  featureflagUnleashInstanceID: "{{FEATUREFLAG_UNLEASH_INSTANCE_ID}}"
 
 
 ---
@@ -54,6 +56,8 @@ spec:
             value: "{{CONCURRENT_PROCESSING_LIMIT}}"
           - name: REDIS_ADDRESS
             value: "{{REDIS_ADDRESS}}"
+          - name: CLUSTER_ENVIRONMENT
+            value: "{{CLUSTER_ENVIRONMENT}}"
           - name: DISCORD_TOKENS
             valueFrom:
               secretKeyRef:
@@ -87,8 +91,18 @@ spec:
           - name: REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: gateway-secret
+                name: processor-secret
                 key: redisPassword
+          - name: FEATUREFLAG_UNLEASH_URL
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: featureflagUnleashURL
+          - name: FEATUREFLAG_UNLEASH_INSTANCE_ID
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: featureflagUnleashInstanceID
 
 
 ---

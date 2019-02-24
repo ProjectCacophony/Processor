@@ -3,6 +3,7 @@
 # should have the following environment variables set:
 # PORT
 # ENVIRONMENT
+# CLUSTER_ENVIRONMENT
 # AMQP_DSN
 # LOGGING_DISCORD_WEBHOOK
 # DISCORD_TOKENS
@@ -13,6 +14,8 @@
 # LASTFM_SECRET
 # REDIS_ADDRESS
 # REDIS_PASSWORD
+# FEATUREFLAG_UNLEASH_URL
+# FEATUREFLAG_UNLEASH_INSTANCE_ID
 
 template="k8s/manifest.tmpl.yaml"
 target="k8s/manifest.yaml"
@@ -30,3 +33,6 @@ sed -i -e "s|{{LASTFM_KEY}}|$LASTFM_KEY|g" "$target"
 sed -i -e "s|{{LASTFM_SECRET}}|$LASTFM_SECRET|g" "$target"
 sed -i -e "s|{{REDIS_ADDRESS}}|$REDIS_ADDRESS|g" "$target"
 sed -i -e "s|{{REDIS_PASSWORD}}|$REDIS_PASSWORD|g" "$target"
+sed -i -e "s|{{CLUSTER_ENVIRONMENT}}|$CLUSTER_ENVIRONMENT|g" "$target"
+sed -i -e "s|{{FEATUREFLAG_UNLEASH_URL}}|$FEATUREFLAG_UNLEASH_URL|g" "$target"
+sed -i -e "s|{{FEATUREFLAG_UNLEASH_INSTANCE_ID}}|$FEATUREFLAG_UNLEASH_INSTANCE_ID|g" "$target"

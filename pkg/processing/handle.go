@@ -36,6 +36,13 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	var wg sync.WaitGroup
 	var handled bool
 	for _, plugin := range plugins.PluginList {
+		if !p.featureFlagger.IsEnabled(featureFlagPluginKey(plugin.Name()), true) {
+			p.logger.Debug("skipping plugin as it is disabled by feature flags",
+				zap.String("plugin_name", plugin.Name()),
+			)
+			continue
+		}
+
 		event.WithLogger(p.logger.With(zap.String("plugin", plugin.Name())))
 
 		if plugin.Passthrough() {
@@ -76,4 +83,8 @@ func (p *Processor) executePlugin(plugin plugins.Plugin, event *events.Event) bo
 	}()
 
 	return plugin.Action(event)
+}
+
+func featureFlagPluginKey(pluginName string) string {
+	return "plugin-" + pluginName
 }

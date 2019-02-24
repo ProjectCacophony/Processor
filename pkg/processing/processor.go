@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
+	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -30,6 +31,7 @@ type Processor struct {
 	concurrentProcessingLimit int
 	processingDeadline        time.Duration
 	discordTokens             map[string]string
+	featureFlagger            *featureflag.FeatureFlagger
 
 	amqpConnection   *amqp.Connection
 	amqpChannel      *amqp.Channel
@@ -49,6 +51,7 @@ func NewProcessor(
 	concurrentProcessingLimit int,
 	processingDeadline time.Duration,
 	discordTokens map[string]string,
+	featureFlagger *featureflag.FeatureFlagger,
 ) (*Processor, error) {
 	processor := &Processor{
 		logger:                    logger,
@@ -61,6 +64,7 @@ func NewProcessor(
 		concurrentProcessingLimit: concurrentProcessingLimit,
 		processingDeadline:        processingDeadline,
 		discordTokens:             discordTokens,
+		featureFlagger:            featureFlagger,
 
 		amqpErrorChannel: make(chan *amqp.Error),
 	}
