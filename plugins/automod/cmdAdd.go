@@ -45,8 +45,9 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 
 	var filterName string
 	var filterArgs []string
+	var not bool
 	for {
-		filterName, filterArgs, fields = extractFilter(fields)
+		filterName, filterArgs, not, fields = extractFilter(fields)
 		if filterName == "" {
 			break
 		}
@@ -63,6 +64,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 			newRule.Filters = append(newRule.Filters, models.RuleFilter{
 				Name:   filterName,
 				Values: filterArgs,
+				Not:    not,
 			})
 			break
 		}
@@ -139,25 +141,32 @@ func extractTrigger(fieldsInput []string) (name string, args []string, fields []
 	return "", nil, fieldsInput
 }
 
-func extractFilter(fieldsInput []string) (name string, args []string, fields []string) {
-	for i, field := range fieldsInput {
+func extractFilter(fieldsInput []string) (name string, args []string, not bool, fields []string) {
+	fields = fieldsInput
+
+	if len(fields) >= 1 && fields[0] == "not" {
+		not = true
+		fields = fields[1:]
+	}
+
+	for i, field := range fields {
 		for _, filter := range list.FiltersList {
 			if filter.Name() != field {
 				continue
 			}
 
 			name = filter.Name()
-			if len(fieldsInput) > i+filter.Args() {
-				args = fieldsInput[i+1 : i+filter.Args()+1]
+			if len(fields) > i+filter.Args() {
+				args = fields[i+1 : i+filter.Args()+1]
 			}
-			if len(fieldsInput) > i+filter.Args() {
-				fields = fieldsInput[i+filter.Args()+1:]
+			if len(fields) > i+filter.Args() {
+				fields = fields[i+filter.Args()+1:]
 			}
 			return
 		}
 	}
 
-	return "", nil, fieldsInput
+	return "", nil, false, fieldsInput
 }
 
 func extractAction(fieldsInput []string) (name string, args []string, fields []string) {

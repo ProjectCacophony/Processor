@@ -105,8 +105,14 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 					return
 				}
 
-				if !item.Match(env) {
-					filtersMatched = false
+				if ruleFilter.Not {
+					if item.Match(env) {
+						filtersMatched = false
+					}
+				} else {
+					if !item.Match(env) {
+						filtersMatched = false
+					}
 				}
 			}
 		}

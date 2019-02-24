@@ -45,6 +45,9 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 		ruleTexts[i] += addQuotesIfSpaces(rule.TriggerName) + " "
 		ruleTexts[i] += argsString(rule.TriggerValues)
 		for _, filter := range rule.Filters {
+			if filter.Not {
+				ruleTexts[i] += "not "
+			}
 			ruleTexts[i] += addQuotesIfSpaces(filter.Name) + " "
 			ruleTexts[i] += argsString(filter.Values)
 		}
