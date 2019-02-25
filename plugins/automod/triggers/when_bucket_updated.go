@@ -54,18 +54,19 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 	env.GuildID = env.Event.BucketUpdate.GuildID
 
 	for _, value := range env.Event.BucketUpdate.Values {
-		userIDs, channelIDs, GuildID := extractBucketValues(value)
+		userIDs, channelIDs, GuildID, messages := extractBucketValues(value)
 		env.GuildID = GuildID
 		env.ChannelID = append(env.ChannelID, channelIDs...)
 		env.UserID = append(env.UserID, userIDs...)
+		env.Messages = append(env.Messages, messages...)
 	}
 
 	return true
 }
 
-func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string) {
+func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string, messages []*models.EnvMessage) {
 	parts := strings.Split(value, "|")
-	if len(parts) < 3 {
+	if len(parts) < 4 {
 		return
 	}
 
@@ -74,6 +75,18 @@ func extractBucketValues(value string) (userIDs, channelIDs []string, guildID st
 	channelIDs = strings.Split(parts[1], ";")
 
 	userIDs = strings.Split(parts[2], ";")
+
+	for _, messageData := range strings.Split(parts[3], ";") {
+		messageParts := strings.Split(messageData, ":")
+		if len(messageParts) < 2 {
+			continue
+		}
+
+		messages = append(messages, &models.EnvMessage{
+			ID:       messageParts[0],
+			ChanneID: messageParts[1],
+		})
+	}
 
 	return
 }

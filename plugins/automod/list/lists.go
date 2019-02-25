@@ -29,5 +29,6 @@ var (
 		actions.ApplyRole{},
 		actions.IncrBucket{},
 		actions.SendMessageTo{},
+		actions.DeleteMessage{},
 	}
 )

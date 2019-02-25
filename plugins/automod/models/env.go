@@ -18,5 +18,11 @@ type Env struct {
 	GuildID   string
 	ChannelID []string
 	UserID    []string
+	Messages  []*EnvMessage
 	Tokens    map[string]string
+}
+
+type EnvMessage struct {
+	ID       string
+	ChanneID string
 }

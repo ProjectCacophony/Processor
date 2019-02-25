@@ -36,9 +36,9 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 # Triggers
 "automod.triggers.when_message" = "Triggers when a new Message is sent.\n\
 Does not trigger for Messages sent by Bots.\n\
-Adds the senders User and messages Channel to the Rule context. []"
+Adds the Messages, the senders User, and the messages Channel to the Rule context. []"
 "automod.triggers.when_bucket_updated" = "Triggers when a Bucket is updated.\n\
-Restores User and Channel from the Bucket into the Rule Context. [tag]"
+Restores Messages, Users, and Channels from the Bucket into the Rule Context. [tag]"
 "automod.triggers.when_join" = "Triggers when a user joins the server.\n\
 Does not trigger for Messages sent by Bots.\n\
 Adds the User to the Rule Context. []"
@@ -59,5 +59,6 @@ Comparison Types: >, =, and < [comparison type, amount]"
 "automod.actions.apply_role" = "Applies the given role. [role]"
 "automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
-Stores eventual Users and Channels in the Rule Context. [tag, type, decay duration, amount]"
+Stores eventual Messages, Users and Channels in the Rule Context. [tag, type, decay duration, amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"
+"automod.actions.delete_message" = "Deletes all messages found in the Rule Context."
