@@ -42,9 +42,11 @@ Sentry Deploy Staging:
   image:
     name: getsentry/sentry-cli:latest
     entrypoint: [""]
+  environment:
+    name: staging
   cache: {}
   only:
     refs:
       - master
   script:
-    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e staging "${CI_ENVIRONMENT_NAME}"
+    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e "${CI_ENVIRONMENT_NAME}"
