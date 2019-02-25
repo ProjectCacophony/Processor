@@ -33,5 +33,19 @@ Sentry Release:
     refs:
       - master
   script:
-    - sentry-cli releases new $CI_COMMIT_SHA
-    - sentry-cli releases set-commits --auto $CI_COMMIT_SHA
+    - sentry-cli releases new "${CI_COMMIT_SHA}"
+    - sentry-cli releases set-commits --auto "${CI_COMMIT_SHA}"
+
+Sentry Deploy Staging:
+  stage: staging
+  # TODO: depends on Deploy Staging task
+  image:
+    name: getsentry/sentry-cli:latest
+    entrypoint: [""]
+  cache: {}
+  dependencies: "Deploy Staging"
+  only:
+    refs:
+      - master
+  script:
+    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e staging "${CI_ENVIRONMENT_NAME}"
