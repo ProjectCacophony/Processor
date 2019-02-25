@@ -30,5 +30,6 @@ var (
 		actions.IncrBucket{},
 		actions.SendMessageTo{},
 		actions.DeleteMessage{},
+		actions.KickUser{},
 	}
 )
