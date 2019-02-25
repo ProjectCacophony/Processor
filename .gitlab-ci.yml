@@ -22,3 +22,16 @@ Docker Release:
 
 Deploy Staging:
   extends: .Go Service - Deploy Staging
+
+Sentry Release:
+  stage: release
+  image:
+    name: getsentry/sentry-cli:latest
+    entrypoint: [""]
+  cache: {}
+  only:
+    refs:
+      - master
+  script:
+    - sentry-cli releases new $CI_COMMIT_SHA
+    - sentry-cli releases set-commits --auto $CI_COMMIT_SHA
