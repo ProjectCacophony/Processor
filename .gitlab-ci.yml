@@ -44,7 +44,7 @@ Sentry Deploy Staging:
     entrypoint: [""]
   cache: {}
   dependencies:
-    - Deploy Staging
+    - "Deploy Staging"
   only:
     refs:
       - master
