@@ -61,6 +61,8 @@ spec:
             value: "{{CLUSTER_ENVIRONMENT}}"
           - name: HASH
             value: "{{HASH}}"
+          - name: BOT_OWNER_IDS
+            value: "{{BOT_OWNER_IDS}}"
           - name: DISCORD_TOKENS
             valueFrom:
               secretKeyRef:

@@ -112,6 +112,7 @@ func main() {
 		config.ProcessingDeadline,
 		config.DiscordTokens,
 		featureFlagger,
+		config.BotOwnerIDs,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",

@@ -14,6 +14,7 @@ type config struct {
 	Hash                      string               `envconfig:"HASH"`
 	Environment               logging.Environment  `envconfig:"ENVIRONMENT" default:"development"`
 	ClusterEnvironment        string               `envconfig:"CLUSTER_ENVIRONMENT" default:"development"`
+	BotOwnerIDs               []string             `envconfig:"BOT_OWNER_IDS"`
 	AMQPDSN                   string               `envconfig:"AMQP_DSN" default:"amqp://guest:guest@localhost:5672/"`
 	LoggingDiscordWebhook     string               `envconfig:"LOGGING_DISCORD_WEBHOOK"`
 	ConcurrentProcessingLimit int                  `envconfig:"CONCURRENT_PROCESSING_LIMIT" default:"50"`

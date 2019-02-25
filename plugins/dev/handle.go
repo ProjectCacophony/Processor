@@ -5,6 +5,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -54,40 +55,50 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
+	event.Require(func() {
+		p.handleAsCommand(event)
+	}, permissions.BotOwner)
+	return true
+}
+
+func (p *Plugin) handleAsCommand(event *events.Event) {
 	if len(event.Fields()) < 2 {
 		event.Respond("dev.no-subcommand") // nolint: errcheck
-		return true
+		return
 	}
 
 	switch event.Fields()[1] {
 	case "emoji":
 
 		p.handleDevEmoji(event)
-		return true
+		return
 	case "sleep":
 
 		p.handleDevSleep(event)
-		return true
+		return
 	case "state":
 		if len(event.Fields()) > 2 {
 			if event.Fields()[2] == "guilds" {
 				p.handleDevStateGuilds(event)
-				return true
+				return
 			}
 		}
 
 		p.handleDevState(event)
-		return true
+		return
 	case "translate":
 
 		p.handleDevTranslate(event)
-		return true
+		return
 	case "error":
 
 		p.handleDevError(event)
-		return true
+		return
+	case "bot-owners":
+
+		p.handleBotOwners(event)
+		return
 	}
 
 	event.Respond("dev.no-subcommand") // nolint: errcheck
-	return true
 }

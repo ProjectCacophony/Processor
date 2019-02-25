@@ -32,6 +32,7 @@ type Processor struct {
 	processingDeadline        time.Duration
 	discordTokens             map[string]string
 	featureFlagger            *featureflag.FeatureFlagger
+	botOwnerIDs               []string
 
 	amqpConnection   *amqp.Connection
 	amqpChannel      *amqp.Channel
@@ -52,6 +53,7 @@ func NewProcessor(
 	processingDeadline time.Duration,
 	discordTokens map[string]string,
 	featureFlagger *featureflag.FeatureFlagger,
+	botOwnerIDs []string,
 ) (*Processor, error) {
 	processor := &Processor{
 		logger:                    logger,
@@ -65,6 +67,7 @@ func NewProcessor(
 		processingDeadline:        processingDeadline,
 		discordTokens:             discordTokens,
 		featureFlagger:            featureFlagger,
+		botOwnerIDs:               botOwnerIDs,
 
 		amqpErrorChannel: make(chan *amqp.Error),
 	}

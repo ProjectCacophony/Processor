@@ -8,6 +8,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -89,7 +90,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		return false
 	}
 	if len(event.Fields()) < 2 {
-		p.cmdStatus(event)
+		event.RequireOr(func() {
+			p.cmdStatus(event)
+		}, permissions.DiscordAdministrator, permissions.DiscordManageChannels)
 
 		return true
 	}
@@ -101,13 +104,17 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 
 		return true
 	case "add":
+		event.Require(func() {
+			p.cmdAdd(event)
+		}, permissions.DiscordAdministrator)
 
-		p.cmdAdd(event)
 		return true
 
 	case "remove", "delete":
+		event.Require(func() {
+			p.cmdRemove(event)
+		}, permissions.DiscordAdministrator)
 
-		p.cmdRemove(event)
 		return true
 	}
 
