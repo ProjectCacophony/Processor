@@ -23,6 +23,8 @@ Docker Release:
 Deploy Staging:
   extends: .Go Service - Deploy Staging
 
+# TODO: put into gitlab.com/Cacophony/gitlab-ci
+
 Sentry Release:
   stage: release
   image:
@@ -37,16 +39,15 @@ Sentry Release:
     - sentry-cli releases set-commits --auto "${CI_COMMIT_SHA}"
 
 Sentry Deploy Staging:
+  variables:
+    SENTRY_ENV: "staging"
   stage: staging
-  # TODO: depends on Deploy Staging task
   image:
     name: getsentry/sentry-cli:latest
     entrypoint: [""]
-  environment:
-    name: staging
   cache: {}
   only:
     refs:
       - master
   script:
-    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e "${CI_ENVIRONMENT_NAME}"
+    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e ${SENTRY_ENV}
