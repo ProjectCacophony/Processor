@@ -15,7 +15,7 @@ func (t KickUser) Name() string {
 }
 
 func (t KickUser) Args() int {
-	return 1
+	return 0
 }
 
 func (t KickUser) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {

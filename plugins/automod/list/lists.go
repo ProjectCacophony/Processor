@@ -31,5 +31,7 @@ var (
 		actions.SendMessageTo{},
 		actions.DeleteMessage{},
 		actions.BanUser{},
+		actions.KickUser{},
+		actions.ResetBucket{},
 	}
 )

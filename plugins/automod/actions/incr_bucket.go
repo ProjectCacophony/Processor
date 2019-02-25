@@ -59,7 +59,7 @@ func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionIt
 	return &IncrBucketItem{
 		Decay:     decay,
 		Amount:    amount,
-		Type:      bucketType, // TODO: support setting other types
+		Type:      bucketType,
 		TagSuffix: args[0],
 		Random:    rand.New(rand.NewSource(time.Now().UnixNano())),
 	}, nil
@@ -98,7 +98,6 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 
 		for i := 0; i < t.Amount; i++ {
 
-			// TODO: add support for amount
 			valueList, _ := bucket.AddWithValue(
 				env.Redis,
 				key,
