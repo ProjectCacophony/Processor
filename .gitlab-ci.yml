@@ -43,8 +43,6 @@ Sentry Deploy Staging:
     name: getsentry/sentry-cli:latest
     entrypoint: [""]
   cache: {}
-  dependencies:
-    - "Deploy Staging"
   only:
     refs:
       - master
