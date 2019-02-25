@@ -61,5 +61,6 @@ Comparison Types: >, =, and < [comparison type, amount]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
 Stores eventual Messages, Users and Channels in the Rule Context. [tag, type, decay duration, amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"
-"automod.actions.delete_message" = "Deletes all messages found in the Rule Context."
-"automod.actions.kick_user" = "Kicks all users found in the Rule Context."
+"automod.actions.delete_message" = "Deletes all Message found in the Rule Context."
+"automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
+"automod.actions.ban_user" = "Bans all Users found in the Rule Context."
