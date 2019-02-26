@@ -8,7 +8,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) whitelistBlacklistAdd(event *events.Event) {
+func (p *Plugin) blacklistAdd(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		event.Respond("whitelist.blacklist-add.too-few-args") // nolint: errcheck
 		return
@@ -20,18 +20,27 @@ func (p *Plugin) whitelistBlacklistAdd(event *events.Event) {
 		return
 	}
 
-	err = whitelistRemoveServer(p.db, guild.ID)
+	blacklistEntry, err := blacklistFind(p.db, guild.ID)
+	if err != nil {
+		if !strings.Contains(err.Error(), "record not found") {
+			event.Except(err)
+			return
+		}
+	}
+
+	if blacklistEntry != nil {
+		event.Respond("whitelist.blacklist-add.already-blacklisted") // nolint: errcheck
+		return
+	}
+
+	err = whitelistRemove(p.db, guild.ID)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	err = blacklistAddServer(p.db, event.UserID, guild.ID)
+	err = blacklistAdd(p.db, event.UserID, guild.ID)
 	if err != nil {
-		if strings.Contains(err.Error(), "uix_whitelist_blacklist_entries_guild_id") {
-			event.Respond("whitelist.blacklist-add.already-blacklisted") // nolint: errcheck
-			return
-		}
 		event.Except(err)
 		return
 	}

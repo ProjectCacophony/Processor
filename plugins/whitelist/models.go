@@ -7,7 +7,7 @@ import (
 type Entry struct {
 	gorm.Model
 	WhitelistedByUserID string
-	GuildID             string `gorm:"unique_index"`
+	GuildID             string
 }
 
 func (*Entry) TableName() string {
@@ -17,7 +17,7 @@ func (*Entry) TableName() string {
 type BlacklistEntry struct {
 	gorm.Model
 	BlacklistedByUserID string
-	GuildID             string `gorm:"unique_index"`
+	GuildID             string
 }
 
 func (*BlacklistEntry) TableName() string {

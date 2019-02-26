@@ -20,7 +20,7 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 		return
 	}
 
-	blacklistEntry, err := blacklistFindServer(p.db, guild.ID)
+	blacklistEntry, err := blacklistFind(p.db, guild.ID)
 	if err != nil {
 		if !strings.Contains(err.Error(), "record not found") {
 			event.Except(err)
@@ -33,13 +33,23 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 		return
 	}
 
-	err = whitelistAddServer(p.db, event.UserID, guild.ID)
+	whitelistEntry, err := whitelistFind(p.db, guild.ID)
 	if err != nil {
-		if strings.Contains(err.Error(), "uix_whitelist_entries_guild_id") {
-			event.Respond("whitelist.add.already-whitelisted") // nolint: errcheck
+		if !strings.Contains(err.Error(), "record not found") {
+			event.Except(err)
 			return
 		}
+	}
+
+	if whitelistEntry != nil {
+		event.Respond("whitelist.add.already-whitelisted") // nolint: errcheck
+		return
+	}
+
+	err = whitelistAdd(p.db, event.UserID, guild.ID)
+	if err != nil {
 		event.Except(err)
+		return
 	}
 
 	p.logger.Info(

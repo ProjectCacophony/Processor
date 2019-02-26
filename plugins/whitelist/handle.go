@@ -115,7 +115,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "blacklist":
 
 			event.Require(func() {
-				p.whitelistBlacklistAdd(event)
+				p.blacklistAdd(event)
 			}, permissions.BotOwner)
 			return true
 		}

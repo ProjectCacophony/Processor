@@ -11,13 +11,13 @@ type enhancedEntry struct {
 }
 
 func (p *Plugin) whitelistList(event *events.Event) {
-	whitelistAllServers, err := whitelistGetAllServers(p.db)
+	whitelistAllServers, err := whitelistAll(p.db)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	blacklistAllServers, err := blacklistGetAllServers(p.db)
+	blacklistAllServers, err := blacklistAll(p.db)
 	if err != nil {
 		event.Except(err)
 		return

@@ -55,7 +55,7 @@ const (
 )
 
 func cacheWhitelist(db *gorm.DB, redis *redis.Client) error {
-	servers, err := whitelistGetAllServers(db)
+	servers, err := whitelistAll(db)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func cacheWhitelist(db *gorm.DB, redis *redis.Client) error {
 }
 
 func cacheBlacklist(db *gorm.DB, redis *redis.Client) error {
-	servers, err := blacklistGetAllServers(db)
+	servers, err := blacklistAll(db)
 	if err != nil {
 		return err
 	}
