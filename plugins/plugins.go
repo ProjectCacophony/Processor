@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/whitelist"
+
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
@@ -44,6 +46,7 @@ var (
 		&dev.Plugin{},
 		&lastfm.Plugin{},
 		&automod.Plugin{},
+		&whitelist.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

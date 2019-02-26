@@ -2,6 +2,9 @@ include:
   - project: 'Cacophony/gitlab-ci'
     ref: master
     file: '/go-service.yml'
+  - project: 'Cacophony/gitlab-ci'
+    ref: master
+    file: '/sentry.yml'
 
 variables:
   DEPLOYMENT_NAME: "processor"
@@ -23,31 +26,10 @@ Docker Release:
 Deploy Staging:
   extends: .Go Service - Deploy Staging
 
-# TODO: put into gitlab.com/Cacophony/gitlab-ci
-
 Sentry Release:
-  stage: release
-  image:
-    name: getsentry/sentry-cli:latest
-    entrypoint: [""]
-  cache: {}
-  only:
-    refs:
-      - master
-  script:
-    - sentry-cli releases new "${CI_COMMIT_SHA}"
-    - sentry-cli releases set-commits --auto "${CI_COMMIT_SHA}"
+  extends: .Sentry - Sentry Release
 
 Sentry Deploy Staging:
   variables:
     SENTRY_ENV: "staging"
-  stage: staging
-  image:
-    name: getsentry/sentry-cli:latest
-    entrypoint: [""]
-  cache: {}
-  only:
-    refs:
-      - master
-  script:
-    - sentry-cli releases deploys "${CI_COMMIT_SHA}" new -e ${SENTRY_ENV}
+  extends: .Sentry - Sentry Deploy Staging
