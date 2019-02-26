@@ -10,6 +10,14 @@ Please make sure you tell me a valid server invite."
 "whitelist.add.blacklisted" = "**Sorry, looks like this Server is blacklisted.**\n\
 Please contact Staff if you want to find out more."
 
+# whitelistRemove
+"whitelist.remove.too-few-args" = "Please send me an invite of a server I should remove from the whitelist."
+"whitelist.remove.invalid-invite" = "**Invalid server invite!**\n\
+Please make sure you tell me a valid server invite."
+"whitelist.remove.not-found" = "Looks like this server is not whitelisted. :thinking:"
+"whitelist.remove.success" = "I successfully removed the server {{.name}} from the whitelist."
+"whitelist.remove.no-permissions" = "You can only remove servers from the whitelist you have added."
+
 # whitelistBlacklistAdd
 "whitelist.blacklist-add.too-few-args" = "Please send me an invite of a server I should blacklist."
 "whitelist.blacklist-add.invalid-invite" = "**Invalid server invite!**\n\
@@ -19,11 +27,12 @@ Please make sure you tell me a valid server invite."
 Please be aware that it can take up to two minutes until the change is applied."
 
 # whitelistList
+# TODO: humanize time
 "whitelist.list.message" = "\
 {{if gt (len .whitelisted) 0}}\
 {{range $server := .whitelisted}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`)\n\
-by `{{$server.By}}` (`#{{$server.By.ID}}`)\n\
+by `{{$server.By}}` (`#{{$server.By.ID}}`) at `{{$server.At}}`\n\
 {{end}}\
 There are **{{len .whitelisted}}** Servers Whitelisted in total.\n\
 {{else}}\
@@ -33,7 +42,7 @@ There are **{{len .whitelisted}}** Servers Whitelisted in total.\n\
 {{if gt (len .blacklisted) 0}}\
 {{range $server := .blacklisted}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`)\n\
-by `{{$server.By}}` (`#{{$server.By.ID}}`)\n\
+by `{{$server.By}}` (`#{{$server.By.ID}}`) at `{{$server.At}}`\n\
 {{end}}\
 There are **{{len .blacklisted}}** Servers Blacklisted in total.\n\
 {{else}}\

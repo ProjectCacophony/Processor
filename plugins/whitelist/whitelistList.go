@@ -1,6 +1,8 @@
 package whitelist
 
 import (
+	"time"
+
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -8,6 +10,7 @@ import (
 type enhancedEntry struct {
 	By    *discordgo.User
 	Guild *discordgo.Guild
+	At    time.Time
 }
 
 func (p *Plugin) whitelistList(event *events.Event) {
@@ -41,6 +44,8 @@ func (p *Plugin) whitelistList(event *events.Event) {
 				Username: "N/A",
 			}
 		}
+
+		whitelistAllServersEnhanced[i].At = server.UpdatedAt
 	}
 
 	blacklistAllServersEnhanced := make([]enhancedEntry, len(blacklistAllServers))
@@ -61,6 +66,8 @@ func (p *Plugin) whitelistList(event *events.Event) {
 				Username: "N/A",
 			}
 		}
+
+		whitelistAllServersEnhanced[i].At = server.UpdatedAt
 	}
 
 	_, err = event.Respond("whitelist.list.message",

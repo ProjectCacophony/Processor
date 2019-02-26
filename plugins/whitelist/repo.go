@@ -39,9 +39,9 @@ func blacklistAdd(db *gorm.DB, userID, guildID string) error {
 	}).Error
 }
 
-func blacklistRemove(db *gorm.DB, guildID string) error {
-	return db.Delete(BlacklistEntry{}, "guild_id = ?", guildID).Error
-}
+// func blacklistRemove(db *gorm.DB, guildID string) error {
+// 	return db.Delete(BlacklistEntry{}, "guild_id = ?", guildID).Error
+// }
 
 func blacklistFind(db *gorm.DB, guildID string) (*BlacklistEntry, error) {
 	var entry BlacklistEntry

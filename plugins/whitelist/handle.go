@@ -112,6 +112,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}, permissions.BotOwner)
 			return true
 
+		case "remove":
+
+			p.whitelistRemove(event)
+			return true
+
 		case "blacklist":
 
 			event.Require(func() {
