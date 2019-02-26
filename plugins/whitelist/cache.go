@@ -4,6 +4,8 @@ import (
 	"strings"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 )
@@ -25,12 +27,16 @@ func (p *Plugin) startWhitelistAndBlacklistCaching() error {
 
 			err = cacheWhitelist(p.db, p.redis)
 			if err != nil {
-				p.logger.Error("failed to cache whitelist")
+				p.logger.Error("failed to cache whitelist",
+					zap.Error(err),
+				)
 			}
 
 			err = cacheBlacklist(p.db, p.redis)
 			if err != nil {
-				p.logger.Error("failed to cache blacklist")
+				p.logger.Error("failed to cache blacklist",
+					zap.Error(err),
+				)
 			}
 
 			p.logger.Debug("cached whitelist and blacklist")

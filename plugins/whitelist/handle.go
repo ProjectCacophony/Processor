@@ -127,6 +127,8 @@ func (p *Plugin) Action(event *events.Event) bool {
 		// TODO: don't hardcode
 		// sekl's dev cord / Cacophony Whitelist Role
 		NewDiscordRole(p.state, "208673735580844032", "549951245738180688"),
+		// Cacophony / Cacophony Team
+		NewDiscordRole(p.state, "435420687906111498", "440519691904090113"),
 	)
 
 	// TODO: admin commands: blacklist server, list all whitelisted servers

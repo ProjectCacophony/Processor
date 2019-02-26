@@ -3,10 +3,12 @@ module gitlab.com/Cacophony/Processor
 require (
 	cloud.google.com/go v0.36.0 // indirect
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
+	github.com/Unleash/unleash-client-go v0.0.0-20190225211619-9febc6ff26f4 // indirect
 	github.com/bwmarrin/discordgo v0.19.0
 	github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 // indirect
 	github.com/dustin/go-humanize v1.0.0
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
+	github.com/go-chi/chi v4.0.2+incompatible // indirect
 	github.com/go-redis/redis v6.15.1+incompatible
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/gofrs/uuid v3.2.0+incompatible // indirect
@@ -19,7 +21,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190225191626-303d4c444d22
+	gitlab.com/Cacophony/go-kit v0.0.0-20190226174049-91ea0537f5fa
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190225124518-7f87c0fbb88b // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9
