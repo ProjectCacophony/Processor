@@ -121,7 +121,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		}
 	}
 
-	event.Require(func() {
+	event.RequireOr(func() {
 		p.whitelistAdd(event)
 	},
 		// TODO: don't hardcode
