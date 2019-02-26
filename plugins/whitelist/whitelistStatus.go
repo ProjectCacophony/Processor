@@ -7,7 +7,8 @@ import (
 
 func (p *Plugin) whitelistStatus(event *events.Event) {
 	servers, err := whitelistFindMany(p.db,
-		"whitelisted_by_user_id = ?", event.UserID)
+		"whitelisted_by_user_id = ?", event.UserID,
+	)
 	if err != nil {
 		event.Except(err)
 		return
@@ -29,6 +30,7 @@ func (p *Plugin) whitelistStatus(event *events.Event) {
 
 	_, err = event.Respond("whitelist.status.message",
 		"servers", serversEnhanced,
+		"limit", serversPerUserLimit,
 	)
 	event.Except(err)
 }

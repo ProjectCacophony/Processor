@@ -28,7 +28,7 @@ func whitelistFind(db *gorm.DB, where ...interface{}) (*Entry, error) {
 func whitelistFindMany(db *gorm.DB, where ...interface{}) ([]Entry, error) {
 	var entries []Entry
 
-	err := db.First(&entries, where...).Order("created_at DESC").Error
+	err := db.Find(&entries, where...).Order("created_at DESC").Error
 	if err != nil {
 		return nil, err
 	}

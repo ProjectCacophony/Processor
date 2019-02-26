@@ -9,6 +9,8 @@ Enjoy playing with me :reach:"
 Please make sure you tell me a valid server invite."
 "whitelist.add.blacklisted" = "**Sorry, looks like this Server is blacklisted.**\n\
 Please contact Staff if you want to find out more."
+"whitelist.add.too-many" = "**Looks like you reached the limit of Servers you can Whitelist.**\n\
+You can remove a different server from the whitelist to make space: `{{.prefix}}whitelist remove <Server Invite>`."
 
 # whitelistRemove
 "whitelist.remove.too-few-args" = "Please send me an invite of a server I should remove from the whitelist."
@@ -27,15 +29,16 @@ Please make sure you tell me a valid server invite."
 Please be aware that it can take up to two minutes until the change is applied."
 
 # whitelistStatus
+# TODO: humanize time
 "whitelist.status.message" = "**Your Whitelisted Servers**\n\
 {{if gt (len .servers) 0}}\
 {{range $server := .servers}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) at `{{$server.At}}`\n\
 {{end}}\
-You have **{{len .servers}}** Servers Whitelisted in total.\n\
+You have **{{len .servers}}/{{.limit}}** Servers Whitelisted in total.\n\
 {{else}}\
 You have no servers whitelisted so far.\n\
-You can whitelist a server: `{{.prefix}}whitelist <server invite>`\
+You can whitelist a server: `{{.prefix}}whitelist <Server Invite>`\
 {{end}}"
 
 # whitelistList

@@ -46,6 +46,20 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 		return
 	}
 
+	allUserEntries, err := whitelistFindMany(p.db,
+		"whitelisted_by_user_id = ?", event.UserID,
+	)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	// TODO: bypassing for staff
+	if len(allUserEntries) >= serversPerUserLimit {
+		event.Respond("whitelist.add.too-many") // nolint: errcheck
+		return
+	}
+
 	err = whitelistAdd(p.db, event.UserID, guild.ID)
 	if err != nil {
 		event.Except(err)

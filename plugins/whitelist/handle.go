@@ -17,6 +17,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	serversPerUserLimit = 4
+)
+
 type Plugin struct {
 	logger *zap.Logger
 	state  *state.State
