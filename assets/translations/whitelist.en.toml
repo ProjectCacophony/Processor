@@ -26,6 +26,18 @@ Please make sure you tell me a valid server invite."
 "blacklist.add.success" = "**I blacklisted the server {{.name}}!**\n\
 Please be aware that it can take up to two minutes until the change is applied."
 
+# whitelistStatus
+"whitelist.status.message" = "**Your Whitelisted Servers**\n\
+{{if gt (len .servers) 0}}\
+{{range $server := .servers}}\
+**{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) at `{{$server.At}}`\n\
+{{end}}\
+You have **{{len .servers}}** Servers Whitelisted in total.\n\
+{{else}}\
+You have no servers whitelisted so far.\n\
+You can whitelist a server: `{{.prefix}}whitelist <server invite>`\
+{{end}}"
+
 # whitelistList
 # TODO: humanize time
 "whitelist.list.message" = "\

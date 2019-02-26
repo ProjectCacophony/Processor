@@ -20,7 +20,7 @@ func (p *Plugin) blacklistAdd(event *events.Event) {
 		return
 	}
 
-	blacklistEntry, err := blacklistFind(p.db, guild.ID)
+	blacklistEntry, err := blacklistFind(p.db, "guild_id = ?", guild.ID)
 	if err != nil {
 		if !strings.Contains(err.Error(), "record not found") {
 			event.Except(err)
