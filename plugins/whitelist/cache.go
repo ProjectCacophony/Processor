@@ -11,11 +11,7 @@ import (
 )
 
 func (p *Plugin) startWhitelistAndBlacklistCaching() error {
-	err := cacheWhitelist(p.db, p.redis)
-	if err != nil {
-		return err
-	}
-	err = cacheBlacklist(p.db, p.redis)
+	err := cacheWhitelistAndBlacklist(p.db, p.redis)
 	if err != nil {
 		return err
 	}
@@ -25,16 +21,9 @@ func (p *Plugin) startWhitelistAndBlacklistCaching() error {
 		for {
 			time.Sleep(interval)
 
-			err = cacheWhitelist(p.db, p.redis)
+			err = cacheWhitelistAndBlacklist(p.db, p.redis)
 			if err != nil {
-				p.logger.Error("failed to cache whitelist",
-					zap.Error(err),
-				)
-			}
-
-			err = cacheBlacklist(p.db, p.redis)
-			if err != nil {
-				p.logger.Error("failed to cache blacklist",
+				p.logger.Error("failed to cache whitelist and blacklist",
 					zap.Error(err),
 				)
 			}
@@ -51,8 +40,18 @@ const (
 	blacklistKey = "cacophony.whitelist.blacklist"
 
 	expiration = time.Hour * 24 * 7 // one week
-	interval   = time.Minute
+	interval   = time.Hour
 )
+
+func cacheWhitelistAndBlacklist(db *gorm.DB, redis *redis.Client) error {
+	err := cacheWhitelist(db, redis)
+	if err != nil {
+		return err
+	}
+
+	err = cacheBlacklist(db, redis)
+	return err
+}
 
 func cacheWhitelist(db *gorm.DB, redis *redis.Client) error {
 	servers, err := whitelistAll(db)

@@ -2,7 +2,7 @@
 "whitelist.add.already-whitelisted" = "**This server is already whitelisted!**\n\
 What are you doing… :thinking:"
 "whitelist.add.success" = "**I whitelisted the server {{.name}}!**\n\
-Please be aware that it can take up to two minutes until the change is applied.\n\
+Please be aware that it can take up to one minute until the change is applied.\n\
 Enjoy playing with me :reach:"
 "whitelist.add.too-few-args" = "Please send me an invite of a server I should whitelist."
 "whitelist.add.invalid-invite" = "**Invalid server invite!**\n\
@@ -26,7 +26,7 @@ Please make sure you tell me a valid server invite."
 Please make sure you tell me a valid server invite."
 "whitelist.blacklist-add.already-blacklisted" = "Looks like this server is already blacklisted."
 "blacklist.add.success" = "**I blacklisted the server {{.name}}!**\n\
-Please be aware that it can take up to two minutes until the change is applied."
+Please be aware that it can take up to one minute until the change is applied."
 
 # whitelistStatus
 # TODO: humanize time

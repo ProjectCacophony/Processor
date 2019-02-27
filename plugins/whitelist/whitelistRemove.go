@@ -51,6 +51,12 @@ func (p *Plugin) whitelistRemove(event *events.Event) {
 		zap.String("guild_id", guild.ID),
 	)
 
+	err = cacheWhitelistAndBlacklist(p.db, p.redis)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	_, err = event.Respond("whitelist.remove.success", "name", guild.Name)
 	event.Except(err)
 }
