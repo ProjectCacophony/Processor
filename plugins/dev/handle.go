@@ -19,10 +19,6 @@ func (p *Plugin) Name() string {
 	return "dev"
 }
 
-func (p *Plugin) DBModels() []interface{} {
-	return nil
-}
-
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.logger = params.Logger

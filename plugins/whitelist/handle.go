@@ -31,10 +31,6 @@ func (p *Plugin) Name() string {
 	return "whitelist"
 }
 
-func (p *Plugin) DBModels() []interface{} {
-	return nil
-}
-
 func (p *Plugin) Start(params common.StartParameters) error {
 	var err error
 

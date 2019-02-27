@@ -1,0 +1,31 @@
+"gall.add.success" = "\
+**I added the board `{{.boardID}}` to {{.channel.Mention}}.**\n\
+{{if .recommended}}\
+Recommended posts will be posted.\
+{{else}}\
+All posts will be posted there.\
+{{end}}\
+"
+"gall.add.too-few" = "Please tell me the ID of the Board to add."
+"gall.add.duplicate" = "Looks like there is already a Feed for this Board for this Channel."
+"gall.add.not-found" = "Please make sure the Board ID you are telling me is correct."
+"gall.add.too-many" = "Looks like you have reached the limit of how many Boards you can add."
+
+"gall.status.message" = "\
+{{if gt (len .entries) 0}}\
+**Gall Feeds set up on this Server**\n\
+{{range $entry := .entries}}\
+**{{$entry.BoardID}}** in <#{{$entry.ChannelID}}>\
+, {{if $entry.Recommended}}recommended{{else}}all{{end}} posts will be posted\n\
+added by `{{Escape $entry.By.String}}` at `{{$entry.CreatedAt}}`\n\
+{{end}}\
+This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds setup.\n\
+{{else}}\
+**Looks like there are no Gall Feeds set up on this Server yet.**\n\
+You can add one: `{{.prefix}}gall <Board ID>`\
+{{end}}\
+\
+"
+
+"gall.remove.message" = "I removed the Board **{{.entry.BoardID}}** from <#{{.entry.ChannelID}}>."
+"gall.remove.not-found" = "I was not able to find a Feed for this Board on this Server."

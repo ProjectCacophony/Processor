@@ -16,10 +16,6 @@ func (p *Plugin) Name() string {
 	return "color"
 }
 
-func (p *Plugin) DBModels() []interface{} {
-	return nil
-}
-
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	return nil

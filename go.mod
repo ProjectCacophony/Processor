@@ -2,6 +2,7 @@ module gitlab.com/Cacophony/Processor
 
 require (
 	cloud.google.com/go v0.36.0 // indirect
+	github.com/Seklfreak/ginside v0.0.0-20190227190605-24d9329935a4
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/Unleash/unleash-client-go v0.0.0-20190225211619-9febc6ff26f4 // indirect
 	github.com/bwmarrin/discordgo v0.19.0
