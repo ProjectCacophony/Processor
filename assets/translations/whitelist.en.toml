@@ -35,7 +35,7 @@ Please be aware that it can take up to one minute until the change is applied."
 {{range $server := .servers}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) at `{{$server.At}}`\n\
 {{end}}\
-You have **{{len .servers}}/{{.limit}}** Servers Whitelisted in total.\n\
+You have **{{len .servers}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Servers Whitelisted in total.\n\
 {{else}}\
 You have no servers whitelisted so far.\n\
 You can whitelist a server: `{{.prefix}}whitelist <Server Invite>`\

@@ -54,8 +54,8 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 		return
 	}
 
-	// TODO: bypassing for staff
-	if len(allUserEntries) >= serversPerUserLimit {
+	if len(allUserEntries) >= serversPerUserLimit(event) &&
+		serversPerUserLimit(event) >= 0 {
 		event.Respond("whitelist.add.too-many") // nolint: errcheck
 		return
 	}

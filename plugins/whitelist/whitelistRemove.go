@@ -3,6 +3,8 @@ package whitelist
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/permissions"
+
 	"go.uber.org/zap"
 
 	"gitlab.com/Cacophony/go-kit/events"
@@ -33,8 +35,8 @@ func (p *Plugin) whitelistRemove(event *events.Event) {
 		return
 	}
 
-	// TODO: bypassing for staff
-	if whitelistEntry.WhitelistedByUserID != event.UserID {
+	if whitelistEntry.WhitelistedByUserID != event.UserID &&
+		!event.Has(permissions.BotOwner) {
 		event.Respond("whitelist.remove.no-permissions") // nolint: errcheck
 		return
 	}

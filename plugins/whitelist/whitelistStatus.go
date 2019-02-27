@@ -30,7 +30,7 @@ func (p *Plugin) whitelistStatus(event *events.Event) {
 
 	_, err = event.Respond("whitelist.status.message",
 		"servers", serversEnhanced,
-		"limit", serversPerUserLimit,
+		"limit", serversPerUserLimit(event),
 	)
 	event.Except(err)
 }

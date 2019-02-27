@@ -17,10 +17,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	serversPerUserLimit = 4
-)
-
 type Plugin struct {
 	logger *zap.Logger
 	state  *state.State
@@ -132,6 +128,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.RequireOr(func() {
 			p.whitelistAdd(event)
 		},
+			permissions.BotOwner,
 			// TODO: don't hardcode
 			// sekl's dev cord / Cacophony Whitelist Role
 			permissions.NewDiscordRole(
