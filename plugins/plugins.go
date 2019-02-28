@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/pagination"
+
 	"gitlab.com/Cacophony/Processor/plugins/gall"
 
 	"gitlab.com/Cacophony/Processor/plugins/whitelist"
@@ -50,6 +52,7 @@ var (
 		&automod.Plugin{},
 		&whitelist.Plugin{},
 		&gall.Plugin{},
+		&pagination.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

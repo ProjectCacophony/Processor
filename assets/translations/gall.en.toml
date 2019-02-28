@@ -11,6 +11,7 @@ All posts will be posted there.\
 "gall.add.not-found" = "Please make sure the Board ID you are telling me is correct."
 "gall.add.too-many" = "Looks like you have reached the limit of how many Boards you can add."
 
+# TODO: Humanize Times
 "gall.status.message" = "\
 {{if gt (len .entries) 0}}\
 **Gall Feeds set up on this Server**\n\
