@@ -3,10 +3,12 @@ package lastfm
 import (
 	"strings"
 
+	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
-	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -36,7 +38,7 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 
 	// get recent tracks
 	var tracks []lastfmclient.TrackData
-	tracks, err = lastfmclient.GetRecentTracks(lastfmClient, userInfo.Username, 10)
+	tracks, err = lastfmclient.GetRecentTracks(lastfmClient, userInfo.Username, 50)
 	if err != nil {
 		event.Except(err)
 		return
@@ -52,8 +54,10 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 	// set embed title
 	embed.Author.Name = "lastfm.recent.embed.title"
 
+	var embeds []*discordgo.MessageEmbed
+
 	// add tracks to embed
-	for _, track := range tracks {
+	for i, track := range tracks {
 		embed.Description += event.Translate("lastfm.track.long", "track", track, "hidenp", true)
 
 		if track.NowPlaying {
@@ -63,11 +67,28 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 		}
 
 		embed.Description += "\n"
+
+		if i > 0 && i%9 == 0 {
+			send := discord.TranslateMessageSend(
+				event.Localisations(),
+				&discordgo.MessageSend{
+					Embed: embed,
+				},
+				"userData", userInfo,
+			)
+
+			tempEmbed := *send.Embed
+			embeds = append(embeds, &tempEmbed)
+
+			embed.Description = ""
+		}
 	}
 
-	// send to discord
-	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-		Embed: &embed,
-	}, "userData", userInfo)
+	err = event.Paginator().EmbedPaginator(
+		event.GuildID,
+		event.ChannelID,
+		event.UserID,
+		embeds...,
+	)
 	event.Except(err)
 }

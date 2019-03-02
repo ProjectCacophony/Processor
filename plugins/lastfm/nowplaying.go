@@ -74,7 +74,7 @@ func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api,
 
 	_, err = event.RespondComplex(
 		&discordgo.MessageSend{
-			Embed: &embed,
+			Embed: embed,
 		},
 		"userData", userInfo, "tracks", tracks,
 	)

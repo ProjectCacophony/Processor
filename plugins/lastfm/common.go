@@ -40,7 +40,9 @@ func extractUsername(event *events.Event, db *gorm.DB, args []string, pos int) (
 }
 
 // getLastfmUserBaseEmbed gets a discordgo embed base for a last.fm user
-func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.MessageEmbed) {
+func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) *discordgo.MessageEmbed {
+	var embed discordgo.MessageEmbed
+
 	// set embed author
 	embed.Author = &discordgo.MessageEmbedAuthor{
 		URL: "lastfm.embed.user.author.url",
@@ -56,7 +58,7 @@ func getLastfmUserBaseEmbed(userInfo lastfm_client.UserData) (embed discordgo.Me
 	// set embed colour
 	embed.Color = discord.HexToColorCode("#d51007")
 
-	return embed
+	return &embed
 }
 
 // // getLastfmGuildBaseEmbed gets a discordgo embed base for a discord guild

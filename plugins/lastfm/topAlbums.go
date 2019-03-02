@@ -96,7 +96,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 					Reader: bytes.NewReader(collageBytes),
 				},
 			},
-			Embed: &embed,
+			Embed: embed,
 		}, "userData", userInfo, "period", period)
 		event.Except(err)
 		return
@@ -118,7 +118,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 
 	// send to discord
 	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-		Embed: &embed,
+		Embed: embed,
 	}, "userData", userInfo, "period", period)
 	event.Except(err)
 }

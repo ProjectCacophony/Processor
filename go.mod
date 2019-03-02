@@ -23,12 +23,12 @@ require (
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190227173346-4cf02f5c3b22
+	gitlab.com/Cacophony/go-kit v0.0.0-20190302103949-1b7da4e77295
 	go.uber.org/zap v1.9.1
-	golang.org/x/crypto v0.0.0-20190225124518-7f87c0fbb88b // indirect
+	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9
-	golang.org/x/net v0.0.0-20190227160552-c95aed5357e7 // indirect
+	golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95 // indirect
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
-	golang.org/x/sys v0.0.0-20190226215855-775f8194d0f9 // indirect
+	golang.org/x/sys v0.0.0-20190302025703-b6889370fb10 // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 )

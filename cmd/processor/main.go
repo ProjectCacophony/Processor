@@ -113,6 +113,7 @@ func main() {
 		config.DiscordTokens,
 		featureFlagger,
 		config.BotOwnerIDs,
+		redisClient,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",

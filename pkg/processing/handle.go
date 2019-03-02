@@ -27,12 +27,26 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	event.WithLocalisations(plugins.LocalisationsList)
 	event.WithState(p.stateClient)
 	event.WithBotOwnerIDs(p.botOwnerIDs)
+	event.WithPaginator(p.paginator)
 
 	event.Parse()
 
 	err = delivery.Ack(false)
 	if err != nil {
 		return errors.Wrap(err, "failed to ack event")
+	}
+
+	switch event.Type {
+	case events.MessageCreateType:
+		err = p.paginator.HandleMessageCreate(event.MessageCreate)
+		if err != nil {
+			event.ExceptSilent(err)
+		}
+	case events.MessageReactionAddType:
+		err = p.paginator.HandleMessageReactionAdd(event.MessageReactionAdd)
+		if err != nil {
+			event.ExceptSilent(err)
+		}
 	}
 
 	var wg sync.WaitGroup

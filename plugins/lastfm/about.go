@@ -75,7 +75,7 @@ func (p *Plugin) handleAbout(event *events.Event, lastfmClient *lastfm.Api) {
 
 	// send to discord
 	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-		Embed: &embed,
+		Embed: embed,
 	}, "userData", userInfo)
 	event.Except(err)
 }

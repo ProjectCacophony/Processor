@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis"
+
+	"gitlab.com/Cacophony/go-kit/paginator"
+
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"github.com/streadway/amqp"
@@ -33,11 +37,14 @@ type Processor struct {
 	discordTokens             map[string]string
 	featureFlagger            *featureflag.FeatureFlagger
 	botOwnerIDs               []string
+	redis                     *redis.Client
 
 	amqpConnection   *amqp.Connection
 	amqpChannel      *amqp.Channel
 	amqpQueue        *amqp.Queue
 	amqpErrorChannel chan *amqp.Error
+
+	paginator *paginator.Paginator
 }
 
 // NewProcessor creates a new processor
@@ -54,7 +61,18 @@ func NewProcessor(
 	discordTokens map[string]string,
 	featureFlagger *featureflag.FeatureFlagger,
 	botOwnerIDs []string,
+	redis *redis.Client,
 ) (*Processor, error) {
+	paginator, err := paginator.NewPaginator(
+		logger.With(zap.String("feature", "paginator")),
+		redis,
+		stateClient,
+		discordTokens,
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	processor := &Processor{
 		logger:                    logger,
 		serviceName:               serviceName,
@@ -68,11 +86,13 @@ func NewProcessor(
 		discordTokens:             discordTokens,
 		featureFlagger:            featureFlagger,
 		botOwnerIDs:               botOwnerIDs,
+		redis:                     redis,
 
 		amqpErrorChannel: make(chan *amqp.Error),
+		paginator:        paginator,
 	}
 
-	err := processor.init()
+	err = processor.init()
 	if err != nil {
 		return nil, err
 	}
