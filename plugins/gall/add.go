@@ -89,6 +89,7 @@ func (p *Plugin) add(event *events.Event) {
 	)
 	if err != nil {
 		event.Except(err)
+		return
 	}
 
 	_, err = event.Respond("gall.add.success",

@@ -22,7 +22,7 @@ added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, `{{H
 This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds set up.\n\
 {{else}}\
 **Looks like there are no Gall Feeds set up on this Server yet.**\n\
-You can add one: `{{.prefix}}gall <Board ID>`\
+You can add one: `{{.prefix}}gall add <Board ID>`\
 {{end}}\
 \
 "

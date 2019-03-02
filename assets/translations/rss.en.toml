@@ -1,0 +1,27 @@
+"rss.add.success" = "\
+**I added the feed `{{.feed.Title}}` to {{.channel.Mention}}.**\n\
+Link: <{{.feed.Link}}> / Feed: <{{.feed.FeedLink}}> \
+"
+"rss.add.too-few" = "Please tell me the URL of the RSS Feed to add."
+"rss.add.duplicate" = "Looks like this RSS Feed is already set up in this channel."
+"rss.add.not-found" = "Please make sure the Feed URL you are telling me is correct."
+"rss.add.too-many" = "Looks like you have reached the limit of how many RSS Feeds you can add."
+
+"rss.status.message" = "\
+{{if gt (len .entries) 0}}\
+**RSS Feeds set up on this Server**\n\
+{{range $entry := .entries}}\
+**{{$entry.Name}}** in <#{{$entry.ChannelID}}>\
+, <{{$entry.URL}}> / <{{$entry.FeedURL}}>\n\
+added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, `{{HumanizeNumber $entry.Posts}}` posts so far, last check `{{HumanizeTime $entry.LastCheck}}`\n\
+{{end}}\
+This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** RSS Feeds set up.\n\
+{{else}}\
+**Looks like there are no RSS Feeds set up on this Server yet.**\n\
+You can add one: `{{.prefix}}rss add <Link>`\
+{{end}}\
+\
+"
+
+"rss.remove.message" = "I removed the Feed **{{.entry.Name}}** from <#{{.entry.ChannelID}}>."
+"rss.remove.not-found" = "I was not able to find this Feed on this Server."
