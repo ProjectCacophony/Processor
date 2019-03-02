@@ -27,13 +27,13 @@
 "lastfm.set.saved" = "I will remember your username from now on! :idea:"
 
 # handleTopArtists
-"lastfm.artists.embed.title" = "{{.userData.Username}}'s top Artists {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
+"lastfm.artists.embed.title" = "{{.userData.Username}}'s Top Artists {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
 
 # handleTopTracks
-"lastfm.tracks.embed.title" = "{{.userData.Username}}'s top Tracks {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
+"lastfm.tracks.embed.title" = "{{.userData.Username}}'s Top Tracks {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
 
 # handleTopAlbums
-"lastfm.albums.embed.title" = "{{.userData.Username}}'s top Albums {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
+"lastfm.albums.embed.title" = "{{.userData.Username}}'s Top Albums {{if (eq .period \"overall\")}}overall{{else if (eq .period \"7day\")}}last week{{else if (eq .period \"1month\")}}last month{{else if (eq .period \"3month\")}}last three months{{else if (eq .period \"6month\")}}last six months{{else if (eq .period \"12month\")}}last year{{end}}"
 
 # handleRecent
 "lastfm.recent.embed.title" = "{{.userData.Username}} recently listened to"

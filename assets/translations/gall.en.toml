@@ -11,14 +11,13 @@ All posts will be posted there.\
 "gall.add.not-found" = "Please make sure the Board ID you are telling me is correct."
 "gall.add.too-many" = "Looks like you have reached the limit of how many Boards you can add."
 
-# TODO: Humanize Times
 "gall.status.message" = "\
 {{if gt (len .entries) 0}}\
 **Gall Feeds set up on this Server**\n\
 {{range $entry := .entries}}\
 **{{$entry.BoardID}}** in <#{{$entry.ChannelID}}>\
 , {{if $entry.Recommended}}recommended{{else}}all{{end}} posts will be posted\n\
-added by `{{Escape $entry.By.String}}` at `{{$entry.CreatedAt}}`\n\
+added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, `{{HumanizeNumber $entry.Posts}}` posts so far, last check `{{HumanizeTime $entry.LastCheck}}`\n\
 {{end}}\
 This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds setup.\n\
 {{else}}\

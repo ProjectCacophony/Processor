@@ -7,7 +7,8 @@ import (
 
 type enhancedEntry struct {
 	Entry
-	By *discordgo.User
+	By    *discordgo.User
+	Posts int
 }
 
 func (p *Plugin) status(event *events.Event) {
@@ -29,6 +30,8 @@ func (p *Plugin) status(event *events.Event) {
 			}
 		}
 		enhancedEntries[i].By = user
+
+		enhancedEntries[i].Posts, _ = countPosts(p.db, entry.ID)
 	}
 
 	_, err = event.Respond("gall.status.message",

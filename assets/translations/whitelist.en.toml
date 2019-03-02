@@ -29,11 +29,10 @@ Please make sure you tell me a valid server invite."
 Please be aware that it can take up to one minute until the change is applied."
 
 # whitelistStatus
-# TODO: humanize time
 "whitelist.status.message" = "**Your Whitelisted Servers**\n\
 {{if gt (len .servers) 0}}\
 {{range $server := .servers}}\
-**{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) at `{{$server.At}}`\n\
+**{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) added `{{HumanizeTime $server.At}}`\n\
 {{end}}\
 You have **{{len .servers}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Servers Whitelisted in total.\n\
 {{else}}\
@@ -42,12 +41,11 @@ You can whitelist a server: `{{.prefix}}whitelist <Server Invite>`\
 {{end}}"
 
 # whitelistList
-# TODO: humanize time
 "whitelist.list.message" = "\
 {{if gt (len .whitelisted) 0}}\
 {{range $server := .whitelisted}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`)\n\
-by `{{$server.By}}` (`#{{$server.By.ID}}`) at `{{$server.At}}`\n\
+by `{{$server.By}}` (`#{{$server.By.ID}}`) `{{HumanizeTime $server.At}}`\n\
 {{end}}\
 There are **{{len .whitelisted}}** Servers Whitelisted in total.\n\
 {{else}}\
@@ -57,7 +55,7 @@ There are **{{len .whitelisted}}** Servers Whitelisted in total.\n\
 {{if gt (len .blacklisted) 0}}\
 {{range $server := .blacklisted}}\
 **{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`)\n\
-by `{{$server.By}}` (`#{{$server.By.ID}}`) at `{{$server.At}}`\n\
+by `{{$server.By}}` (`#{{$server.By.ID}}`) `{{HumanizeTime $server.At}}`\n\
 {{end}}\
 There are **{{len .blacklisted}}** Servers Blacklisted in total.\n\
 {{else}}\
