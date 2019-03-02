@@ -28,6 +28,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	event.WithState(p.stateClient)
 	event.WithBotOwnerIDs(p.botOwnerIDs)
 	event.WithPaginator(p.paginator)
+	event.WithLogger(p.logger.With(zap.String("service", "processor")))
 
 	event.Parse()
 

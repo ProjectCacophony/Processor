@@ -2,9 +2,11 @@
 package lastfm
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
+
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/paginator"
 
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
@@ -42,7 +44,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 
 	// get top albums
 	var albums []lastfmclient.AlbumData
-	albums, err = lastfmclient.GetTopAlbums(lastfmClient, userInfo.Username, 10, period)
+	albums, err = lastfmclient.GetTopAlbums(lastfmClient, userInfo.Username, 200, period)
 	if err != nil {
 		event.Except(err)
 		return
@@ -60,65 +62,93 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 
 	// create collage if requested
 	if makeCollage {
-		// initialise variables
-		imageURLs := make([]string, 9)
-		albumNames := make([]string, 9)
+		var files []*paginator.File
+		var imageURLs, trackNames []string
+
 		for i, album := range albums {
-			imageURLs[i] = album.ImageURL
-			albumNames[i] = album.Name
-			if i >= 8 {
+
+			imageURLs = append(imageURLs, album.ImageURL)
+			trackNames = append(trackNames, album.Name)
+
+			if i > 0 && (i+1)%9 == 0 {
+				// create the collage
+				collageBytes, err := CollageFromURLs(
+					p.httpClient,
+					imageURLs,
+					trackNames,
+					900, 900,
+					300, 300,
+				)
+				if err != nil {
+					event.Except(err)
+					return
+				}
+				files = append(files, &paginator.File{
+					Name: "Cacophony-LastFM-Collage.jpg",
+					Data: collageBytes,
+				})
+
+				imageURLs = []string{}
+				trackNames = []string{}
+			}
+			if len(files) >= 3 {
 				break
 			}
 		}
 
-		// create the collage
-		collageBytes, err := CollageFromURLs(
-			p.httpClient,
-			imageURLs,
-			albumNames,
-			900, 900,
-			300, 300,
-		)
-		if err != nil {
-			event.Except(err)
-			return
-		}
-
-		// add collage image to embed
-		embed.Image = &discordgo.MessageEmbedImage{
-			URL: "attachment://Cacophony-LastFM-Collage.jpg",
-		}
-		// send collage to discord and stop
-		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-			Files: []*discordgo.File{
-				{
-					Name:   "Cacophony-LastFM-Collage.jpg",
-					Reader: bytes.NewReader(collageBytes),
-				},
+		var send = discord.TranslateMessageSend(
+			event.Localisations(),
+			&discordgo.MessageSend{
+				Embed: embed,
 			},
-			Embed: embed,
-		}, "userData", userInfo, "period", period)
+			"userData", userInfo, "period", period,
+		)
+		err = event.Paginator().ImagePaginator(
+			event.GuildID,
+			event.ChannelID,
+			event.UserID,
+			send.Embed,
+			files,
+		)
 		event.Except(err)
 		return
 	}
+
+	var embeds []*discordgo.MessageEmbed
 
 	// add albums to embed
 	for i, album := range albums {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " +
 			event.Translate("lastfm.album.short", "album", album) +
 			"\n"
-	}
 
-	// add album image to embed if possible
-	if albums[0].ImageURL != "" {
-		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
-			URL: albums[0].ImageURL,
+		if i > 0 && (i+1)%10 == 0 {
+			if albums[i-9].ImageURL != "" {
+				embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
+					URL: albums[i-9].ImageURL,
+				}
+			}
+
+			send := discord.TranslateMessageSend(
+				event.Localisations(),
+				&discordgo.MessageSend{
+					Embed: embed,
+				},
+				"userData", userInfo, "period", period,
+			)
+
+			tempEmbed := *send.Embed
+			embeds = append(embeds, &tempEmbed)
+
+			embed.Description = ""
 		}
 	}
 
-	// send to discord
-	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-		Embed: embed,
-	}, "userData", userInfo, "period", period)
+	err = event.Paginator().EmbedPaginator(
+		event.GuildID,
+		event.ChannelID,
+		event.UserID,
+		embeds...,
+	)
 	event.Except(err)
 }

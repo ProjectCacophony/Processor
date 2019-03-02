@@ -2,9 +2,12 @@
 package lastfm
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
+
+	"gitlab.com/Cacophony/go-kit/paginator"
+
+	"gitlab.com/Cacophony/go-kit/discord"
 
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
@@ -37,26 +40,12 @@ func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, 
 		return
 	}
 
-	// get top artists
-	var artists []lastfmclient.ArtistData
-	artists, err = lastfmclient.GetTopArtists(lastfmClient, userInfo.Username, 10, period)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	// if no artists found, post error and stop
-	if len(artists) < 1 {
-		event.Respond("lastfm.no-scrobbles", "username", username) // nolint: errcheck
-		return
-	}
-
 	// get basic embed for user
 	embed := getLastfmUserBaseEmbed(userInfo)
 
 	// get top tracks
 	var tracks []lastfmclient.TrackData
-	tracks, err = lastfmclient.GetTopTracks(lastfmClient, userInfo.Username, 10, period)
+	tracks, err = lastfmclient.GetTopTracks(lastfmClient, userInfo.Username, 200, period)
 	if err != nil {
 		event.Except(err)
 		return
@@ -74,65 +63,93 @@ func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, 
 
 	// create collage if requested
 	if makeCollage {
-		// initialise variables
-		imageURLs := make([]string, 9)
-		trackNames := make([]string, 9)
+		var files []*paginator.File
+		var imageURLs, trackNames []string
+
 		for i, track := range tracks {
-			imageURLs[i] = track.ImageURL
-			trackNames[i] = track.Name
-			if i >= 8 {
+
+			imageURLs = append(imageURLs, track.ImageURL)
+			trackNames = append(trackNames, track.Name)
+
+			if i > 0 && (i+1)%9 == 0 {
+				// create the collage
+				collageBytes, err := CollageFromURLs(
+					p.httpClient,
+					imageURLs,
+					trackNames,
+					900, 900,
+					300, 300,
+				)
+				if err != nil {
+					event.Except(err)
+					return
+				}
+				files = append(files, &paginator.File{
+					Name: "Cacophony-LastFM-Collage.jpg",
+					Data: collageBytes,
+				})
+
+				imageURLs = []string{}
+				trackNames = []string{}
+			}
+			if len(files) >= 3 {
 				break
 			}
 		}
 
-		// create the collage
-		collageBytes, err := CollageFromURLs(
-			p.httpClient,
-			imageURLs,
-			trackNames,
-			900, 900,
-			300, 300,
-		)
-		if err != nil {
-			event.Except(err)
-			return
-		}
-
-		// add collage image to embed
-		embed.Image = &discordgo.MessageEmbedImage{
-			URL: "attachment://Cacophony-LastFM-Collage.jpg",
-		}
-		// send collage to discord and stop
-		_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-			Files: []*discordgo.File{
-				{
-					Name:   "Cacophony-LastFM-Collage.jpg",
-					Reader: bytes.NewReader(collageBytes),
-				},
+		var send = discord.TranslateMessageSend(
+			event.Localisations(),
+			&discordgo.MessageSend{
+				Embed: embed,
 			},
-			Embed: embed,
-		}, "userData", userInfo, "period", period)
+			"userData", userInfo, "period", period,
+		)
+		err = event.Paginator().ImagePaginator(
+			event.GuildID,
+			event.ChannelID,
+			event.UserID,
+			send.Embed,
+			files,
+		)
 		event.Except(err)
 		return
 	}
+
+	var embeds []*discordgo.MessageEmbed
 
 	// add tracks to embed
 	for i, track := range tracks {
 		embed.Description += fmt.Sprintf("`#%2d`", i+1) + " " +
 			event.Translate("lastfm.track.short", "track", track) +
 			"\n"
-	}
 
-	// add track image to embed if possible
-	if tracks[0].ImageURL != "" {
-		embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
-			URL: tracks[0].ImageURL,
+		if i > 0 && (i+1)%10 == 0 {
+			if tracks[i-9].ImageURL != "" {
+				embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
+					URL: tracks[i-9].ImageURL,
+				}
+			}
+
+			send := discord.TranslateMessageSend(
+				event.Localisations(),
+				&discordgo.MessageSend{
+					Embed: embed,
+				},
+				"userData", userInfo, "period", period,
+			)
+
+			tempEmbed := *send.Embed
+			embeds = append(embeds, &tempEmbed)
+
+			embed.Description = ""
 		}
 	}
 
-	// send to discord
-	_, err = event.SendComplex(event.MessageCreate.ChannelID, &discordgo.MessageSend{
-		Embed: embed,
-	}, "userData", userInfo, "period", period)
+	err = event.Paginator().EmbedPaginator(
+		event.GuildID,
+		event.ChannelID,
+		event.UserID,
+		embeds...,
+	)
 	event.Except(err)
 }
