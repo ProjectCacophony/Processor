@@ -38,7 +38,7 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 
 	// get recent tracks
 	var tracks []lastfmclient.TrackData
-	tracks, err = lastfmclient.GetRecentTracks(lastfmClient, userInfo.Username, 50)
+	tracks, err = lastfmclient.GetRecentTracks(lastfmClient, userInfo.Username, 100)
 	if err != nil {
 		event.Except(err)
 		return
@@ -68,7 +68,7 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 
 		embed.Description += "\n"
 
-		if i > 0 && i%9 == 0 {
+		if i > 0 && (i+1)%10 == 0 {
 			send := discord.TranslateMessageSend(
 				event.Localisations(),
 				&discordgo.MessageSend{
