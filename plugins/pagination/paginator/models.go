@@ -13,8 +13,17 @@ type PagedEmbedMessage struct {
 	GuildID         string
 	ChannelID       string
 	UserID          string // user who triggered the message
-	MsgType         int
+	Type            Type
+	Embeds          []*discordgo.MessageEmbed
 }
+
+type Type int
+
+const (
+	FieldType Type = iota
+	ImageType
+	EmbedType
+)
 
 type numbersListener struct {
 	MessageID           string // message ID of the message asking the user which page to choose

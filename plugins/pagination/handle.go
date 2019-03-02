@@ -47,9 +47,14 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Action(event *events.Event) bool {
 	p.paginator.Handle(event)
 
-	if event.Type == events.MessageCreateType &&
-		event.MessageCreate.Content == "embed pls" {
-		p.paginator.SendPagedMessage( // nolint: errcheck
+	if event.Type != events.MessageCreateType {
+		return false
+	}
+
+	switch event.MessageCreate.Content {
+
+	case "embed pls":
+		p.paginator.FieldsPaginator( // nolint: errcheck
 			event.MessageCreate.GuildID,
 			event.MessageCreate.ChannelID,
 			event.MessageCreate.Author.ID,
@@ -84,9 +89,63 @@ func (p *Plugin) Action(event *events.Event) bool {
 						Name:  "g",
 						Value: "g",
 					},
+					{
+						Name:  "h",
+						Value: "h",
+					},
+					{
+						Name:  "i",
+						Value: "i",
+					},
+					{
+						Name:  "j",
+						Value: "j",
+					},
+					{
+						Name:  "k",
+						Value: "k",
+					},
 				},
 			},
 			3,
+		)
+
+	case "embed embed pls":
+
+		p.paginator.EmbedPaginator( // nolint: errcheck
+			event.MessageCreate.GuildID,
+			event.MessageCreate.ChannelID,
+			event.MessageCreate.Author.ID,
+			&discordgo.MessageEmbed{
+				Description: "first page",
+				Footer: &discordgo.MessageEmbedFooter{
+					Text: "the footer of the first page",
+				},
+			},
+			&discordgo.MessageEmbed{
+				Description: "second page",
+				Footer: &discordgo.MessageEmbedFooter{
+					Text: "the footer of the second page",
+				},
+			},
+			&discordgo.MessageEmbed{
+				Description: "third page",
+				Footer: &discordgo.MessageEmbedFooter{
+					Text: "the footer of the third page",
+				},
+			},
+			&discordgo.MessageEmbed{
+				Description: "fourth page",
+				Footer: &discordgo.MessageEmbedFooter{
+					Text: "the footer of the fourth page",
+				},
+			},
+			&discordgo.MessageEmbed{
+				Description: "fifth page",
+				Footer: &discordgo.MessageEmbedFooter{
+					Text: "the footer of the fifth page",
+				},
+			},
 		)
 	}
 

@@ -54,7 +54,7 @@ func (p *Paginator) handleReaction(message *PagedEmbedMessage, reaction *discord
 			return err
 		}
 
-		if message.MsgType != ImageMessageType {
+		if message.Type != ImageType {
 			session.MessageReactionRemove( // nolint: errcheck
 				reaction.ChannelID, reaction.MessageID, reaction.Emoji.Name, reaction.UserID,
 			)
@@ -66,7 +66,7 @@ func (p *Paginator) handleReaction(message *PagedEmbedMessage, reaction *discord
 			return err
 		}
 
-		if message.MsgType != ImageMessageType {
+		if message.Type != ImageType {
 			session.MessageReactionRemove( // nolint: errcheck
 				reaction.ChannelID, reaction.MessageID, reaction.Emoji.Name, reaction.UserID,
 			)

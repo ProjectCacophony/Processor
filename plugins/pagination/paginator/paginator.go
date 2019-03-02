@@ -1,9 +1,7 @@
 package paginator
 
 import (
-	"bytes"
 	"fmt"
-	"io"
 	"regexp"
 
 	"go.uber.org/zap"
@@ -21,9 +19,6 @@ const (
 	RightArrowEmoji = "➡"
 	CloseEmoji      = "🇽"
 	NumbersEmoji    = "🔢"
-
-	FieldMessageType = iota
-	ImageMessageType
 )
 
 type Paginator struct {
@@ -98,67 +93,6 @@ func (p *Paginator) editComplex(
 	return session.ChannelMessageEditComplex(edit)
 }
 
-// setupAndSendFirstMessage
-func (p *Paginator) setupAndSendFirstMessage(message *PagedEmbedMessage) {
-	var sentMessage []*discordgo.Message
-	var err error
-
-	// copy the embedded message so changes can be made to it
-	tempEmbed := &discordgo.MessageEmbed{}
-	*tempEmbed = *message.FullEmbed
-
-	// set footer which will hold information about the page it is on
-	tempEmbed.Footer = p.getEmbedFooter(message)
-
-	if message.MsgType == ImageMessageType {
-
-		// if fields were sent with image embed, handle those
-		if len(message.FullEmbed.Fields) > 0 {
-
-			// get start and end fields based on current page and fields per page
-			startField := (message.CurrentPage - 1) * message.FieldsPerPage
-			endField := startField + message.FieldsPerPage
-			if endField > len(message.FullEmbed.Fields) {
-				endField = len(message.FullEmbed.Fields)
-			}
-
-			tempEmbed.Fields = tempEmbed.Fields[startField:endField]
-		}
-
-		var buf bytes.Buffer
-		newReader := io.TeeReader(message.Files[message.CurrentPage-1].Reader, &buf)
-		message.Files[message.CurrentPage-1].Reader = &buf
-
-		tempEmbed.Image.URL = fmt.Sprintf("attachment://%s", message.Files[message.CurrentPage-1].Name)
-		sentMessage, err = p.sendComplex(
-			message.GuildID, message.ChannelID, &discordgo.MessageSend{
-				Embed: tempEmbed,
-				Files: []*discordgo.File{{
-					Name:   message.Files[message.CurrentPage-1].Name,
-					Reader: newReader,
-				}},
-			})
-		if p.hasError(message, err) {
-			return
-		}
-
-	} else {
-		// reduce fields to the fields per page
-		tempEmbed.Fields = tempEmbed.Fields[:message.FieldsPerPage]
-
-		sentMessage, err = p.sendComplex(
-			message.GuildID, message.ChannelID, &discordgo.MessageSend{
-				Embed: tempEmbed,
-			})
-		if p.hasError(message, err) {
-			return
-		}
-	}
-
-	message.MessageID = sentMessage[0].ID
-	p.addReactionsToMessage(message)
-}
-
 // getEmbedFooter is a simlple helper function to return the footer for the embed message
 func (p *Paginator) getEmbedFooter(message *PagedEmbedMessage) *discordgo.MessageEmbedFooter {
 	var footerText string
@@ -166,12 +100,12 @@ func (p *Paginator) getEmbedFooter(message *PagedEmbedMessage) *discordgo.Messag
 	// check if embed had a footer, if so attach to page count
 	if message.FullEmbed.Footer != nil && message.FullEmbed.Footer.Text != "" {
 		footerText = fmt.Sprintf(
-			"Page: %d / %d | %s",
+			"Page %d / %d • %s",
 			message.CurrentPage, message.TotalNumOfPages, message.FullEmbed.Footer.Text,
 		)
 	} else {
 		footerText = fmt.Sprintf(
-			"Page: %d / %d",
+			"Page %d / %d",
 			message.CurrentPage, message.TotalNumOfPages,
 		)
 	}
@@ -179,58 +113,27 @@ func (p *Paginator) getEmbedFooter(message *PagedEmbedMessage) *discordgo.Messag
 	return &discordgo.MessageEmbedFooter{Text: footerText}
 }
 
-func (p *Paginator) addReactionsToMessage(message *PagedEmbedMessage) {
+func (p *Paginator) addReactionsToMessage(message *PagedEmbedMessage) error {
 	session, err := p.getSession(message.GuildID)
 	if err != nil {
-		return
+		return err
 	}
 
 	err = session.MessageReactionAdd(message.ChannelID, message.MessageID, LeftArrowEmoji)
 	if err != nil {
-		return
+		return err
 	}
 	err = session.MessageReactionAdd(message.ChannelID, message.MessageID, RightArrowEmoji)
 	if err != nil {
-		return
+		return err
 	}
 
-	if message.TotalNumOfPages > 2 {
+	if message.TotalNumOfPages > 4 {
 		err = session.MessageReactionAdd(message.ChannelID, message.MessageID, NumbersEmoji)
 		if err != nil {
-			return
+			return err
 		}
 	}
 
-	session.MessageReactionAdd(message.ChannelID, message.MessageID, CloseEmoji) // nolint: errcheck
-}
-
-func (p *Paginator) hasError(message *PagedEmbedMessage, err error) bool {
-	if err == nil {
-		return false
-	}
-
-	// delete from current embeds
-	deletePagedMessage(p.redis, message.MessageID) // nolint: errcheck
-
-	// check if error is a permissions error
-	if err, ok := err.(*discordgo.RESTError); ok && err.Message.Code == discordgo.ErrCodeMissingPermissions {
-		if message.MsgType == ImageMessageType {
-			p.sendComplex( // nolint: errcheck
-				message.GuildID, message.ChannelID, &discordgo.MessageSend{
-					Content: "bot.errors.no-embed-or-file", // TODO
-				})
-		} else {
-			p.sendComplex( // nolint: errcheck
-				message.GuildID, message.ChannelID, &discordgo.MessageSend{
-					Content: "bot.errors.no-embed", // TODO
-				})
-		}
-	} else {
-		p.logger.Error("unexpected error",
-			zap.Error(err),
-		)
-		// TODO: capture in raven
-	}
-
-	return true
+	return session.MessageReactionAdd(message.ChannelID, message.MessageID, CloseEmoji)
 }

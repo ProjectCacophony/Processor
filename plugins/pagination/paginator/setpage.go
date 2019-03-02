@@ -27,9 +27,9 @@ func (p *Paginator) setPage(message *PagedEmbedMessage, page int) error {
 	tempEmbed := &discordgo.MessageEmbed{}
 	*tempEmbed = *message.FullEmbed
 
-	switch message.MsgType {
+	switch message.Type {
 
-	case FieldMessageType:
+	case FieldType:
 		// get start and end fields based on current page and fields per page
 		startField := (message.CurrentPage - 1) * message.FieldsPerPage
 		endField := startField + message.FieldsPerPage
@@ -53,7 +53,7 @@ func (p *Paginator) setPage(message *PagedEmbedMessage, page int) error {
 			return err
 		}
 
-	case ImageMessageType:
+	case ImageType:
 		// image embeds can't be edited, need to delete and remake it
 		err = session.ChannelMessageDelete(message.ChannelID, message.MessageID)
 		if err != nil {
@@ -98,12 +98,35 @@ func (p *Paginator) setPage(message *PagedEmbedMessage, page int) error {
 		// update map with new message id since
 		originalmsgID := message.MessageID
 		message.MessageID = sentMessage[0].ID
-		p.addReactionsToMessage(message)
+		p.addReactionsToMessage(message) // nolint: errcheck
 		err = setPagedMessage(p.redis, sentMessage[0].ID, message)
 		if err != nil {
 			return err
 		}
 		err = deletePagedMessage(p.redis, originalmsgID)
+		if err != nil {
+			return err
+		}
+
+	case EmbedType:
+
+		if len(message.Embeds) < message.CurrentPage {
+			return nil
+		}
+
+		tempEmbed = message.Embeds[message.CurrentPage-1]
+		tempEmbed.Footer = p.getEmbedFooter(message)
+
+		_, err = p.editComplex(message.GuildID, &discordgo.MessageEdit{
+			Embed:   tempEmbed,
+			ID:      message.MessageID,
+			Channel: message.ChannelID,
+		})
+		if err != nil {
+			return err
+		}
+
+		err = setPagedMessage(p.redis, message.MessageID, message)
 		if err != nil {
 			return err
 		}
