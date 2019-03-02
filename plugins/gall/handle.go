@@ -78,19 +78,21 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	if len(event.Fields()) > 1 {
-		if strings.EqualFold(event.Fields()[1], "remove") {
+		switch strings.ToLower(event.Fields()[1]) {
+		case "add":
+			event.Require(func() {
+				p.add(event)
+			}, permissions.DiscordManageChannels)
+
+			return true
+
+		case "remove":
 			event.Require(func() {
 				p.remove(event)
 			}, permissions.DiscordManageChannels)
 
 			return true
 		}
-
-		event.Require(func() {
-			p.add(event)
-		}, permissions.DiscordManageChannels,
-		)
-		return true
 	}
 
 	p.status(event)

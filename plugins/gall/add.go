@@ -9,7 +9,12 @@ import (
 )
 
 func (p *Plugin) add(event *events.Event) {
-	fields := event.Fields()[1:]
+	if len(event.Fields()) < 2 {
+		event.Respond("gall.add.too-few") // nolint: errcheck
+		return
+	}
+
+	fields := event.Fields()[2:]
 
 	channel, fields, err := paramsExtractChannel(event, fields)
 	if err != nil {

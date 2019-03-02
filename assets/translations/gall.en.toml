@@ -19,7 +19,7 @@ All posts will be posted there.\
 , {{if $entry.Recommended}}recommended{{else}}all{{end}} posts will be posted\n\
 added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, `{{HumanizeNumber $entry.Posts}}` posts so far, last check `{{HumanizeTime $entry.LastCheck}}`\n\
 {{end}}\
-This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds setup.\n\
+This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds set up.\n\
 {{else}}\
 **Looks like there are no Gall Feeds set up on this Server yet.**\n\
 You can add one: `{{.prefix}}gall <Board ID>`\

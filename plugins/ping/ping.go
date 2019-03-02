@@ -38,10 +38,7 @@ func handlePing(event *events.Event) {
 		"GatewayToProcessor",
 		time.Since(event.ReceivedAt),
 	)
-	if err != nil {
-		event.Except(err)
-		return
-	}
+	event.Except(err)
 }
 
 func handlePong(event *events.Event) {
