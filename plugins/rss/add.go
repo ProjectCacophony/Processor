@@ -26,7 +26,8 @@ func (p *Plugin) add(event *events.Event) {
 		return
 	}
 
-	feedURL := strings.Trim(fields[0], "<>")
+	inputURL := strings.Trim(fields[0], "<>")
+	feedURL := inputURL
 
 	_, err = url.ParseRequestURI(feedURL)
 	if err != nil {
@@ -76,6 +77,9 @@ func (p *Plugin) add(event *events.Event) {
 
 	if feed.FeedLink == "" {
 		feed.FeedLink = feedURL
+	}
+	if feed.Link == "" {
+		feed.Link = inputURL
 	}
 
 	err = entryAdd(
