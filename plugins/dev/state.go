@@ -64,11 +64,6 @@ func (p *Plugin) handleDevState(event *events.Event) {
 		event.Except(err)
 		return
 	}
-	botID, err := p.state.BotForGuild(event.MessageCreate.GuildID)
-	if err != nil {
-		event.Except(err)
-		return
-	}
 
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
@@ -107,7 +102,7 @@ func (p *Plugin) handleDevState(event *events.Event) {
 				},
 				{
 					Name:   "Bot",
-					Value:  fmt.Sprintf("<@%s>", botID),
+					Value:  fmt.Sprintf("<@%s>", event.BotUserID),
 					Inline: true,
 				},
 			},
