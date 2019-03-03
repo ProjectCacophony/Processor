@@ -89,6 +89,12 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		event.Fields()[0] != "am" {
 		return false
 	}
+
+	if event.Has(permissions.DiscordChannelDM) {
+		event.Respond("automod.not-dm") // nolint: errcheck
+		return true
+	}
+
 	if len(event.Fields()) < 2 {
 		event.RequireOr(func() {
 			p.cmdStatus(event)

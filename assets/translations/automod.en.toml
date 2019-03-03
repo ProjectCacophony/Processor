@@ -1,3 +1,5 @@
+"automod.not-dm" = "This module can not be used in DMs."
+
 # cmdAdd
 "automod.add.too-few" = "You didn't tell me enough information."
 "automod.add.invalid-trigger-name" = "I was not able to find a trigger with that name."
