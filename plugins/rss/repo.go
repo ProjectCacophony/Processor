@@ -2,7 +2,6 @@ package rss
 
 import (
 	"errors"
-	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -23,7 +22,6 @@ func entryAdd(
 		Name:      name,
 		URL:       url,
 		FeedURL:   feedURL,
-		LastCheck: time.Now(),
 	}).Error
 }
 

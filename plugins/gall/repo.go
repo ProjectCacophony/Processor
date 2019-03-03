@@ -2,7 +2,6 @@ package gall
 
 import (
 	"errors"
-	"time"
 
 	"github.com/jinzhu/gorm"
 )
@@ -23,7 +22,6 @@ func entryAdd(
 		BoardID:      boardID,
 		MinorGallery: minorGallery,
 		Recommended:  recommended,
-		LastCheck:    time.Now(),
 	}).Error
 }
 

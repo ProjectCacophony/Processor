@@ -17,7 +17,11 @@ All posts will be posted there.\
 {{range $entry := .entries}}\
 **{{$entry.BoardID}}** in <#{{$entry.ChannelID}}>\
 , {{if $entry.Recommended}}recommended{{else}}all{{end}} posts will be posted\n\
-added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, `{{HumanizeNumber $entry.Posts}}` posts so far, last check `{{HumanizeTime $entry.LastCheck}}`\n\
+added by `{{Escape $entry.By.String}}` `{{HumanizeTime $entry.CreatedAt}}`, \
+`{{HumanizeNumber $entry.Posts}}` posts so far, \
+last check `{{HumanizeTime $entry.LastCheck}}` \
+{{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}}\n\
 {{end}}\
 This Server has **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Gall Feeds set up.\n\
 {{else}}\
