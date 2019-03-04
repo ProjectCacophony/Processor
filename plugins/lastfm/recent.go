@@ -85,9 +85,10 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 	}
 
 	err = event.Paginator().EmbedPaginator(
-		event.GuildID,
+		event.BotUserID,
 		event.ChannelID,
 		event.UserID,
+		event.DM(),
 		embeds...,
 	)
 	event.Except(err)

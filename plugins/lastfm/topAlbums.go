@@ -104,11 +104,12 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 			"userData", userInfo, "period", period,
 		)
 		err = event.Paginator().ImagePaginator(
-			event.GuildID,
+			event.BotUserID,
 			event.ChannelID,
 			event.UserID,
 			send.Embed,
 			files,
+			event.DM(),
 		)
 		event.Except(err)
 		return
@@ -145,9 +146,10 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 	}
 
 	err = event.Paginator().EmbedPaginator(
-		event.GuildID,
+		event.BotUserID,
 		event.ChannelID,
 		event.UserID,
+		event.DM(),
 		embeds...,
 	)
 	event.Except(err)
