@@ -63,12 +63,15 @@ func (t *SendMessageItem) Do(env *models.Env) {
 		}
 
 		// nolint: errcheck
-		discord.SendComplexWithVars(session,
+		discord.SendComplexWithVars(
+			nil,
+			session,
 			nil,
 			channelID,
 			&discordgo.MessageSend{
 				Content: t.Message,
 			},
+			false,
 		)
 
 		doneChannelIDs[channelID] = true
