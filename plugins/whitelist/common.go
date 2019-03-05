@@ -14,7 +14,7 @@ func serversPerUserLimit(event *events.Event) int {
 		return -1
 	}
 
-	return 4
+	return 3
 }
 
 func (p *Plugin) extractGuild(discord *discord.Session, text string) (*discordgo.Guild, error) {
