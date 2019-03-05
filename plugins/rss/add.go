@@ -20,6 +20,9 @@ func (p *Plugin) add(event *events.Event) {
 		event.Except(err)
 		return
 	}
+	if event.DM() {
+		channel.ID = event.UserID
+	}
 
 	if len(fields) < 1 {
 		event.Respond("rss.add.too-few") // nolint: errcheck
@@ -36,8 +39,9 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	entries, err := entryFindMany(p.db,
-		"guild_id = ?",
-		event.GuildID)
+		"((guild_id = ? AND dm = false) OR (channel_id = ? AND dm = true)) AND dm = ?",
+		event.GuildID, event.UserID, event.DM(),
+	)
 	if err != nil {
 		event.Except(err)
 		return
@@ -90,6 +94,8 @@ func (p *Plugin) add(event *events.Event) {
 		feed.Title,
 		feed.Link,
 		feed.FeedLink,
+		event.BotUserID,
+		event.DM(),
 	)
 	if err != nil {
 		event.Except(err)
@@ -99,6 +105,7 @@ func (p *Plugin) add(event *events.Event) {
 	_, err = event.Respond("rss.add.success",
 		"feed", feed,
 		"channel", channel,
+		"dm", event.DM(),
 	)
 	event.Except(err)
 }

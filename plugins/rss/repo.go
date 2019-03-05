@@ -14,11 +14,16 @@ func entryAdd(
 	name string,
 	url string,
 	feedURL string,
+	botID string,
+	dm bool,
 ) error {
 	return db.Create(&Entry{
+		Model:     gorm.Model{},
 		GuildID:   guildID,
 		ChannelID: channelID,
 		AddedBy:   userID,
+		BotID:     botID,
+		DM:        dm,
 		Name:      name,
 		URL:       url,
 		FeedURL:   feedURL,
