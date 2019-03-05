@@ -14,7 +14,7 @@ func (p *Plugin) handleDevEmoji(event *events.Event) {
 	pages := discord.Pagify(message)
 
 	for _, page := range pages {
-		_, err := event.Discord().ChannelMessageSend(event.MessageCreate.ChannelID, page)
+		_, err := event.Discord().Client.ChannelMessageSend(event.MessageCreate.ChannelID, page)
 		if err != nil {
 			event.Except(err)
 			return

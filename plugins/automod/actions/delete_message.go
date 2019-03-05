@@ -54,7 +54,7 @@ func (t *DeleteMessageItem) Do(env *models.Env) {
 		}
 
 		// nolint: errcheck
-		session.ChannelMessageDelete(message.ChanneID, message.ID)
+		discord.Delete(nil, session, message.ChanneID, message.ID, false)
 
 		doneMessageIDs[message.ID] = true
 	}

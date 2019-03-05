@@ -53,7 +53,7 @@ func (t *BanUserItem) Do(env *models.Env) {
 		}
 
 		// nolint: errcheck
-		session.GuildBanCreateWithReason(
+		session.Client.GuildBanCreateWithReason(
 			env.GuildID, userID, "Banned by Cacophony Automod", 0,
 		)
 		// TODO: improve Reason

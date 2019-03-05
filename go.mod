@@ -26,12 +26,12 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190304204114-12d1e6b16370
+	gitlab.com/Cacophony/go-kit v0.0.0-20190305174644-e8498fd28cac
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9
 	golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95 // indirect
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
-	golang.org/x/sys v0.0.0-20190304154630-e844e0132e93 // indirect
+	golang.org/x/sys v0.0.0-20190305064518-30e92a19ae4a // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 )
