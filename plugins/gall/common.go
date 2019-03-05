@@ -14,6 +14,10 @@ func feedsPerGuildLimit(event *events.Event) int {
 		return -1
 	}
 
+	if event.DM() {
+		return 2
+	}
+
 	return 2
 }
 
