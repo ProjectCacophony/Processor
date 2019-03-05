@@ -22,6 +22,7 @@ var (
 		filters.RegexUserName{},
 		filters.AccountAge{},
 		filters.MentionsCount{},
+		filters.EmojiCount{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
