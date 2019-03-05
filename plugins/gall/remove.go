@@ -13,7 +13,11 @@ func (p *Plugin) remove(event *events.Event) {
 	}
 
 	entry, err := entryFind(p.db,
-		"guild_id = ? AND board_id = ?", event.GuildID, event.Fields()[2],
+		`
+    ( ( (guild_id = ? AND dm = false) OR (channel_id = ? AND dm = true) ) AND dm = ? )
+AND board_id = ?
+`,
+		event.GuildID, event.UserID, event.DM(), event.Fields()[2],
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {

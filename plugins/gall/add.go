@@ -21,6 +21,9 @@ func (p *Plugin) add(event *events.Event) {
 		event.Except(err)
 		return
 	}
+	if event.DM() {
+		channel.ID = event.UserID
+	}
 
 	all, fields := paramsIsAll(fields)
 
@@ -32,8 +35,9 @@ func (p *Plugin) add(event *events.Event) {
 	boardID := strings.ToLower(fields[0])
 
 	entries, err := entryFindMany(p.db,
-		"guild_id = ?",
-		event.GuildID)
+		"((guild_id = ? AND dm = false) OR (channel_id = ? AND dm = true)) AND dm = ?",
+		event.GuildID, event.UserID, event.DM(),
+	)
 	if err != nil {
 		event.Except(err)
 		return
@@ -86,6 +90,8 @@ func (p *Plugin) add(event *events.Event) {
 		boardID,
 		minorGallery,
 		!all,
+		event.BotUserID,
+		event.DM(),
 	)
 	if err != nil {
 		event.Except(err)
@@ -96,6 +102,7 @@ func (p *Plugin) add(event *events.Event) {
 		"boardID", boardID,
 		"channel", channel,
 		"recommended", !all,
+		"dm", event.DM(),
 	)
 	event.Except(err)
 }

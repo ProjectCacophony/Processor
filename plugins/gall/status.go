@@ -1,3 +1,4 @@
+// nolint: dupl
 package gall
 
 import (
@@ -12,7 +13,10 @@ type enhancedEntry struct {
 }
 
 func (p *Plugin) status(event *events.Event) {
-	entries, err := entryFindMany(p.db, "guild_id = ?", event.GuildID)
+	entries, err := entryFindMany(p.db,
+		"((guild_id = ? AND dm = false) OR (channel_id = ? AND dm = true)) AND dm = ?",
+		event.GuildID, event.UserID, event.DM(),
+	)
 	if err != nil {
 		event.Except(err)
 		return

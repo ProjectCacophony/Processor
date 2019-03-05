@@ -14,11 +14,15 @@ func entryAdd(
 	boardID string,
 	minorGallery bool,
 	recommended bool,
+	botID string,
+	dm bool,
 ) error {
 	return db.Create(&Entry{
 		GuildID:      guildID,
 		ChannelID:    channelID,
 		AddedBy:      userID,
+		BotID:        botID,
+		DM:           dm,
 		BoardID:      boardID,
 		MinorGallery: minorGallery,
 		Recommended:  recommended,

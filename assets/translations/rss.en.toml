@@ -31,5 +31,5 @@ You can add one: `{{.prefix}}rss add <Link>`\
 \
 "
 
-"rss.remove.message" = "I removed the Feed **{{.entry.Name}}** from <#{{.entry.ChannelID}}>."
+"rss.remove.message" = "I removed the Feed **{{.entry.Name}}**{{ if not .entry.DM }} from <#{{.entry.ChannelID}}>{{ end }}."
 "rss.remove.not-found" = "I was not able to find this Feed."
