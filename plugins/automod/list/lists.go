@@ -23,6 +23,7 @@ var (
 		filters.AccountAge{},
 		filters.MentionsCount{},
 		filters.EmojiCount{},
+		filters.ChannelID{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{

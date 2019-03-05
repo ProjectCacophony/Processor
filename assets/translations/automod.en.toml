@@ -49,23 +49,24 @@ Adds the User to the Rule Context. []"
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
 "automod.filters.if_true" = "Always matches."
 "automod.filters.if_bucket_amount" = "Matches when the Bucket amount compares as specified with the given amount.\n\
-Comparison Types: >, =, and < [comparison type, amount]"
+Comparison Types: >, =, and < [comparison type; amount]"
 "automod.filters.if_user_name_regex" = "Matches when the given RegEx matches with the Username.\n\
 Does not include the User Discriminator. [regex]"
 "automod.filters.if_account_age" = "Matches if the Users Account Age compares as specified with the given duration.\n\
-Comparison Types: >, and < [comparison type, duration]"
+Comparison Types: >, and < [comparison type; duration]"
 "automod.filters.if_mentions_count" = "Matches if the number of Mentions of the Message compares as specified with the given amount.\n\
-Comparison Types: >, =, and < [comparison type, amount]"
+Comparison Types: >, =, and < [comparison type; amount]"
 "automod.filters.if_emoji_count" = "Matches if the number of Emoji used in the Message compares as specified with the given amount.\n\
-Comparison Types: >, =, and < [comparison type, amount]"
+Comparison Types: >, =, and < [comparison type; amount]"
+"automod.filters.if_channel_id" = "Matches when the given Channel ID matches with the Messages Channel ID. [channel ID(s), separated by commas, no spaces]"
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"
 "automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
-Stores eventual Messages, Users and Channels in the Rule Context. [tag, type, decay duration, amount]"
-"automod.actions.send_message_to" = "Sends the given message to the given channel. [message, channel]"
+Stores eventual Messages, Users and Channels in the Rule Context. [tag; type; decay duration; amount]"
+"automod.actions.send_message_to" = "Sends the given message to the given channel. [message; channel]"
 "automod.actions.delete_message" = "Deletes all Message found in the Rule Context."
 "automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
 "automod.actions.ban_user" = "Bans all Users found in the Rule Context."
-"automod.actions.reset_bucket" = "Resets the amount of leaky bucket. [tag, type]"
+"automod.actions.reset_bucket" = "Resets the amount of leaky bucket. [tag; type]"
