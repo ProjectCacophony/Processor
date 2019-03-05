@@ -24,6 +24,7 @@ var (
 		filters.MentionsCount{},
 		filters.EmojiCount{},
 		filters.ChannelID{},
+		filters.AttachmentsCount{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
