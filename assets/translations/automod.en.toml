@@ -9,7 +9,10 @@
 "automod.add.invalid-action-name" = "I was not able to find an action with that name."
 "automod.add.invalid-action-value" = "The action values you told me are invalid: `{{.error}}.`"
 "automote.add.success" = "**I added the rule!**\n\
-Please keep in mind that it can take up to one minute until the rule will be applied."
+Please keep in mind that it can take up to one minute until the rule will be applied.\n\
+{{ if .logChannelID }}Looks like you have no Automod Log Channel set up so far.\n\
+The log will be posted in <#{{.logChannelID}}>.{{ end }}\
+"
 
 # cmdRemove
 "automod.remove.too-few" = "Please tell me the name of the rule to remove."
@@ -23,7 +26,9 @@ Please keep in mind that it can take up to one minute until the rule will be app
 {{else}} \
 **Looks like there are no rules on this server so far.** :thinking:\n\
 You can create the first rule: `{{.prefix}}automod add […]` \
-{{end}}"
+{{end}}\
+{{ if .logChannelID }}The log will be posted in <#{{.logChannelID}}>.{{ end }}\
+"
 
 # cmdElements
 "automod.elements.response" = "\
@@ -34,6 +39,10 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 **Actions**\n\
 {{range $item := .actions}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
 "
+
+# cmdLog
+"automod.log.response" = "**I will post the Automod Log in <#{{.channel.ID}}>.**\n\
+It may take iup to one minute until the change will be applied."
 
 # Triggers
 "automod.triggers.when_message" = "Triggers when a new Message is sent.\n\

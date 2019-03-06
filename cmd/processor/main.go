@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	cacophonyConfig "gitlab.com/Cacophony/Processor/plugins/automod/config"
+
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -81,6 +83,14 @@ func main() {
 	}
 	// gormDB.SetLogger(logger) TODO: write logger
 	defer gormDB.Close()
+
+	// init cacophony config
+	err = cacophonyConfig.InitConfig(gormDB)
+	if err != nil {
+		logger.Fatal("unable to initialise Cacophony Config",
+			zap.Error(err),
+		)
+	}
 
 	// init state
 	botIDs := make([]string, len(config.DiscordTokens))

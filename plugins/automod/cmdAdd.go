@@ -1,6 +1,9 @@
 package automod
 
 import (
+	"strings"
+
+	"gitlab.com/Cacophony/Processor/plugins/automod/config"
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -110,13 +113,31 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 		}
 	}
 
-	err := p.db.Save(&newRule).Error
+	var logChannelSet string
+	_, err := config.GuildGetString(p.db, event.GuildID, automodLogKey)
+	if err != nil {
+		if !strings.Contains(err.Error(), "record not found") {
+			event.Except(err)
+			return
+		}
+
+		logChannelSet = event.ChannelID
+		err = config.GuildSetString(p.db, event.GuildID, automodLogKey, logChannelSet)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	}
+
+	err = p.db.Save(&newRule).Error
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	_, err = event.Respond("automote.add.success")
+	_, err = event.Respond("automote.add.success",
+		"logChannelID", logChannelSet,
+	)
 	event.Except(err)
 }
 

@@ -121,6 +121,11 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			p.cmdRemove(event)
 		}, permissions.DiscordAdministrator)
 
+	case "log":
+		event.Require(func() {
+			p.cmdLog(event)
+		}, permissions.DiscordAdministrator)
+
 		return true
 	}
 
