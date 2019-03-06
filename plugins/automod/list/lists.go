@@ -27,6 +27,7 @@ var (
 		filters.AttachmentsCount{},
 		filters.RoleID{},
 		filters.UserID{},
+		filters.InvitesCount{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
