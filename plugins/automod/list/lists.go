@@ -36,5 +36,6 @@ var (
 		actions.BanUser{},
 		actions.KickUser{},
 		actions.ResetBucket{},
+		actions.React{},
 	}
 )

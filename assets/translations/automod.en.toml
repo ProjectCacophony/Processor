@@ -72,3 +72,4 @@ Stores eventual Messages, Users and Channels in the Rule Context. [tag; type; de
 "automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
 "automod.actions.ban_user" = "Bans all Users found in the Rule Context."
 "automod.actions.reset_bucket" = "Resets the amount of leaky bucket. [tag; type]"
+"automod.actions.react" = "Reacts with the given Emoji. [emoji]"
