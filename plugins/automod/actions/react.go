@@ -34,6 +34,8 @@ func (t React) NewItem(env *models.Env, args []string) (interfaces.ActionItemInt
 		return nil, errors.New("invalid emoji")
 	}
 
+	// TODO: confirm that we have access to the emoji
+
 	return &ReactItem{
 		Reaction: strings.Trim(args[0], "<>"),
 	}, nil
