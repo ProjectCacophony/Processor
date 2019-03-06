@@ -1,0 +1,61 @@
+package filters
+
+import (
+	"errors"
+	"strings"
+
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+
+	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+)
+
+type UserID struct {
+}
+
+func (f UserID) Name() string {
+	return "if_is_user_id"
+}
+
+func (f UserID) Args() int {
+	return 1
+}
+
+func (f UserID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
+	if len(args) < 1 {
+		return nil, errors.New("too few arguments")
+	}
+
+	UserIDs := strings.Split(args[0], ",")
+
+	if len(UserIDs) == 0 {
+		return nil, errors.New("no User IDs defined")
+	}
+
+	return &UserIDItem{
+		UserIDs: UserIDs,
+	}, nil
+}
+
+func (f UserID) Description() string {
+	return "automod.filters.if_is_user_id"
+}
+
+type UserIDItem struct {
+	UserIDs []string
+}
+
+func (f *UserIDItem) Match(env *models.Env) bool {
+	if env.Event == nil {
+		return false
+	}
+
+	for _, userID := range env.UserID {
+		if matchChannels(f.UserIDs, userID) {
+			continue
+		}
+
+		return false
+	}
+
+	return true
+}
