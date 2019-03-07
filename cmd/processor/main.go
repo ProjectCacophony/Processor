@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	cacophonyConfig "gitlab.com/Cacophony/Processor/plugins/automod/config"
+	cacophonyConfig "gitlab.com/Cacophony/go-kit/config"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"

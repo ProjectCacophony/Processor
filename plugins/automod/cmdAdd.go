@@ -3,9 +3,9 @@ package automod
 import (
 	"strings"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/config"
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
