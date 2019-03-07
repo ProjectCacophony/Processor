@@ -57,7 +57,7 @@ require (
 	github.com/shurcooL/webdavfs v0.0.0-20181215192745-5988b2d638f6 // indirect
 	github.com/sirupsen/logrus v1.3.0 // indirect
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190307192730-1ebf23a4b704
+	gitlab.com/Cacophony/go-kit v0.0.0-20190307200815-f8c2bee06249
 	go.opencensus.io v0.19.1 // indirect
 	go.uber.org/zap v1.9.1
 	go4.org v0.0.0-20190218023631-ce4c26f7be8e // indirect
@@ -71,7 +71,7 @@ require (
 	golang.org/x/perf v0.0.0-20190306144031-151b6387e3f2 // indirect
 	golang.org/x/sys v0.0.0-20190307162637-572b51eaf722 // indirect
 	golang.org/x/tools v0.0.0-20190307163923-6a08e3108db3 // indirect
-	google.golang.org/genproto v0.0.0-20190307183207-b77a1be2f9c6 // indirect
+	google.golang.org/genproto v0.0.0-20190307195333-5fe7a883aa19 // indirect
 	honnef.co/go/tools v0.0.0-20190215041234-466a0476246c // indirect
 	sourcegraph.com/sqs/pbtypes v1.0.0 // indirect
 )
