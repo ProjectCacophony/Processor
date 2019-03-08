@@ -94,9 +94,11 @@ func (p *Plugin) handleCommand(event *events.Event) {
 		case "enable":
 
 			p.handleEnable(event)
+			return
 		case "disable":
 
 			p.handleDisable(event)
+			return
 		}
 	}
 
