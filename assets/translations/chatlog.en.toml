@@ -1,0 +1,20 @@
+# handleEnable
+"chatlog.enable.already-enabled" = "Looks like the Chatlog is already enabled on this Server."
+"chatlog.enable.success" = "**I enabled the Chatlog on this server!**\n\
+Please be aware that it may take up to one minute until the change is active."
+
+# handleDisable
+"chatlog.disable.already-disabled" = "Looks like the Chatlog is not enabled on this Server."
+"chatlog.disable.success" = "**I disabled the Chatlog on this server!**\n\
+Please be aware that it may take up to one minute until the change is active."
+
+# handleStatus
+"chatlog.status.message" = "\
+{{ if .enabled }}\
+**The Chatlog is currently enabled**\n\
+You can disable it using `{{.prefix}}chatlog disable`\
+{{ else }}\
+**The Chatlog is currently disabled**\n\
+You can enable it using `{{.prefix}}chatlog enable`\
+{{ end }}\
+"
