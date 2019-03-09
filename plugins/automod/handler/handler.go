@@ -19,8 +19,10 @@ type Handler struct {
 	tokens map[string]string
 	state  *state.State
 
-	rules     map[string][]models.Rule
-	rulesLock sync.RWMutex
+	rules           map[string][]models.Rule
+	rulesLock       sync.RWMutex
+	logChannels     map[string]string
+	logChannelsLock sync.RWMutex
 }
 
 func NewHandler(
@@ -39,7 +41,11 @@ func NewHandler(
 	}
 
 	err := handler.startRulesCaching()
+	if err != nil {
+		return nil, err
+	}
 
+	err = handler.startLogChannelsCaching()
 	return handler, err
 }
 
@@ -134,6 +140,11 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 				}
 
 				item.Do(env)
+
+				err = h.postLog(env, rule)
+				if err != nil {
+					event.ExceptSilent(err)
+				}
 			}
 		}
 

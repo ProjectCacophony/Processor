@@ -59,3 +59,39 @@ func (h *Handler) cacheRules() error {
 
 	return nil
 }
+
+func (h *Handler) startLogChannelsCaching() error {
+	err := h.cacheLogChannels()
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		var err error
+		for {
+			time.Sleep(cacheInterval)
+
+			err = h.cacheLogChannels()
+			if err != nil {
+				h.logger.Error("failed to cache log channels", zap.Error(err))
+			}
+
+			h.logger.Debug("cached log channels")
+		}
+	}()
+
+	return nil
+}
+
+func (h *Handler) cacheLogChannels() error {
+	channelsMap, err := h.getLogChannelIDs()
+	if err != nil {
+		return err
+	}
+
+	h.logChannelsLock.Lock()
+	h.logChannels = channelsMap
+	h.logChannelsLock.Unlock()
+
+	return nil
+}

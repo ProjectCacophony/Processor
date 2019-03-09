@@ -42,7 +42,7 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 
 # cmdLog
 "automod.log.response" = "**I will post the Automod Log in <#{{.channel.ID}}>.**\n\
-It may take iup to one minute until the change will be applied."
+It may take up to one minute until the change will be applied."
 
 # Triggers
 "automod.triggers.when_message" = "Triggers when a new Message is sent.\n\
