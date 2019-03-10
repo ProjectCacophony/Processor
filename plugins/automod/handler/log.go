@@ -94,6 +94,9 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 	if rule.Stop {
 		actionsText += "stop, "
 	}
+	if rule.Silent {
+		actionsText += "silent, "
+	}
 	actionsText = strings.TrimRight(actionsText, ", ")
 
 	_, err = discord.SendComplexWithVars(

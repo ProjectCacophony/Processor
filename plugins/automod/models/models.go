@@ -14,6 +14,7 @@ type Rule struct {
 	Filters       []RuleFilter
 	Actions       []RuleAction
 	Stop          bool
+	Silent        bool
 }
 
 func (*Rule) TableName() string {

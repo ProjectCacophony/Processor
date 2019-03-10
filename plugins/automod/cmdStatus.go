@@ -59,6 +59,9 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 		if rule.Stop {
 			ruleTexts[i] += "stop "
 		}
+		if rule.Silent {
+			ruleTexts[i] += "silent "
+		}
 	}
 
 	logChannel, err := config.GuildGetString(p.db, event.GuildID, automodLogKey)

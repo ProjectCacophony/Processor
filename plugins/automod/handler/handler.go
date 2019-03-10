@@ -127,9 +127,11 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			continue
 		}
 
-		err := h.postLog(env, rule)
-		if err != nil {
-			event.ExceptSilent(err)
+		if !rule.Silent {
+			err := h.postLog(env, rule)
+			if err != nil {
+				event.ExceptSilent(err)
+			}
 		}
 
 		for _, action := range list.ActionsList {

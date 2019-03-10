@@ -108,8 +108,11 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 
 	for _, field := range fields {
 
-		if field == "stop" {
+		switch field {
+		case "stop":
 			newRule.Stop = true
+		case "silent":
+			newRule.Silent = true
 		}
 	}
 
