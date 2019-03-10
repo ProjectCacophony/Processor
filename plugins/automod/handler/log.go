@@ -3,6 +3,9 @@ package handler
 import (
 	"fmt"
 	"strings"
+	"time"
+
+	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"github.com/bwmarrin/discordgo"
 
@@ -67,13 +70,69 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 		return err
 	}
 
+	if !permissions.And(
+		permissions.DiscordSendMessages,
+		permissions.DiscordEmbedLinks,
+	).Match(h.state, nil, botID, channelID, false) {
+		return nil
+	}
+
+	usersText := strings.Join(env.UserID, ">, <@")
+	if usersText != "" {
+		usersText = "<@" + usersText + ">"
+	}
+
+	channelsText := strings.Join(env.ChannelID, ">, <#")
+	if channelsText != "" {
+		channelsText = "<#" + channelsText + ">"
+	}
+
+	var actionsText string
+	for _, action := range rule.Actions {
+		actionsText += "`" + action.Name + "`, "
+	}
+	if rule.Stop {
+		actionsText += "stop, "
+	}
+	actionsText = strings.TrimRight(actionsText, ", ")
+
 	_, err = discord.SendComplexWithVars(
 		nil,
 		session,
 		nil,
 		channelID,
 		&discordgo.MessageSend{
-			Content: fmt.Sprintf("Rule `%s` was triggered.", rule.Name),
+			Embed: &discordgo.MessageEmbed{
+				URL:         "",
+				Type:        "",
+				Title:       "Automod: Rule Triggered",
+				Description: fmt.Sprintf("Name: `%s`", rule.Name),
+				Timestamp:   time.Now().Format(time.RFC3339),
+				Color:       0,
+				Footer:      nil,
+				Image:       nil,
+				Thumbnail:   nil,
+				Video:       nil,
+				Provider:    nil,
+				Author:      nil,
+				Fields: []*discordgo.MessageEmbedField{
+					{
+						Name:   "User(s)",
+						Value:  usersText,
+						Inline: true,
+					},
+					{
+						Name:   "Channel(s)",
+						Value:  channelsText,
+						Inline: true,
+					},
+					{
+						Name:   "Action(s)",
+						Value:  actionsText,
+						Inline: false,
+					},
+				},
+			},
 		},
 		false,
 	)
