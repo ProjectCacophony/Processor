@@ -3,9 +3,11 @@ module gitlab.com/Cacophony/Processor
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362
+	github.com/Seklfreak/ginsta v0.0.0-20190320192113-5c50879c8581
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/Unleash/unleash-client-go v0.0.0-20190225211619-9febc6ff26f4 // indirect
 	github.com/bwmarrin/discordgo v0.19.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-chi/chi v4.0.2+incompatible // indirect
 	github.com/go-redis/redis v6.15.2+incompatible

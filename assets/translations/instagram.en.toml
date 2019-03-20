@@ -1,0 +1,33 @@
+"instagram.add.success" = "\
+{{- if not .dm }}\
+**I added the Instagram Feed for <https://instagram.com/{{.instagramUser.Username}}> to {{.channel.Mention}}.**\n\
+{{ else }}\
+**I will DM you the Instagram feed for <https://instagram.com/{{.instagramUser.Username}}>!**\n\
+{{ end }}\
+"
+"instagram.add.too-few" = "Please tell me the Username of the Instagram Account to add."
+"instagram.add.duplicate" = "Looks like this Instagram Feed is already set up in this channel."
+"instagram.add.not-found" = "Please make sure the Instagram Username you are telling me is correct."
+"instagram.add.too-many" = "Looks like you have reached the limit of how many Instagram Feeds you can add."
+
+"instagram.status.message" = "\
+{{if gt (len .entries) 0}}\
+**Instagram Feeds set up**\n\
+{{range $entry := .entries}}\
+**<https://instagram.com/{{$entry.InstagramUsername}}>**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} `{{HumanizeTime $entry.CreatedAt}}`, \
+`{{HumanizeNumber $entry.Posts}}` posts so far, \
+last check `{{HumanizeTime $entry.LastCheck}}` \
+{{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}}\n\
+{{end}}\
+So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Instagram Feeds set up.\n\
+{{else}}\
+**Looks like there are no Instagram Feeds set up on here yet.**\n\
+You can add one: `{{.prefix}}instagram add <Instagram Username>`\
+{{end}}\
+\
+"
+
+"instagram.remove.message" = "I removed the Instagram Feed **<https://instagram.com/{{.entry.InstagramUsername}}>**{{ if not .entry.DM }} from <#{{.entry.ChannelOrUserID}}>{{ end }}."
+"instagram.remove.not-found" = "I was not able to find this Instagram Feed."
