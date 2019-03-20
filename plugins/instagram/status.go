@@ -35,7 +35,7 @@ func (p *Plugin) status(event *events.Event) {
 		}
 		enhancedEntries[i].By = user
 
-		// enhancedEntries[i].Posts, _ = countPosts(p.db, entry.ID)
+		enhancedEntries[i].Posts, _ = countPosts(p.db, entry.ID)
 	}
 
 	_, err = event.Respond("instagram.status.message",

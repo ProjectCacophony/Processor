@@ -13,8 +13,8 @@ github.com/PuerkitoBio/goquery v1.5.0 h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP
 github.com/PuerkitoBio/goquery v1.5.0/go.mod h1:qD2PgZ9lccMbQlc7eEOjaeRlFQON7xY8kdmcsrnKqMg=
 github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362 h1:A2TEqC+nzRjaW0IMMkXUSnQf3mfraFg8tCPUUsN3QAY=
 github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
-github.com/Seklfreak/ginsta v0.0.0-20190320192113-5c50879c8581 h1:klsqR3q3PE9NWx/3TPV7AcZSgPfAJIOztQBTcggZxXU=
-github.com/Seklfreak/ginsta v0.0.0-20190320192113-5c50879c8581/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
+github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58 h1:ZIreR6BBtrFXawhzs/1nYCXVVSyKWQziNMT+0rnmmbY=
+github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942/go.mod h1:XdwC3B7PxCkYCXs4AzYEtvQxjsi93vc/kSV09u+AFWw=
 github.com/Unleash/unleash-client-go v0.0.0-20181121205122-ae068e0ad68c h1:Q9cN+KwXklNWBgrFLNcWDelKb3b/VKXFXlREmTr8ovg=

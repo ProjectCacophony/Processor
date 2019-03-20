@@ -33,8 +33,7 @@ type Post struct {
 	gorm.Model
 	EntryID uint
 
-	PostGUID   string
-	PostLink   string
+	PostID     string
 	MessageIDs pq.StringArray `gorm:"type:varchar[]"`
 }
 
