@@ -19,7 +19,10 @@ added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} `{{Humaniz
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
 last check `{{HumanizeTime $entry.LastCheck}}` \
 {{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
-{{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}}\n\
+{{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
+story `{{HumanizeTime $entry.StoriesLastCheck}}` \
+{{if eq $entry.StoriesCheck.CheckStatus \"success\"}}✅{{else if eq $entry.StoriesCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.StoriesCheck.CheckMessage}}: `{{$entry.StoriesCheck.CheckMessage}}`{{end}}\n\
 {{end}}\
 So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Instagram Feeds set up.\n\
 {{else}}\
