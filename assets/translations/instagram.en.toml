@@ -22,7 +22,11 @@ last check `{{HumanizeTime $entry.LastCheck}}` \
 {{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
 story `{{HumanizeTime $entry.StoriesLastCheck}}` \
 {{if eq $entry.StoriesCheck.CheckStatus \"success\"}}✅{{else if eq $entry.StoriesCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
-{{if $entry.StoriesCheck.CheckMessage}}: `{{$entry.StoriesCheck.CheckMessage}}`{{end}}\n\
+{{if $entry.StoriesCheck.CheckMessage}}: `{{$entry.StoriesCheck.CheckMessage}}`{{end}} \
+IGTV `{{HumanizeTime $entry.IGTVLastCheck}}` \
+{{if eq $entry.IGTVCheck.CheckStatus \"success\"}}✅{{else if eq $entry.IGTVCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.IGTVCheck.CheckMessage}}: `{{$entry.IGTVCheck.CheckMessage}}`{{end}}\
+\n\
 {{end}}\
 So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Instagram Feeds set up.\n\
 {{else}}\

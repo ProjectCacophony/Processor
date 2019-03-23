@@ -25,6 +25,9 @@ type Entry struct {
 
 	StoriesLastCheck time.Time
 	StoriesCheck     feed.Check `gorm:"embedded;embedded_prefix:stories_"`
+
+	IGTVLastCheck time.Time
+	IGTVCheck     feed.Check `gorm:"embedded;embedded_prefix:igtv_"`
 }
 
 func (*Entry) TableName() string {
