@@ -10,3 +10,6 @@
 
 # handleDevTranslate
 "dev.translate.embed.description" = "```"
+
+# handleDevPermission
+"dev.permission" = "<@{{.userID}}> does{{if not .has}} **not**{{end}} have permission {{.permissionID}}."

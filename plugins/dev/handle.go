@@ -94,6 +94,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 
 		p.handleBotOwners(event)
 		return
+	case "permission":
+
+		p.handleDevPermission(event)
+		return
 	}
 
 	event.Respond("dev.no-subcommand") // nolint: errcheck
