@@ -65,6 +65,12 @@ func (p *Plugin) handleDevState(event *events.Event) {
 		return
 	}
 
+	botID, err := event.State().BotForGuild(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: "State :spy:",
@@ -102,7 +108,7 @@ func (p *Plugin) handleDevState(event *events.Event) {
 				},
 				{
 					Name:   "Bot",
-					Value:  fmt.Sprintf("<@%s>", event.BotUserID),
+					Value:  fmt.Sprintf("<@%s>", botID),
 					Inline: true,
 				},
 			},
