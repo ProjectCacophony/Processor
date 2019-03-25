@@ -3,6 +3,8 @@ package plugins
 import (
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/serverlist"
+
 	"gitlab.com/Cacophony/Processor/plugins/instagram"
 
 	"gitlab.com/Cacophony/Processor/plugins/chatlog"
@@ -59,6 +61,7 @@ var (
 		&rss.Plugin{},
 		&chatlog.Plugin{},
 		&instagram.Plugin{},
+		&serverlist.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

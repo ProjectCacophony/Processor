@@ -1,0 +1,22 @@
+"serverlist.too-few" = "Too few arguments"
+
+# handleCategoryCreate
+"serverlist.category-create.no-keywords" = "Please specify at least one Keyword"
+"serverlist.category-create.invalid-sortby" = "Please specify at least one valid Sort By type"
+"serverlist.category-create.invalid-groupby" = "Please specify a valid Group By type"
+"serverlist.category-create.category-created" = "I created the category!"
+
+# handleCategoryStatus
+"serverlist.category-status.content" = "\
+{{if gt (len .categories) 0}}\
+{{range $category := .categories}}\
+`{{Join $category.Keywords \"; \"}}` in <#{{$category.ChannelID}}>\n\
+sort by `{{Join $category.SortBy \"; \"}}`{{if $category.GroupBy}}, group by `{{$category.GroupBy}}`{{end}}\n\
+added by `{{Escape $category.By.String}}` `{{HumanizeTime $category.CreatedAt}}`\n\
+\n\
+{{end}}\
+So far **{{len .categories}}** Categorie(s) set up.\n\
+{{else}}\
+**No Categories added so far!**\
+{{end}}\
+"

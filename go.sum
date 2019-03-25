@@ -184,10 +184,8 @@ github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
-gitlab.com/Cacophony/go-kit v0.0.0-20190308171148-295c144dfb52 h1:gvB1SU4JQn+CnC9uKOvm+atUL/x2ZaFA8rWlINtYYMQ=
-gitlab.com/Cacophony/go-kit v0.0.0-20190308171148-295c144dfb52/go.mod h1:FayOlQIX9nGAhs6JQyUhd+NjLYOOIeYklS9PRuZQUug=
-gitlab.com/Cacophony/go-kit v0.0.0-20190324163206-b31b47e1b0ff h1:q7DPGJ8dkdTANlpmGOlPvn4mUgMdROnK+PvC+HaOH+o=
-gitlab.com/Cacophony/go-kit v0.0.0-20190324163206-b31b47e1b0ff/go.mod h1:t0gChpzOZXcswZxcy1mwA4degRFmu268FBOYSaxZfzY=
+gitlab.com/Cacophony/go-kit v0.0.0-20190325151005-8d4da3fc3bc3 h1:uDftSfarDuQEAXi3vmpmG/DvdwQ/kU5d+F9ym+ouFpg=
+gitlab.com/Cacophony/go-kit v0.0.0-20190325151005-8d4da3fc3bc3/go.mod h1:t0gChpzOZXcswZxcy1mwA4degRFmu268FBOYSaxZfzY=
 go.opencensus.io v0.18.0 h1:Mk5rgZcggtbvtAun5aJzAtjKKN/t0R3jJPlWILlv938=
 go.opencensus.io v0.18.0/go.mod h1:vKdFvxhtzZ9onBp9VKHK8z/sRpBMnKAsufL7wlDrCOA=
 go.uber.org/atomic v1.3.2 h1:2Oa65PReHzfn29GpvgsYwloV9AVFHPDk8tYxt2c2tr4=
