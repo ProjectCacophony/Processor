@@ -11,6 +11,8 @@ import (
 // TODO: match category by direct linking the channel,
 //       also allow sub linking the channel if category
 
+// TODO: check if server is already added!
+
 // serverlist add discord.gg/? "Join my awesome server!" "girl group; boy group"
 func (p *Plugin) handleAdd(event *events.Event) {
 	if len(event.Fields()) < 5 {
@@ -51,6 +53,7 @@ func (p *Plugin) handleAdd(event *events.Event) {
 	}
 
 	var categoryIDs []uint
+	var categoryGuildIDs []string
 	for _, categoryName := range strings.Split(fields[2], ";") {
 		categoryName = strings.ToLower(strings.TrimSpace(categoryName))
 
@@ -65,8 +68,19 @@ func (p *Plugin) handleAdd(event *events.Event) {
 				}
 
 				categoryIDs = append(categoryIDs, allCategory.ID)
+
+				if stringSliceContains(allCategory.GuildID, categoryGuildIDs) {
+					continue
+				}
+
+				categoryGuildIDs = append(categoryGuildIDs, allCategory.GuildID)
 			}
 		}
+	}
+
+	if len(categoryIDs) == 0 {
+		event.Respond("serverlist.add.no-categories") // nolint: errcheck
+		return
 	}
 
 	err = serverAdd(
@@ -89,11 +103,25 @@ func (p *Plugin) handleAdd(event *events.Event) {
 		"name", invite.Guild.Name,
 	)
 	event.Except(err)
+
+	p.refreshQueue(categoryGuildIDs...)
 }
 
 func uintSliceContains(n uint, list []uint) bool {
 	for _, i := range list {
 		if n != i {
+			continue
+		}
+
+		return true
+	}
+
+	return false
+}
+
+func stringSliceContains(key string, list []string) bool {
+	for _, i := range list {
+		if key != i {
 			continue
 		}
 

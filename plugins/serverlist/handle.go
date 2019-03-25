@@ -1,6 +1,7 @@
 package serverlist
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -15,6 +16,8 @@ type Plugin struct {
 	logger *zap.Logger
 	db     *gorm.DB
 	state  *state.State
+	redis  *redis.Client
+	tokens map[string]string
 }
 
 func (p *Plugin) Name() string {
@@ -27,6 +30,8 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
 	p.state = params.State
+	p.redis = params.Redis
+	p.tokens = params.Tokens
 
 	err = p.db.AutoMigrate(
 		Category{},
@@ -78,6 +83,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 						p.handleCategoryCreate(event)
 					},
+						permissions.Not(permissions.DiscordChannelDM),
 						permissions.BotOwner,
 					)
 					return true
@@ -94,6 +100,31 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleAdd(event)
 			},
 				permissions.DiscordChannelDM,
+			)
+			return true
+
+		case "queue":
+
+			if len(event.Fields()) >= 3 {
+				if event.Fields()[2] == "refresh" {
+
+					event.Require(func() {
+
+						p.handleQueueRefresh(event)
+					},
+						permissions.Not(permissions.DiscordChannelDM),
+						permissions.BotOwner,
+					)
+					return true
+				}
+			}
+
+			event.Require(func() {
+
+				p.handleQueue(event)
+			},
+				permissions.Not(permissions.DiscordChannelDM),
+				permissions.BotOwner,
 			)
 			return true
 		}

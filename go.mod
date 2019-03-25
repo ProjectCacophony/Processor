@@ -6,6 +6,7 @@ require (
 	github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/Unleash/unleash-client-go v0.0.0-20190225211619-9febc6ff26f4 // indirect
+	github.com/bsm/redis-lock v8.0.0+incompatible
 	github.com/bwmarrin/discordgo v0.19.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-chi/chi v4.0.2+incompatible // indirect
@@ -20,7 +21,7 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190325153806-bfdf9fc1dfa8
+	gitlab.com/Cacophony/go-kit v0.0.0-20190325191803-a3c842596be6
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9

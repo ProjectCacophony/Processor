@@ -82,3 +82,17 @@ func serverAdd(
 
 	return nil
 }
+
+func serversFindMany(db *gorm.DB, where ...interface{}) ([]*Server, error) {
+	var entries []*Server
+
+	err := db.
+		Preload("Categories.Category").
+		Find(&entries, where...).
+		Order("created_at DESC").
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return entries, err
+}

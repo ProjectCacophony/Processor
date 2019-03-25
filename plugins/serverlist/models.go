@@ -3,6 +3,8 @@ package serverlist
 import (
 	"time"
 
+	"github.com/bwmarrin/discordgo"
+
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 )
@@ -84,4 +86,10 @@ type ServerCategory struct {
 
 func (*ServerCategory) TableName() string {
 	return "serverlist_server_categories"
+}
+
+type QueueMessage struct {
+	CurrentServerID uint
+	MessageID       string
+	Embed           *discordgo.MessageEmbed
 }
