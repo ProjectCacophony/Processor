@@ -11,8 +11,6 @@ import (
 // TODO: match category by direct linking the channel,
 //       also allow sub linking the channel if category
 
-// TODO: check if server is already added!
-
 // serverlist add discord.gg/? "Join my awesome server!" "girl group; boy group"
 func (p *Plugin) handleAdd(event *events.Event) {
 	if len(event.Fields()) < 5 {
@@ -83,6 +81,17 @@ func (p *Plugin) handleAdd(event *events.Event) {
 		return
 	}
 
+	allServers, err := serversFindMany(p.db, "bot_id = ?", event.BotUserID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	if serversContain(invite.Guild.ID, allServers) {
+		event.Respond("serverlist.add.already-exists") // nolint: errcheck
+		return
+	}
+
 	err = serverAdd(
 		p.db,
 		[]string{invite.Guild.Name},
@@ -122,6 +131,18 @@ func uintSliceContains(n uint, list []uint) bool {
 func stringSliceContains(key string, list []string) bool {
 	for _, i := range list {
 		if key != i {
+			continue
+		}
+
+		return true
+	}
+
+	return false
+}
+
+func serversContain(guildID string, list []*Server) bool {
+	for _, item := range list {
+		if item.GuildID != guildID {
 			continue
 		}
 

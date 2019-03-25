@@ -41,6 +41,7 @@ const (
 	StateQueued  State = "queued"
 	StatePublic  State = "public"
 	StateExpired State = "expired"
+	StateRemoved State = "removed"
 )
 
 type Category struct {

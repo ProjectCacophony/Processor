@@ -30,10 +30,13 @@ For Example: `{{.prefix}}serverlist add discord.gg​/Example \"The Discord Serv
 Please make sure you send me a valid permanent Discord Invite Link."
 "serverlist.add.description-too-long" = "**Your Server Description is too long**\n\
 Please make sure the description does not exceed **{{.limit}}** characters."
-"serverlist.add.no-categories" = "Invalid category" # TODO: improve message
+"serverlist.add.no-categories" = "**No valid Categories**\n\
+Please make sure you specify at least one valid Category."
 "serverlist.add.content" = "**Thank you very much! I added the Server {{.name}} to the queue** :snuggle:\n\
 The Server will be reviewed by a Moderator as soon as possible.\n\
 You will receive a DM when there has been an update."
+"serverlist.add.already-exists" = "**Looks like the Server has already been added!**\n\
+If it's waiting for approval please have patience until we have reviewed it."
 
 # handleQueue
 "serverlist.queue.content" = "From now on I will post the Queue in <#{{.channelID}}>"
