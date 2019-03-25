@@ -35,7 +35,7 @@ Deploy Staging:
   stage: staging
   extends: .Go Service - Deploy Staging
 
-Sentry Deploy Staging:
+Sentry Staging:
   stage: staging
   variables:
     SENTRY_ENV: "staging"
