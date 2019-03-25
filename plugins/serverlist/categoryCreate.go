@@ -26,7 +26,7 @@ func (p *Plugin) handleCategoryCreate(event *events.Event) {
 
 	var keywords []string // nolint: prealloc
 	for _, keyword := range strings.Split(fields[0], ";") {
-		keyword = strings.TrimSpace(keyword)
+		keyword = strings.ToLower(strings.TrimSpace(keyword))
 		if keyword == "" {
 			continue
 		}

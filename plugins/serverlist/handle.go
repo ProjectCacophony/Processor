@@ -28,7 +28,11 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.db = params.DB
 	p.state = params.State
 
-	err = p.db.AutoMigrate(Category{}).Error
+	err = p.db.AutoMigrate(
+		Category{},
+		Server{},
+		ServerCategory{},
+	).Error
 	return err
 }
 
@@ -81,6 +85,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}
 
 			p.handleCategoryStatus(event)
+			return true
+
+		case "add":
+
+			event.Require(func() {
+
+				p.handleAdd(event)
+			},
+				permissions.DiscordChannelDM,
+			)
 			return true
 		}
 	}

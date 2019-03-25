@@ -1,6 +1,8 @@
 package serverlist
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 )
@@ -31,6 +33,14 @@ var allGroupBys = []GroupBy{
 	GroupByAlphabet,
 }
 
+type State string
+
+const (
+	StateQueued  State = "queued"
+	StatePublic  State = "public"
+	StateExpired State = "expired"
+)
+
 type Category struct {
 	gorm.Model
 	Keywords  pq.StringArray `gorm:"type:varchar[]"`
@@ -44,4 +54,34 @@ type Category struct {
 
 func (*Category) TableName() string {
 	return "serverlist_categories"
+}
+
+type Server struct {
+	gorm.Model
+	Names         pq.StringArray `gorm:"type:varchar[]"`
+	Description   string
+	InviteCode    string
+	GuildID       string
+	EditorUserIDs pq.StringArray `gorm:"type:varchar[]"`
+	Categories    []ServerCategory
+	TotalMembers  int
+	State         State
+	LastChecked   time.Time
+	BotID         string
+	// Messages      []Message
+}
+
+func (*Server) TableName() string {
+	return "serverlist_servers"
+}
+
+type ServerCategory struct {
+	gorm.Model
+	ServerID   uint
+	CategoryID uint
+	Category   Category
+}
+
+func (*ServerCategory) TableName() string {
+	return "serverlist_server_categories"
 }

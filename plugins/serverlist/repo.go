@@ -1,6 +1,8 @@
 package serverlist
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -38,4 +40,45 @@ func categoriesFindMany(db *gorm.DB, where ...interface{}) ([]Category, error) {
 		return nil, err
 	}
 	return entries, err
+}
+
+func serverAdd(
+	db *gorm.DB,
+	names []string,
+	description string,
+	inviteCode string,
+	guildID string,
+	editorUserIDs []string,
+	categoryIDs []uint,
+	totalMembers int,
+	botID string,
+) error {
+	server := &Server{
+		Names:         names,
+		Description:   description,
+		InviteCode:    inviteCode,
+		GuildID:       guildID,
+		EditorUserIDs: editorUserIDs,
+		TotalMembers:  totalMembers,
+		State:         StateQueued,
+		LastChecked:   time.Now(),
+		BotID:         botID,
+	}
+
+	err := db.Create(server).Error
+	if err != nil {
+		return err
+	}
+
+	for _, categoryID := range categoryIDs {
+		err := db.Create(&ServerCategory{
+			ServerID:   server.ID,
+			CategoryID: categoryID,
+		}).Error
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

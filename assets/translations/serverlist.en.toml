@@ -20,3 +20,16 @@ So far **{{len .categories}}** Categorie(s) set up.\n\
 **No Categories added so far!**\
 {{end}}\
 "
+
+# handleAdd
+"serverlist.add.too-few" = "**You did not tell me enough about your server!** :shocked:\n\
+Usage: `{{.prefix}}serverlist add <Invite Link> <Description> <Categories, split by ;>\n\
+For Example: `{{.prefix}}serverlist add discord.gg​/Example \"The Discord Server for the new Girl Group Example!\" \"girl group\"`\
+"
+"serverlist.add.invalid-invite" = "**Looks like the Invite Link is invalid**\
+Please make sure you send me a valid permanent Discord Invite Link."
+"serverlist.add.description-too-long" = "**Your Server Description is too long**\n\
+Please make sure the description does not exceed **{{.limit}}** characters."
+"serverlist.add.content" = "**Thank you very much! I added the Server {{.name}} to the queue** :snuggle:\n\
+The Server will be reviewed by a Moderator as soon as possible.\n\
+You will receive a DM when there has been an update."
