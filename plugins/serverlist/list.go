@@ -103,14 +103,14 @@ type ServerToPost struct {
 }
 
 func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelServersToPost) error {
-	sort.Sort(SortServers{
+	sort.Sort(ServersSorter{
 		SortBy:  channelToPost.SortBy,
 		Servers: channelToPost.Servers,
 	})
 
 	var err error
 	messages, err := session.Client.ChannelMessages( // TODO: query more messages, if required
-		channelToPost.ChannelID,
+		channelToPost.ChannelID, // TODO: cache in redis, 1 day expiration, update if we modify,add,remove messages
 		100,
 		"",
 		"",
