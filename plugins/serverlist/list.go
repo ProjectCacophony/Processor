@@ -202,10 +202,12 @@ func (p *Plugin) addToServersToPost(
 			continue
 		}
 
-		for _, channelServersToPostServer := range serversToPost[i].Servers {
-			if channelServersToPostServer.Server.ID != server.ID {
+		for j := range serversToPost[i].Servers {
+			if serversToPost[i].Servers[j].Server.ID != server.ID {
 				continue
 			}
+
+			serversToPost[i].Servers[j].Name += "/" + name
 
 			return serversToPost
 		}
