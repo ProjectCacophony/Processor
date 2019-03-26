@@ -46,7 +46,9 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 		p.db, event.GuildID, queueChannelIDKey,
 	)
 	if err != nil {
-		event.ExceptSilent(err)
+		if !strings.Contains(err.Error(), "record not found") {
+			event.ExceptSilent(err)
+		}
 		return false
 	}
 
