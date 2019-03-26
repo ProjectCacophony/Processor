@@ -52,10 +52,12 @@ var allGroupBys = []GroupBy{
 type State string
 
 const (
-	StateQueued  State = "queued"
-	StatePublic  State = "public"
-	StateExpired State = "expired"
-	StateRemoved State = "removed"
+	StateQueued   State = "queued"
+	StatePublic   State = "public"
+	StateExpired  State = "expired" // TODO
+	StateRemoved  State = "removed" // TODO
+	StateRejected State = "rejected"
+	StateHidden   State = "hidden" // TODO
 )
 
 type Category struct {
@@ -110,7 +112,7 @@ func (s *Server) QueueReject(p *Plugin, guildID string) error {
 		return errors.New("server is nil")
 	}
 
-	err := serverSetState(p.db, s.ID, StateRemoved)
+	err := serverSetState(p.db, s.ID, StateRejected)
 	if err != nil {
 		return err
 	}
