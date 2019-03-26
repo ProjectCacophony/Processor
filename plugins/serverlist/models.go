@@ -1,6 +1,7 @@
 package serverlist
 
 import (
+	"errors"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -76,6 +77,34 @@ type Server struct {
 
 func (*Server) TableName() string {
 	return "serverlist_servers"
+}
+
+func (s *Server) QueueApprove(p *Plugin, guildID string) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	err := serverSetState(p.db, s.ID, StatePublic)
+	if err != nil {
+		return err
+	}
+
+	p.refreshQueue(guildID)
+	return nil
+}
+
+func (s *Server) QueueReject(p *Plugin, guildID string) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	err := serverSetState(p.db, s.ID, StateRemoved)
+	if err != nil {
+		return err
+	}
+
+	p.refreshQueue(guildID)
+	return nil
 }
 
 type ServerCategory struct {

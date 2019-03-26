@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"gitlab.com/Cacophony/go-kit/permissions"
+
 	humanize "github.com/dustin/go-humanize"
 
 	lock "github.com/bsm/redis-lock"
@@ -34,6 +36,56 @@ func (p *Plugin) handleQueue(event *events.Event) {
 	p.refreshQueue(event.GuildID)
 }
 
+func (p *Plugin) handleQueueReaction(event *events.Event) bool {
+	if event.MessageReactionAdd.Emoji.Name != emojiApprove &&
+		event.MessageReactionAdd.Emoji.Name != emojiReject {
+		return false
+	}
+
+	channelID, err := config.GuildGetString(
+		p.db, event.GuildID, queueChannelIDKey,
+	)
+	if err != nil {
+		event.ExceptSilent(err)
+		return false
+	}
+
+	if event.ChannelID != channelID {
+		return false
+	}
+
+	if !event.Has(permissions.BotOwner) {
+		return false
+	}
+
+	switch event.MessageReactionAdd.Emoji.Name {
+	case emojiApprove:
+		err = p.approveCurrentServer(event.BotUserID, event.GuildID)
+	case emojiReject:
+		err = p.rejectCurrentServer(event.BotUserID, event.GuildID)
+	}
+	if err != nil &&
+		!strings.Contains(err.Error(), "nothing to approve") &&
+		!strings.Contains(err.Error(), "nothing to reject") {
+		event.ExceptSilent(err)
+		return true
+	}
+
+	p.refreshQueue(event.GuildID)
+
+	discord.RemoveReact( // nolint: errcheck
+		p.redis,
+		event.Discord(),
+		event.ChannelID,
+		event.MessageReactionAdd.MessageID,
+		event.UserID,
+		false,
+		event.MessageReactionAdd.Emoji.Name,
+	)
+
+	return true
+}
+
 func (p *Plugin) handleQueueRefresh(event *events.Event) {
 	err := p.refreshQueueForGuild(event.GuildID)
 	if err != nil {
@@ -59,18 +111,48 @@ func (p *Plugin) refreshQueue(guildIDs ...string) {
 	}
 }
 
+func (p *Plugin) approveCurrentServer(botID, guildID string) error {
+	queueMessage, err := p.getCurrentQueueMessage(guildID)
+	if err != nil {
+		return errors.Wrap(err, "error getting QueueMessage from config")
+	}
+
+	queue, err := p.getQueue(botID)
+	if err != nil {
+		return errors.Wrap(err, "unable to query for queued entries")
+	}
+
+	server := queueFind(queueMessage.CurrentServerID, queue)
+	if server == nil {
+		return errors.New("found nothing to approve")
+	}
+
+	return server.QueueApprove(p, guildID)
+}
+
+func (p *Plugin) rejectCurrentServer(botID, guildID string) error {
+	queueMessage, err := p.getCurrentQueueMessage(guildID)
+	if err != nil {
+		return errors.Wrap(err, "error getting QueueMessage from config")
+	}
+
+	queue, err := p.getQueue(botID)
+	if err != nil {
+		return errors.Wrap(err, "unable to query for queued entries")
+	}
+
+	server := queueFind(queueMessage.CurrentServerID, queue)
+	if server == nil {
+		return errors.New("found nothing to reject")
+	}
+
+	return server.QueueReject(p, guildID)
+}
+
 // TODO: refactor!
 // nolint: gocyclo
 func (p *Plugin) refreshQueueForGuild(guildID string) error {
-	guildLock := lock.New(
-		p.redis,
-		refreshQueueLock(guildID),
-		&lock.Options{
-			LockTimeout: 5 * time.Minute,
-			RetryCount:  9, // try for 1 1/2 minutes
-			RetryDelay:  10 * time.Second,
-		},
-	)
+	guildLock := p.getGuildLock(guildID)
 
 	locked, err := guildLock.Lock()
 	if err != nil {
@@ -92,17 +174,14 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return errors.New("no queue channel ID set for guild")
 	}
 
-	queue, err := serversFindMany(
-		p.db,
-		"state = ?", StateQueued,
-	)
-	if err != nil {
-		return errors.Wrap(err, "unable to query for queued entries")
-	}
-
 	botID, err := p.state.BotForGuild(guildID)
 	if err != nil {
 		return errors.Wrap(err, "failure getting Bot ID for Guild")
+	}
+
+	queue, err := p.getQueue(botID)
+	if err != nil {
+		return errors.Wrap(err, "unable to query for queued entries")
 	}
 
 	session, err := discord.NewSession(p.tokens, botID)
@@ -110,9 +189,8 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return errors.Wrap(err, "failure creating Discord Session for Bot")
 	}
 
-	var queueMessage *QueueMessage
-	err = config.GuildGetInterface(p.db, guildID, queueMessageKey, &queueMessage)
-	if err != nil && !strings.Contains(err.Error(), "record not found") {
+	queueMessage, err := p.getCurrentQueueMessage(guildID)
+	if err != nil {
 		return errors.Wrap(err, "error getting QueueMessage from config")
 	}
 
@@ -153,7 +231,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			channelID,
 			messages[0].ID,
 			false,
-			"✅",
+			emojiApprove,
 		)
 		discord.React( // nolint: errcheck
 			p.redis,
@@ -161,7 +239,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			channelID,
 			messages[0].ID,
 			false,
-			"❌",
+			emojiReject,
 		)
 	} else {
 		item := queueFind(queueMessage.CurrentServerID, queue)
@@ -331,4 +409,33 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 			},
 		},
 	}
+}
+
+func (p *Plugin) getGuildLock(guildID string) *lock.Locker {
+	return lock.New(
+		p.redis,
+		refreshQueueLock(guildID),
+		&lock.Options{
+			LockTimeout: 5 * time.Minute,
+			RetryCount:  9, // try for 1 1/2 minutes
+			RetryDelay:  10 * time.Second,
+		},
+	)
+}
+
+func (p *Plugin) getCurrentQueueMessage(guildID string) (*QueueMessage, error) {
+	var queueMessage *QueueMessage
+	err := config.GuildGetInterface(p.db, guildID, queueMessageKey, &queueMessage)
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		return nil, err
+	}
+
+	return queueMessage, nil
+}
+
+func (p *Plugin) getQueue(botID string) ([]*Server, error) {
+	return serversFindMany(
+		p.db,
+		"state = ? AND bot_id = ?", StateQueued, botID,
+	)
 }

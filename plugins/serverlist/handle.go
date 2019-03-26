@@ -63,6 +63,10 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.MessageReactionAddType {
+		return p.handleQueueReaction(event)
+	}
+
 	if !event.Command() {
 		return false
 	}

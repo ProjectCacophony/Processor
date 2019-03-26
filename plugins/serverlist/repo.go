@@ -96,3 +96,7 @@ func serversFindMany(db *gorm.DB, where ...interface{}) ([]*Server, error) {
 	}
 	return entries, err
 }
+
+func serverSetState(db *gorm.DB, id uint, state State) error {
+	return db.Model(Server{}).Where("id = ?", id).Update("state", state).Error
+}
