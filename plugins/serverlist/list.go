@@ -2,6 +2,7 @@ package serverlist
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
@@ -102,9 +103,13 @@ type ServerToPost struct {
 }
 
 func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelServersToPost) error {
-	// TODO: sort by!
+	sort.Sort(SortServers{
+		SortBy:  channelToPost.SortBy,
+		Servers: channelToPost.Servers,
+	})
+
 	var err error
-	messages, err := session.Client.ChannelMessages(
+	messages, err := session.Client.ChannelMessages( // TODO: query more messages, if required
 		channelToPost.ChannelID,
 		100,
 		"",
