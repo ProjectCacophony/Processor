@@ -184,9 +184,10 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 
 func (p *Plugin) getMessageContentForServer(server *Server, name string) string {
 	return fmt.Sprintf(
-		"%s — https://discord.gg/%s",
+		"**%s** — https://discord.gg/%s\n%s",
 		name,
 		server.InviteCode,
+		server.Description,
 	)
 }
 

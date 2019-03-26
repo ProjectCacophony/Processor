@@ -85,7 +85,6 @@ type Server struct {
 	State         State
 	LastChecked   time.Time
 	BotID         string
-	// Messages      []Message
 }
 
 func (*Server) TableName() string {
