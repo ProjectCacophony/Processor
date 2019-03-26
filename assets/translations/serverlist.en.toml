@@ -43,3 +43,6 @@ If it's waiting for approval please have patience until we have reviewed it."
 
 # handleQueueRefresh
 "serverlist.queue-refresh.content" = "I refreshed the queue for this server."
+
+# handleListRefresh
+"serverlist.list-refresh.content" = "I refreshed the list for this server."

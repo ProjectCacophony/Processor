@@ -131,6 +131,23 @@ func (p *Plugin) Action(event *events.Event) bool {
 				permissions.BotOwner,
 			)
 			return true
+
+		case "list":
+
+			if len(event.Fields()) >= 3 {
+				if event.Fields()[2] == "refresh" {
+
+					event.Require(func() {
+
+						p.handleListRefresh(event)
+					},
+						permissions.Not(permissions.DiscordChannelDM),
+						permissions.BotOwner,
+					)
+					return true
+				}
+			}
+
 		}
 	}
 

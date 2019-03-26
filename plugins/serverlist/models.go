@@ -2,6 +2,7 @@ package serverlist
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -30,6 +31,18 @@ type GroupBy string
 const (
 	GroupByAlphabet GroupBy = "alphabetical"
 )
+
+func (g *GroupBy) ChannelName(serverName string) string {
+	if *g == GroupByAlphabet {
+		serverName = strings.ToLower(serverName)
+
+		if len(serverName) > 0 && serverNameInitialRegexp.MatchString(string(serverName[0])) {
+			return string(serverName[0]) + "—"
+		}
+	}
+
+	return "etc"
+}
 
 // nolint: gochecknoglobals
 var allGroupBys = []GroupBy{

@@ -1,5 +1,9 @@
 package serverlist
 
+import (
+	"regexp"
+)
+
 const (
 	descriptionCharacterLimit = 100
 
@@ -15,4 +19,6 @@ var (
 	refreshQueueLock = func(guildID string) string {
 		return "cacophony:processor:serverlist:queue-lock:guildid-" + guildID
 	}
+
+	serverNameInitialRegexp = regexp.MustCompile(`^[a-z]$`)
 )
