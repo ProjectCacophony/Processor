@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"github.com/bwmarrin/discordgo"
 
 	"github.com/jinzhu/gorm"
@@ -104,6 +106,27 @@ func (s *Server) QueueApprove(p *Plugin, guildID string) error {
 	}
 
 	p.refreshQueue(guildID)
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		discord.SendComplexWithVars( // nolint: errcheck
+			p.redis,
+			session,
+			p.Localisations(),
+			editorUserID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-approved",
+			},
+			true,
+			"server",
+			s,
+		)
+	}
+
 	return nil
 }
 
@@ -118,6 +141,27 @@ func (s *Server) QueueReject(p *Plugin, guildID string) error {
 	}
 
 	p.refreshQueue(guildID)
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		discord.SendComplexWithVars( // nolint: errcheck
+			p.redis,
+			session,
+			p.Localisations(),
+			editorUserID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-rejected",
+			},
+			true,
+			"server",
+			s,
+		)
+	}
+
 	return nil
 }
 

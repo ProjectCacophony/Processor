@@ -63,3 +63,9 @@ So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
 **Looks like there is no Server added to the serverlist yet.**\n\
 {{end}}\
 "
+
+# DMs
+"serverlist.dm.server-approved" = "✅ **The Server {{Join .server.Names \"; \"}} has been approved!**\n\
+Thank you for your submission."
+"serverlist.dm.server-rejected" = "❌ **The Server {{Join .server.Names \"; \"}} has been rejected!**\n\
+Please check the submission rules."
