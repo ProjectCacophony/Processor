@@ -46,3 +46,20 @@ If it's waiting for approval please have patience until we have reviewed it."
 
 # handleListRefresh
 "serverlist.list-refresh.content" = "I refreshed the list for this server."
+
+# handleStatus
+"serverlist.status.content" = "\
+{{if gt (len .entries) 0}}\
+**Servers in the Server List**\n\
+{{range $entry := .entries}}\
+`{{$entry.InviteCode}} \"{{Join $entry.Names \"; \"}}\" \"{{Join $entry.Categories \"; \"}}\"`\n\
+Status `{{$entry.State}}` \
+Editors {{range $editor := $entry.Editors}}`{{$editor}}` {{end}}\
+Added `{{HumanizeTime $entry.CreatedAt}}`\n\
+\n\
+{{end}}\
+So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
+{{else}}\
+**Looks like there is no Server added to the serverlist yet.**\n\
+{{end}}\
+"

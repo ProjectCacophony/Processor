@@ -151,5 +151,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		}
 	}
 
+	p.handleStatus(event)
+
 	return true
 }
