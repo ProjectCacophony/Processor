@@ -37,8 +37,7 @@ func (p *Plugin) handleQueue(event *events.Event) {
 }
 
 func (p *Plugin) handleQueueReaction(event *events.Event) bool {
-	if event.MessageReactionAdd.Emoji.Name != emojiApprove &&
-		event.MessageReactionAdd.Emoji.Name != emojiReject {
+	if event.MessageReactionAdd.Emoji.Name != emojiApprove {
 		return false
 	}
 
@@ -60,12 +59,7 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 		return false
 	}
 
-	switch event.MessageReactionAdd.Emoji.Name {
-	case emojiApprove:
-		err = p.approveCurrentServer(event.BotUserID, event.GuildID)
-	case emojiReject:
-		err = p.rejectCurrentServer(event.BotUserID, event.GuildID)
-	}
+	err = p.approveCurrentServer(event.BotUserID, event.GuildID)
 	if err != nil &&
 		!strings.Contains(err.Error(), "nothing to approve") &&
 		!strings.Contains(err.Error(), "nothing to reject") {
@@ -86,6 +80,22 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 	)
 
 	return true
+}
+
+func (p *Plugin) handleQueueReject(event *events.Event) {
+	if len(event.Fields()) < 3 {
+		event.Respond("serverlist.queue-reject.no-reason") // nolint: errcheck
+		return
+	}
+
+	err := p.rejectCurrentServer(event.BotUserID, event.GuildID, event.Fields()[2])
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	_, err = event.Respond("serverlist.queue-reject.success")
+	event.Except(err)
 }
 
 func (p *Plugin) handleQueueRefresh(event *events.Event) {
@@ -132,7 +142,7 @@ func (p *Plugin) approveCurrentServer(botID, guildID string) error {
 	return server.QueueApprove(p, guildID)
 }
 
-func (p *Plugin) rejectCurrentServer(botID, guildID string) error {
+func (p *Plugin) rejectCurrentServer(botID, guildID, reason string) error {
 	queueMessage, err := p.getCurrentQueueMessage(guildID)
 	if err != nil {
 		return errors.Wrap(err, "error getting QueueMessage from config")
@@ -148,7 +158,7 @@ func (p *Plugin) rejectCurrentServer(botID, guildID string) error {
 		return errors.New("found nothing to reject")
 	}
 
-	return server.QueueReject(p, guildID)
+	return server.QueueReject(p, guildID, reason)
 }
 
 // TODO: refactor!
@@ -235,24 +245,22 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			false,
 			emojiApprove,
 		)
-		discord.React( // nolint: errcheck
-			p.redis,
-			session,
-			channelID,
-			messages[0].ID,
-			false,
-			emojiReject,
-		)
 	} else {
 		item := queueFind(queueMessage.CurrentServerID, queue)
 		if item != nil {
 			embed := getQueueMessageEmbed(item, len(queue))
 
-			_, err = session.Client.ChannelMessageEditComplex(&discordgo.MessageEdit{
-				Embed:   embed,
-				ID:      queueMessage.MessageID,
-				Channel: channelID,
-			})
+			_, err = discord.EditComplexWithVars(
+				p.redis,
+				session,
+				p.Localisations(),
+				&discordgo.MessageEdit{
+					Embed:   embed,
+					ID:      queueMessage.MessageID,
+					Channel: channelID,
+				},
+				false,
+			)
 			if err != nil {
 				if errD, ok := err.(*discordgo.RESTError); ok &&
 					errD.Message != nil &&
@@ -278,11 +286,17 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 				item = queue[0]
 				embed := getQueueMessageEmbed(item, len(queue))
 
-				_, err = session.Client.ChannelMessageEditComplex(&discordgo.MessageEdit{
-					Embed:   embed,
-					ID:      queueMessage.MessageID,
-					Channel: channelID,
-				})
+				_, err = discord.EditComplexWithVars(
+					p.redis,
+					session,
+					p.Localisations(),
+					&discordgo.MessageEdit{
+						Embed:   embed,
+						ID:      queueMessage.MessageID,
+						Channel: channelID,
+					},
+					false,
+				)
 				if err != nil {
 					if errD, ok := err.(*discordgo.RESTError); ok &&
 						errD.Message != nil &&
@@ -307,11 +321,17 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			} else {
 				embed := getQueueMessageEmbed(item, len(queue))
 
-				_, err = session.Client.ChannelMessageEditComplex(&discordgo.MessageEdit{
-					Embed:   embed,
-					ID:      queueMessage.MessageID,
-					Channel: channelID,
-				})
+				_, err = discord.EditComplexWithVars(
+					p.redis,
+					session,
+					p.Localisations(),
+					&discordgo.MessageEdit{
+						Embed:   embed,
+						ID:      queueMessage.MessageID,
+						Channel: channelID,
+					},
+					false,
+				)
 				if err != nil {
 					if errD, ok := err.(*discordgo.RESTError); ok &&
 						errD.Message != nil &&
@@ -367,8 +387,9 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 	categoryText = strings.TrimRight(categoryText, ", ")
 
 	return &discordgo.MessageEmbed{
-		Title:     "⌛ Serverlist Queue",
-		Timestamp: server.CreatedAt.Format(time.RFC3339),
+		Title:       "⌛ Serverlist Queue",
+		Description: "serverlist.queue.embed.description",
+		Timestamp:   server.CreatedAt.Format(time.RFC3339),
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: fmt.Sprintf(
 				"there are %d Servers queued in total • added", total,

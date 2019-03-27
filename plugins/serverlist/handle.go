@@ -148,6 +148,17 @@ func (p *Plugin) Action(event *events.Event) bool {
 				}
 			}
 
+		case "reject":
+
+			event.Require(func() {
+
+				p.handleQueueReject(event)
+			},
+				permissions.Not(permissions.DiscordChannelDM),
+				permissions.BotOwner,
+			)
+			return true
+
 		}
 	}
 

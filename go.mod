@@ -21,7 +21,7 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/streadway/amqp v0.0.0-20181205114330-a314942b2fd9
-	gitlab.com/Cacophony/go-kit v0.0.0-20190325191803-a3c842596be6
+	gitlab.com/Cacophony/go-kit v0.0.0-20190327182938-b775cade70f9
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9

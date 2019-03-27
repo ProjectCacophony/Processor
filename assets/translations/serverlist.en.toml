@@ -38,11 +38,20 @@ You will receive a DM when there has been an update."
 "serverlist.add.already-exists" = "**Looks like the Server has already been added!**\n\
 If it's waiting for approval please have patience until we have reviewed it."
 
+# queue
+"serverlist.queue.embed.description" = "\
+**To Approve** click the ✅ Reaction\n\
+**To Reject** `/serverlist reject \"the reason\"`"
+
 # handleQueue
 "serverlist.queue.content" = "From now on I will post the Queue in <#{{.channelID}}>"
 
 # handleQueueRefresh
 "serverlist.queue-refresh.content" = "I refreshed the queue for this server."
+
+# handleQueueReject
+"serverlist.queue-reject.no-reason" = "Please specify why the Server was rejected."
+"serverlist.queue-reject.success" = "The Server has been rejected."
 
 # handleListRefresh
 "serverlist.list-refresh.content" = "I refreshed the list for this server."
@@ -53,7 +62,7 @@ If it's waiting for approval please have patience until we have reviewed it."
 **Servers in the Server List**\n\
 {{range $entry := .entries}}\
 `{{$entry.InviteCode}} \"{{Join $entry.Names \"; \"}}\" \"{{Join $entry.Categories \"; \"}}\"`\n\
-Status `{{$entry.State}}` \
+Status `{{$entry.State}}`{{if $entry.Reason}}: `{{$entry.Reason}}`{{end}} \
 Editors {{range $editor := $entry.Editors}}`{{$editor}}` {{end}}\
 Added `{{HumanizeTime $entry.CreatedAt}}`\n\
 \n\
@@ -68,4 +77,4 @@ So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
 "serverlist.dm.server-approved" = "✅ **The Server {{Join .server.Names \"; \"}} has been approved!**\n\
 Thank you for your submission."
 "serverlist.dm.server-rejected" = "❌ **The Server {{Join .server.Names \"; \"}} has been rejected!**\n\
-Please check the submission rules."
+Reason: `{{.reason}}`."

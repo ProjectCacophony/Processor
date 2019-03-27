@@ -11,7 +11,6 @@ const (
 	queueMessageKey   = "cacophony:processor:serverlist:queue-message"
 
 	emojiApprove = "✅"
-	emojiReject  = "❌"
 )
 
 // nolint: gochecknoglobals

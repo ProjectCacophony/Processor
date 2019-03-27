@@ -87,6 +87,7 @@ type Server struct {
 	Categories    []ServerCategory
 	TotalMembers  int
 	State         State
+	Reason        string
 	LastChecked   time.Time
 	BotID         string
 }
@@ -130,12 +131,12 @@ func (s *Server) QueueApprove(p *Plugin, guildID string) error {
 	return nil
 }
 
-func (s *Server) QueueReject(p *Plugin, guildID string) error {
+func (s *Server) QueueReject(p *Plugin, guildID, reason string) error {
 	if s == nil {
 		return errors.New("server is nil")
 	}
 
-	err := serverSetState(p.db, s.ID, StateRejected)
+	err := serverSetStateWithReason(p.db, s.ID, StateRejected, reason)
 	if err != nil {
 		return err
 	}
@@ -159,6 +160,8 @@ func (s *Server) QueueReject(p *Plugin, guildID string) error {
 			true,
 			"server",
 			s,
+			"reason",
+			reason,
 		)
 	}
 
