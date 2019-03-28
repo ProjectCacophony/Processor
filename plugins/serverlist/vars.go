@@ -19,5 +19,9 @@ var (
 		return "cacophony:processor:serverlist:queue-lock:guildid-" + guildID
 	}
 
+	redisListMessagesKey = func(channelID string) string {
+		return "cacophony:processor:serverlist:list-messages:channelid-" + channelID
+	}
+
 	serverNameInitialRegexp = regexp.MustCompile(`^[a-z]$`)
 )

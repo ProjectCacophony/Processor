@@ -108,14 +108,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 		Servers: channelToPost.Servers,
 	})
 
-	var err error
-	messages, err := session.Client.ChannelMessages( // TODO: query more messages, if required
-		channelToPost.ChannelID, // TODO: cache in redis, 1 day expiration, update if we modify,add,remove messages
-		100,
-		"",
-		"",
-		"",
-	)
+	messages, err := p.getListMessages(session, channelToPost.ChannelID)
 	if err != nil {
 		return err
 	}
@@ -133,30 +126,22 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 		content := p.getMessageContentForServer(server.Server, server.Name)
 
 		if message == nil {
-			_, err = discord.SendComplexWithVars(
-				p.redis,
+			messages, err = p.newListMessage(
+				messages,
 				session,
-				nil,
 				channelToPost.ChannelID,
-				&discordgo.MessageSend{
-					Content: content,
-				},
-				false,
+				content,
 			)
 			if err != nil {
 				return err
 			}
 		} else if message.Content != content {
-			_, err = discord.EditComplexWithVars(
-				p.redis,
+			messages, err = p.updateListMessage(
+				messages,
 				session,
-				nil,
-				&discordgo.MessageEdit{
-					Content: &content,
-					ID:      message.ID,
-					Channel: channelToPost.ChannelID,
-				},
-				false,
+				channelToPost.ChannelID,
+				content,
+				message.ID,
 			)
 			if err != nil {
 				return err
@@ -166,12 +151,11 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 
 	if len(messages) >= i+1 {
 		for _, message := range messages[i+1:] {
-			err = discord.Delete(
-				p.redis,
+			messages, err = p.deleteListMessage(
+				messages,
 				session,
 				channelToPost.ChannelID,
 				message.ID,
-				false,
 			)
 			if err != nil {
 				return err
@@ -179,7 +163,95 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 		}
 	}
 
-	return nil
+	return p.setListMessages(channelToPost.ChannelID, messages)
+}
+
+func (p *Plugin) newListMessage(
+	messages []*discordgo.Message,
+	session *discord.Session,
+	channelID string,
+	content string,
+) ([]*discordgo.Message, error) {
+	message, err := discord.SendComplexWithVars(
+		p.redis,
+		session,
+		nil,
+		channelID,
+		&discordgo.MessageSend{
+			Content: content,
+		},
+		false,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	messages = append(messages, message[0])
+
+	return messages, nil
+}
+
+func (p *Plugin) updateListMessage(
+	messages []*discordgo.Message,
+	session *discord.Session,
+	channelID string,
+	content string,
+	messageID string,
+) ([]*discordgo.Message, error) {
+	message, err := discord.EditComplexWithVars(
+		p.redis,
+		session,
+		nil,
+		&discordgo.MessageEdit{
+			Content: &content,
+			ID:      messageID,
+			Channel: channelID,
+		},
+		false,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range messages {
+		if messages[i].ID != message.ID {
+			continue
+		}
+
+		messages[i] = message
+		break
+	}
+
+	return messages, nil
+}
+
+func (p *Plugin) deleteListMessage(
+	messages []*discordgo.Message,
+	session *discord.Session,
+	channelID string,
+	messageID string,
+) ([]*discordgo.Message, error) {
+	err := discord.Delete(
+		p.redis,
+		session,
+		channelID,
+		messageID,
+		false,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range messages {
+		if messages[i].ID != messageID {
+			continue
+		}
+
+		messages = append(messages[:i], messages[i+1:]...)
+		break
+	}
+
+	return messages, nil
 }
 
 func (p *Plugin) getMessageContentForServer(server *Server, name string) string {
