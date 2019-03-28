@@ -143,7 +143,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	}
 
 	if s.State != StateQueued {
-		return errors.New("can only approve servers that are queued")
+		return errors.New("can only reject servers that are queued")
 	}
 
 	err := serverSetStateWithReason(p.db, s.ID, StateRejected, reason)
@@ -185,6 +185,10 @@ func (s *Server) Remove(p *Plugin) error {
 		return errors.New("server is nil")
 	}
 
+	if s.State == StateCensored {
+		return errors.New("can not remove servers that are censored")
+	}
+
 	err := serverRemove(p.db, s.ID)
 	if err != nil {
 		return err
@@ -207,6 +211,88 @@ func (s *Server) Remove(p *Plugin) error {
 			editorUserID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-removed",
+			},
+			true,
+			"server",
+			s,
+		)
+	}
+
+	return nil
+}
+
+func (s *Server) Hide(p *Plugin) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	if s.State != StatePublic {
+		return errors.New("can only hide servers that are public")
+	}
+
+	err := serverSetState(p.db, s.ID, StateHidden)
+	if err != nil {
+		return err
+	}
+
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		discord.SendComplexWithVars( // nolint: errcheck
+			p.redis,
+			session,
+			p.Localisations(),
+			editorUserID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-hidden",
+			},
+			true,
+			"server",
+			s,
+		)
+	}
+
+	return nil
+}
+
+func (s *Server) Unhide(p *Plugin) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	if s.State != StateHidden {
+		return errors.New("can only unhide servers that are hidden")
+	}
+
+	err := serverSetState(p.db, s.ID, StatePublic)
+	if err != nil {
+		return err
+	}
+
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		discord.SendComplexWithVars( // nolint: errcheck
+			p.redis,
+			session,
+			p.Localisations(),
+			editorUserID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-unhidden",
 			},
 			true,
 			"server",

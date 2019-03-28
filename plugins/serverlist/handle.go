@@ -164,6 +164,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleRemove(event)
 			return true
 
+		case "hide", "unhide":
+
+			p.handleHide(event)
+			return true
+
 		}
 	}
 
