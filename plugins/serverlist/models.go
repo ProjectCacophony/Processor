@@ -114,6 +114,8 @@ func (s *Server) QueueApprove(p *Plugin) error {
 		p.refreshQueue(category.Category.GuildID)
 	}
 
+	p.refreshList(s.BotID) // nolint: errcheck
+
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
 		return err
@@ -198,6 +200,8 @@ func (s *Server) Remove(p *Plugin) error {
 		p.refreshQueue(category.Category.GuildID)
 	}
 
+	p.refreshList(s.BotID) // nolint: errcheck
+
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
 		return err
@@ -239,6 +243,8 @@ func (s *Server) Hide(p *Plugin) error {
 		p.refreshQueue(category.Category.GuildID)
 	}
 
+	p.refreshList(s.BotID) // nolint: errcheck
+
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
 		return err
@@ -279,6 +285,8 @@ func (s *Server) Unhide(p *Plugin) error {
 	for _, category := range s.Categories {
 		p.refreshQueue(category.Category.GuildID)
 	}
+
+	p.refreshList(s.BotID) // nolint: errcheck
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
