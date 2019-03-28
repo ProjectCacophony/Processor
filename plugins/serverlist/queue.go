@@ -161,8 +161,6 @@ func (p *Plugin) rejectCurrentServer(botID, guildID, reason string) error {
 	return server.QueueReject(p, reason)
 }
 
-// TODO: refactor!
-// nolint: gocyclo
 func (p *Plugin) refreshQueueForGuild(guildID string) error {
 	guildLock := p.getGuildLock(guildID)
 
@@ -183,7 +181,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 	}
 
 	if channelID == "" {
-		return errors.New("no queue channel ID set for guild")
+		return nil
 	}
 
 	botID, err := p.state.BotForGuild(guildID)
@@ -191,170 +189,150 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return errors.Wrap(err, "failure getting Bot ID for Guild")
 	}
 
-	queue, err := p.getQueue(botID)
-	if err != nil {
-		return errors.Wrap(err, "unable to query for queued entries")
-	}
-
 	session, err := discord.NewSession(p.tokens, botID)
 	if err != nil {
 		return errors.Wrap(err, "failure creating Discord Session for Bot")
 	}
 
-	queueMessage, err := p.getCurrentQueueMessage(guildID)
+	queue, err := p.getQueue(botID)
+	if err != nil {
+		return errors.Wrap(err, "unable to query for queued entries")
+	}
+
+	currentQueueMessage, err := p.getCurrentQueueMessage(guildID)
 	if err != nil {
 		return errors.Wrap(err, "error getting QueueMessage from config")
 	}
 
-	if queueMessage == nil {
-		if len(queue) == 0 {
-			return nil
-		}
+	if currentQueueMessage == nil &&
+		len(queue) == 0 {
+		return nil
+	}
 
-		embed := getQueueMessageEmbed(queue[0], len(queue))
+	var queueItem *Server
+	if len(queue) > 0 {
+		queueItem = queue[0]
+	}
 
-		messages, err := discord.SendComplexWithVars(
-			p.redis,
+	// create new queue message if none exists
+	if currentQueueMessage == nil {
+		return p.newQueueMessage(
 			session,
-			p.Localisations(),
+			guildID,
 			channelID,
-			&discordgo.MessageSend{
-				Embed: embed,
-			},
-			false,
+			queueItem,
+			queue,
 		)
-		if err != nil {
-			return errors.Wrap(err, "error sending initial QueueMessage")
+	}
+
+	activeItem := queueFind(currentQueueMessage.CurrentServerID, queue)
+	if activeItem != nil {
+		queueItem = activeItem
+	}
+
+	// update queue message with new server
+	return p.updateQueueMessage(
+		session,
+		guildID,
+		channelID,
+		queueItem,
+		queue,
+		currentQueueMessage,
+	)
+}
+
+func (p *Plugin) newQueueMessage(
+	session *discord.Session,
+	guildID string,
+	channelID string,
+	queueItem *Server,
+	queue []*Server,
+) error {
+	embed := getQueueMessageEmbed(queueItem, len(queue))
+
+	messages, err := discord.SendComplexWithVars(
+		p.redis,
+		session,
+		p.Localisations(),
+		channelID,
+		&discordgo.MessageSend{
+			Embed: embed,
+		},
+		false,
+	)
+	if err != nil {
+		return errors.Wrap(err, "error sending new QueueMessage")
+	}
+
+	var currentServerID uint
+	if queueItem != nil {
+		currentServerID = queueItem.ID
+	}
+
+	currentQueueMessage := &QueueMessage{
+		CurrentServerID: currentServerID,
+		MessageID:       messages[0].ID,
+		Embed:           embed,
+	}
+
+	err = config.GuildSetInterface(p.db, guildID, queueMessageKey, currentQueueMessage)
+	if err != nil {
+		return errors.Wrap(err, "error saving new QueueMessage")
+	}
+
+	discord.React( // nolint: errcheck
+		p.redis,
+		session,
+		channelID,
+		messages[0].ID,
+		false,
+		emojiApprove,
+	)
+
+	return nil
+}
+
+func (p *Plugin) updateQueueMessage(
+	session *discord.Session,
+	guildID string,
+	channelID string,
+	queueItem *Server,
+	queue []*Server,
+	currentMessage *QueueMessage,
+) error {
+	embed := getQueueMessageEmbed(queueItem, len(queue))
+
+	_, err := discord.EditComplexWithVars(
+		p.redis,
+		session,
+		p.Localisations(),
+		&discordgo.MessageEdit{
+			Embed:   embed,
+			ID:      currentMessage.MessageID,
+			Channel: channelID,
+		},
+		false,
+	)
+	if err != nil {
+		if errD, ok := err.(*discordgo.RESTError); ok &&
+			errD.Message != nil &&
+			errD.Message.Code == discordgo.ErrCodeUnknownMessage {
+			return p.newQueueMessage(session, guildID, channelID, queueItem, queue)
 		}
-		queueMessage = &QueueMessage{
-			CurrentServerID: queue[0].ID,
-			MessageID:       messages[0].ID,
-			Embed:           embed,
-		}
 
-		err = config.GuildSetInterface(p.db, guildID, queueMessageKey, queueMessage)
-		if err != nil {
-			return errors.Wrap(err, "error saving initial QueueMessage")
-		}
+		return errors.Wrap(err, "error editing existing QueueMessage")
+	}
 
-		discord.React( // nolint: errcheck
-			p.redis,
-			session,
-			channelID,
-			messages[0].ID,
-			false,
-			emojiApprove,
-		)
-	} else {
-		item := queueFind(queueMessage.CurrentServerID, queue)
-		if item != nil {
-			embed := getQueueMessageEmbed(item, len(queue))
+	currentMessage.CurrentServerID = 0
+	if queueItem != nil {
+		currentMessage.CurrentServerID = queueItem.ID
+	}
 
-			_, err = discord.EditComplexWithVars(
-				p.redis,
-				session,
-				p.Localisations(),
-				&discordgo.MessageEdit{
-					Embed:   embed,
-					ID:      queueMessage.MessageID,
-					Channel: channelID,
-				},
-				false,
-			)
-			if err != nil {
-				if errD, ok := err.(*discordgo.RESTError); ok &&
-					errD.Message != nil &&
-					errD.Message.Code == discordgo.ErrCodeUnknownMessage {
-					err = config.GuildSetInterface(p.db, guildID, queueMessageKey, nil)
-					if err != nil {
-						return errors.Wrap(err, "error saving empty")
-					}
-					return nil
-				}
+	currentMessage.Embed = embed
 
-				return errors.Wrap(err, "error updating initial QueueMessage")
-			}
-
-			queueMessage.Embed = embed
-
-			err = config.GuildSetInterface(p.db, guildID, queueMessageKey, queueMessage)
-			if err != nil {
-				return errors.Wrap(err, "error saving updated initial QueueMessage")
-			}
-		} else {
-			if len(queue) > 0 {
-				item = queue[0]
-				embed := getQueueMessageEmbed(item, len(queue))
-
-				_, err = discord.EditComplexWithVars(
-					p.redis,
-					session,
-					p.Localisations(),
-					&discordgo.MessageEdit{
-						Embed:   embed,
-						ID:      queueMessage.MessageID,
-						Channel: channelID,
-					},
-					false,
-				)
-				if err != nil {
-					if errD, ok := err.(*discordgo.RESTError); ok &&
-						errD.Message != nil &&
-						errD.Message.Code == discordgo.ErrCodeUnknownMessage {
-						err = config.GuildSetInterface(p.db, guildID, queueMessageKey, nil)
-						if err != nil {
-							return errors.Wrap(err, "error saving empty")
-						}
-						return nil
-					}
-
-					return errors.Wrap(err, "error updating to new QueueMessage")
-				}
-
-				queueMessage.Embed = embed
-				queueMessage.CurrentServerID = item.ID
-
-				err = config.GuildSetInterface(p.db, guildID, queueMessageKey, queueMessage)
-				if err != nil {
-					return errors.Wrap(err, "error saving updated to new QueueMessage")
-				}
-			} else {
-				embed := getQueueMessageEmbed(item, len(queue))
-
-				_, err = discord.EditComplexWithVars(
-					p.redis,
-					session,
-					p.Localisations(),
-					&discordgo.MessageEdit{
-						Embed:   embed,
-						ID:      queueMessage.MessageID,
-						Channel: channelID,
-					},
-					false,
-				)
-				if err != nil {
-					if errD, ok := err.(*discordgo.RESTError); ok &&
-						errD.Message != nil &&
-						errD.Message.Code == discordgo.ErrCodeUnknownMessage {
-						err = config.GuildSetInterface(p.db, guildID, queueMessageKey, nil)
-						if err != nil {
-							return errors.Wrap(err, "error saving empty")
-						}
-						return nil
-					}
-
-					return errors.Wrap(err, "error updating to new QueueMessage")
-				}
-
-				queueMessage.Embed = embed
-				queueMessage.CurrentServerID = 0
-
-				err = config.GuildSetInterface(p.db, guildID, queueMessageKey, queueMessage)
-				if err != nil {
-					return errors.Wrap(err, "error saving updated to new QueueMessage")
-				}
-			}
-		}
+	err = config.GuildSetInterface(p.db, guildID, queueMessageKey, currentMessage)
+	if err != nil {
+		return errors.Wrap(err, "error saving updated existing QueueMessage")
 	}
 
 	return nil
