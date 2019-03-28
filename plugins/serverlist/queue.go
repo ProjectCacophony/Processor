@@ -139,7 +139,7 @@ func (p *Plugin) approveCurrentServer(botID, guildID string) error {
 		return errors.New("found nothing to approve")
 	}
 
-	return server.QueueApprove(p, guildID)
+	return server.QueueApprove(p)
 }
 
 func (p *Plugin) rejectCurrentServer(botID, guildID, reason string) error {
@@ -158,7 +158,7 @@ func (p *Plugin) rejectCurrentServer(botID, guildID, reason string) error {
 		return errors.New("found nothing to reject")
 	}
 
-	return server.QueueReject(p, guildID, reason)
+	return server.QueueReject(p, reason)
 }
 
 // TODO: refactor!

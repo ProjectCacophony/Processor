@@ -57,9 +57,9 @@ const (
 	StateQueued   State = "queued"
 	StatePublic   State = "public"
 	StateExpired  State = "expired" // TODO
-	StateRemoved  State = "removed" // TODO
 	StateRejected State = "rejected"
-	StateHidden   State = "hidden" // TODO
+	StateHidden   State = "hidden"   // TODO
+	StateCensored State = "censored" // TODO
 )
 
 type Category struct {
@@ -96,9 +96,13 @@ func (*Server) TableName() string {
 	return "serverlist_servers"
 }
 
-func (s *Server) QueueApprove(p *Plugin, guildID string) error {
+func (s *Server) QueueApprove(p *Plugin) error {
 	if s == nil {
 		return errors.New("server is nil")
+	}
+
+	if s.State != StateQueued {
+		return errors.New("can only approve servers that are queued")
 	}
 
 	err := serverSetState(p.db, s.ID, StatePublic)
@@ -106,7 +110,9 @@ func (s *Server) QueueApprove(p *Plugin, guildID string) error {
 		return err
 	}
 
-	p.refreshQueue(guildID)
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -131,9 +137,13 @@ func (s *Server) QueueApprove(p *Plugin, guildID string) error {
 	return nil
 }
 
-func (s *Server) QueueReject(p *Plugin, guildID, reason string) error {
+func (s *Server) QueueReject(p *Plugin, reason string) error {
 	if s == nil {
 		return errors.New("server is nil")
+	}
+
+	if s.State != StateQueued {
+		return errors.New("can only approve servers that are queued")
 	}
 
 	err := serverSetStateWithReason(p.db, s.ID, StateRejected, reason)
@@ -141,7 +151,9 @@ func (s *Server) QueueReject(p *Plugin, guildID, reason string) error {
 		return err
 	}
 
-	p.refreshQueue(guildID)
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -162,6 +174,43 @@ func (s *Server) QueueReject(p *Plugin, guildID, reason string) error {
 			s,
 			"reason",
 			reason,
+		)
+	}
+
+	return nil
+}
+
+func (s *Server) Remove(p *Plugin) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	err := serverRemove(p.db, s.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		discord.SendComplexWithVars( // nolint: errcheck
+			p.redis,
+			session,
+			p.Localisations(),
+			editorUserID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-removed",
+			},
+			true,
+			"server",
+			s,
 		)
 	}
 

@@ -159,6 +159,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			)
 			return true
 
+		case "remove":
+
+			p.handleRemove(event)
+			return true
+
 		}
 	}
 

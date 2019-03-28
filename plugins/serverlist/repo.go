@@ -1,6 +1,7 @@
 package serverlist
 
 import (
+	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -83,6 +84,20 @@ func serverAdd(
 	return nil
 }
 
+func serverFind(db *gorm.DB, query string, where ...interface{}) (*Server, error) {
+	var entry Server
+
+	err := db.
+		Preload("Categories.Category").
+		Where(query, where...).
+		First(&entry).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return &entry, nil
+}
+
 func serversFindMany(db *gorm.DB, where ...interface{}) ([]*Server, error) {
 	var entries []*Server
 
@@ -95,6 +110,14 @@ func serversFindMany(db *gorm.DB, where ...interface{}) ([]*Server, error) {
 		return nil, err
 	}
 	return entries, err
+}
+
+func serverRemove(db *gorm.DB, id uint) error {
+	if id == 0 {
+		return errors.New("please specify which server to delete")
+	}
+
+	return db.Delete(Server{}, "id = ?", id).Error
 }
 
 func serverSetState(db *gorm.DB, id uint, state State) error {

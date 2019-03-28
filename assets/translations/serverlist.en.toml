@@ -78,3 +78,12 @@ So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
 Thank you for your submission."
 "serverlist.dm.server-rejected" = "❌ **The Server {{Join .server.Names \"; \"}} has been rejected!**\n\
 Reason: `{{.reason}}`."
+"serverlist.dm.server-removed" = "🚮 **The Server {{Join .server.Names \"; \"}} has been removed by an Editor!**"
+
+# handleRemove
+"serverlist.remove.too-few-args" = "Please tell me the Invite, or Server ID of the Server you want to remove."
+"serverlist.remove.no-server" = "**I could not find the Server!**\n\
+Please tell me the Invite, or Server ID of the Server you want to remove."
+"serverlist.remove.no-editor" = "**You are not an Editor of the Server you want to remove.**\n\
+Please contact one of the Editors to remove it."
+"serverlist.remove.success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been removed!"
