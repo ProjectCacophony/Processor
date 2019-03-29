@@ -1,13 +1,10 @@
 package serverlist
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
-
-	humanize "github.com/dustin/go-humanize"
 
 	lock "github.com/bsm/redis-lock"
 
@@ -348,68 +345,6 @@ func queueFind(n uint, list []*Server) *Server {
 	}
 
 	return nil
-}
-
-func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
-	if server == nil {
-		return &discordgo.MessageEmbed{
-			Title:       "⌛ Serverlist Queue",
-			Description: "Queue empty!",
-		}
-	}
-
-	var categoryText string
-	for _, category := range server.Categories {
-		categoryText += "<#" + category.Category.ChannelID + ">, "
-	}
-	categoryText = strings.TrimRight(categoryText, ", ")
-
-	return &discordgo.MessageEmbed{
-		Title:       "⌛ Serverlist Queue",
-		Description: "serverlist.queue.embed.description",
-		Timestamp:   server.CreatedAt.Format(time.RFC3339),
-		Footer: &discordgo.MessageEmbedFooter{
-			Text: fmt.Sprintf(
-				"there are %d Servers queued in total • added", total,
-			),
-		},
-		Fields: []*discordgo.MessageEmbedField{
-			{
-				Name: "🏷 Name(s)",
-				Value: fmt.Sprintf("%s\n#%s",
-					strings.Join(server.Names, "; "), server.GuildID,
-				),
-				Inline: true,
-			},
-			{
-				Name: "👥 Editor(s)",
-				Value: fmt.Sprintf("<@%s>",
-					strings.Join(server.EditorUserIDs, "> <@"),
-				),
-				Inline: true,
-			},
-			{
-				Name:   "🚩 Invite",
-				Value:  fmt.Sprintf("discord.gg/%s", server.InviteCode),
-				Inline: true,
-			},
-			{
-				Name:   "📈 Members",
-				Value:  humanize.Comma(int64(server.TotalMembers)),
-				Inline: true,
-			},
-			{
-				Name:   "📖 Description",
-				Value:  server.Description,
-				Inline: false,
-			},
-			{
-				Name:   "🗃 Category",
-				Value:  categoryText,
-				Inline: false,
-			},
-		},
-	}
 }
 
 func (p *Plugin) getGuildLock(guildID string) *lock.Locker {

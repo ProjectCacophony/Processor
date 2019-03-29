@@ -44,7 +44,7 @@ If it's waiting for approval please have patience until we have reviewed it."
 **To Reject** `/serverlist reject \"the reason\"`"
 
 # handleQueue
-"serverlist.queue.content" = "From now on I will post the Queue in <#{{.channelID}}>"
+"serverlist.queue.content" = "From now on I will post the Serverlist Queue in <#{{.channelID}}>"
 
 # handleQueueRefresh
 "serverlist.queue-refresh.content" = "I refreshed the queue for this server."
@@ -99,3 +99,13 @@ Please contact one of the Editors to hide it."
 "serverlist.hide.success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been hidden!"
 "serverlist.hide.wrong-status" = "Sorry, you can only hide servers that are public."
 "serverlist.hide.unhide-success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been made public again!"
+
+# handleLog
+"serverlist.log.success" = "From now on I will post the Serverlist Log in <#{{.channelID}}>"
+
+# log
+"serverlist.log.approved.embed.title" = "✅ Server Approved"
+"serverlist.log.rejected.embed.title" = "❌ Server Rejected"
+"serverlist.log.removed.embed.title" = "🚮 Server Removed by an Editor"
+"serverlist.log.hidden.embed.title" = "🔒 Server Hidden by an Editor"
+"serverlist.log.unhidden.embed.title" = "🔓 Server Unhidden by an Editor"

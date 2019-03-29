@@ -169,6 +169,17 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleHide(event)
 			return true
 
+		case "log":
+
+			event.Require(func() {
+
+				p.handleLog(event)
+			},
+				permissions.Not(permissions.DiscordChannelDM),
+				permissions.BotOwner,
+			)
+			return true
+
 		}
 	}
 

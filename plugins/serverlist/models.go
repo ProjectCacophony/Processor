@@ -58,7 +58,7 @@ const (
 	StatePublic   State = "public"
 	StateExpired  State = "expired" // TODO
 	StateRejected State = "rejected"
-	StateHidden   State = "hidden"   // TODO
+	StateHidden   State = "hidden"
 	StateCensored State = "censored" // TODO
 )
 
@@ -136,7 +136,13 @@ func (s *Server) QueueApprove(p *Plugin) error {
 		)
 	}
 
-	return nil
+	return p.sendLogMessageForServer(
+		session,
+		s,
+		&discordgo.MessageSend{
+			Embed: getLogApprovedEmbed(s),
+		},
+	)
 }
 
 func (s *Server) QueueReject(p *Plugin, reason string) error {
