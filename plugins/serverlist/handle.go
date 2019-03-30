@@ -99,12 +99,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		case "add":
 
-			event.Require(func() {
-
-				p.handleAdd(event)
-			},
-				permissions.DiscordChannelDM,
-			)
+			p.handleAdd(event)
 			return true
 
 		case "queue":
