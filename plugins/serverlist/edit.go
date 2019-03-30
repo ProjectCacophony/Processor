@@ -141,6 +141,53 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 		changes.Categories = categoryIDs
 
+	case "editor":
+
+		editorChange, err := p.state.UserFromMention(values[0])
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		var removed bool
+
+		if stringSliceContains(editorChange.ID, server.EditorUserIDs) {
+			if len(server.EditorUserIDs) <= 1 {
+				event.Respond("serverlist.edit.remove-editors-too-few") // nolint: errcheck
+				return
+			}
+
+			var newEditorUserIDs []string
+			for _, editorUserID := range server.EditorUserIDs {
+				if editorUserID == editorChange.ID {
+					continue
+				}
+
+				newEditorUserIDs = append(newEditorUserIDs, editorUserID)
+			}
+
+			server.EditorUserIDs = newEditorUserIDs
+			removed = true
+		} else {
+			server.EditorUserIDs = append(server.EditorUserIDs, editorChange.ID)
+		}
+
+		if len(server.EditorUserIDs) == 0 {
+			event.Respond("serverlist.edit.remove-editors-too-few") // nolint: errcheck
+			return
+		}
+
+		err = p.db.Save(server).Error
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		_, err = event.Respond("serverlist.edit.editors-success",
+			"removed", removed, "editor", editorChange, "server", server,
+		)
+		event.Except(err)
+		return
 	default:
 
 		if len(event.Fields()) < 4 {

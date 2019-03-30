@@ -131,3 +131,6 @@ Please make sure the description does not exceed **{{.limit}}** characters."
 "serverlist.edit.no-name" = "Please tell me a Name for the Server"
 "serverlist.edit.queued" = "**The Change has been submitted**\n\
 A moderator will approve the change as soon as possible."
+"serverlist.edit.remove-editors-too-few" = "There has to be at least one Editor at any time"
+"serverlist.edit.editors-success" = "\
+The User **{{.editor}}** has been **{{if .removed}}removed{{else}}added{{end}}** as an Editor for {{Join .server.Names \"; \"}}"
