@@ -147,9 +147,7 @@ func (s *Server) QueueApprove(p *Plugin) error {
 		return err
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	p.refreshList(s.BotID) // nolint: errcheck
 
@@ -194,7 +192,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	newState := StateRejected
 
 	if s.Change.State != "" {
-		err := s.ResetChange(p)
+		err := s.resetChange(p)
 		if err != nil {
 			return err
 		}
@@ -209,9 +207,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 		return err
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -252,9 +248,7 @@ func (s *Server) Remove(p *Plugin) error {
 		return err
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	p.refreshList(s.BotID) // nolint: errcheck
 
@@ -295,9 +289,7 @@ func (s *Server) Hide(p *Plugin) error {
 		return err
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	p.refreshList(s.BotID) // nolint: errcheck
 
@@ -338,9 +330,7 @@ func (s *Server) Unhide(p *Plugin) error {
 		return err
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	p.refreshList(s.BotID) // nolint: errcheck
 
@@ -414,9 +404,7 @@ func (s *Server) Edit(p *Plugin, changes ServerChange) error {
 		}
 	}
 
-	for _, category := range s.Categories {
-		p.refreshQueue(category.Category.GuildID)
-	}
+	s.refreshQueues(p)
 
 	p.refreshList(s.BotID) // nolint: errcheck
 
@@ -445,11 +433,25 @@ func (s *Server) ApplyChange(p *Plugin, change ServerChange) error {
 		return err
 	}
 
-	return s.ResetChange(p)
+	return s.resetChange(p)
 }
 
-func (s *Server) ResetChange(p *Plugin) error {
+func (s *Server) resetChange(p *Plugin) error {
 	return serverResetChange(p.db, s.ID)
+}
+
+func (s *Server) refreshQueues(p *Plugin) {
+	triedGuildIDs := make(map[string]interface{})
+
+	for _, category := range s.Categories {
+		if _, ok := triedGuildIDs[category.Category.GuildID]; ok {
+			continue
+		}
+
+		triedGuildIDs[category.Category.GuildID] = nil
+
+		p.refreshQueue(category.Category.GuildID)
+	}
 }
 
 type ServerCategory struct {

@@ -1,6 +1,8 @@
 package serverlist
 
 import (
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/discord"
@@ -32,6 +34,9 @@ func (p *Plugin) sendLogMessageForServer(
 			p.db, category.Category.GuildID, logChannelIDKey,
 		)
 		if err != nil {
+			if strings.Contains(err.Error(), "record not found") {
+				continue
+			}
 			return err
 		}
 

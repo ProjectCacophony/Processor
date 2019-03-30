@@ -206,6 +206,8 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return nil
 	}
 
+	previousServerID := currentQueueMessage.CurrentServerID
+
 	var queueItem *Server
 	if len(queue) > 0 {
 		queueItem = queue[0]
@@ -228,7 +230,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 	}
 
 	// update queue message with new server
-	return p.updateQueueMessage(
+	err = p.updateQueueMessage(
 		session,
 		guildID,
 		channelID,
@@ -236,6 +238,34 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		queue,
 		currentQueueMessage,
 	)
+	if err != nil {
+		return err
+	}
+
+	// ping if queue was empty before, but is not anymore
+	if previousServerID == 0 && len(queue) > 0 {
+		pingMessages, err := discord.SendComplexWithVars(
+			p.redis,
+			session,
+			p.Localisations(),
+			channelID,
+			&discordgo.MessageSend{
+				Content: ":nayoung:",
+			},
+			false,
+		)
+		if err == nil {
+			discord.Delete( // nolint: errcheck
+				p.redis,
+				session,
+				pingMessages[0].ChannelID,
+				pingMessages[0].ID,
+				false,
+			)
+		}
+	}
+
+	return nil
 }
 
 func (p *Plugin) newQueueMessage(
