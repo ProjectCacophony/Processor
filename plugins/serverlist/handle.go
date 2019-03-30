@@ -13,11 +13,12 @@ import (
 )
 
 type Plugin struct {
-	logger *zap.Logger
-	db     *gorm.DB
-	state  *state.State
-	redis  *redis.Client
-	tokens map[string]string
+	logger     *zap.Logger
+	db         *gorm.DB
+	state      *state.State
+	redis      *redis.Client
+	tokens     map[string]string
+	staffRoles permissions.PermissionInterface
 }
 
 func (p *Plugin) Name() string {
@@ -32,6 +33,13 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.redis = params.Redis
 	p.tokens = params.Tokens
+
+	p.staffRoles = permissions.Or(
+		// sekl's dev cord / Admin
+		permissions.NewDiscordRole(p.state, "208673735580844032", "250710478068645890"),
+		// Test / Staff
+		permissions.NewDiscordRole(p.state, "561619599129444390", "561619665197989893"),
+	)
 
 	err = p.db.AutoMigrate(
 		Category{},
@@ -88,7 +96,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleCategoryCreate(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						permissions.BotOwner,
+						p.staffRoles,
 					)
 					return true
 				}
@@ -112,7 +120,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleQueueRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						permissions.BotOwner,
+						p.staffRoles,
 					)
 					return true
 				}
@@ -123,7 +131,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleQueue(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				permissions.BotOwner,
+				p.staffRoles,
 			)
 			return true
 
@@ -137,7 +145,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleListRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						permissions.BotOwner,
+						p.staffRoles,
 					)
 					return true
 				}
@@ -150,7 +158,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleQueueReject(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				permissions.BotOwner,
+				p.staffRoles,
 			)
 			return true
 
@@ -171,7 +179,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleLog(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				permissions.BotOwner,
+				p.staffRoles,
 			)
 			return true
 
