@@ -90,10 +90,29 @@ type Server struct {
 	Reason        string
 	LastChecked   time.Time
 	BotID         string
+	Change        ServerChange `gorm:"embedded;embedded_prefix:change_"`
 }
 
 func (*Server) TableName() string {
 	return "serverlist_servers"
+}
+
+type ServerChange struct {
+	Names       pq.StringArray `gorm:"type:varchar[]"`
+	Description string
+	InviteCode  string
+	Categories  pq.Int64Array `gorm:"type:integer[]"` // TODO: uint array
+	State       State
+}
+
+func (s *Server) refresh(p *Plugin) error {
+	server, err := serverFind(p.db, "id = ?", s.ID)
+	if err != nil {
+		return err
+	}
+
+	*s = *server
+	return nil
 }
 
 func (s *Server) QueueApprove(p *Plugin) error {
@@ -105,7 +124,25 @@ func (s *Server) QueueApprove(p *Plugin) error {
 		return errors.New("can only approve servers that are queued")
 	}
 
-	err := serverSetState(p.db, s.ID, StatePublic)
+	newState := StatePublic
+
+	if s.Change.State != "" {
+		err := s.ApplyChange(p, s.Change)
+		if err != nil {
+			return err
+		}
+
+		if s.Change.State != StateQueued {
+			newState = s.Change.State
+		}
+	}
+
+	err := serverSetState(p.db, s.ID, newState)
+	if err != nil {
+		return err
+	}
+
+	err = s.refresh(p)
 	if err != nil {
 		return err
 	}
@@ -154,7 +191,20 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 		return errors.New("can only reject servers that are queued")
 	}
 
-	err := serverSetStateWithReason(p.db, s.ID, StateRejected, reason)
+	newState := StateRejected
+
+	if s.Change.State != "" {
+		err := s.ResetChange(p)
+		if err != nil {
+			return err
+		}
+
+		if s.Change.State != StateQueued {
+			newState = s.Change.State
+		}
+	}
+
+	err := serverSetStateWithReason(p.db, s.ID, newState, reason)
 	if err != nil {
 		return err
 	}
@@ -315,6 +365,91 @@ func (s *Server) Unhide(p *Plugin) error {
 	}
 
 	return nil
+}
+
+func (s *Server) Edit(p *Plugin, changes ServerChange) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	if s.State == StateCensored {
+		return errors.New("can not remove servers that are censored")
+	}
+
+	var change Server
+
+	if s.Change.State == "" {
+		change.Change.State = s.State
+	}
+
+	if len(changes.Names) > 0 {
+		change.Change.Names = changes.Names
+	}
+	if len(changes.Description) > 0 {
+		change.Change.Description = changes.Description
+	}
+	if len(changes.InviteCode) > 0 {
+		change.Change.InviteCode = changes.InviteCode
+	}
+	if len(changes.Categories) > 0 {
+		change.Change.Categories = changes.Categories
+	}
+
+	if s.State == StateQueued {
+		err := s.ApplyChange(p, changes)
+		if err != nil {
+			return err
+		}
+	} else {
+		err := serverUpdate(p.db, s.ID, change)
+		if err != nil {
+			return err
+		}
+	}
+
+	if s.State != StateQueued {
+		err := serverSetState(p.db, s.ID, StateQueued)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, category := range s.Categories {
+		p.refreshQueue(category.Category.GuildID)
+	}
+
+	p.refreshList(s.BotID) // nolint: errcheck
+
+	return nil
+}
+
+func (s *Server) ApplyChange(p *Plugin, change ServerChange) error {
+	serverCategories := make([]ServerCategory, len(change.Categories))
+
+	for i, categoryID := range change.Categories {
+		serverCategories[i] = ServerCategory{
+			ServerID:   s.ID,
+			CategoryID: uint(categoryID),
+		}
+	}
+
+	update := Server{
+		Names:       change.Names,
+		Description: change.Description,
+		InviteCode:  change.InviteCode,
+		Categories:  serverCategories,
+	}
+
+	err := serverUpdate(p.db, s.ID, update)
+	if err != nil {
+		return err
+	}
+
+	return s.ResetChange(p)
+}
+
+func (s *Server) ResetChange(p *Plugin) error {
+	return serverResetChange(p.db, s.ID)
 }
 
 type ServerCategory struct {

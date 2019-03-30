@@ -26,7 +26,7 @@ So far **{{len .categories}}** Categorie(s) set up.\n\
 Usage: `{{.prefix}}serverlist add <Invite Link> <Description> <Categories, split by ;>\n\
 For Example: `{{.prefix}}serverlist add discord.gg​/Example \"The Discord Server for the new Girl Group Example!\" \"girl group\"`\
 "
-"serverlist.add.invalid-invite" = "**Looks like the Invite Link is invalid**\
+"serverlist.add.invalid-invite" = "**Looks like the Invite Link is invalid**\n\
 Please make sure you send me a valid permanent Discord Invite Link."
 "serverlist.add.description-too-long" = "**Your Server Description is too long**\n\
 Please make sure the description does not exceed **{{.limit}}** characters."
@@ -109,3 +109,25 @@ Please contact one of the Editors to hide it."
 "serverlist.log.removed.embed.title" = "🚮 Server Removed by an Editor"
 "serverlist.log.hidden.embed.title" = "🔒 Server Hidden by an Editor"
 "serverlist.log.unhidden.embed.title" = "🔓 Server Unhidden by an Editor"
+
+# handleEdit
+"serverlist.edit.too-few-args-lt3" = "Please tell me which server you want to edit."
+"serverlist.edit.too-few-args-lt4" = "**Please tell me what you want to edit**\n\
+You can edit `invite`, `name`, `description`, or `category`."
+"serverlist.edit.too-few-args-lt5" = "Please tell me the new value."
+"serverlist.edit.no-server" = "**I could not find the Server**\n\
+Please tell me the Invite, or Server ID of the Server you want to edit."
+"serverlist.edit.no-editor" = "**You are not an Editor of the Server you want to edit.**\n\
+Please contact one of the Editors to edit it."
+"serverlist.edit.wrong-status" = "Sorry, you can not edit Servers that are censored"
+"serverlist.edit.invalid-invite" = "**Looks like the new Invite Link is invalid**\n\
+Please make sure you send me a valid permanent Discord Invite Link."
+"serverlist.edit.invalid-invite-guild" = "**Looks like the new Invite Link belongs to a different Server**\n\
+Please make sure you are sending me an Invite for the right Server."
+"serverlist.edit.no-categories" = "**No valid Categories**\n\
+Please make sure you specify at least one valid Category."
+"serverlist.edit.description-too-long" = "**Your Server Description is too long**\n\
+Please make sure the description does not exceed **{{.limit}}** characters."
+"serverlist.edit.no-name" = "Please tell me a Name for the Server"
+"serverlist.edit.queued" = "**The Change has been submitted**\n\
+A moderator will approve the change as soon as possible."

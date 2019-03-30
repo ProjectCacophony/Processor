@@ -31,7 +31,7 @@ func (p *Plugin) handleAdd(event *events.Event) {
 		}
 	}
 
-	if invite == nil || invite.Code == "" || invite.Guild.ID == "" {
+	if invite == nil || invite.Guild == nil || invite.Code == "" || invite.Guild.ID == "" {
 		event.Respond("serverlist.add.invalid-invite") // nolint: errcheck
 		return
 	}
@@ -117,6 +117,18 @@ func (p *Plugin) handleAdd(event *events.Event) {
 }
 
 func uintSliceContains(n uint, list []uint) bool {
+	for _, i := range list {
+		if n != i {
+			continue
+		}
+
+		return true
+	}
+
+	return false
+}
+
+func int64SliceContains(n int64, list []int64) bool {
 	for _, i := range list {
 		if n != i {
 			continue

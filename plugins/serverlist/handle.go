@@ -175,6 +175,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			)
 			return true
 
+		case "edit":
+
+			p.handleEdit(event)
+			return true
+
 		}
 	}
 

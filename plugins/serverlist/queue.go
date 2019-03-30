@@ -245,7 +245,7 @@ func (p *Plugin) newQueueMessage(
 	queueItem *Server,
 	queue []*Server,
 ) error {
-	embed := getQueueMessageEmbed(queueItem, len(queue))
+	embed := p.getQueueMessageEmbed(queueItem, len(queue))
 
 	messages, err := discord.SendComplexWithVars(
 		p.redis,
@@ -297,7 +297,7 @@ func (p *Plugin) updateQueueMessage(
 	queue []*Server,
 	currentMessage *QueueMessage,
 ) error {
-	embed := getQueueMessageEmbed(queueItem, len(queue))
+	embed := p.getQueueMessageEmbed(queueItem, len(queue))
 
 	_, err := discord.EditComplexWithVars(
 		p.redis,

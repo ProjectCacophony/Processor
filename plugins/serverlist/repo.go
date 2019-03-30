@@ -33,6 +33,19 @@ func categoryCreate(
 	}).Error
 }
 
+func categoryFind(db *gorm.DB, query string, where ...interface{}) (*Category, error) {
+	var entry Category
+
+	err := db.
+		Where(query, where...).
+		First(&entry).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return &entry, nil
+}
+
 func categoriesFindMany(db *gorm.DB, where ...interface{}) ([]Category, error) {
 	var entries []Category
 
@@ -110,6 +123,40 @@ func serversFindMany(db *gorm.DB, where ...interface{}) ([]*Server, error) {
 		return nil, err
 	}
 	return entries, err
+}
+
+func serverUpdate(db *gorm.DB, id uint, new Server) error {
+	if id == 0 {
+		return errors.New("please specify which server to update")
+	}
+
+	err := db.Model(Server{}).Where("id = ?", id).Updates(new).Error
+	if err != nil {
+		return err
+	}
+
+	var server Server
+
+	if len(new.Categories) > 0 {
+		return db.Model(Server{}).Where("id = ?", id).First(&server).Association("Categories").Replace(new.Categories).Error
+	}
+
+	return nil
+}
+
+func serverResetChange(db *gorm.DB, id uint) error {
+	if id == 0 {
+		return errors.New("please specify which server to reset")
+	}
+
+	return db.Model(Server{}).Where("id = ?", id).
+		Updates(map[string]interface{}{
+			"change_state":       nil,
+			"change_names":       nil,
+			"change_description": nil,
+			"change_invite_code": nil,
+			"change_categories":  nil,
+		}).Error
 }
 
 func serverRemove(db *gorm.DB, id uint) error {

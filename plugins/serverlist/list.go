@@ -255,12 +255,17 @@ func (p *Plugin) deleteListMessage(
 }
 
 func (p *Plugin) getMessageContentForServer(server *Server, name string) string {
-	return fmt.Sprintf(
-		"**%s** — https://discord.gg/%s\n%s",
+	text := fmt.Sprintf(
+		"**%s** — https://discord.gg/%s",
 		name,
 		server.InviteCode,
-		server.Description,
 	)
+
+	if server.Description != "" {
+		text += "\n" + server.Description
+	}
+
+	return text
 }
 
 func (p *Plugin) addToServersToPost(

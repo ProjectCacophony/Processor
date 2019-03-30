@@ -85,12 +85,18 @@ func getBaseServerEmbed(server *Server, invite bool) *discordgo.MessageEmbed {
 	}
 }
 
-func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
+func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 	if server == nil {
 		return &discordgo.MessageEmbed{
 			Title:       "⌛ Serverlist Queue",
 			Description: "Queue empty!",
 		}
+	}
+
+	titleText := "**⭐ New Server**"
+
+	if server.Change.State != "" && server.Change.State != StateQueued {
+		titleText = "**🔄 Server Update**"
 	}
 
 	var categoryText string
@@ -99,8 +105,31 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 	}
 	categoryText = strings.TrimRight(categoryText, ", ")
 
+	var nameChange, inviteChange, descriptionChange, categoryChange string
+	if len(server.Change.Names) > 0 {
+		nameChange = "\n➡\n" + strings.Join(server.Change.Names, "; ")
+	}
+	if len(server.Change.InviteCode) > 0 {
+		inviteChange = "\n➡\n" + fmt.Sprintf("discord.gg/%s", server.Change.InviteCode)
+	}
+	if len(server.Change.Description) > 0 {
+		descriptionChange = "\n➡\n" + server.Change.Description
+	}
+	if len(server.Change.Categories) > 0 {
+		categoryChange = "\n➡\n"
+		for _, categoryID := range server.Change.Categories {
+			category, err := categoryFind(p.db, "id = ?", categoryID)
+			if err != nil {
+				continue
+			}
+
+			categoryChange += "<#" + category.ChannelID + ">, "
+		}
+		categoryChange = strings.TrimRight(categoryChange, ", ")
+	}
+
 	return &discordgo.MessageEmbed{
-		Title:       "⌛ Serverlist Queue",
+		Title:       "⌛ Serverlist Queue: " + titleText,
 		Description: "serverlist.queue.embed.description",
 		Timestamp:   server.CreatedAt.Format(time.RFC3339),
 		Footer: &discordgo.MessageEmbedFooter{
@@ -110,9 +139,14 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 		},
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name: "🏷 Name(s)",
-				Value: fmt.Sprintf("%s\n#%s",
-					strings.Join(server.Names, "; "), server.GuildID,
+				Name:   "🏷 Name(s)",
+				Value:  strings.Join(server.Names, "; ") + nameChange,
+				Inline: true,
+			},
+			{
+				Name: "🔢 Server ID",
+				Value: fmt.Sprintf("`#%s`",
+					server.GuildID,
 				),
 				Inline: true,
 			},
@@ -125,7 +159,7 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 			},
 			{
 				Name:   "🚩 Invite",
-				Value:  fmt.Sprintf("discord.gg/%s", server.InviteCode),
+				Value:  fmt.Sprintf("discord.gg/%s", server.InviteCode) + inviteChange,
 				Inline: true,
 			},
 			{
@@ -135,12 +169,12 @@ func getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
 			},
 			{
 				Name:   "📖 Description",
-				Value:  server.Description,
+				Value:  server.Description + descriptionChange,
 				Inline: false,
 			},
 			{
 				Name:   "🗃 Category",
-				Value:  categoryText,
+				Value:  categoryText + categoryChange,
 				Inline: false,
 			},
 		},
