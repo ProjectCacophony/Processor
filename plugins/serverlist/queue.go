@@ -350,7 +350,8 @@ func (p *Plugin) updateQueueMessage(
 	if err != nil {
 		if errD, ok := err.(*discordgo.RESTError); ok &&
 			errD.Message != nil &&
-			errD.Message.Code == discordgo.ErrCodeUnknownMessage {
+			(errD.Message.Code == discordgo.ErrCodeUnknownMessage ||
+				errD.Message.Message == "404: Not Found") {
 			return p.newQueueMessage(session, guildID, channelID, queueItem, queue)
 		}
 

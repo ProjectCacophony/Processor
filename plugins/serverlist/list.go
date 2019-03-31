@@ -165,7 +165,9 @@ func (p *Plugin) refreshList(botID string) error {
 			err = p.clearListChannel(session, previousChannelToPost)
 			if err != nil {
 				if errD, ok := err.(*discordgo.RESTError); ok &&
-					errD != nil && errD.Message != nil && errD.Message.Code == discordgo.ErrCodeUnknownChannel {
+					errD != nil && errD.Message != nil &&
+					(errD.Message.Code == discordgo.ErrCodeUnknownChannel ||
+						errD.Message.Message == "404: Not Found") {
 					continue
 				}
 				return err
