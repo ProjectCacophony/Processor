@@ -44,7 +44,7 @@ You can whitelist a server: `{{.prefix}}whitelist <Server Invite>`\
 "whitelist.list.message" = "\
 {{if gt (len .whitelisted) 0}}\
 {{range $server := .whitelisted}}\
-**{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`)\n\
+**{{$server.Guild.Name}}** (`#{{$server.Guild.ID}}`) `{{HumanizeNumber $server.Guild.MemberCount}} Members`\n\
 by `{{$server.By}}` (`#{{$server.By.ID}}`) `{{HumanizeTime $server.At}}`\n\
 {{end}}\
 There are **{{len .whitelisted}}** Servers Whitelisted in total.\n\
