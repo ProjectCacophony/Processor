@@ -436,6 +436,19 @@ func (s *Server) ApplyChange(p *Plugin, change ServerChange) error {
 	return s.resetChange(p)
 }
 
+func (s *Server) Update(p *Plugin, update Server) error {
+	err := serverUpdate(p.db, s.ID, update)
+	if err != nil {
+		return err
+	}
+
+	s.refreshQueues(p)
+
+	p.refreshList(s.BotID) // nolint: errcheck
+
+	return nil
+}
+
 func (s *Server) resetChange(p *Plugin) error {
 	return serverResetChange(p.db, s.ID)
 }

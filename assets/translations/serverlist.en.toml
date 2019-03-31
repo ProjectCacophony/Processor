@@ -139,3 +139,4 @@ A moderator will approve the change as soon as possible."
 "serverlist.edit.remove-editors-too-few" = "There has to be at least one Editor at any time"
 "serverlist.edit.editors-success" = "\
 The User **{{.editor}}** has been **{{if .removed}}removed{{else}}added{{end}}** as an Editor for {{Join .server.Names \"; \"}}"
+"serverlist.edit.invite-success" = "The Invite for {{Join .server.Names \"; \"}} has been updated"

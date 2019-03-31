@@ -77,7 +77,18 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			return
 		}
 
-		changes.InviteCode = invite.Code
+		err = server.Update(p, Server{
+			InviteCode: invite.Code,
+		})
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		_, err = event.Respond("serverlist.edit.invite-success")
+		event.Except(err)
+		return
+
 	case "name", "names":
 		var names []string
 		for _, value := range values {
@@ -177,7 +188,9 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			return
 		}
 
-		err = p.db.Save(server).Error
+		err = server.Update(p, Server{
+			EditorUserIDs: server.EditorUserIDs,
+		})
 		if err != nil {
 			event.Except(err)
 			return
@@ -188,6 +201,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		)
 		event.Except(err)
 		return
+
 	default:
 
 		if len(event.Fields()) < 4 {
