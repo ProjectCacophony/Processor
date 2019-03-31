@@ -10,7 +10,7 @@ func (p *Plugin) handleHide(event *events.Event) {
 		return
 	}
 
-	server := extractExistingServerFromArg(p.db, event.Discord(), event.Fields()[2])
+	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
 		event.Respond("serverlist.hide.no-server") // nolint: errcheck
 		return

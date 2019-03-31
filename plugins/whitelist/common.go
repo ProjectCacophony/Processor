@@ -17,7 +17,7 @@ func serversPerUserLimit(event *events.Event) int {
 	return 3
 }
 
-func (p *Plugin) extractGuild(discord *discord.Session, text string) (*discordgo.Guild, error) {
+func (p *Plugin) extractGuild(session *discord.Session, text string) (*discordgo.Guild, error) {
 	if p.snowflakeRegex.MatchString(text) {
 		return &discordgo.Guild{
 			ID: text,
@@ -30,7 +30,7 @@ func (p *Plugin) extractGuild(discord *discord.Session, text string) (*discordgo
 		inviteCode = parts[5]
 	}
 
-	invite, err := discord.Client.Invite(inviteCode)
+	invite, err := discord.Invite(p.redis, session, inviteCode)
 	if err != nil {
 		return nil, err
 	}

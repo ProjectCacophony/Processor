@@ -3,6 +3,8 @@ package serverlist
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"gitlab.com/Cacophony/go-kit/state"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
@@ -31,7 +33,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 	values := event.Fields()[4:]
 
-	server := extractExistingServerFromArg(p.db, event.Discord(), event.Fields()[2])
+	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
 		event.Respond("serverlist.edit.no-server") // nolint: errcheck
 		return
@@ -56,13 +58,13 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		var invite *discordgo.Invite
 		parts := regexp.DiscordInviteRegexp.FindStringSubmatch(values[0])
 		if len(parts) >= 6 {
-			invite, err = event.Discord().Client.InviteWithCounts(parts[5])
+			invite, err = discord.Invite(p.redis, event.Discord(), parts[5])
 			if err != nil {
 				event.Except(err)
 				return
 			}
 		} else {
-			invite, err = event.Discord().Client.InviteWithCounts(values[0])
+			invite, err = discord.Invite(p.redis, event.Discord(), values[0])
 			if err != nil {
 				event.Except(err)
 				return

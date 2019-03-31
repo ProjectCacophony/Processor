@@ -1,6 +1,7 @@
 package serverlist
 
 import (
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 
 	"gitlab.com/Cacophony/go-kit/discord"
@@ -9,7 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func extractExistingServerFromArg(db *gorm.DB, discord *discord.Session, arg string) *Server {
+func extractExistingServerFromArg(redis *redis.Client, db *gorm.DB, session *discord.Session, arg string) *Server {
 	server, err := serverFind(db, "invite_code = ? OR guild_id = ?", arg, arg)
 	if err == nil {
 		return server
@@ -17,7 +18,7 @@ func extractExistingServerFromArg(db *gorm.DB, discord *discord.Session, arg str
 
 	parts := regexp.DiscordInviteRegexp.FindStringSubmatch(arg)
 	if len(parts) >= 6 {
-		invite, err := discord.Client.InviteWithCounts(parts[5])
+		invite, err := discord.Invite(redis, session, parts[5])
 		if err != nil {
 			return nil
 		}
@@ -37,7 +38,7 @@ func (p *Plugin) handleRemove(event *events.Event) {
 		return
 	}
 
-	server := extractExistingServerFromArg(p.db, event.Discord(), event.Fields()[2])
+	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
 		event.Respond("serverlist.remove.no-server") // nolint: errcheck
 		return

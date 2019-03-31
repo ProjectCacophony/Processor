@@ -3,6 +3,8 @@ package serverlist
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"gitlab.com/Cacophony/go-kit/state"
 
 	"github.com/bwmarrin/discordgo"
@@ -26,7 +28,7 @@ func (p *Plugin) handleAdd(event *events.Event) {
 	var invite *discordgo.Invite
 	parts := regexp.DiscordInviteRegexp.FindStringSubmatch(fields[0])
 	if len(parts) >= 6 {
-		invite, err = event.Discord().Client.InviteWithCounts(parts[5])
+		invite, err = discord.Invite(p.redis, event.Discord(), parts[5])
 		if err != nil {
 			event.Except(err)
 			return
@@ -52,8 +54,8 @@ func (p *Plugin) handleAdd(event *events.Event) {
 		return
 	}
 
-	var categoryIDs []uint
-	var categoryGuildIDs []string
+	var categoryIDs []uint        // nolint: prealloc
+	var categoryGuildIDs []string // nolint: prealloc
 
 	// try channels
 	for _, arg := range fields[2:] {
