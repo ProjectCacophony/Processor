@@ -21,6 +21,72 @@ func (p *Plugin) handleListRefresh(event *events.Event) {
 	event.Except(err)
 }
 
+func (p *Plugin) handleListClearCache(event *events.Event) {
+	err := p.clearListCache(event.BotUserID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	_, err = event.Respond("serverlist.list-clear-cache.content")
+	event.Except(err)
+}
+
+func (p *Plugin) clearListCache(botID string) error {
+	allList, err := p.getList(botID)
+	if err != nil {
+		return err
+	}
+
+	session, err := discord.NewSession(p.tokens, botID)
+	if err != nil {
+		return errors.Wrap(err, "failure creating Discord Session for Bot")
+	}
+
+	for _, item := range allList {
+
+		for _, category := range item.Categories {
+
+			for _, name := range item.Names {
+
+				categoryChannel, err := p.state.Channel(category.Category.ChannelID)
+				if err != nil {
+					return err
+				}
+
+				switch categoryChannel.Type {
+
+				case discordgo.ChannelTypeGuildText:
+					// group by not used
+
+					err = p.redis.Del(redisListMessagesKey(categoryChannel.ID)).Err()
+					if err != nil {
+						return err
+					}
+
+				case discordgo.ChannelTypeGuildCategory:
+
+					channel, err := p.getDiscordCategoryChannel(
+						session,
+						&category.Category,
+						name,
+					)
+					if err != nil {
+						return err
+					}
+
+					err = p.redis.Del(redisListMessagesKey(channel.ID)).Err()
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+	}
+
+	return nil
+}
+
 func (p *Plugin) refreshList(botID string) error {
 	allList, err := p.getList(botID)
 	if err != nil {
@@ -88,7 +154,26 @@ func (p *Plugin) refreshList(botID string) error {
 		}
 	}
 
-	return nil
+	// clear channels if necessary, based on diff with last list
+	previousServersToPost, err := p.getChannelServersToPost(botID)
+	if err == nil && len(previousServersToPost) > 0 {
+		for _, previousChannelToPost := range previousServersToPost {
+			if channelServersToPostContain(previousChannelToPost, serversToPost) {
+				continue
+			}
+
+			err = p.clearListChannel(session, previousChannelToPost)
+			if err != nil {
+				if errD, ok := err.(*discordgo.RESTError); ok &&
+					errD != nil && errD.Message != nil && errD.Message.Code == discordgo.ErrCodeUnknownChannel {
+					continue
+				}
+				return err
+			}
+		}
+	}
+
+	return p.setChannelServersToPost(botID, serversToPost)
 }
 
 type ChannelServersToPost struct {
@@ -100,6 +185,26 @@ type ChannelServersToPost struct {
 type ServerToPost struct {
 	Server *Server
 	Name   string
+}
+
+func (p *Plugin) clearListChannel(session *discord.Session, channelToPost *ChannelServersToPost) error {
+	messages, err := p.getListMessages(session, channelToPost.ChannelID)
+	if err != nil {
+		return err
+	}
+
+	err = discord.DeleteSmart(
+		p.redis,
+		session,
+		channelToPost.ChannelID,
+		messages,
+		false,
+	)
+	if err != nil {
+		return err
+	}
+
+	return p.setListMessages(channelToPost.ChannelID, []*discordgo.Message{})
 }
 
 func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelServersToPost) error {
@@ -360,4 +465,16 @@ func (p *Plugin) getList(botID string) ([]*Server, error) {
 		p.db,
 		"state = ? AND bot_id = ?", StatePublic, botID,
 	)
+}
+
+func channelServersToPostContain(key *ChannelServersToPost, list []*ChannelServersToPost) bool {
+	for _, item := range list {
+		if key.ChannelID != item.ChannelID {
+			continue
+		}
+
+		return true
+	}
+
+	return false
 }

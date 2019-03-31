@@ -25,5 +25,9 @@ var (
 		return "cacophony:processor:serverlist:list-messages:channelid-" + channelID
 	}
 
+	channelServersToPost = func(botID string) string {
+		return "cacophony:processor:serverlist:channel-servers-to-post:botID-" + botID
+	}
+
 	serverNameInitialRegexp = regexp.MustCompile(`^[a-z]$`)
 )

@@ -138,7 +138,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "list":
 
 			if len(event.Fields()) >= 3 {
-				if event.Fields()[2] == "refresh" {
+
+				switch event.Fields()[2] {
+
+				case "refresh":
 
 					event.Require(func() {
 
@@ -148,6 +151,18 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.staffRoles,
 					)
 					return true
+
+				case "clear-cache":
+
+					event.Require(func() {
+
+						p.handleListClearCache(event)
+					},
+						permissions.Not(permissions.DiscordChannelDM),
+						p.staffRoles,
+					)
+					return true
+
 				}
 			}
 

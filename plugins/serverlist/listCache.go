@@ -60,3 +60,34 @@ func (p *Plugin) setListMessages(
 	err = p.redis.Set(redisListMessagesKey(channelID), data, 24*time.Hour).Err()
 	return err
 }
+
+func (p *Plugin) getChannelServersToPost(
+	botID string,
+) ([]*ChannelServersToPost, error) {
+	data, err := p.redis.Get(channelServersToPost(botID)).Bytes()
+	if err != nil && err != redis.Nil {
+		return nil, err
+	}
+
+	var serversToPost []*ChannelServersToPost
+
+	err = json.Unmarshal(data, &serversToPost)
+	if err != nil {
+		return nil, err
+	}
+
+	return serversToPost, nil
+}
+
+func (p *Plugin) setChannelServersToPost(
+	botID string,
+	serversToPost []*ChannelServersToPost,
+) error {
+	data, err := json.Marshal(&serversToPost)
+	if err != nil {
+		return err
+	}
+
+	err = p.redis.Set(channelServersToPost(botID), data, 24*time.Hour*7).Err()
+	return err
+}
