@@ -286,6 +286,8 @@ func (p *Plugin) newQueueMessage(
 			Embed: embed,
 		},
 		false,
+		"server",
+		queueItem,
 	)
 	if err != nil {
 		return errors.Wrap(err, "error sending new QueueMessage")
@@ -339,6 +341,8 @@ func (p *Plugin) updateQueueMessage(
 			Channel: channelID,
 		},
 		false,
+		"server",
+		queueItem,
 	)
 	if err != nil {
 		if errD, ok := err.(*discordgo.RESTError); ok &&

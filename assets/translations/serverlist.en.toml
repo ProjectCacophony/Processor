@@ -40,8 +40,10 @@ If it's waiting for approval please have patience until we have reviewed it."
 
 # queue
 "serverlist.queue.embed.description" = "\
-**To Approve** click the ✅ Reaction\n\
-**To Reject** `/serverlist reject \"the reason\"`"
+**To Approve**\nclick the ✅ Reaction\n\
+**To Reject**\n`/serverlist reject \"the reason\"`\n\
+**To Edit**\n`/serverlist edit {{.server.InviteCode}} <name|description|category> <new value>`\
+" # TODO: don't hardcode prefix
 
 # handleQueue
 "serverlist.queue.content" = "From now on I will post the Serverlist Queue in <#{{.channelID}}>"

@@ -110,7 +110,7 @@ func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.Mess
 		nameChange = "\n➡\n" + strings.Join(server.Change.Names, "; ")
 	}
 	if len(server.Change.InviteCode) > 0 {
-		inviteChange = "\n➡\n" + fmt.Sprintf("discord.gg/%s", server.Change.InviteCode)
+		inviteChange = "\n➡\n" + fmt.Sprintf("https://discord.gg/%s", server.Change.InviteCode)
 	}
 	if len(server.Change.Description) > 0 {
 		descriptionChange = "\n➡\n" + server.Change.Description
@@ -159,7 +159,7 @@ func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.Mess
 			},
 			{
 				Name:   "🚩 Invite",
-				Value:  fmt.Sprintf("discord.gg/%s", server.InviteCode) + inviteChange,
+				Value:  fmt.Sprintf("https://discord.gg/%s", server.InviteCode) + inviteChange,
 				Inline: true,
 			},
 			{
