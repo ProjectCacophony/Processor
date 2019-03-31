@@ -1,6 +1,7 @@
 package automod
 
 import (
+	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -12,7 +13,7 @@ func (p *Plugin) cmdLog(event *events.Event) {
 		return
 	}
 
-	err = config.GuildSetString(p.db, event.GuildID, automodLogKey, channel.ID)
+	err = config.GuildSetString(p.db, event.GuildID, handler.AutomodLogKey, channel.ID)
 	if err != nil {
 		event.Except(err)
 		return

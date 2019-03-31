@@ -16,14 +16,14 @@ import (
 	"gitlab.com/Cacophony/go-kit/config"
 )
 
-const automodLogKey = "cacophony:processor:automod:log-channel-id"
+const AutomodLogKey = "cacophony:processor:automod:log-channel-id"
 
 func (h *Handler) getLogChannelIDs() (map[string]string, error) {
 	var items []config.Item
 
 	err := h.db.Model(config.Item{}).Where(
 		"key = ?",
-		automodLogKey,
+		AutomodLogKey,
 	).Find(&items).Error
 	if err != nil {
 		return nil, err

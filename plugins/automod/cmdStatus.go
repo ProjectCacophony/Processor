@@ -4,6 +4,8 @@ import (
 	"sort"
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -64,7 +66,7 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 		}
 	}
 
-	logChannel, err := config.GuildGetString(p.db, event.GuildID, automodLogKey)
+	logChannel, err := config.GuildGetString(p.db, event.GuildID, handler.AutomodLogKey)
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		event.Except(err)
 		return

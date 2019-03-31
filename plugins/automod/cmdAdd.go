@@ -3,6 +3,8 @@ package automod
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/config"
@@ -117,7 +119,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 	}
 
 	var logChannelSet string
-	_, err := config.GuildGetString(p.db, event.GuildID, automodLogKey)
+	_, err := config.GuildGetString(p.db, event.GuildID, handler.AutomodLogKey)
 	if err != nil {
 		if !strings.Contains(err.Error(), "record not found") {
 			event.Except(err)
@@ -125,7 +127,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 		}
 
 		logChannelSet = event.ChannelID
-		err = config.GuildSetString(p.db, event.GuildID, automodLogKey, logChannelSet)
+		err = config.GuildSetString(p.db, event.GuildID, handler.AutomodLogKey, logChannelSet)
 		if err != nil {
 			event.Except(err)
 			return

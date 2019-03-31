@@ -5,8 +5,6 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-const automodLogKey = "cacophony:processor:automod:log-channel-id"
-
 func paramsExtractChannel(event *events.Event, args []string) (*discordgo.Channel, []string, error) {
 	for i, arg := range args {
 		channel, err := event.State().ChannelFromMention(event.GuildID, arg)
