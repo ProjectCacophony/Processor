@@ -92,6 +92,10 @@ func (p *Processor) executePlugin(plugin plugins.Plugin, event *events.Event) bo
 	defer func() {
 		err := recover()
 		if err != nil {
+			if _, ok := err.(error); ok {
+				event.ExceptSilent(err.(error))
+			}
+
 			p.logger.Error("plugin failed to handle event",
 				zap.String("plugin", plugin.Name()),
 				zap.String("event_type", string(event.Type)),
