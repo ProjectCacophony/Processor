@@ -3,6 +3,8 @@ package serverlist
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/state"
+
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/regexp"
@@ -52,28 +54,59 @@ func (p *Plugin) handleAdd(event *events.Event) {
 
 	var categoryIDs []uint
 	var categoryGuildIDs []string
-	for _, categoryName := range strings.Split(fields[2], ";") {
-		categoryName = strings.ToLower(strings.TrimSpace(categoryName))
 
-		for _, allCategory := range allCategories {
-			for _, keyword := range allCategory.Keywords {
-				if keyword != categoryName {
-					continue
+	// try channels
+	for _, arg := range fields[2:] {
+		for _, categoryName := range strings.Split(arg, ";") {
+			categoryName = strings.ToLower(strings.TrimSpace(categoryName))
+
+			for _, allCategory := range allCategories {
+				for _, keyword := range allCategory.Keywords {
+					if keyword != categoryName {
+						continue
+					}
+
+					if uintSliceContains(allCategory.ID, categoryIDs) {
+						continue
+					}
+
+					categoryIDs = append(categoryIDs, allCategory.ID)
+
+					if stringSliceContains(allCategory.GuildID, categoryGuildIDs) {
+						continue
+					}
+
+					categoryGuildIDs = append(categoryGuildIDs, allCategory.GuildID)
 				}
-
-				if uintSliceContains(allCategory.ID, categoryIDs) {
-					continue
-				}
-
-				categoryIDs = append(categoryIDs, allCategory.ID)
-
-				if stringSliceContains(allCategory.GuildID, categoryGuildIDs) {
-					continue
-				}
-
-				categoryGuildIDs = append(categoryGuildIDs, allCategory.GuildID)
 			}
 		}
+
+		result := state.ChannelRegex.FindStringSubmatch(arg)
+		if len(result) != 4 {
+			continue
+		}
+
+		channel, err := p.state.Channel(result[2])
+		if err != nil {
+			continue
+		}
+
+		category, err := categoryFind(p.db, "channel_id = ? OR channel_id = ?", channel.ID, channel.ParentID)
+		if err != nil {
+			continue
+		}
+
+		if uintSliceContains(category.ID, categoryIDs) {
+			continue
+		}
+
+		categoryIDs = append(categoryIDs, category.ID)
+
+		if stringSliceContains(category.GuildID, categoryGuildIDs) {
+			continue
+		}
+
+		categoryGuildIDs = append(categoryGuildIDs, category.GuildID)
 	}
 
 	if len(categoryIDs) == 0 {

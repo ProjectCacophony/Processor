@@ -3,6 +3,8 @@ package serverlist
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/state"
+
 	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"github.com/lib/pq"
@@ -143,6 +145,26 @@ func (p *Plugin) handleEdit(event *events.Event) {
 				}
 			}
 
+			result := state.ChannelRegex.FindStringSubmatch(value)
+			if len(result) != 4 {
+				continue
+			}
+
+			channel, err := p.state.Channel(result[2])
+			if err != nil {
+				continue
+			}
+
+			category, err := categoryFind(p.db, "channel_id = ? OR channel_id = ?", channel.ID, channel.ParentID)
+			if err != nil {
+				continue
+			}
+
+			if int64SliceContains(int64(category.ID), categoryIDs) {
+				continue
+			}
+
+			categoryIDs = append(categoryIDs, int64(category.ID))
 		}
 
 		if len(categoryIDs) == 0 {
