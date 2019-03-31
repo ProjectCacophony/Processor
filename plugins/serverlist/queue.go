@@ -201,9 +201,12 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return errors.Wrap(err, "error getting QueueMessage from config")
 	}
 
-	if currentQueueMessage == nil &&
-		len(queue) == 0 {
-		return nil
+	if currentQueueMessage == nil {
+		if len(queue) == 0 {
+			return nil
+		}
+
+		currentQueueMessage = &QueueMessage{}
 	}
 
 	previousServerID := currentQueueMessage.CurrentServerID
