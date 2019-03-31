@@ -78,6 +78,9 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 		return
 	}
 
-	_, err = event.Respond("whitelist.add.success", "name", guild.Name)
+	_, err = event.Respond("whitelist.add.success",
+		"name", guild.Name,
+		"inviteURL", inviteURL(event.BotUserID),
+	)
 	event.Except(err)
 }

@@ -37,3 +37,7 @@ func (p *Plugin) extractGuild(discord *discord.Session, text string) (*discordgo
 
 	return invite.Guild, nil
 }
+
+func inviteURL(botID string) string {
+	return "https://discordapp.com/oauth2/authorize?client_id=" + botID + "&scope=bot&permissions=0x00000000"
+}

@@ -3,6 +3,7 @@
 What are you doing… :thinking:"
 "whitelist.add.success" = "**I whitelisted the server {{.name}}!**\n\
 Please be aware that it can take up to one minute until the change is applied.\n\
+Come invite me: <{{Shorten .inviteURL}}>!\n\
 Enjoy playing with me :reach:"
 "whitelist.add.too-few-args" = "Please send me an invite of a server I should whitelist."
 "whitelist.add.invalid-invite" = "**Invalid server invite!**\n\
