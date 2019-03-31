@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"gitlab.com/Cacophony/go-kit/discord"
+
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
 )
@@ -85,7 +87,7 @@ func getBaseServerEmbed(server *Server, invite bool) *discordgo.MessageEmbed {
 	}
 }
 
-func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.MessageEmbed {
+func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, total int) *discordgo.MessageEmbed {
 	if server == nil {
 		return &discordgo.MessageEmbed{
 			Title:       "⌛ Serverlist Queue",
@@ -127,8 +129,7 @@ func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.Mess
 		}
 		categoryChange = strings.TrimRight(categoryChange, ", ")
 	}
-
-	return &discordgo.MessageEmbed{
+	embed := &discordgo.MessageEmbed{
 		Title:       "⌛ Serverlist Queue: " + titleText,
 		Description: "serverlist.queue.embed.description",
 		Timestamp:   server.CreatedAt.Format(time.RFC3339),
@@ -179,4 +180,26 @@ func (p *Plugin) getQueueMessageEmbed(server *Server, total int) *discordgo.Mess
 			},
 		},
 	}
+
+	invite, err := discord.Invite(p.redis, session, server.InviteCode)
+	if err == nil && invite != nil && invite.Code == server.InviteCode &&
+		invite.Inviter != nil && invite.Inviter.ID != "" {
+
+		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+			Name:   "🚪 Inviter",
+			Value:  fmt.Sprintf("<@%s>", invite.Inviter.ID),
+			Inline: true,
+		})
+	}
+
+	guild, err := p.state.Guild(server.GuildID)
+	if err == nil && guild != nil && guild.OwnerID != "" {
+		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
+			Name:   "👑 Owner",
+			Value:  fmt.Sprintf("<@%s>", guild.OwnerID),
+			Inline: true,
+		})
+	}
+
+	return embed
 }
