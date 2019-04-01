@@ -81,8 +81,15 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			return
 		}
 
+		var newState State
+		// set State to public, if we are fixing an expired invite
+		if server.State == StateExpired {
+			newState = StatePublic
+		}
+
 		err = server.Update(p, Server{
 			InviteCode: invite.Code,
+			State:      newState,
 		})
 		if err != nil {
 			event.Except(err)

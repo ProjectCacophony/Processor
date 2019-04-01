@@ -71,8 +71,15 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-	if event.Type == events.MessageReactionAddType {
+	switch event.Type {
+
+	case events.MessageReactionAddType:
 		return p.handleQueueReaction(event)
+
+	case events.CacophonyServerlistServerExpire:
+		p.handleExpired(event)
+		return true
+
 	}
 
 	if !event.Command() {

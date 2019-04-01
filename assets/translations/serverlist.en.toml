@@ -86,6 +86,8 @@ Reason: `{{.reason}}`."
 "serverlist.dm.server-removed" = "🚮 **The Server {{Join .server.Names \"; \"}} has been removed{{if .editor}} by an Editor{{end}}!**"
 "serverlist.dm.server-hidden" = "🔒 **The Server {{Join .server.Names \"; \"}} has been hidden by an Editor!**"
 "serverlist.dm.server-unhidden" = "🔓 **The Server {{Join .server.Names \"; \"}} has been unhidden by an Editor!**"
+"serverlist.dm.server-expired" = "❌ **The Invite for Server {{Join .server.Names \"; \"}} is expired!**\n\
+Please update the Invite to get back on the List."
 
 # handleRemove
 "serverlist.remove.too-few-args" = "Please tell me the Invite, or Server ID of the Server you want to remove."

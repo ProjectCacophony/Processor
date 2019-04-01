@@ -56,7 +56,7 @@ type State string
 const (
 	StateQueued   State = "queued"
 	StatePublic   State = "public"
-	StateExpired  State = "expired" // TODO
+	StateExpired  State = "expired"
 	StateHidden   State = "hidden"
 	StateCensored State = "censored" // TODO
 )
