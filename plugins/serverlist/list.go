@@ -286,7 +286,8 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 		) &&
 		channel.Topic != topic {
 		_, err = session.Client.ChannelEditComplex(channelToPost.ChannelID, &discordgo.ChannelEdit{
-			Topic: topic,
+			Topic:    topic,
+			Position: channel.Position,
 		})
 		if err != nil {
 			return err
