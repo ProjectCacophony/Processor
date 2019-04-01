@@ -40,6 +40,12 @@ func (p *Plugin) getListMessages(
 		return nil, err
 	}
 
+	// reverse messages
+	for i := len(messages)/2 - 1; i >= 0; i-- {
+		opp := len(messages) - 1 - i
+		messages[i], messages[opp] = messages[opp], messages[i]
+	}
+
 	err = p.setListMessages(channelID, messages)
 	if err != nil {
 		return nil, err

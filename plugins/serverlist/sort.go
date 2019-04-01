@@ -18,7 +18,7 @@ func (s ServersSorter) Less(i, j int) bool {
 		switch sortByItem {
 		case SortByMemberCount:
 			if s.Servers[i].Server.TotalMembers != s.Servers[j].Server.TotalMembers {
-				return s.Servers[i].Server.TotalMembers < s.Servers[j].Server.TotalMembers
+				return s.Servers[i].Server.TotalMembers > s.Servers[j].Server.TotalMembers
 			}
 
 		case SortByAddingDate:
@@ -28,7 +28,7 @@ func (s ServersSorter) Less(i, j int) bool {
 
 		case SortByAlphabetical:
 			if s.Servers[i].Name != s.Servers[j].Name {
-				return s.Servers[i].Name > s.Servers[j].Name
+				return s.Servers[i].Name < s.Servers[j].Name
 			}
 		}
 	}
