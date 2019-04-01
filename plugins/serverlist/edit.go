@@ -157,9 +157,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 				continue
 			}
 
-			category, err := categoryFind(p.db, "channel_id = ? OR channel_id = ?", channel.ID, channel.ParentID)
+			category, err := categoryFind(p.db, "channel_id = ?", channel.ID)
 			if err != nil {
-				continue
+				category, err = categoryFind(p.db, "channel_id = ?", channel.ParentID)
+				if err != nil {
+					continue
+				}
 			}
 
 			if int64SliceContains(int64(category.ID), categoryIDs) {

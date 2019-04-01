@@ -93,9 +93,12 @@ func (p *Plugin) handleAdd(event *events.Event) {
 			continue
 		}
 
-		category, err := categoryFind(p.db, "channel_id = ? OR channel_id = ?", channel.ID, channel.ParentID)
+		category, err := categoryFind(p.db, "channel_id = ?", channel.ID)
 		if err != nil {
-			continue
+			category, err = categoryFind(p.db, "channel_id = ?", channel.ParentID)
+			if err != nil {
+				continue
+			}
 		}
 
 		if uintSliceContains(category.ID, categoryIDs) {
