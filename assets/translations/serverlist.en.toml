@@ -83,7 +83,7 @@ So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
 Thank you for your submission."
 "serverlist.dm.server-rejected" = "❌ **The Server {{Join .server.Names \"; \"}} has been rejected!**\n\
 Reason: `{{.reason}}`."
-"serverlist.dm.server-removed" = "🚮 **The Server {{Join .server.Names \"; \"}} has been removed by an Editor!**"
+"serverlist.dm.server-removed" = "🚮 **The Server {{Join .server.Names \"; \"}} has been removed{{if .editor}} by an Editor{{end}}!**"
 "serverlist.dm.server-hidden" = "🔒 **The Server {{Join .server.Names \"; \"}} has been hidden by an Editor!**"
 "serverlist.dm.server-unhidden" = "🔓 **The Server {{Join .server.Names \"; \"}} has been unhidden by an Editor!**"
 

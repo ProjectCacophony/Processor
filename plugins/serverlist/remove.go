@@ -49,7 +49,7 @@ func (p *Plugin) handleRemove(event *events.Event) {
 		return
 	}
 
-	err := server.Remove(p)
+	err := server.Remove(p, true)
 	if err != nil {
 		event.Except(err)
 		return

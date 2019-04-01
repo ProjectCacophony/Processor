@@ -57,7 +57,6 @@ const (
 	StateQueued   State = "queued"
 	StatePublic   State = "public"
 	StateExpired  State = "expired" // TODO
-	StateRejected State = "rejected"
 	StateHidden   State = "hidden"
 	StateCensored State = "censored" // TODO
 )
@@ -189,25 +188,36 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 		return errors.New("can only reject servers that are queued")
 	}
 
-	newState := StateRejected
+	var err error
 
-	if s.Change.State != "" {
-		err := s.resetChange(p)
+	if s.Change.State != "" && s.Change.State != StateQueued {
+		// rejecting change, reverting server back to previous state
+
+		err = s.resetChange(p)
 		if err != nil {
 			return err
 		}
 
-		if s.Change.State != StateQueued {
-			newState = s.Change.State
+		err = serverSetStateWithReason(p.db, s.ID, s.Change.State, reason)
+		if err != nil {
+			return err
+		}
+
+		s.State = s.Change.State
+
+	} else {
+		// rejecting server, removing server
+		err = s.Remove(p, false)
+		if err != nil {
+			return err
 		}
 	}
 
-	err := serverSetStateWithReason(p.db, s.ID, newState, reason)
-	if err != nil {
-		return err
-	}
-
 	s.refreshQueues(p)
+
+	if s.State == StatePublic {
+		p.refreshList(s.BotID) // nolint: errcheck
+	}
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -234,7 +244,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	return nil
 }
 
-func (s *Server) Remove(p *Plugin) error {
+func (s *Server) Remove(p *Plugin, editor bool) error {
 	if s == nil {
 		return errors.New("server is nil")
 	}
@@ -269,6 +279,8 @@ func (s *Server) Remove(p *Plugin) error {
 			true,
 			"server",
 			s,
+			"editor",
+			editor,
 		)
 	}
 
