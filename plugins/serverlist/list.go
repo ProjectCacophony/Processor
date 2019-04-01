@@ -3,6 +3,7 @@ package serverlist
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
@@ -181,6 +182,7 @@ func (p *Plugin) refreshList(botID string) error {
 type ChannelServersToPost struct {
 	ChannelID string
 	Servers   []*ServerToPost
+	Category  *Category
 	SortBy    []SortBy
 }
 
@@ -270,7 +272,28 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 		}
 	}
 
-	return p.setListMessages(channelToPost.ChannelID, messages)
+	err = p.setListMessages(channelToPost.ChannelID, messages)
+	if err != nil {
+		return err
+	}
+
+	// update channel topic if needed
+	topic := getCategoyTopic(channelToPost.Category, channelToPost.SortBy)
+	channel, err := p.state.Channel(channelToPost.ChannelID)
+	if err == nil &&
+		discord.UserHasPermission(
+			p.state, session.BotID, channelToPost.ChannelID, discordgo.PermissionManageChannels,
+		) &&
+		channel.Topic != topic {
+		_, err = session.Client.ChannelEditComplex(channelToPost.ChannelID, &discordgo.ChannelEdit{
+			Topic: topic,
+		})
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (p *Plugin) newListMessage(
@@ -424,7 +447,8 @@ func (p *Plugin) addToServersToPost(
 				Name:   name,
 			},
 		},
-		SortBy: sortBy,
+		Category: category,
+		SortBy:   sortBy,
 	})
 }
 
@@ -479,4 +503,18 @@ func channelServersToPostContain(key *ChannelServersToPost, list []*ChannelServe
 	}
 
 	return false
+}
+
+func getCategoyTopic(category *Category, sortBy []SortBy) string {
+	var sortByText string
+	for _, item := range sortBy {
+		sortByText += string(item) + ", "
+	}
+	sortByText = strings.TrimRight(sortByText, ", ")
+
+	return fmt.Sprintf(
+		"Keywords: %s\nSorted By: %s",
+		strings.Join(category.Keywords, ", "),
+		sortByText,
+	)
 }
