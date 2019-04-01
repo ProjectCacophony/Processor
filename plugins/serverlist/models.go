@@ -174,7 +174,7 @@ func (s *Server) QueueApprove(p *Plugin) error {
 		session,
 		s,
 		&discordgo.MessageSend{
-			Embed: getLogApprovedEmbed(s),
+			Embed: p.getLogApprovedEmbed(s),
 		},
 	)
 }

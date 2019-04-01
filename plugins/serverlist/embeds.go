@@ -11,8 +11,8 @@ import (
 	humanize "github.com/dustin/go-humanize"
 )
 
-func getLogApprovedEmbed(server *Server) *discordgo.MessageEmbed {
-	baseEmbed := getBaseServerEmbed(server, true)
+func (p *Plugin) getLogApprovedEmbed(server *Server) *discordgo.MessageEmbed {
+	baseEmbed := p.getBaseServerEmbed(server, true)
 	baseEmbed.Title = "serverlist.log.approved.embed.title"
 
 	return baseEmbed
@@ -46,9 +46,14 @@ func getLogApprovedEmbed(server *Server) *discordgo.MessageEmbed {
 // 	return baseEmbed
 // }
 
-func getBaseServerEmbed(server *Server, invite bool) *discordgo.MessageEmbed {
+func (p *Plugin) getBaseServerEmbed(server *Server, invite bool) *discordgo.MessageEmbed {
 	var categoryText string
 	for _, category := range server.Categories {
+		channel, err := p.state.Channel(category.Category.ChannelID)
+		if err == nil && channel.ParentID != "" {
+			categoryText += "<#" + channel.ParentID + "> / "
+		}
+
 		categoryText += "<#" + category.Category.ChannelID + ">, "
 	}
 	categoryText = strings.TrimRight(categoryText, ", ")
@@ -103,6 +108,11 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 
 	var categoryText string
 	for _, category := range server.Categories {
+		channel, err := p.state.Channel(category.Category.ChannelID)
+		if err == nil && channel.ParentID != "" {
+			categoryText += "<#" + channel.ParentID + "> / "
+		}
+
 		categoryText += "<#" + category.Category.ChannelID + ">, "
 	}
 	categoryText = strings.TrimRight(categoryText, ", ")
@@ -123,6 +133,11 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 			category, err := categoryFind(p.db, "id = ?", categoryID)
 			if err != nil {
 				continue
+			}
+
+			channel, err := p.state.Channel(category.ChannelID)
+			if err == nil && channel.ParentID != "" {
+				categoryChange += "<#" + channel.ParentID + "> / "
 			}
 
 			categoryChange += "<#" + category.ChannelID + ">, "
