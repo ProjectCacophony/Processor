@@ -8,11 +8,13 @@ import (
 
 func handleGetPrefix(event *events.Event) {
 	// event.Prefix() is automatically called and will query for guild prefix
-	event.Respond("prefix.get-prefix")
+	_, err := event.Respond("prefix.get-prefix")
+	event.Except(err)
 }
 
 func handleSetPrefix(event *events.Event, db *gorm.DB) {
-	event.Discord().Client.ChannelTyping(event.ChannelID)
+	err := event.Discord().Client.ChannelTyping(event.ChannelID)
+	event.Except(err)
 
 	if len(event.Fields()) != 3 {
 		_, err := event.Respond("prefix.set-prefix.no-value")
@@ -21,7 +23,7 @@ func handleSetPrefix(event *events.Event, db *gorm.DB) {
 	}
 
 	newPrefix := event.Fields()[2]
-	err := config.GuildSetString(db, event.GuildID, guildCmdPrefixKey, newPrefix)
+	err = config.GuildSetString(db, event.GuildID, guildCmdPrefixKey, newPrefix)
 	if err != nil {
 		event.Except(err)
 		return
