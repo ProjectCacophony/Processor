@@ -30,5 +30,3 @@ require (
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
 	golang.org/x/sys v0.0.0-20190308023053-584f3b12f43e // indirect
 )
-
-replace gitlab.com/Cacophony/go-kit => ../go-kit
