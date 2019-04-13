@@ -12,6 +12,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 
 	"gitlab.com/Cacophony/Processor/plugins/gall"
+	"gitlab.com/Cacophony/Processor/plugins/prefix"
 
 	"gitlab.com/Cacophony/Processor/plugins/whitelist"
 
@@ -62,6 +63,7 @@ var (
 		&chatlog.Plugin{},
 		&instagram.Plugin{},
 		&serverlist.Plugin{},
+		&prefix.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

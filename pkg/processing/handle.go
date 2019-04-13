@@ -30,6 +30,7 @@ func (p *Processor) handle(delivery amqp.Delivery) error {
 	event.WithPaginator(p.paginator)
 	event.WithLogger(p.logger.With(zap.String("service", "processor")))
 	event.WithRedis(p.redis)
+	event.WithDB(p.db)
 
 	event.Parse()
 
