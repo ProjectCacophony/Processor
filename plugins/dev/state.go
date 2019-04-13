@@ -50,10 +50,10 @@ func (p *Plugin) handleDevState(event *events.Event) {
 	if member != nil {
 		memberRolesText = strconv.Itoa(len(member.Roles))
 		memberJoinedAt, _ := member.JoinedAt.Parse()
-		if err != nil {
-			event.Except(err)
-			return
-		}
+		// if err != nil {
+		// 	event.Except(err)
+		// 	return
+		// }
 		memberJoinedAtText = humanize.Time(memberJoinedAt)
 	}
 	memberIs, err := p.state.IsMember(
