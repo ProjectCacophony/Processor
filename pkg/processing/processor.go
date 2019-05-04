@@ -18,11 +18,6 @@ import (
 
 // TODO: shutdown logic
 
-const (
-	retryLimit = 24
-	retryWait  = 5 * time.Second
-)
-
 // Processor processes incoming events
 type Processor struct {
 	logger                    *zap.Logger
@@ -100,7 +95,7 @@ func NewProcessor(
 	return processor, nil
 }
 
-func (p *Processor) startReconnector() {
+func (p *Processor) startErrorHandler() {
 	p.amqpConnection.NotifyClose(p.amqpErrorChannel)
 
 	for amqpErr := range p.amqpErrorChannel {
@@ -111,50 +106,17 @@ func (p *Processor) startReconnector() {
 
 		if amqpErr.Recover {
 			p.logger.Error("received recoverable error from AMQP Broker",
-				zap.Any("amqp_err", amqpErr),
+				zap.Any("error", amqpErr),
 			)
 			continue
 		}
 
-		p.logger.Warn(
-			"looks like we lost the connection to the AMQP Broker, will attempt to reconnect",
-			zap.Any("amqp_err", amqpErr),
+		p.logger.Fatal(
+			"looks like we lost the connection to the AMQP Broker, will shut down",
+			zap.Any("error", amqpErr),
 		)
-
-		p.reconnect()
 	}
 
-}
-
-func (p *Processor) reconnect() {
-	var err error
-
-	p.amqpChannel.Close()
-	p.amqpConnection.Close()
-
-	for i := 0; i < retryLimit; i++ {
-		time.Sleep(retryWait)
-
-		p.logger.Info("attempting to reconnect")
-
-		err = p.init()
-		if err != nil {
-			continue
-		}
-
-		p.logger.Info("reconnected successfully")
-
-		go func() {
-			err = p.start()
-			if err != nil {
-				p.logger.Fatal("processor error received", zap.Error(err))
-			}
-		}()
-
-		return
-	}
-
-	p.logger.Fatal("could not reconnect")
 }
 
 // init declares the exchange, the queue, and the queue binding
@@ -213,7 +175,7 @@ func (p *Processor) init() error {
 
 // Start starts processing events
 func (p *Processor) Start() error {
-	go p.startReconnector()
+	go p.startErrorHandler()
 
 	return p.start()
 }
