@@ -6,6 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"go.uber.org/zap"
 )
 
@@ -59,7 +60,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 		}
 
 		if event.Fields()[1] == "set" {
-			handleSetPrefix(event, p.db)
+
+			event.Require(func() {
+
+				handleSetPrefix(event, p.db)
+			}, permissions.DiscordAdministrator)
+
 			return true
 		}
 	}
