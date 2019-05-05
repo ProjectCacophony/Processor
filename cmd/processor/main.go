@@ -9,13 +9,14 @@ import (
 	"time"
 
 	cacophonyConfig "gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/paginator"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
-	"gitlab.com/Cacophony/Processor/pkg/processing"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
 	"gitlab.com/Cacophony/go-kit/errortracking"
@@ -109,21 +110,41 @@ func main() {
 		)
 	}
 
+	// init paginator
+	paginatorClient, err := paginator.NewPaginator(
+		logger.With(zap.String("feature", "paginator")),
+		redisClient,
+		stateClient,
+		config.DiscordTokens,
+	)
+	if err != nil {
+		logger.Fatal("unable to initialise paginator",
+			zap.Error(err),
+		)
+	}
+
+	// create handler
+	handler := handle(
+		logger,
+		gormDB,
+		stateClient,
+		config.DiscordTokens,
+		featureFlagger,
+		config.BotOwnerIDs,
+		redisClient,
+		paginatorClient,
+		config.ProcessingDeadline,
+	)
+
 	// init processor
-	processor, err := processing.NewProcessor(
+	processor, err := events.NewProcessor(
 		logger.With(zap.String("feature", "processor")),
 		ServiceName,
 		config.AMQPDSN,
 		"cacophony",
 		"cacophony.discord.#",
-		gormDB,
-		stateClient,
 		config.ConcurrentProcessingLimit,
-		config.ProcessingDeadline,
-		config.DiscordTokens,
-		featureFlagger,
-		config.BotOwnerIDs,
-		redisClient,
+		handler,
 	)
 	if err != nil {
 		logger.Fatal("unable to initialise processor",
