@@ -1,6 +1,6 @@
 # handleGetPrefix
-"prefix.get-prefix" = "My prefix is set to: {{.prefix}}"
+"prefix.get-prefix" = "My prefix is set to: `{{.prefix}}`"
 
 # handleSetPrefix
-"prefix.set-prefix.success" = "Changed prefix to: {{.newPrefix}}"
+"prefix.set-prefix.success" = "Changed prefix to: `{{.newPrefix}}`"
 "prefix.set-prefix.no-value" = "Please specify a new prefix."
