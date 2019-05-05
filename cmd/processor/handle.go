@@ -28,7 +28,7 @@ func handle(
 ) func(event *events.Event) error {
 	l := logger.With(zap.String("service", "processor"))
 
-	return func(event *events.Event) error {
+	return func(event *events.Event) error { // nolint: unparam
 		var err error
 
 		ctx, cancel := context.WithTimeout(context.Background(), processingDeadline)
