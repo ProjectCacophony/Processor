@@ -5,7 +5,7 @@ import (
 )
 
 type PluginHelp struct {
-	PluginName  string
+	Name        string
 	Description string
 
 	ParamSets []ParamSet
@@ -25,7 +25,7 @@ type ParamSet struct {
 }
 
 type PluginParams struct {
-	ParamName    string
-	ParamType    string
-	ParamExample string
+	Name    string
+	Type    string
+	Example string
 }

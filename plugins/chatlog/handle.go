@@ -55,7 +55,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() help.PluginHelp {
 	return help.PluginHelp{
-		PluginName:  p.Name(),
+		Name:        p.Name(),
 		PatreonOnly: true,
 		Description: "Enable chat logging to always store messages sent in your server, even if they are deleted in discord.",
 	}

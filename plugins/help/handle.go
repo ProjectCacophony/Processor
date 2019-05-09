@@ -45,8 +45,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() PluginHelp {
 	return PluginHelp{
-		PluginName: p.Name(),
-		Hide:       true,
+		Name: p.Name(),
+		Hide: true,
 	}
 }
 

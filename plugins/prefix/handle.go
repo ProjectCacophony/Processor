@@ -50,7 +50,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() help.PluginHelp {
 	return help.PluginHelp{
-		PluginName: p.Name(),
+		Name: p.Name(),
 		Description: "Allows server admins to change the bots command prefix. " +
 			"Helpful to make sure it does not conflict with other bots on the server.",
 	}

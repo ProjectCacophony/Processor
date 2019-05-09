@@ -23,7 +23,7 @@ func listCommands(event *events.Event, displayInChannel bool) {
 
 	// sort plugins by name
 	sort.Slice(pluginHelpList, func(i, j int) bool {
-		return pluginHelpList[i].PluginName < pluginHelpList[j].PluginName
+		return pluginHelpList[i].Name < pluginHelpList[j].Name
 	})
 
 	// build each plugins help text with the plugin name and description
@@ -34,7 +34,7 @@ func listCommands(event *events.Event, displayInChannel bool) {
 		}
 
 		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
-			strings.Title(pluginHelp.PluginName), event.Prefix(), pluginHelp.PluginName)
+			strings.Title(pluginHelp.Name), event.Prefix(), pluginHelp.Name)
 
 		if pluginHelp.PatreonOnly {
 			summeryText += " | *(Patrons Only)*"

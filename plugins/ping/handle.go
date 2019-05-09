@@ -45,7 +45,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() help.PluginHelp {
 	return help.PluginHelp{
-		PluginName:  p.Name(),
+		Name:        p.Name(),
 		Description: "Simple ping command to check the response time of the bot. Good way to check if the bot is online.",
 	}
 }

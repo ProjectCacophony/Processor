@@ -71,7 +71,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() help.PluginHelp {
 	return help.PluginHelp{
-		PluginName:  p.Name(),
+		Name:        p.Name(),
 		Description: "Set up the bot to watch a gall forum and post updates on the forum in a given discord channel.",
 	}
 }
