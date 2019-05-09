@@ -33,7 +33,8 @@ func listCommands(event *events.Event, displayInChannel bool) {
 			continue
 		}
 
-		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`", strings.Title(pluginHelp.PluginName), event.Prefix(), pluginHelp.PluginName)
+		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
+			strings.Title(pluginHelp.PluginName), event.Prefix(), pluginHelp.PluginName)
 
 		if pluginHelp.PatreonOnly {
 			summeryText += " | *(Patrons Only)*"
@@ -51,6 +52,7 @@ func listCommands(event *events.Event, displayInChannel bool) {
 		event.Except(err)
 	} else {
 
+		// TODO (snake): there's a bug with send() so need to get DMChannel here. eventually take this out
 		dmChannel, err := discord.DMChannel(event.Redis(), event.Discord(), event.UserID)
 		if err != nil {
 			event.Except(err)
@@ -62,7 +64,7 @@ func listCommands(event *events.Event, displayInChannel bool) {
 
 		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in your server", event.Prefix())
 		_, err = event.Send(dmChannel, helpText, false)
-		event.Except()
+		event.Except(err)
 	}
 
 }

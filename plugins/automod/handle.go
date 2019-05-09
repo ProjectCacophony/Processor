@@ -71,8 +71,9 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() help.PluginHelp {
 	return help.PluginHelp{
-		PluginName:  p.Name(),
-		Description: "Set up automatic actions such as sending messages, kicking/banning users, and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions.",
+		PluginName: p.Name(),
+		Description: "Set up automatic actions such as sending messages, kicking/banning users, " +
+			"and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions.",
 	}
 }
 
