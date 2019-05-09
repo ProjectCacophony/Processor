@@ -113,7 +113,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 			event.Require(func() {
 				p.whitelistList(event)
-			}, permissions.BotOwner)
+			}, permissions.BotAdmin)
 			return true
 
 		case "remove":
@@ -125,23 +125,14 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 			event.Require(func() {
 				p.blacklistAdd(event)
-			}, permissions.BotOwner)
+			}, permissions.BotAdmin)
 			return true
 		}
 
 		event.RequireOr(func() {
 			p.whitelistAdd(event)
 		},
-			permissions.BotOwner,
-			// TODO: don't hardcode
-			// sekl's dev cord / Cacophony Whitelist Role
-			permissions.NewDiscordRole(
-				p.state, "208673735580844032", "549951245738180688",
-			),
-			// Cacophony / Cacophony Team
-			permissions.NewDiscordRole(
-				p.state, "435420687906111498", "440519691904090113",
-			),
+			permissions.BotAdmin,
 		)
 		return true
 	}

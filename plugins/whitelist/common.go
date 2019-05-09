@@ -10,7 +10,7 @@ import (
 // serversPerUserLimit returns the server limit for the current user
 // returns < 0 if the limit is unlimited
 func serversPerUserLimit(event *events.Event) int {
-	if event.Has(permissions.BotOwner) {
+	if event.Has(permissions.BotAdmin) {
 		return -1
 	}
 

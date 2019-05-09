@@ -26,7 +26,6 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 
 	has := permissions.NewDiscordPermission("", permissionID).Match(
 		p.state,
-		nil,
 		userID,
 		event.ChannelID,
 		event.DM(),

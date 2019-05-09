@@ -73,7 +73,7 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 	if !permissions.And(
 		permissions.DiscordSendMessages,
 		permissions.DiscordEmbedLinks,
-	).Match(h.state, nil, botID, channelID, false) {
+	).Match(h.state, botID, channelID, false) {
 		return nil
 	}
 

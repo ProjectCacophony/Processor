@@ -14,14 +14,14 @@ type PluginHelp struct {
 	PatreonOnly bool
 
 	DiscordPermissionRequired permissions.Discord
-	BotPermissionRequired     permissions.CacophonyBotOwner
+	BotPermissionRequired     permissions.CacophonyBotPermission
 }
 
 type ParamSet struct {
 	Params []PluginParams
 
 	DiscordPermissionRequired permissions.Discord
-	BotPermissionRequired     permissions.CacophonyBotOwner
+	BotPermissionRequired     permissions.CacophonyBotPermission
 }
 
 type PluginParams struct {

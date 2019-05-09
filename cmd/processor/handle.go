@@ -22,7 +22,6 @@ func handle(
 	stateClient *state.State,
 	discordTokens map[string]string,
 	featureFlagger *featureflag.FeatureFlagger,
-	botOwnerIDs []string,
 	redis *redis.Client,
 	paginator *paginator.Paginator,
 	processingDeadline time.Duration,
@@ -39,7 +38,6 @@ func handle(
 		event.WithTokens(discordTokens)
 		event.WithLocalisations(plugins.LocalisationsList)
 		event.WithState(stateClient)
-		event.WithBotOwnerIDs(botOwnerIDs)
 		event.WithPaginator(paginator)
 		event.WithLogger(l)
 		event.WithRedis(redis)

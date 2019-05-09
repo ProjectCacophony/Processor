@@ -40,7 +40,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 	}
 
 	if !stringSliceContains(event.UserID, server.EditorUserIDs) &&
-		!event.Has(permissions.BotOwner) {
+		!event.Has(permissions.BotAdmin) {
 		event.Respond("serverlist.edit.no-editor") // nolint: errcheck
 		return
 	}

@@ -3,7 +3,7 @@ module gitlab.com/Cacophony/Processor
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362
-	github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58
+	github.com/Seklfreak/ginsta v0.0.0-20190505161125-9c0af4b10e02
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/Unleash/unleash-client-go v0.0.0-20190225211619-9febc6ff26f4 // indirect
 	github.com/bsm/redis-lock v8.0.0+incompatible
@@ -20,7 +20,7 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20190505113914-161203db8537
+	gitlab.com/Cacophony/go-kit v0.0.0-20190509174213-2949881104b3
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9

@@ -10,7 +10,7 @@ import (
 )
 
 func feedsPerGuildLimit(event *events.Event) int {
-	if event.Has(permissions.BotOwner) {
+	if event.Has(permissions.BotAdmin) {
 		return -1
 	}
 

@@ -61,7 +61,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	event.Require(func() {
 		p.handleAsCommand(event)
-	}, permissions.BotOwner)
+	}, permissions.DiscordManageServer)
 	return true
 }
 
@@ -97,10 +97,6 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 	case "error":
 
 		p.handleDevError(event)
-		return
-	case "bot-owners":
-
-		p.handleBotOwners(event)
 		return
 	case "permission":
 

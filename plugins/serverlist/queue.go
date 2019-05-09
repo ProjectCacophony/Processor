@@ -52,7 +52,7 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 		return false
 	}
 
-	if !event.Has(permissions.BotOwner) {
+	if !event.Has(permissions.BotAdmin) {
 		return false
 	}
 

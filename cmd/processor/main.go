@@ -130,7 +130,6 @@ func main() {
 		stateClient,
 		config.DiscordTokens,
 		featureFlagger,
-		config.BotOwnerIDs,
 		redisClient,
 		paginatorClient,
 		config.ProcessingDeadline,

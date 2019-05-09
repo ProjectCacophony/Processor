@@ -13,8 +13,8 @@ github.com/PuerkitoBio/goquery v1.5.0 h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP
 github.com/PuerkitoBio/goquery v1.5.0/go.mod h1:qD2PgZ9lccMbQlc7eEOjaeRlFQON7xY8kdmcsrnKqMg=
 github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362 h1:A2TEqC+nzRjaW0IMMkXUSnQf3mfraFg8tCPUUsN3QAY=
 github.com/Seklfreak/ginside v0.0.0-20190304181936-3c6d866dc362/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
-github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58 h1:ZIreR6BBtrFXawhzs/1nYCXVVSyKWQziNMT+0rnmmbY=
-github.com/Seklfreak/ginsta v0.0.0-20190320193952-fbe48cb92f58/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
+github.com/Seklfreak/ginsta v0.0.0-20190505161125-9c0af4b10e02 h1:W5HnexKO8sTV6GCR0pE2OGU0XHR3rK/djA5OdiFuJm0=
+github.com/Seklfreak/ginsta v0.0.0-20190505161125-9c0af4b10e02/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942/go.mod h1:XdwC3B7PxCkYCXs4AzYEtvQxjsi93vc/kSV09u+AFWw=
 github.com/Seklfreak/polr-go v0.0.0-20190324143256-a87fed130937 h1:i7uyK5VEr5L/ZJEL4Bn8ff0dk+a5z0g9zJjSYxGyf0c=
@@ -186,8 +186,8 @@ github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
-gitlab.com/Cacophony/go-kit v0.0.0-20190505113914-161203db8537 h1:8XbBWv7gglo4ANkS1ItrHT+Qf+KJdvTkl+wfnhGflOI=
-gitlab.com/Cacophony/go-kit v0.0.0-20190505113914-161203db8537/go.mod h1:xK/dthVpZCyHFurO3VTzhp7plsHodszSp5toP7Wyic4=
+gitlab.com/Cacophony/go-kit v0.0.0-20190509174213-2949881104b3 h1:ux4nZOJu8P8lktgdz4TV8ISanNuQvmIiKp/f/gnMW4Q=
+gitlab.com/Cacophony/go-kit v0.0.0-20190509174213-2949881104b3/go.mod h1:xK/dthVpZCyHFurO3VTzhp7plsHodszSp5toP7Wyic4=
 go.opencensus.io v0.18.0 h1:Mk5rgZcggtbvtAun5aJzAtjKKN/t0R3jJPlWILlv938=
 go.opencensus.io v0.18.0/go.mod h1:vKdFvxhtzZ9onBp9VKHK8z/sRpBMnKAsufL7wlDrCOA=
 go.uber.org/atomic v1.3.2 h1:2Oa65PReHzfn29GpvgsYwloV9AVFHPDk8tYxt2c2tr4=

@@ -7,6 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 const (
@@ -71,6 +72,8 @@ func (p *Plugin) handleDevState(event *events.Event) {
 		return
 	}
 
+	isBotAdmin := event.Has(permissions.BotAdmin)
+
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: "State :spy:",
@@ -109,6 +112,11 @@ func (p *Plugin) handleDevState(event *events.Event) {
 				{
 					Name:   "Bot",
 					Value:  fmt.Sprintf("<@%s>", botID),
+					Inline: true,
+				},
+				{
+					Name:   "Bot Admin",
+					Value:  fmt.Sprintf("%t", isBotAdmin),
 					Inline: true,
 				},
 			},

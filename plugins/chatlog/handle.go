@@ -76,17 +76,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleCommand(event)
 		},
 		permissions.DiscordAdministrator,
-		permissions.Or(
-			// TODO: don't hardcode
-			// sekl's dev cord / Cacophony Whitelist Role
-			permissions.NewDiscordRole(
-				p.state, "208673735580844032", "549951245738180688",
-			),
-			// Cacophony / Cacophony Team
-			permissions.NewDiscordRole(
-				p.state, "435420687906111498", "440519691904090113",
-			),
-		),
+		permissions.BotAdmin,
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),

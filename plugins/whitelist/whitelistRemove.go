@@ -36,7 +36,7 @@ func (p *Plugin) whitelistRemove(event *events.Event) {
 	}
 
 	if whitelistEntry.WhitelistedByUserID != event.UserID &&
-		!event.Has(permissions.BotOwner) {
+		!event.Has(permissions.BotAdmin) {
 		event.Respond("whitelist.remove.no-permissions") // nolint: errcheck
 		return
 	}
