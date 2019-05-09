@@ -3,27 +3,22 @@ package plugins
 import (
 	"sort"
 
-	"gitlab.com/Cacophony/Processor/plugins/serverlist"
-
-	"gitlab.com/Cacophony/Processor/plugins/instagram"
-
-	"gitlab.com/Cacophony/Processor/plugins/chatlog"
-
-	"gitlab.com/Cacophony/Processor/plugins/rss"
-
-	"gitlab.com/Cacophony/Processor/plugins/gall"
-	"gitlab.com/Cacophony/Processor/plugins/prefix"
-
-	"gitlab.com/Cacophony/Processor/plugins/whitelist"
-
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
+	"gitlab.com/Cacophony/Processor/plugins/chatlog"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
+	"gitlab.com/Cacophony/Processor/plugins/gall"
+	"gitlab.com/Cacophony/Processor/plugins/help"
+	"gitlab.com/Cacophony/Processor/plugins/instagram"
 	"gitlab.com/Cacophony/Processor/plugins/lastfm"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
+	"gitlab.com/Cacophony/Processor/plugins/prefix"
+	"gitlab.com/Cacophony/Processor/plugins/rss"
+	"gitlab.com/Cacophony/Processor/plugins/serverlist"
+	"gitlab.com/Cacophony/Processor/plugins/whitelist"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -47,6 +42,8 @@ type Plugin interface {
 	Localisations() []interfaces.Localisation
 
 	Action(event *events.Event) bool
+
+	Help() help.PluginHelp
 }
 
 // nolint: gochecknoglobals
@@ -64,6 +61,7 @@ var (
 		&instagram.Plugin{},
 		&serverlist.Plugin{},
 		&prefix.Plugin{},
+		&help.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

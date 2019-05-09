@@ -13,6 +13,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/state"
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
+	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
@@ -63,6 +64,13 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 	}
 
 	return []interfaces.Localisation{local}
+}
+
+func (p *Plugin) Help() help.PluginHelp {
+	return help.PluginHelp{
+		PluginName:  p.Name(),
+		Description: "Have the bot watch a certain instagram account and have it post updates in a given channel.",
+	}
 }
 
 func (p *Plugin) Action(event *events.Event) bool {

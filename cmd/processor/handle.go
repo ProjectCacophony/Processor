@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins"
+	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/paginator"
@@ -112,6 +113,16 @@ func executePlugin(logger *zap.Logger, plugin plugins.Plugin, event *events.Even
 			)
 		}
 	}()
+
+	// Help plugin needs info on all other plugins
+	if plugin.Name() == "help" {
+		pluginHelpList := make([]help.PluginHelp, len(plugins.PluginList))
+		for i, plugin := range plugins.PluginList {
+			pluginHelpList[i] = plugin.Help()
+		}
+		ctx := context.WithValue(event.Context(), help.PluginHelpListKey, pluginHelpList)
+		event.WithContext(ctx)
+	}
 
 	return plugin.Action(event)
 }
