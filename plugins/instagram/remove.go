@@ -21,7 +21,7 @@ AND (instagram_username = ?)
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("instagram.remove.not-found") // nolint: errcheck
+			event.Respond("instagram.remove.not-found")
 			return
 		}
 		event.Except(err)

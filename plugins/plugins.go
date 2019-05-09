@@ -46,7 +46,6 @@ type Plugin interface {
 	Help() help.PluginHelp
 }
 
-// nolint: gochecknoglobals
 var (
 	PluginList = []Plugin{
 		&ping.Plugin{},
@@ -67,7 +66,6 @@ var (
 	LocalisationsList []interfaces.Localisation
 )
 
-// nolint: gochecknoinits
 func init() {
 	// sort plugins by priority
 	sort.Sort(ByPriority(PluginList))

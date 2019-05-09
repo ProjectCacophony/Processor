@@ -20,7 +20,7 @@ func GetUserinfo(client *lastfm.Api, username string) (userData UserData, err er
 	userData.Name = lastfmUser.RealName
 	userData.Country = lastfmUser.Country
 	if lastfmUser.PlayCount != "" {
-		userData.Scrobbles, _ = strconv.ParseInt(lastfmUser.PlayCount, 10, 64) // nolint: errcheck, gas
+		userData.Scrobbles, _ = strconv.ParseInt(lastfmUser.PlayCount, 10, 64)
 	}
 
 	if len(lastfmUser.Images) > 0 {
@@ -129,7 +129,7 @@ func GetTopArtists(client *lastfm.Api, username string, limit int, period Period
 					lastArtist.ImageURL = image.Url
 				}
 			}
-			lastArtist.Scrobbles, _ = strconv.Atoi(artist.PlayCount) // nolint: gas
+			lastArtist.Scrobbles, _ = strconv.Atoi(artist.PlayCount)
 
 			artistsData = append(artistsData, lastArtist)
 			if len(artistsData) >= limit {
@@ -142,7 +142,6 @@ func GetTopArtists(client *lastfm.Api, username string, limit int, period Period
 }
 
 // GetTopTracks returns the top tracks of an user
-// nolint: dupl
 func GetTopTracks(client *lastfm.Api, username string, limit int, period Period) ([]TrackData, error) {
 	var tracksData []TrackData
 	var err error
@@ -171,7 +170,7 @@ func GetTopTracks(client *lastfm.Api, username string, limit int, period Period)
 					lastTrack.ImageURL = image.Url
 				}
 			}
-			lastTrack.Scrobbles, _ = strconv.Atoi(track.PlayCount) // nolint: gas
+			lastTrack.Scrobbles, _ = strconv.Atoi(track.PlayCount)
 
 			tracksData = append(tracksData, lastTrack)
 			if len(tracksData) >= limit {
@@ -184,7 +183,6 @@ func GetTopTracks(client *lastfm.Api, username string, limit int, period Period)
 }
 
 // LastFmGetTopAlbums returns the top albums of an user
-// nolint: dupl
 func GetTopAlbums(client *lastfm.Api, username string, limit int, period Period) ([]AlbumData, error) {
 	var albumsData []AlbumData
 	var err error
@@ -213,7 +211,7 @@ func GetTopAlbums(client *lastfm.Api, username string, limit int, period Period)
 					lastAlbum.ImageURL = image.Url
 				}
 			}
-			lastAlbum.Scrobbles, _ = strconv.Atoi(album.PlayCount) // nolint: gas
+			lastAlbum.Scrobbles, _ = strconv.Atoi(album.PlayCount)
 
 			albumsData = append(albumsData, lastAlbum)
 			if len(albumsData) >= limit {

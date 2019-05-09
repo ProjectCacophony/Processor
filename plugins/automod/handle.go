@@ -100,7 +100,7 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 	}
 
 	if event.Has(permissions.DiscordChannelDM) {
-		event.Respond("automod.not-dm") // nolint: errcheck
+		event.Respond("automod.not-dm")
 		return true
 	}
 

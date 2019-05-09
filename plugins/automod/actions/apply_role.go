@@ -66,7 +66,7 @@ func (t *ApplyRoleItem) Do(env *models.Env) {
 			continue
 		}
 
-		session.Client.GuildMemberRoleAdd(env.GuildID, userID, t.RoleID) // nolint: errcheck
+		session.Client.GuildMemberRoleAdd(env.GuildID, userID, t.RoleID)
 
 		doneUserIDs[userID] = true
 	}

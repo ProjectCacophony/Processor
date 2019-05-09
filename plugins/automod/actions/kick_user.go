@@ -52,7 +52,6 @@ func (t *KickUserItem) Do(env *models.Env) {
 			continue
 		}
 
-		// nolint: errcheck
 		session.Client.GuildMemberDeleteWithReason(
 			env.GuildID, userID, "Kicked by Cacophony Automod",
 		)

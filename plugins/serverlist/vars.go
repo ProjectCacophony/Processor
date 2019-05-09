@@ -15,7 +15,6 @@ const (
 	emojiApprove = "✅"
 )
 
-// nolint: gochecknoglobals
 var (
 	refreshQueueLock = func(guildID string) string {
 		return "cacophony:processor:serverlist:queue-lock:guildid-" + guildID

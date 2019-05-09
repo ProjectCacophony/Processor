@@ -131,7 +131,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	case "top":
 		if len(event.Fields()) < 3 {
-			event.Respond("lastfm.no-subcommand") // nolint: errcheck
+			event.Respond("lastfm.no-subcommand")
 			return true
 		}
 

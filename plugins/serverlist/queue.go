@@ -66,7 +66,7 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 
 	p.refreshQueue(event.GuildID)
 
-	discord.RemoveReact( // nolint: errcheck
+	discord.RemoveReact(
 		p.redis,
 		event.Discord(),
 		event.ChannelID,
@@ -81,7 +81,7 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 
 func (p *Plugin) handleQueueReject(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("serverlist.queue-reject.no-reason") // nolint: errcheck
+		event.Respond("serverlist.queue-reject.no-reason")
 		return
 	}
 
@@ -168,7 +168,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 	if !locked {
 		return errors.Wrap(err, "unable to acquire lock")
 	}
-	defer guildLock.Unlock() // nolint: errcheck
+	defer guildLock.Unlock()
 
 	channelID, err := config.GuildGetString(
 		p.db, guildID, queueChannelIDKey,
@@ -258,7 +258,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			false,
 		)
 		if err == nil {
-			discord.Delete( // nolint: errcheck
+			discord.Delete(
 				p.redis,
 				session,
 				pingMessages[0].ChannelID,
@@ -312,7 +312,7 @@ func (p *Plugin) newQueueMessage(
 		return errors.Wrap(err, "error saving new QueueMessage")
 	}
 
-	discord.React( // nolint: errcheck
+	discord.React(
 		p.redis,
 		session,
 		channelID,

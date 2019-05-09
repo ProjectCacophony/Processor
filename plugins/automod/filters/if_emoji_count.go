@@ -1,4 +1,3 @@
-// nolint: dupl
 package filters
 
 import (
@@ -11,7 +10,6 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-// nolint: gochecknoglobals
 var emojiRegex = regexp.MustCompile(`[\x{00A0}-\x{1F9EF}]|<(a)?:[^<>:]+:[0-9]+>`)
 
 type EmojiCount struct {

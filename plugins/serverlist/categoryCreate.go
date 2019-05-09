@@ -10,7 +10,7 @@ import (
 
 func (p *Plugin) handleCategoryCreate(event *events.Event) {
 	if len(event.Fields()) < 6 {
-		event.Respond("serverlist.too-few") // nolint: errcheck
+		event.Respond("serverlist.too-few")
 		return
 	}
 
@@ -35,7 +35,7 @@ func (p *Plugin) handleCategoryCreate(event *events.Event) {
 	}
 
 	if len(keywords) == 0 {
-		event.Respond("serverlist.category-create.no-keywords") // nolint: errcheck
+		event.Respond("serverlist.category-create.no-keywords")
 		return
 	}
 
@@ -53,7 +53,7 @@ func (p *Plugin) handleCategoryCreate(event *events.Event) {
 	}
 
 	if len(sortBys) == 0 {
-		event.Respond("serverlist.category-create.invalid-sortby") // nolint: errcheck
+		event.Respond("serverlist.category-create.invalid-sortby")
 		return
 	}
 
@@ -69,7 +69,7 @@ func (p *Plugin) handleCategoryCreate(event *events.Event) {
 		}
 
 		if groupBy == "" {
-			event.Respond("serverlist.category-create.invalid-groupby") // nolint: errcheck
+			event.Respond("serverlist.category-create.invalid-groupby")
 			return
 		}
 

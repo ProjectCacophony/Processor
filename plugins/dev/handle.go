@@ -67,7 +67,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 func (p *Plugin) handleAsCommand(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("dev.no-subcommand") // nolint: errcheck
+		event.Respond("dev.no-subcommand")
 		return
 	}
 
@@ -104,5 +104,5 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 		return
 	}
 
-	event.Respond("dev.no-subcommand") // nolint: errcheck
+	event.Respond("dev.no-subcommand")
 }

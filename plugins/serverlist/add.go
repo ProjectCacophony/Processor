@@ -18,7 +18,7 @@ import (
 // serverlist add discord.gg/? "Join my awesome server!" "girl group; boy group"
 func (p *Plugin) handleAdd(event *events.Event) {
 	if len(event.Fields()) < 5 {
-		event.Respond("serverlist.add.too-few") // nolint: errcheck
+		event.Respond("serverlist.add.too-few")
 		return
 	}
 
@@ -36,13 +36,13 @@ func (p *Plugin) handleAdd(event *events.Event) {
 	}
 
 	if invite == nil || invite.Guild == nil || invite.Code == "" || invite.Guild.ID == "" {
-		event.Respond("serverlist.add.invalid-invite") // nolint: errcheck
+		event.Respond("serverlist.add.invalid-invite")
 		return
 	}
 
 	description := fields[1]
 	if len(description) > descriptionCharacterLimit {
-		event.Respond("serverlist.add.description-too-long", // nolint: errcheck
+		event.Respond("serverlist.add.description-too-long",
 			"limit", descriptionCharacterLimit,
 		)
 		return
@@ -115,7 +115,7 @@ func (p *Plugin) handleAdd(event *events.Event) {
 	}
 
 	if len(categoryIDs) == 0 {
-		event.Respond("serverlist.add.no-categories") // nolint: errcheck
+		event.Respond("serverlist.add.no-categories")
 		return
 	}
 
@@ -126,7 +126,7 @@ func (p *Plugin) handleAdd(event *events.Event) {
 	}
 
 	if serversContain(invite.Guild.ID, allServers) {
-		event.Respond("serverlist.add.already-exists") // nolint: errcheck
+		event.Respond("serverlist.add.already-exists")
 		return
 	}
 

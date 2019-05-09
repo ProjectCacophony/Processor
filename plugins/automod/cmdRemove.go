@@ -9,7 +9,7 @@ import (
 
 func (p *Plugin) cmdRemove(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("automod.remove.too-few") // nolint: errcheck
+		event.Respond("automod.remove.too-few")
 		return
 	}
 
@@ -18,7 +18,7 @@ func (p *Plugin) cmdRemove(event *events.Event) {
 		event.MessageCreate.GuildID, event.Fields()[2]).First(&ruleToDelete).Error
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("automod.remove.not-found") // nolint: errcheck
+			event.Respond("automod.remove.not-found")
 			return
 		}
 		event.Except(err)

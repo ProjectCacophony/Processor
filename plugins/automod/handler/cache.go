@@ -7,7 +7,6 @@ import (
 	"go.uber.org/zap"
 )
 
-// nolint: gochecknoglobals
 var (
 	cacheInterval = time.Minute
 )

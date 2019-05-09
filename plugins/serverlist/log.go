@@ -46,7 +46,7 @@ func (p *Plugin) sendLogMessageForServer(
 
 		logChannelIDsPosted[logChannelID] = nil
 
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),

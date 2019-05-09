@@ -11,7 +11,6 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-// nolint: gochecknoglobals
 var emojiRegex = regexp.MustCompile(`^[\x{00A0}-\x{1F9EF}]|<(a)?:[^<>:]+:[0-9]+>$`)
 
 type React struct {
@@ -72,7 +71,6 @@ func (t *ReactItem) Do(env *models.Env) {
 			continue
 		}
 
-		// nolint: errcheck
 		discord.React(
 			nil,
 			session,

@@ -13,7 +13,7 @@ func (p *Plugin) handleExpired(event *events.Event) {
 		return
 	}
 
-	p.refreshList(server.BotID) // nolint: errcheck
+	p.refreshList(server.BotID)
 
 	session, err := discord.NewSession(p.tokens, server.BotID)
 	if err != nil {
@@ -22,7 +22,7 @@ func (p *Plugin) handleExpired(event *events.Event) {
 	}
 
 	for _, editorUserID := range server.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),

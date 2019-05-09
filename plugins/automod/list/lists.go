@@ -7,7 +7,6 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/triggers"
 )
 
-// nolint: gochecknoglobals
 var (
 	TriggerList = []interfaces.TriggerInterface{
 		triggers.Message{},

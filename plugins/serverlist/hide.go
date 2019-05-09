@@ -6,23 +6,23 @@ import (
 
 func (p *Plugin) handleHide(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("serverlist.hide.too-few-args") // nolint: errcheck
+		event.Respond("serverlist.hide.too-few-args")
 		return
 	}
 
 	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
-		event.Respond("serverlist.hide.no-server") // nolint: errcheck
+		event.Respond("serverlist.hide.no-server")
 		return
 	}
 
 	if !stringSliceContains(event.UserID, server.EditorUserIDs) {
-		event.Respond("serverlist.hide.no-editor") // nolint: errcheck
+		event.Respond("serverlist.hide.no-editor")
 		return
 	}
 
 	if server.State != StatePublic && server.State != StateHidden {
-		event.Respond("serverlist.hide.wrong-status") // nolint: errcheck
+		event.Respond("serverlist.hide.wrong-status")
 		return
 	}
 

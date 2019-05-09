@@ -8,7 +8,7 @@ import (
 
 func (p *Plugin) add(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("instagram.add.too-few") // nolint: errcheck
+		event.Respond("instagram.add.too-few")
 		return
 	}
 
@@ -24,7 +24,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	if len(fields) < 1 {
-		event.Respond("instagram.add.too-few") // nolint: errcheck
+		event.Respond("instagram.add.too-few")
 		return
 	}
 
@@ -40,14 +40,14 @@ func (p *Plugin) add(event *events.Event) {
 	}
 	if len(entries) >= feedsPerGuildLimit(event) &&
 		feedsPerGuildLimit(event) >= 0 {
-		event.Respond("instagram.add.too-many") // nolint: errcheck
+		event.Respond("instagram.add.too-many")
 		return
 	}
 
 	instagramUser, err := p.ginsta.UserByUsername(event.Context(), input)
 	if err != nil {
 		if strings.Contains(err.Error(), "unexpected status code: 404") {
-			event.Respond("instagram.add.not-found") // nolint: errcheck
+			event.Respond("instagram.add.not-found")
 			return
 		}
 		event.Except(err)
@@ -62,7 +62,7 @@ func (p *Plugin) add(event *events.Event) {
 			continue
 		}
 
-		event.Respond("instagram.add.duplicate") // nolint: errcheck
+		event.Respond("instagram.add.duplicate")
 		return
 	}
 

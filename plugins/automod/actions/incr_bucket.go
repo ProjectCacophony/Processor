@@ -146,7 +146,6 @@ func bucketTag(guildID, channelID, userID, tag string) string {
 	return key
 }
 
-// nolint: gochecknoglobals
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyz")
 
 func randomLetters(n int) string {

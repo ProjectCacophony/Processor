@@ -21,7 +21,6 @@ const (
 	SortByMemberCount  SortBy = "member_count"
 )
 
-// nolint: gochecknoglobals
 var allSortBys = []SortBy{
 	SortByAlphabetical,
 	SortByAddingDate,
@@ -46,7 +45,6 @@ func (g *GroupBy) ChannelName(serverName string) string {
 	return "etc"
 }
 
-// nolint: gochecknoglobals
 var allGroupBys = []GroupBy{
 	GroupByAlphabet,
 }
@@ -148,7 +146,7 @@ func (s *Server) QueueApprove(p *Plugin) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -156,7 +154,7 @@ func (s *Server) QueueApprove(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),
@@ -216,7 +214,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	s.refreshQueues(p)
 
 	if s.State == StatePublic {
-		p.refreshList(s.BotID) // nolint: errcheck
+		p.refreshList(s.BotID)
 	}
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
@@ -225,7 +223,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),
@@ -260,7 +258,7 @@ func (s *Server) Remove(p *Plugin, editor bool) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -268,7 +266,7 @@ func (s *Server) Remove(p *Plugin, editor bool) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),
@@ -303,7 +301,7 @@ func (s *Server) Hide(p *Plugin) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -311,7 +309,7 @@ func (s *Server) Hide(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),
@@ -344,7 +342,7 @@ func (s *Server) Unhide(p *Plugin) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	session, err := discord.NewSession(p.tokens, s.BotID)
 	if err != nil {
@@ -352,7 +350,7 @@ func (s *Server) Unhide(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
-		discord.SendComplexWithVars( // nolint: errcheck
+		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localisations(),
@@ -418,7 +416,7 @@ func (s *Server) Edit(p *Plugin, changes ServerChange) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	return nil
 }
@@ -456,7 +454,7 @@ func (s *Server) Update(p *Plugin, update Server) error {
 
 	s.refreshQueues(p)
 
-	p.refreshList(s.BotID) // nolint: errcheck
+	p.refreshList(s.BotID)
 
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 
 func (p *Plugin) add(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("gall.add.too-few") // nolint: errcheck
+		event.Respond("gall.add.too-few")
 		return
 	}
 
@@ -28,7 +28,7 @@ func (p *Plugin) add(event *events.Event) {
 	all, fields := paramsIsAll(fields)
 
 	if len(fields) < 1 {
-		event.Respond("gall.add.too-few") // nolint: errcheck
+		event.Respond("gall.add.too-few")
 		return
 	}
 
@@ -44,7 +44,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 	if len(entries) >= feedsPerGuildLimit(event) &&
 		feedsPerGuildLimit(event) >= 0 {
-		event.Respond("gall.add.too-many") // nolint: errcheck
+		event.Respond("gall.add.too-many")
 		return
 	}
 
@@ -56,7 +56,7 @@ func (p *Plugin) add(event *events.Event) {
 			continue
 		}
 
-		event.Respond("gall.add.duplicate") // nolint: errcheck
+		event.Respond("gall.add.duplicate")
 		return
 	}
 
@@ -69,7 +69,7 @@ func (p *Plugin) add(event *events.Event) {
 		posts, err = p.ginside.BoardMinorPosts(event.Context(), boardID, false)
 		if err != nil {
 			if strings.Contains(err.Error(), "404") {
-				event.Respond("gall.add.not-found") // nolint: errcheck
+				event.Respond("gall.add.not-found")
 				return
 			}
 			event.Except(err)
@@ -78,7 +78,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	if len(posts) == 0 {
-		event.Respond("gall.add.not-found") // nolint: errcheck
+		event.Respond("gall.add.not-found")
 		return
 	}
 

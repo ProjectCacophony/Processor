@@ -10,13 +10,13 @@ import (
 
 func (p *Plugin) blacklistAdd(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("whitelist.blacklist-add.too-few-args") // nolint: errcheck
+		event.Respond("whitelist.blacklist-add.too-few-args")
 		return
 	}
 
 	guild, err := p.extractGuild(event.Discord(), event.Fields()[2])
 	if err != nil {
-		event.Respond("whitelist.blacklist-add.invalid-invite") // nolint: errcheck
+		event.Respond("whitelist.blacklist-add.invalid-invite")
 		return
 	}
 
@@ -29,7 +29,7 @@ func (p *Plugin) blacklistAdd(event *events.Event) {
 	}
 
 	if blacklistEntry != nil {
-		event.Respond("whitelist.blacklist-add.already-blacklisted") // nolint: errcheck
+		event.Respond("whitelist.blacklist-add.already-blacklisted")
 		return
 	}
 

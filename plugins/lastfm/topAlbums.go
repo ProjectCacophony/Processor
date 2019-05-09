@@ -24,7 +24,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 	// get lastFM username to look up
 	username, _ := extractUsername(event, p.db, fields, -1)
 	if username == "" {
-		event.Respond("lastfm.no-user") // nolint: errcheck
+		event.Respond("lastfm.no-user")
 		return
 	}
 
@@ -32,7 +32,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 	userInfo, err := lastfmclient.GetUserinfo(lastfmClient, username)
 	if err != nil {
 		if strings.Contains(err.Error(), "User not found") {
-			event.Respond("lastfm.user-not-found", "username", username) // nolint: errcheck
+			event.Respond("lastfm.user-not-found", "username", username)
 			return
 		}
 		event.Except(err)

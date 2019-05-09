@@ -16,18 +16,17 @@ import (
 	"gitlab.com/Cacophony/go-kit/regexp"
 )
 
-// nolint: gocyclo
 func (p *Plugin) handleEdit(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("serverlist.edit.too-few-args-lt3") // nolint: errcheck
+		event.Respond("serverlist.edit.too-few-args-lt3")
 		return
 	}
 	if len(event.Fields()) < 4 {
-		event.Respond("serverlist.edit.too-few-args-lt4") // nolint: errcheck
+		event.Respond("serverlist.edit.too-few-args-lt4")
 		return
 	}
 	if len(event.Fields()) < 5 {
-		event.Respond("serverlist.edit.too-few-args-lt5") // nolint: errcheck
+		event.Respond("serverlist.edit.too-few-args-lt5")
 		return
 	}
 
@@ -35,18 +34,18 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
-		event.Respond("serverlist.edit.no-server") // nolint: errcheck
+		event.Respond("serverlist.edit.no-server")
 		return
 	}
 
 	if !stringSliceContains(event.UserID, server.EditorUserIDs) &&
 		!event.Has(permissions.BotAdmin) {
-		event.Respond("serverlist.edit.no-editor") // nolint: errcheck
+		event.Respond("serverlist.edit.no-editor")
 		return
 	}
 
 	if server.State == StateCensored {
-		event.Respond("serverlist.edit.wrong-status") // nolint: errcheck
+		event.Respond("serverlist.edit.wrong-status")
 		return
 	}
 
@@ -72,12 +71,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		}
 
 		if invite == nil || invite.Guild == nil || invite.Code == "" || invite.Guild.ID == "" {
-			event.Respond("serverlist.edit.invalid-invite") // nolint: errcheck
+			event.Respond("serverlist.edit.invalid-invite")
 			return
 		}
 
 		if invite.Guild.ID != server.GuildID {
-			event.Respond("serverlist.edit.invalid-invite-guild") // nolint: errcheck
+			event.Respond("serverlist.edit.invalid-invite-guild")
 			return
 		}
 
@@ -109,7 +108,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		}
 
 		if len(names) == 0 {
-			event.Respond("serverlist.edit.no-name") // nolint: errcheck
+			event.Respond("serverlist.edit.no-name")
 			return
 		}
 
@@ -118,7 +117,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 	case "description":
 
 		if len(values[0]) > descriptionCharacterLimit {
-			event.Respond("serverlist.edit.description-too-long", // nolint: errcheck
+			event.Respond("serverlist.edit.description-too-long",
 				"limit", descriptionCharacterLimit,
 			)
 			return
@@ -180,7 +179,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		}
 
 		if len(categoryIDs) == 0 {
-			event.Respond("serverlist.edit.no-categories") // nolint: errcheck
+			event.Respond("serverlist.edit.no-categories")
 			return
 		}
 
@@ -198,7 +197,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 		if stringSliceContains(editorChange.ID, server.EditorUserIDs) {
 			if len(server.EditorUserIDs) <= 1 {
-				event.Respond("serverlist.edit.remove-editors-too-few") // nolint: errcheck
+				event.Respond("serverlist.edit.remove-editors-too-few")
 				return
 			}
 
@@ -218,7 +217,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		}
 
 		if len(server.EditorUserIDs) == 0 {
-			event.Respond("serverlist.edit.remove-editors-too-few") // nolint: errcheck
+			event.Respond("serverlist.edit.remove-editors-too-few")
 			return
 		}
 
@@ -239,7 +238,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 	default:
 
 		if len(event.Fields()) < 4 {
-			event.Respond("serverlist.edit.too-few-args-lt4") // nolint: errcheck
+			event.Respond("serverlist.edit.too-few-args-lt4")
 			return
 		}
 

@@ -12,7 +12,7 @@ import (
 func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api, offset int) {
 	lastfmUsername, _ := extractUsername(event, p.db, event.Fields(), offset)
 	if lastfmUsername == "" {
-		event.Respond("lastfm.no-user") // nolint: errcheck
+		event.Respond("lastfm.no-user")
 		return
 	}
 
@@ -20,7 +20,7 @@ func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api,
 	userInfo, err := lastfm_client.GetUserinfo(lastfmClient, lastfmUsername)
 	if err != nil {
 		if strings.Contains(err.Error(), "User not found") {
-			event.Respond("lastfm.user-not-found", "username", lastfmUsername) // nolint: errcheck
+			event.Respond("lastfm.user-not-found", "username", lastfmUsername)
 			return
 		}
 		event.Except(err)
@@ -40,7 +40,7 @@ func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api,
 
 	// if no tracks found, post error and stop
 	if len(tracks) < 1 {
-		event.Respond("lastfm.no-scrobbles", "username", lastfmUsername) // nolint: errcheck
+		event.Respond("lastfm.no-scrobbles", "username", lastfmUsername)
 		return
 	}
 

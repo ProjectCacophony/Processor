@@ -9,7 +9,7 @@ import (
 
 func (p *Plugin) add(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("rss.add.too-few") // nolint: errcheck
+		event.Respond("rss.add.too-few")
 		return
 	}
 
@@ -25,7 +25,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	if len(fields) < 1 {
-		event.Respond("rss.add.too-few") // nolint: errcheck
+		event.Respond("rss.add.too-few")
 		return
 	}
 
@@ -34,7 +34,7 @@ func (p *Plugin) add(event *events.Event) {
 
 	_, err = url.ParseRequestURI(feedURL)
 	if err != nil {
-		event.Respond("rss.add.not-found") // nolint: errcheck
+		event.Respond("rss.add.not-found")
 		return
 	}
 
@@ -48,7 +48,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 	if len(entries) >= feedsPerGuildLimit(event) &&
 		feedsPerGuildLimit(event) >= 0 {
-		event.Respond("rss.add.too-many") // nolint: errcheck
+		event.Respond("rss.add.too-many")
 		return
 	}
 
@@ -56,13 +56,13 @@ func (p *Plugin) add(event *events.Event) {
 	if err != nil || len(feed.Items) == 0 {
 		feedURL, err = getFeedURLFromPage(p.httpClient, feedURL)
 		if err != nil {
-			event.Respond("rss.add.not-found") // nolint: errcheck
+			event.Respond("rss.add.not-found")
 			return
 		}
 
 		feed, err = getFeed(p.httpClient, p.parser, feedURL)
 		if err != nil || len(feed.Items) == 0 {
-			event.Respond("rss.add.not-found") // nolint: errcheck
+			event.Respond("rss.add.not-found")
 			return
 		}
 	}
@@ -75,7 +75,7 @@ func (p *Plugin) add(event *events.Event) {
 			continue
 		}
 
-		event.Respond("rss.add.duplicate") // nolint: errcheck
+		event.Respond("rss.add.duplicate")
 		return
 	}
 

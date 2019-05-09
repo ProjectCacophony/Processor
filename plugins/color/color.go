@@ -20,7 +20,7 @@ import (
 
 func (p *Plugin) handleColor(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("color.too-few-arguments") // nolint: errcheck
+		event.Respond("color.too-few-arguments")
 		return
 	}
 
@@ -37,7 +37,7 @@ func (p *Plugin) handleColor(event *events.Event) {
 		hexText, err = getHexFromRGB(parsedNums)
 
 		if err != nil {
-			event.Respond("color.invalid-color") // nolint: errcheck
+			event.Respond("color.invalid-color")
 			return
 		}
 	}
@@ -60,7 +60,7 @@ func (p *Plugin) handleColor(event *events.Event) {
 		if err != nil {
 			if strings.Contains(err.Error(), "odd length hex string") ||
 				strings.Contains(err.Error(), "invalid byte") {
-				event.Respond("color.invalid-color") // nolint: errcheck
+				event.Respond("color.invalid-color")
 				return
 			}
 
@@ -70,7 +70,7 @@ func (p *Plugin) handleColor(event *events.Event) {
 	}
 
 	if len(rgbArray) < 3 {
-		event.Respond("color.invalid-color") // nolint: errcheck
+		event.Respond("color.invalid-color")
 		return
 	}
 

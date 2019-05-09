@@ -21,7 +21,7 @@ AND board_id = ?
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("gall.remove.not-found") // nolint: errcheck
+			event.Respond("gall.remove.not-found")
 			return
 		}
 		event.Except(err)

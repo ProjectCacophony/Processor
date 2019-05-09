@@ -14,7 +14,7 @@ func (p *Plugin) handleSet(event *events.Event) {
 
 	_, err := lastfmclient.GetUserinfo(p.lastfmClient, username)
 	if err != nil {
-		event.Respond("lastfm.user-not-found", "username", username) // nolint: errcheck
+		event.Respond("lastfm.user-not-found", "username", username)
 		return
 	}
 

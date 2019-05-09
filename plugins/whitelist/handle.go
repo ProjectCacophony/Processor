@@ -40,7 +40,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.db = params.DB
 	p.redis = params.Redis
 
-	// nolint: gocritic
 	p.discordInviteRegex, err = regexp.Compile(
 		`^(http(s)?:\/\/)?(discord\.gg(\/invite)?|discordapp\.com\/invite)\/([A-Za-z0-9-]+)$`,
 	)
@@ -48,7 +47,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		return err
 	}
 
-	// nolint: gocritic
 	p.snowflakeRegex, err = regexp.Compile(
 		`^[0-9]+$`,
 	)

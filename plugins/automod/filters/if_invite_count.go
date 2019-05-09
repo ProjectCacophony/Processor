@@ -1,4 +1,3 @@
-// nolint: dupl
 package filters
 
 import (
@@ -11,7 +10,6 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-// nolint: gochecknoglobals
 var discordInviteRegex = regexp.MustCompile(
 	`(http(s)?:\/\/)?(discord\.gg(\/invite)?|discordapp\.com\/invite)\/([A-Za-z0-9-]+)`,
 )

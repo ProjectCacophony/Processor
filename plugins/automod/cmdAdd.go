@@ -13,7 +13,7 @@ import (
 
 func (p *Plugin) cmdAdd(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("automod.add.too-few") // nolint: errcheck
+		event.Respond("automod.add.too-few")
 		return
 	}
 
@@ -36,7 +36,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 
 		_, err := trigger.NewItem(env, triggerArgs)
 		if err != nil {
-			event.Respond("automod.add.invalid-trigger-value", "error", err) // nolint: errcheck
+			event.Respond("automod.add.invalid-trigger-value", "error", err)
 			return
 		}
 		newRule.TriggerName = triggerName
@@ -44,7 +44,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 		break
 	}
 	if newRule.TriggerName == "" {
-		event.Respond("automod.add.invalid-trigger-name") // nolint: errcheck
+		event.Respond("automod.add.invalid-trigger-name")
 		return
 	}
 
@@ -63,7 +63,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 
 			_, err := filter.NewItem(env, filterArgs)
 			if err != nil {
-				event.Respond("automod.add.invalid-filter-value", "error", err) // nolint: errcheck
+				event.Respond("automod.add.invalid-filter-value", "error", err)
 				return
 			}
 			newRule.Filters = append(newRule.Filters, models.RuleFilter{
@@ -75,7 +75,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 		}
 	}
 	if len(newRule.Filters) == 0 {
-		event.Respond("automod.add.invalid-filter-name") // nolint: errcheck
+		event.Respond("automod.add.invalid-filter-name")
 		return
 	}
 
@@ -93,7 +93,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 
 			_, err := action.NewItem(env, actionArgs)
 			if err != nil {
-				event.Respond("automod.add.invalid-action-value", "error", err) // nolint: errcheck
+				event.Respond("automod.add.invalid-action-value", "error", err)
 				return
 			}
 			newRule.Actions = append(newRule.Actions, models.RuleAction{
@@ -103,7 +103,7 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 			break
 		}
 		if len(newRule.Actions) == 0 {
-			event.Respond("automod.add.invalid-action-name") // nolint: errcheck
+			event.Respond("automod.add.invalid-action-name")
 			return
 		}
 	}

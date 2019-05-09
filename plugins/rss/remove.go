@@ -21,7 +21,7 @@ AND (name = ? OR url = ? OR feed_url = ?)
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("rss.remove.not-found") // nolint: errcheck
+			event.Respond("rss.remove.not-found")
 			return
 		}
 		event.Except(err)

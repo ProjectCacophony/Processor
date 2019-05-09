@@ -34,18 +34,18 @@ func extractExistingServerFromArg(redis *redis.Client, db *gorm.DB, session *dis
 
 func (p *Plugin) handleRemove(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("serverlist.remove.too-few-args") // nolint: errcheck
+		event.Respond("serverlist.remove.too-few-args")
 		return
 	}
 
 	server := extractExistingServerFromArg(p.redis, p.db, event.Discord(), event.Fields()[2])
 	if server == nil {
-		event.Respond("serverlist.remove.no-server") // nolint: errcheck
+		event.Respond("serverlist.remove.no-server")
 		return
 	}
 
 	if !stringSliceContains(event.UserID, server.EditorUserIDs) {
-		event.Respond("serverlist.remove.no-editor") // nolint: errcheck
+		event.Respond("serverlist.remove.no-editor")
 		return
 	}
 

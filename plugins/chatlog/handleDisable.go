@@ -16,7 +16,7 @@ func (p *Plugin) handleDisable(event *events.Event) {
 	}
 
 	if !enabled {
-		event.Respond("chatlog.disable.already-disabled") // nolint: errcheck
+		event.Respond("chatlog.disable.already-disabled")
 		return
 	}
 

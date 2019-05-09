@@ -10,13 +10,13 @@ import (
 
 func (p *Plugin) whitelistAdd(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("whitelist.add.too-few-args") // nolint: errcheck
+		event.Respond("whitelist.add.too-few-args")
 		return
 	}
 
 	guild, err := p.extractGuild(event.Discord(), event.Fields()[1])
 	if err != nil {
-		event.Respond("whitelist.add.invalid-invite") // nolint: errcheck
+		event.Respond("whitelist.add.invalid-invite")
 		return
 	}
 
@@ -29,7 +29,7 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 	}
 
 	if blacklistEntry != nil {
-		event.Respond("whitelist.add.blacklisted") // nolint: errcheck
+		event.Respond("whitelist.add.blacklisted")
 		return
 	}
 
@@ -42,7 +42,7 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 	}
 
 	if whitelistEntry != nil {
-		event.Respond("whitelist.add.already-whitelisted") // nolint: errcheck
+		event.Respond("whitelist.add.already-whitelisted")
 		return
 	}
 
@@ -56,7 +56,7 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 
 	if len(allUserEntries) >= serversPerUserLimit(event) &&
 		serversPerUserLimit(event) >= 0 {
-		event.Respond("whitelist.add.too-many") // nolint: errcheck
+		event.Respond("whitelist.add.too-many")
 		return
 	}
 

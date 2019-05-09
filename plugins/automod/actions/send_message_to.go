@@ -62,7 +62,6 @@ func (t *SendMessageToItem) Do(env *models.Env) {
 		return
 	}
 
-	// nolint: errcheck
 	discord.SendComplexWithVars(
 		nil,
 		session,

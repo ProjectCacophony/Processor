@@ -71,7 +71,6 @@ func (t *ResetBucketItem) Do(env *models.Env) {
 
 	for _, key := range keys {
 
-		// nolint: errcheck
 		bucket.Reset(
 			env.Redis,
 			key,

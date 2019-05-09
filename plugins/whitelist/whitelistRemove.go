@@ -12,13 +12,13 @@ import (
 
 func (p *Plugin) whitelistRemove(event *events.Event) {
 	if len(event.Fields()) < 3 {
-		event.Respond("whitelist.remove.too-few-args") // nolint: errcheck
+		event.Respond("whitelist.remove.too-few-args")
 		return
 	}
 
 	guild, err := p.extractGuild(event.Discord(), event.Fields()[2])
 	if err != nil {
-		event.Respond("whitelist.remove.invalid-invite") // nolint: errcheck
+		event.Respond("whitelist.remove.invalid-invite")
 		return
 	}
 
@@ -31,13 +31,13 @@ func (p *Plugin) whitelistRemove(event *events.Event) {
 	}
 
 	if whitelistEntry == nil {
-		event.Respond("whitelist.remove.not-found") // nolint: errcheck
+		event.Respond("whitelist.remove.not-found")
 		return
 	}
 
 	if whitelistEntry.WhitelistedByUserID != event.UserID &&
 		!event.Has(permissions.BotAdmin) {
-		event.Respond("whitelist.remove.no-permissions") // nolint: errcheck
+		event.Respond("whitelist.remove.no-permissions")
 		return
 	}
 
