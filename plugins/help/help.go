@@ -47,17 +47,22 @@ func listCommands(event *events.Event, displayInChannel bool) {
 	helpText := strings.Join(pluginNames, "\n")
 
 	if displayInChannel {
-		event.Respond(helpText)
+		_, err := event.Respond(helpText)
+		event.Except(err)
 	} else {
-		event.Respond("help.message-sent-to-dm")
+
 		dmChannel, err := discord.DMChannel(event.Redis(), event.Discord(), event.UserID)
-		event.Logger().Info(fmt.Sprint("dm channel", dmChannel))
 		if err != nil {
 			event.Except(err)
 			return
 		}
+
+		_, err = event.Respond("help.message-sent-to-dm")
+		event.Except(err)
+
 		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in your server", event.Prefix())
-		event.Send(dmChannel, helpText, false)
+		_, err = event.Send(dmChannel, helpText, false)
+		event.Except()
 	}
 
 }
