@@ -116,17 +116,17 @@ spec:
           - name: POLR_BASE_URL
             valueFrom:
               secretKeyRef:
-                name: worker-secret
+                name: processor-secret
                 key: polrBaseURL
           - name: POLR_API_KEY
             valueFrom:
               secretKeyRef:
-                name: worker-secret
+                name: processor-secret
                 key: polrAPIKey
           - name: IEXCLOUD_API_SECRET
             valueFrom:
               secretKeyRef:
-                name: worker-secret
+                name: processor-secret
                 key: iexCloudAPISecret
 
 
