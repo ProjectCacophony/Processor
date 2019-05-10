@@ -18,6 +18,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/prefix"
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 	"gitlab.com/Cacophony/Processor/plugins/serverlist"
+	"gitlab.com/Cacophony/Processor/plugins/stocks"
 	"gitlab.com/Cacophony/Processor/plugins/whitelist"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
@@ -61,6 +62,7 @@ var (
 		&serverlist.Plugin{},
 		&prefix.Plugin{},
 		&help.Plugin{},
+		&stocks.Plugin{},
 	}
 
 	LocalisationsList []interfaces.Localisation

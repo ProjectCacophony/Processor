@@ -1,0 +1,19 @@
+# handleStocks
+"stocks.no-symbol" = "Please tell me the Symbol of the Stock you want to find out about."
+"stocks.symbol-not-found" = "**I was not able to find the given Symbol!**\n\
+Please make sure the Symbol you are telling me is correct."
+"stocks.embed.title" = "\
+${{.symbol.Symbol}}: {{.symbol.Name}} ({{.symbol.Exchange}}) :flag_{{ToLower .symbol.Region}}:"
+"stock.embed.description" = "\
+Current Price **{{.quote.LatestPrice}} {{.symbol.Currency}}** \
+({{.quote.Change}} {{if lt .quote.Change 0.0}}📉{{else}}📈{{end}})"
+"stock.embed.field.open.name" = "Open"
+"stock.embed.field.open.value" = "{{if gt .quote.Open 0.0}}{{.quote.Open}}{{end}}"
+"stock.embed.field.high.name" = "High"
+"stock.embed.field.high.value" = "{{if gt .quote.High 0.0}}{{.quote.High}}{{end}}"
+"stock.embed.field.low.name" = "Low"
+"stock.embed.field.low.value" = "{{if gt .quote.Low 0.0}}{{.quote.Low}}{{end}}"
+"stock.embed.field.52whigh.name" = "52W High"
+"stock.embed.field.52whigh.value" = "{{if gt .quote.Week52High 0.0}}{{.quote.Week52High}}{{end}}"
+"stock.embed.field.52wlow.name" = "52W Low"
+"stock.embed.field.52wlow.value" = "{{if gt .quote.Week52Low 0.0}}{{.quote.Week52Low}}{{end}}"
