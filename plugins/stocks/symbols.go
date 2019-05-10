@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -82,7 +83,7 @@ func (p *Plugin) lookupSymbol(ctx context.Context, symbol string) (*iex.Symbol, 
 	}
 
 	for _, symbolItem := range symbols {
-		if symbolItem.Symbol == symbol {
+		if strings.EqualFold(symbolItem.Symbol, symbol) {
 			return symbolItem, nil
 		}
 	}

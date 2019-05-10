@@ -20,7 +20,9 @@ func (p *Plugin) handleStocks(event *events.Event) {
 		return
 	}
 
-	symbol := event.Fields()[1]
+	symbol := strings.ToUpper(
+		strings.Replace(event.Fields()[1], "$", "", -1),
+	)
 
 	symbolData, err := p.lookupSymbol(event.Context(), symbol)
 	if err != nil {
