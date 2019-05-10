@@ -20,6 +20,7 @@
 # ERRORTRACKING_RAVEN_DSN
 # POLR_BASE_URL
 # POLR_API_KEY
+# IEXCLOUD_API_SECRET
 
 template="k8s/manifest.tmpl.yaml"
 target="k8s/manifest.yaml"
@@ -44,3 +45,4 @@ sed -i -e "s|{{FEATUREFLAG_UNLEASH_INSTANCE_ID}}|$FEATUREFLAG_UNLEASH_INSTANCE_I
 sed -i -e "s|{{ERRORTRACKING_RAVEN_DSN}}|$ERRORTRACKING_RAVEN_DSN|g" "$target"
 sed -i -e "s|{{POLR_BASE_URL}}|$POLR_BASE_URL|g" "$target"
 sed -i -e "s|{{POLR_API_KEY}}|$POLR_API_KEY|g" "$target"
+sed -i -e "s|{{IEXCLOUD_API_SECRET}}|$IEXCLOUD_API_SECRET|g" "$target"

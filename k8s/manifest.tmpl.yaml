@@ -17,6 +17,7 @@ stringData:
   errortrackingRavenDSN: "{{ERRORTRACKING_RAVEN_DSN}}"
   polrBaseURL: "{{POLR_BASE_URL}}"
   polrAPIKey: "{{POLR_API_KEY}}"
+  iexCloudAPISecret: "{{IEXCLOUD_API_SECRET}}"
 
 ---
 apiVersion: apps/v1
@@ -122,6 +123,11 @@ spec:
               secretKeyRef:
                 name: worker-secret
                 key: polrAPIKey
+          - name: IEXCLOUD_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: worker-secret
+                key: iexCloudAPISecret
 
 
 ---
