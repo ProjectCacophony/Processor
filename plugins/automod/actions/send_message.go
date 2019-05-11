@@ -70,7 +70,6 @@ func (t *SendMessageItem) Do(env *models.Env) {
 			&discordgo.MessageSend{
 				Content: t.Message,
 			},
-			false,
 		)
 
 		doneChannelIDs[channelID] = true

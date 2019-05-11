@@ -52,7 +52,6 @@ func (p *Plugin) sendLogMessageForServer(
 			p.Localizations(),
 			logChannelID,
 			send,
-			false,
 			"server",
 			server,
 		)

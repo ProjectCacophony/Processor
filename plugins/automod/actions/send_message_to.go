@@ -70,6 +70,5 @@ func (t *SendMessageToItem) Do(env *models.Env) {
 		&discordgo.MessageSend{
 			Content: t.Message,
 		},
-		false,
 	)
 }

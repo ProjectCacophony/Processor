@@ -154,15 +154,19 @@ func (s *Server) QueueApprove(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-approved",
 			},
-			true,
 			"server",
 			s,
 		)
@@ -223,15 +227,19 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-rejected",
 			},
-			true,
 			"server",
 			s,
 			"reason",
@@ -266,15 +274,19 @@ func (s *Server) Remove(p *Plugin, editor bool) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-removed",
 			},
-			true,
 			"server",
 			s,
 			"editor",
@@ -309,15 +321,19 @@ func (s *Server) Hide(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-hidden",
 			},
-			true,
 			"server",
 			s,
 		)
@@ -350,15 +366,19 @@ func (s *Server) Unhide(p *Plugin) error {
 	}
 
 	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-unhidden",
 			},
-			true,
 			"server",
 			s,
 		)

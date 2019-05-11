@@ -311,7 +311,6 @@ func (p *Plugin) newListMessage(
 		&discordgo.MessageSend{
 			Content: content,
 		},
-		false,
 	)
 	if err != nil {
 		return nil, err

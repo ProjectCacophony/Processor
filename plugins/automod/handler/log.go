@@ -137,7 +137,6 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 				},
 			},
 		},
-		false,
 	)
 	return err
 }

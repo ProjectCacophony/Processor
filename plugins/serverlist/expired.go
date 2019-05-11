@@ -22,15 +22,20 @@ func (p *Plugin) handleExpired(event *events.Event) {
 	}
 
 	for _, editorUserID := range server.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			event.ExceptSilent(err)
+			continue
+		}
+
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
 			p.Localizations(),
-			editorUserID,
+			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-expired",
 			},
-			true,
 			"server",
 			server,
 		)

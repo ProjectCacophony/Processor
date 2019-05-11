@@ -255,7 +255,6 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			&discordgo.MessageSend{
 				Content: ":nayoung:",
 			},
-			false,
 		)
 		if err == nil {
 			discord.Delete(
@@ -288,7 +287,6 @@ func (p *Plugin) newQueueMessage(
 		&discordgo.MessageSend{
 			Embed: embed,
 		},
-		false,
 		"server",
 		queueItem,
 	)
