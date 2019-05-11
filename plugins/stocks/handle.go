@@ -73,7 +73,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Stocks allow you to look up real time information about Symbols.",
+		Description: "help.stocks.description",
 	}
 }
 

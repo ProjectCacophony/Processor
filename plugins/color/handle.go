@@ -46,7 +46,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Display the color of a given hex code or RGB values",
+		Description: "help.color.description",
 	}
 }
 

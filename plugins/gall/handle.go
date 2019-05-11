@@ -71,7 +71,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Set up the bot to watch a gall forum and post updates on the forum in a given discord channel.",
+		Description: "help.gall.description",
 	}
 }
 

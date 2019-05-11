@@ -68,7 +68,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Have the bot watch a certain instagram account and have it post updates in a given channel.",
+		Description: "help.instagram.description",
 	}
 }
 

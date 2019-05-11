@@ -84,9 +84,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name: p.Name(),
-		Description: "View and track your lastfm stats like play counts, top albums, and top artists." +
-			" You can also view the stats for a whole server to see whats popular among your friends.",
+		Name:        p.Name(),
+		Description: "help.lastfm.description",
 	}
 }
 

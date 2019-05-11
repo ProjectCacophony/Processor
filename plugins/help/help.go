@@ -32,7 +32,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 			summeryText += " | *(Patrons Only)*"
 		}
 
-		summeryText += fmt.Sprintf("\n```%s```", pluginHelp.Description)
+		summeryText += fmt.Sprintf("\n```%s```", event.Translate(pluginHelp.Description))
 
 		pluginNames = append(pluginNames, summeryText)
 	}

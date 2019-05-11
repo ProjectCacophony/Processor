@@ -70,9 +70,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name: p.Name(),
-		Description: "Set up automatic actions such as sending messages, kicking/banning users, " +
-			"and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions.",
+		Name:        p.Name(),
+		Description: "help.automod.description",
 	}
 }
 

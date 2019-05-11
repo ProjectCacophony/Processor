@@ -67,7 +67,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Set up RSS feeds and have them posted into a discord channel.",
+		Description: "help.rss.description",
 	}
 }
 

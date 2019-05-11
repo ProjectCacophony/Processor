@@ -56,7 +56,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		PatreonOnly: true,
-		Description: "Enable chat logging to always store messages sent in your server, even if they are deleted in discord.",
+		Description: "help.chatlog.description",
 	}
 }
 

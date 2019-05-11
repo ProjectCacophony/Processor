@@ -73,7 +73,7 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "Uhh.... sekl what is this even doing :nayoungconfused:",
+		Description: "help.serverlist.description",
 	}
 }
 
