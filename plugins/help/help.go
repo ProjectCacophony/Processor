@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
-	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -45,21 +44,13 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		event.Except(err)
 	} else {
 
-		// TODO (snake): there's a bug with send() so need to get DMChannel here. eventually take this out
-		dmChannel, err := discord.DMChannel(event.Redis(), event.Discord(), event.UserID)
-		if err != nil {
-			event.Except(err)
-			return
-		}
-
 		if !event.DM() {
-			_, err = event.Respond("help.message-sent-to-dm")
+			_, err := event.Respond("help.message-sent-to-dm")
 			event.Except(err)
-
 		}
 
 		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in a channel.", event.Prefix())
-		_, err = event.Send(dmChannel, helpText, false)
+		_, err := event.RespondDM(helpText, false)
 		event.Except(err)
 	}
 
