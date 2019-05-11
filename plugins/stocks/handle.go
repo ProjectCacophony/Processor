@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -18,7 +18,7 @@ import (
 type Plugin struct {
 	logger    *zap.Logger
 	iexClient *iexcloud.IEX
-	redis     *redis.Client
+	db        *gorm.DB
 }
 
 func (p *Plugin) Name() string {
@@ -27,7 +27,7 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
-	p.redis = params.Redis
+	p.db = params.DB
 
 	var config Config
 	err := envconfig.Process("", &config)

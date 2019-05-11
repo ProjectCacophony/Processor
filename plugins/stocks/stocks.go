@@ -24,13 +24,9 @@ func (p *Plugin) handleStocks(event *events.Event) {
 		strings.Replace(event.Fields()[1], "$", "", -1),
 	)
 
-	symbolData, err := p.lookupSymbol(event.Context(), symbol)
-	if err != nil {
-		if strings.Contains(err.Error(), "symbol not found") {
-			event.Respond("stocks.symbol-not-found")
-			return
-		}
-		event.Except(err)
+	symbolData, err := findSymbol(p.db, symbol)
+	if symbolData == nil || symbolData.Symbol == "" {
+		event.Respond("stocks.symbol-not-found")
 		return
 	}
 
