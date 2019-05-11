@@ -20,7 +20,7 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/pkg/errors v0.8.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20190509174213-2949881104b3
+	gitlab.com/Cacophony/go-kit v0.0.0-20190511065029-a20ddca8ea51
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/image v0.0.0-20190220214146-31aff87c08e9

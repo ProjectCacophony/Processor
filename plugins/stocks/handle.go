@@ -8,8 +8,8 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
-	"gitlab.com/Cacophony/Processor/plugins/stocks/iex"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/external/iexcloud"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localization"
 	"go.uber.org/zap"
@@ -17,7 +17,7 @@ import (
 
 type Plugin struct {
 	logger    *zap.Logger
-	iexClient *iex.IEX
+	iexClient *iexcloud.IEX
 	redis     *redis.Client
 }
 
@@ -39,7 +39,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		return errors.New("stocks plugin configuration missing")
 	}
 
-	p.iexClient = iex.NewIEX(
+	p.iexClient = iexcloud.NewIEX(
 		&http.Client{
 			Timeout: time.Second * 10,
 		},

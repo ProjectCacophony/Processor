@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"gitlab.com/Cacophony/Processor/plugins/stocks/iex"
+	"gitlab.com/Cacophony/go-kit/external/iexcloud"
 	"go.uber.org/zap"
 )
 
@@ -25,9 +25,9 @@ func symbolsKey(region string) string {
 	return fmt.Sprintf("cacophony:processor:stocks:symbols:%s", region)
 }
 
-func (p *Plugin) getSymbolsForRegion(ctx context.Context, region string) ([]*iex.Symbol, error) {
+func (p *Plugin) getSymbolsForRegion(ctx context.Context, region string) ([]*iexcloud.Symbol, error) {
 	key := symbolsKey(region)
-	var symbols []*iex.Symbol
+	var symbols []*iexcloud.Symbol
 
 	symbolsRaw, err := p.redis.Get(key).Bytes()
 	if err == redis.Nil {
@@ -62,8 +62,8 @@ func (p *Plugin) getSymbolsForRegion(ctx context.Context, region string) ([]*iex
 	return symbols, err
 }
 
-func (p *Plugin) getAllSymbols(ctx context.Context) ([]*iex.Symbol, error) {
-	var allSymbols []*iex.Symbol // nolint: prealloc
+func (p *Plugin) getAllSymbols(ctx context.Context) ([]*iexcloud.Symbol, error) {
+	var allSymbols []*iexcloud.Symbol // nolint: prealloc
 	for _, region := range regions {
 		symbols, err := p.getSymbolsForRegion(ctx, region)
 		if err != nil {
@@ -76,7 +76,7 @@ func (p *Plugin) getAllSymbols(ctx context.Context) ([]*iex.Symbol, error) {
 	return allSymbols, nil
 }
 
-func (p *Plugin) lookupSymbol(ctx context.Context, symbol string) (*iex.Symbol, error) {
+func (p *Plugin) lookupSymbol(ctx context.Context, symbol string) (*iexcloud.Symbol, error) {
 	symbols, err := p.getAllSymbols(ctx)
 	if err != nil {
 		return nil, err
