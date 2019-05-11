@@ -1,4 +1,4 @@
-package help
+package common
 
 import (
 	"gitlab.com/Cacophony/go-kit/permissions"

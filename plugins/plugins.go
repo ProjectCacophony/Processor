@@ -44,7 +44,7 @@ type Plugin interface {
 
 	Action(event *events.Event) bool
 
-	Help() help.PluginHelp
+	Help() *common.PluginHelp
 }
 
 var (
@@ -81,6 +81,13 @@ func StartPlugins(
 	state *state.State,
 	featureFlagger *featureflag.FeatureFlagger,
 ) {
+
+	// get help list from all pluguins for help module
+	pluginHelpList := make([]*common.PluginHelp, len(PluginList))
+	for i, plugin := range PluginList {
+		pluginHelpList[i] = plugin.Help()
+	}
+
 	var err error
 	for _, plugin := range PluginList {
 		err = plugin.Start(common.StartParameters{
@@ -90,6 +97,7 @@ func StartPlugins(
 			Tokens:         tokens,
 			State:          state,
 			FeatureFlagger: featureFlagger,
+			PluginHelpList: pluginHelpList,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",

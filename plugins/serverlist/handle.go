@@ -4,7 +4,6 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
-	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/localisation"
@@ -71,8 +70,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 	return []interfaces.Localisation{local}
 }
 
-func (p *Plugin) Help() help.PluginHelp {
-	return help.PluginHelp{
+func (p *Plugin) Help() *common.PluginHelp {
+	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "Uhh.... sekl what is this even doing :nayoungconfused:",
 	}

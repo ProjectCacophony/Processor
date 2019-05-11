@@ -8,7 +8,6 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
-	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/Processor/plugins/stocks/iex"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -71,8 +70,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 	return []interfaces.Localisation{local}
 }
 
-func (p *Plugin) Help() help.PluginHelp {
-	return help.PluginHelp{
+func (p *Plugin) Help() *common.PluginHelp {
+	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "Stocks allow you to look up real time information about Symbols.",
 	}

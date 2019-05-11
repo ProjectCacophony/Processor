@@ -15,6 +15,7 @@ type StartParameters struct {
 	Tokens         map[string]string
 	State          *state.State
 	FeatureFlagger *featureflag.FeatureFlagger
+	PluginHelpList []*PluginHelp
 }
 
 type StopParameters struct {

@@ -9,7 +9,8 @@ import (
 )
 
 type Plugin struct {
-	logger *zap.Logger
+	logger         *zap.Logger
+	pluginHelpList []*common.PluginHelp
 }
 
 func (p *Plugin) Name() string {
@@ -18,6 +19,7 @@ func (p *Plugin) Name() string {
 
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
+	p.pluginHelpList = params.PluginHelpList
 
 	return nil
 }
@@ -43,8 +45,8 @@ func (p *Plugin) Localisations() []interfaces.Localisation {
 	return []interfaces.Localisation{local}
 }
 
-func (p *Plugin) Help() PluginHelp {
-	return PluginHelp{
+func (p *Plugin) Help() *common.PluginHelp {
+	return &common.PluginHelp{
 		Name: p.Name(),
 		Hide: true,
 	}
@@ -56,11 +58,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	if len(event.Fields()) == 1 && event.Fields()[0] == "help" {
-		listCommands(event, false)
+		listCommands(event, p.pluginHelpList, false)
 	}
 
 	if len(event.Fields()) > 1 && event.Fields()[1] == "public" {
-		listCommands(event, true)
+		listCommands(event, p.pluginHelpList, true)
 	}
 
 	return false

@@ -5,21 +5,14 @@ import (
 	"sort"
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/discord"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
 const PluginHelpListKey = "pluginHelpList"
 
-func listCommands(event *events.Event, displayInChannel bool) {
-
-	var pluginHelpList []PluginHelp
-	var ok bool
-	if pluginHelpList, ok = event.Context().Value(PluginHelpListKey).([]PluginHelp); !ok {
-		// TODO (snake): this shouldn't happen, need to report some error to sentry
-		return
-	}
+func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, displayInChannel bool) {
 
 	// sort plugins by name
 	sort.Slice(pluginHelpList, func(i, j int) bool {
