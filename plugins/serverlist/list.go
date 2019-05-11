@@ -304,7 +304,6 @@ func (p *Plugin) newListMessage(
 	content string,
 ) ([]*discordgo.Message, error) {
 	message, err := discord.SendComplexWithVars(
-		p.redis,
 		session,
 		nil,
 		channelID,

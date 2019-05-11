@@ -248,7 +248,6 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 	// ping if queue was empty before, but is not anymore
 	if previousServerID == 0 && len(queue) > 0 {
 		pingMessages, err := discord.SendComplexWithVars(
-			p.redis,
 			session,
 			p.Localizations(),
 			channelID,
@@ -280,7 +279,6 @@ func (p *Plugin) newQueueMessage(
 	embed := p.getQueueMessageEmbed(session, queueItem, len(queue))
 
 	messages, err := discord.SendComplexWithVars(
-		p.redis,
 		session,
 		p.Localizations(),
 		channelID,

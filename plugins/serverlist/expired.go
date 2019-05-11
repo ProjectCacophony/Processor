@@ -29,7 +29,6 @@ func (p *Plugin) handleExpired(event *events.Event) {
 		}
 
 		discord.SendComplexWithVars(
-			p.redis,
 			session,
 			p.Localizations(),
 			channelID,

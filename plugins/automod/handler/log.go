@@ -100,7 +100,6 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 	actionsText = strings.TrimRight(actionsText, ", ")
 
 	_, err = discord.SendComplexWithVars(
-		nil,
 		session,
 		nil,
 		channelID,

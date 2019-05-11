@@ -63,7 +63,6 @@ func (t *SendMessageToItem) Do(env *models.Env) {
 	}
 
 	discord.SendComplexWithVars(
-		nil,
 		session,
 		nil,
 		t.ChannelID,
