@@ -4,6 +4,8 @@
 "ping.ping-response.embed.field.DiscordToGateway.value" = "**{{.DiscordToGateway}}**"
 "ping.ping-response.embed.field.GatewayToProcessor.title" = "Gateway to Processor"
 "ping.ping-response.embed.field.GatewayToProcessor.value" = "**{{.GatewayToProcessor}}**"
+"ping.ping-response.embed.field.SendDuration.title" = "HTTP API"
+"ping.ping-response.embed.field.SendDuration.value" = "{{if .SendDuration}}**{{.SendDuration}}**{{end}}"
 
 # handlePong
 "ping.pong-response" = [
