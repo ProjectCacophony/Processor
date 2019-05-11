@@ -34,13 +34,13 @@ func (p *Plugin) handleStocks(event *events.Event) {
 		return
 	}
 
-	quote, err := p.iexClient.StocksQuote(event.Context(), symbol)
+	quote, err := p.iexClient.StocksQuote(event.Context(), symbolData.Symbol)
 	if err != nil {
 		event.Except(errors.Wrap(err, "failure looking up stocks quote"))
 		return
 	}
 
-	logo, err := p.iexClient.StocksLogo(event.Context(), symbol)
+	logo, err := p.iexClient.StocksLogo(event.Context(), symbolData.Symbol)
 	if err != nil {
 		event.Except(errors.Wrap(err, "failure looking up stocks logo"))
 		return
