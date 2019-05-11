@@ -25,8 +25,12 @@ func (p *Plugin) handleStocks(event *events.Event) {
 	)
 
 	symbolData, err := findSymbol(p.db, symbol)
-	if symbolData == nil || symbolData.Symbol == "" {
-		event.Respond("stocks.symbol-not-found")
+	if err != nil {
+		if strings.Contains(err.Error(), "record not found") {
+			event.Respond("stocks.symbol-not-found")
+			return
+		}
+		event.Except(err)
 		return
 	}
 
