@@ -40,7 +40,7 @@ type Plugin interface {
 
 	Passthrough() bool
 
-	Localisations() []interfaces.Localisation
+	Localizations() []interfaces.Localization
 
 	Action(event *events.Event) bool
 
@@ -65,7 +65,7 @@ var (
 		&stocks.Plugin{},
 	}
 
-	LocalisationsList []interfaces.Localisation
+	LocalizationsList []interfaces.Localization
 )
 
 func init() {
@@ -106,7 +106,7 @@ func StartPlugins(
 		}
 		// TODO: do not send events to plugins that failed to start
 
-		LocalisationsList = append(LocalisationsList, plugin.Localisations()...)
+		LocalizationsList = append(LocalizationsList, plugin.Localizations()...)
 	}
 }
 

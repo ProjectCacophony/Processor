@@ -97,7 +97,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 		}
 
 		var send = discord.TranslateMessageSend(
-			event.Localisations(),
+			event.Localizations(),
 			&discordgo.MessageSend{
 				Embed: embed,
 			},
@@ -131,7 +131,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 			}
 
 			send := discord.TranslateMessageSend(
-				event.Localisations(),
+				event.Localizations(),
 				&discordgo.MessageSend{
 					Embed: embed,
 				},

@@ -70,7 +70,7 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 
 		if i > 0 && (i+1)%10 == 0 {
 			send := discord.TranslateMessageSend(
-				event.Localisations(),
+				event.Localizations(),
 				&discordgo.MessageSend{
 					Embed: embed,
 				},

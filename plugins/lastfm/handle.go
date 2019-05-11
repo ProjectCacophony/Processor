@@ -15,7 +15,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
-	"gitlab.com/Cacophony/go-kit/localisation"
+	"gitlab.com/Cacophony/go-kit/localization"
 )
 
 type Plugin struct {
@@ -73,13 +73,13 @@ func (p *Plugin) Passthrough() bool {
 	return false
 }
 
-func (p *Plugin) Localisations() []interfaces.Localisation {
-	local, err := localisation.NewFileSource("assets/translations/lastfm.en.toml", "en")
+func (p *Plugin) Localizations() []interfaces.Localization {
+	local, err := localization.NewFileSource("assets/translations/lastfm.en.toml", "en")
 	if err != nil {
-		p.logger.Error("failed to load localisation", zap.Error(err))
+		p.logger.Error("failed to load localization", zap.Error(err))
 	}
 
-	return []interfaces.Localisation{local}
+	return []interfaces.Localization{local}
 }
 
 func (p *Plugin) Help() *common.PluginHelp {

@@ -49,7 +49,7 @@ func (p *Plugin) sendLogMessageForServer(
 		discord.SendComplexWithVars(
 			p.redis,
 			session,
-			p.Localisations(),
+			p.Localizations(),
 			logChannelID,
 			send,
 			false,

@@ -35,7 +35,7 @@ func handle(
 
 		event.WithContext(ctx)
 		event.WithTokens(discordTokens)
-		event.WithLocalisations(plugins.LocalisationsList)
+		event.WithLocalizations(plugins.LocalizationsList)
 		event.WithState(stateClient)
 		event.WithPaginator(paginator)
 		event.WithLogger(l)

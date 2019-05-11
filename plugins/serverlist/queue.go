@@ -250,7 +250,7 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		pingMessages, err := discord.SendComplexWithVars(
 			p.redis,
 			session,
-			p.Localisations(),
+			p.Localizations(),
 			channelID,
 			&discordgo.MessageSend{
 				Content: ":nayoung:",
@@ -283,7 +283,7 @@ func (p *Plugin) newQueueMessage(
 	messages, err := discord.SendComplexWithVars(
 		p.redis,
 		session,
-		p.Localisations(),
+		p.Localizations(),
 		channelID,
 		&discordgo.MessageSend{
 			Embed: embed,
@@ -337,7 +337,7 @@ func (p *Plugin) updateQueueMessage(
 	_, err := discord.EditComplexWithVars(
 		p.redis,
 		session,
-		p.Localisations(),
+		p.Localizations(),
 		&discordgo.MessageEdit{
 			Embed:   embed,
 			ID:      currentMessage.MessageID,
