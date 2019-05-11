@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/paginator"
-
 	"gitlab.com/Cacophony/go-kit/discord"
 
 	"github.com/Seklfreak/lastfm-go/lastfm"
@@ -17,9 +15,9 @@ import (
 func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, offset int) {
 	fields := event.Fields()[offset:]
 
-	var makeCollage bool
+	// var makeCollage bool
 	period, fields := lastfmclient.GetPeriodFromArgs(fields)
-	makeCollage, fields = isCollageRequest(fields)
+	// makeCollage, fields = isCollageRequest(fields)
 
 	// get lastFM username to look up
 	username, _ := extractUsername(event, p.db, fields, -1)
@@ -61,59 +59,59 @@ func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, 
 	embed.Author.Name = "lastfm.tracks.embed.title"
 
 	// create collage if requested
-	if makeCollage {
-		var files []*paginator.File
-		var imageURLs, trackNames []string
-
-		for i, track := range tracks {
-
-			imageURLs = append(imageURLs, track.ImageURL)
-			trackNames = append(trackNames, track.Name)
-
-			if i > 0 && (i+1)%9 == 0 {
-				// create the collage
-				collageBytes, err := CollageFromURLs(
-					p.httpClient,
-					imageURLs,
-					trackNames,
-					900, 900,
-					300, 300,
-				)
-				if err != nil {
-					event.Except(err)
-					return
-				}
-				files = append(files, &paginator.File{
-					Name: "Cacophony-LastFM-Collage.jpg",
-					Data: collageBytes,
-				})
-
-				imageURLs = []string{}
-				trackNames = []string{}
-			}
-			if len(files) >= 3 {
-				break
-			}
-		}
-
-		var send = discord.TranslateMessageSend(
-			event.Localizations(),
-			&discordgo.MessageSend{
-				Embed: embed,
-			},
-			"userData", userInfo, "period", period,
-		)
-		err = event.Paginator().ImagePaginator(
-			event.BotUserID,
-			event.ChannelID,
-			event.UserID,
-			send.Embed,
-			files,
-			event.DM(),
-		)
-		event.Except(err)
-		return
-	}
+	// if makeCollage {
+	// 	var files []*paginator.File
+	// 	var imageURLs, trackNames []string
+	//
+	// 	for i, track := range tracks {
+	//
+	// 		imageURLs = append(imageURLs, track.ImageURL)
+	// 		trackNames = append(trackNames, track.Name)
+	//
+	// 		if i > 0 && (i+1)%9 == 0 {
+	// 			// create the collage
+	// 			collageBytes, err := CollageFromURLs(
+	// 				p.httpClient,
+	// 				imageURLs,
+	// 				trackNames,
+	// 				900, 900,
+	// 				300, 300,
+	// 			)
+	// 			if err != nil {
+	// 				event.Except(err)
+	// 				return
+	// 			}
+	// 			files = append(files, &paginator.File{
+	// 				Name: "Cacophony-LastFM-Collage.jpg",
+	// 				Data: collageBytes,
+	// 			})
+	//
+	// 			imageURLs = []string{}
+	// 			trackNames = []string{}
+	// 		}
+	// 		if len(files) >= 3 {
+	// 			break
+	// 		}
+	// 	}
+	//
+	// 	var send = discord.TranslateMessageSend(
+	// 		event.Localizations(),
+	// 		&discordgo.MessageSend{
+	// 			Embed: embed,
+	// 		},
+	// 		"userData", userInfo, "period", period,
+	// 	)
+	// 	err = event.Paginator().ImagePaginator(
+	// 		event.BotUserID,
+	// 		event.ChannelID,
+	// 		event.UserID,
+	// 		send.Embed,
+	// 		files,
+	// 		event.DM(),
+	// 	)
+	// 	event.Except(err)
+	// 	return
+	// }
 
 	var embeds []*discordgo.MessageEmbed
 
@@ -124,11 +122,11 @@ func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, 
 			"\n"
 
 		if i > 0 && (i+1)%10 == 0 {
-			if tracks[i-9].ImageURL != "" {
-				embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
-					URL: tracks[i-9].ImageURL,
-				}
-			}
+			// if tracks[i-9].ImageURL != "" {
+			// 	embed.Thumbnail = &discordgo.MessageEmbedThumbnail{
+			// 		URL: tracks[i-9].ImageURL,
+			// 	}
+			// }
 
 			send := discord.TranslateMessageSend(
 				event.Localizations(),
