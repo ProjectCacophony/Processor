@@ -95,6 +95,7 @@ func (p *Plugin) handleStocks(event *events.Event) {
 	},
 		"symbol", symbolData,
 		"quote", quote,
+		"format", symbolData.FormatCurrency,
 	)
 	event.Except(err)
 }

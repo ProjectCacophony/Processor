@@ -5,15 +5,15 @@ Please make sure the Symbol you are telling me is correct."
 "stocks.embed.title" = "\
 ${{.symbol.Symbol}}: {{.symbol.Name}} ({{.symbol.Exchange}}) :flag_{{ToLower .symbol.Region}}:"
 "stock.embed.description" = "\
-Current Price **{{.quote.LatestPrice}} {{.symbol.Currency}}** \
+Current Price __**{{.quote.LatestPrice}} {{.symbol.Currency}}**__ \
 ({{.quote.Change}} {{if lt .quote.Change 0.0}}📉{{else}}📈{{end}})"
 "stock.embed.field.open.name" = "Open"
-"stock.embed.field.open.value" = "{{if gt .quote.Open 0.0}}{{.quote.Open}}{{end}}"
+"stock.embed.field.open.value" = "{{if gt .quote.Open 0.0}}{{call .format .quote.Open}}{{else}}*N/A*{{end}}"
 "stock.embed.field.high.name" = "High"
-"stock.embed.field.high.value" = "{{if gt .quote.High 0.0}}{{.quote.High}}{{end}}"
+"stock.embed.field.high.value" = "{{if gt .quote.High 0.0}}{{call .format .quote.High}}{{else}}*N/A*{{end}}"
 "stock.embed.field.low.name" = "Low"
-"stock.embed.field.low.value" = "{{if gt .quote.Low 0.0}}{{.quote.Low}}{{end}}"
-"stock.embed.field.52whigh.name" = "52W High"
-"stock.embed.field.52whigh.value" = "{{if gt .quote.Week52High 0.0}}{{.quote.Week52High}}{{end}}"
-"stock.embed.field.52wlow.name" = "52W Low"
-"stock.embed.field.52wlow.value" = "{{if gt .quote.Week52Low 0.0}}{{.quote.Week52Low}}{{end}}"
+"stock.embed.field.low.value" = "{{if gt .quote.Low 0.0}}{{call .format .quote.Low}}{{else}}*N/A*{{end}}"
+"stock.embed.field.52whigh.name" = "52 Week High"
+"stock.embed.field.52whigh.value" = "{{if gt .quote.Week52High 0.0}}{{call .format .quote.Week52High}}{{else}}*N/A*{{end}}"
+"stock.embed.field.52wlow.name" = "52 Week Low"
+"stock.embed.field.52wlow.value" = "{{if gt .quote.Week52Low 0.0}}{{call .format .quote.Week52Low}}{{else}}*N/A*{{end}}"

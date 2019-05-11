@@ -3,6 +3,7 @@ package iex
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 )
 
 type Symbol struct {
@@ -39,4 +40,13 @@ func (iex *IEX) RefDataSymbolsInternational(ctx context.Context, region string) 
 	err = json.Unmarshal(raw, &symbols)
 
 	return symbols, err
+}
+
+func (s *Symbol) FormatCurrency(myValue float64) string {
+	currencyFormat := map[string]string{
+		"USD": "$ %.2f",
+		"EUR": "%.2f €",
+	}
+
+	return fmt.Sprintf(currencyFormat[s.Currency], myValue)
 }
