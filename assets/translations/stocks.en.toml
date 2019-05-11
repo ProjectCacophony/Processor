@@ -17,3 +17,4 @@ Current Price __**{{.quote.LatestPrice}} {{.symbol.Currency}}**__ \
 "stock.embed.field.52whigh.value" = "{{if gt .quote.Week52High 0.0}}{{call .format .quote.Week52High}}{{else}}*N/A*{{end}}"
 "stock.embed.field.52wlow.name" = "52 Week Low"
 "stock.embed.field.52wlow.value" = "{{if gt .quote.Week52Low 0.0}}{{call .format .quote.Week52Low}}{{else}}*N/A*{{end}}"
+"stock.embed.footer" = "Data provided by IEX Cloud"

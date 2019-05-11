@@ -91,6 +91,9 @@ func (p *Plugin) handleStocks(event *events.Event) {
 			},
 			Color:     color,
 			Thumbnail: thumbnail,
+			Footer: &discordgo.MessageEmbedFooter{
+				Text: "stock.embed.footer",
+			},
 		},
 	},
 		"symbol", symbolData,
