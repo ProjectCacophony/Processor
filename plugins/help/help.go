@@ -52,10 +52,13 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 			return
 		}
 
-		_, err = event.Respond("help.message-sent-to-dm")
-		event.Except(err)
+		if !event.DM() {
+			_, err = event.Respond("help.message-sent-to-dm")
+			event.Except(err)
 
-		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in your server", event.Prefix())
+		}
+
+		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in a channel.", event.Prefix())
 		_, err = event.Send(dmChannel, helpText, false)
 		event.Except(err)
 	}
