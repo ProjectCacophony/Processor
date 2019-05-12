@@ -70,14 +70,13 @@ func (p *Plugin) Action(event *events.Event) bool {
 		if event.Fields()[1] == "public" {
 			listCommands(event, p.pluginHelpList, true)
 			return true
-		} else {
+		}
 
-			// check if second param is a plugin name
-			for _, help := range p.pluginHelpList {
-				if help.Name == event.Fields()[1] {
-					displayPluginCommands(event, help)
-					return true
-				}
+		// check if second param is a plugin name
+		for _, help := range p.pluginHelpList {
+			if help.Name == event.Fields()[1] {
+				displayPluginCommands(event, help)
+				return true
 			}
 		}
 	}
