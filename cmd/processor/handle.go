@@ -111,6 +111,17 @@ func executePlugin(logger *zap.Logger, plugin plugins.Plugin, event *events.Even
 		}
 	}()
 
+	// check if help command and redirect to help plugin
+	if len(event.Fields()) > 1 && event.Fields()[1] == "help" {
+		for _, p := range plugins.PluginList {
+			if p.Name() == "help" {
+				event.Fields()[1] = event.Fields()[0]
+				event.Fields()[0] = p.Name()
+				return p.Action(event)
+			}
+		}
+	}
+
 	return plugin.Action(event)
 }
 
