@@ -2,6 +2,7 @@ package actions
 
 import (
 	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -43,7 +44,10 @@ func (t *DeleteMessageItem) Do(env *models.Env) {
 			continue
 		}
 
-		botID, err := env.State.BotForGuild(env.GuildID)
+		botID, err := env.State.BotForChannel(
+			message.ChanneID,
+			permissions.DiscordManageMessages,
+		)
 		if err != nil {
 			continue
 		}

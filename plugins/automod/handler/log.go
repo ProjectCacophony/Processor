@@ -60,7 +60,11 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 		return nil
 	}
 
-	botID, err := env.State.BotForGuild(env.GuildID)
+	botID, err := env.State.BotForChannel(
+		channelID,
+		permissions.DiscordSendMessages,
+		permissions.DiscordEmbedLinks,
+	)
 	if err != nil {
 		return err
 	}
@@ -68,13 +72,6 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 	session, err := discord.NewSession(h.tokens, botID)
 	if err != nil {
 		return err
-	}
-
-	if !permissions.And(
-		permissions.DiscordSendMessages,
-		permissions.DiscordEmbedLinks,
-	).Match(h.state, botID, channelID, false) {
-		return nil
 	}
 
 	usersText := strings.Join(env.UserID, ">, <@")

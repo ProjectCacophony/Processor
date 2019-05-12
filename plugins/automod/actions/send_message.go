@@ -5,6 +5,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -52,7 +53,10 @@ func (t *SendMessageItem) Do(env *models.Env) {
 			continue
 		}
 
-		botID, err := env.State.BotForGuild(env.GuildID)
+		botID, err := env.State.BotForChannel(
+			channelID,
+			permissions.DiscordSendMessages,
+		)
 		if err != nil {
 			continue
 		}

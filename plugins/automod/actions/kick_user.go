@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
@@ -42,7 +43,10 @@ func (t *KickUserItem) Do(env *models.Env) {
 			continue
 		}
 
-		botID, err := env.State.BotForGuild(env.GuildID)
+		botID, err := env.State.BotForGuild(
+			env.GuildID,
+			discordgo.PermissionKickMembers,
+		)
 		if err != nil {
 			continue
 		}

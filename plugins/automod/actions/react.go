@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -61,7 +62,10 @@ func (t *ReactItem) Do(env *models.Env) {
 			continue
 		}
 
-		botID, err := env.State.BotForGuild(env.GuildID)
+		botID, err := env.State.BotForChannel(
+			message.ChanneID,
+			permissions.DiscordAddReactions,
+		)
 		if err != nil {
 			continue
 		}

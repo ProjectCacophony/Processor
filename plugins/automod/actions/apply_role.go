@@ -3,6 +3,7 @@ package actions
 import (
 	"errors"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
@@ -56,7 +57,10 @@ func (t *ApplyRoleItem) Do(env *models.Env) {
 			continue
 		}
 
-		botID, err := env.State.BotForGuild(env.GuildID)
+		botID, err := env.State.BotForGuild(
+			env.GuildID,
+			discordgo.PermissionManageRoles,
+		)
 		if err != nil {
 			continue
 		}

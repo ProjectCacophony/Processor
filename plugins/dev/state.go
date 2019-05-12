@@ -66,7 +66,11 @@ func (p *Plugin) handleDevState(event *events.Event) {
 		return
 	}
 
-	botID, err := event.State().BotForGuild(event.GuildID)
+	botID, err := event.State().BotForChannel(
+		event.ChannelID,
+		permissions.DiscordSendMessages,
+		permissions.DiscordEmbedLinks,
+	)
 	if err != nil {
 		event.Except(err)
 		return
