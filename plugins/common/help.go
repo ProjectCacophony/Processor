@@ -25,20 +25,22 @@ type PluginHelp struct {
 	Hide        bool
 	PatreonOnly bool
 
-	DiscordPermissionRequired permissions.Discord
-	BotPermissionRequired     permissions.CacophonyBotPermission
+	DiscordPermissionRequired *permissions.Discord
+	BotPermissionRequired     *permissions.CacophonyBotPermission
 }
 
 type ParamSet struct {
 	PatreonOnly               bool
+	Description               string
 	Params                    []PluginParams
 	DiscordPermissionRequired *permissions.Discord
 	BotPermissionRequired     *permissions.CacophonyBotPermission
 }
 
 type PluginParams struct {
-	Name     string
-	Example  string
-	Type     ParamType
-	Optional bool
+	Name        string
+	Example     string
+	Type        ParamType
+	Optional    bool
+	NotVariable bool // indicates if the parameter is defined by the user
 }

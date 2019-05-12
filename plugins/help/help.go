@@ -29,7 +29,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 			strings.Title(pluginHelp.Name), event.Prefix(), pluginHelp.Name)
 
 		if pluginHelp.PatreonOnly {
-			summeryText += " | *(Patrons Only)*"
+			summeryText += " | Patrons Only"
 		}
 
 		summeryText += fmt.Sprintf("\n%s\n", event.Translate(pluginHelp.Description))
@@ -63,10 +63,20 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		return
 	}
 
-	output := fmt.Sprintf("__**%s**__\n%s", strings.Title(pluginHelp.Name), event.Translate(pluginHelp.Description))
+	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Name))
+
+	if pluginHelp.BotPermissionRequired != nil {
+		output += fmt.Sprintf(" | Requires **%s**", pluginHelp.BotPermissionRequired.Name())
+	}
+
+	if pluginHelp.PatreonOnly {
+		output += " | Patrons Only"
+	}
+
+	output += fmt.Sprintf("\n%s", event.Translate(pluginHelp.Description))
 
 	if len(pluginHelp.ParamSets) == 0 {
-		event.RespondDM(output)
+		event.Respond(output)
 		return
 	}
 
@@ -77,11 +87,21 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		command := event.Prefix() + pluginHelp.Name
 
 		for _, param := range paramSet.Params {
+			name := param.Name
+
 			if param.Optional {
-				command += fmt.Sprintf(" `%s?`", param.Name)
-			} else {
-				command += fmt.Sprintf(" `%s`", param.Name)
+				name = "?" + name
 			}
+
+			if !param.NotVariable {
+				name = "`<" + name + ">`"
+			}
+
+			command += " " + name
+		}
+
+		if paramSet.Description != "" {
+			command += fmt.Sprintf("\n\t*%s*", paramSet.Description)
 		}
 
 		var requirements []string
@@ -95,12 +115,13 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		}
 
 		if len(requirements) > 0 {
-			command += "\n\t-" + strings.Join(requirements, " | ")
+			command += "\n\t- " + strings.Join(requirements, " | ")
 		}
 
 		commandsList[i] = command
 	}
 
+	output += "__**Commands**__\n"
 	output += strings.Join(commandsList, "\n")
 	event.Respond(output)
 }

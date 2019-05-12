@@ -54,9 +54,19 @@ func (p *Plugin) Localizations() []interfaces.Localization {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
-		PatreonOnly: true,
-		Description: "help.chatlog.description",
+		Name:                  p.Name(),
+		PatreonOnly:           true,
+		Description:           "help.chatlog.description",
+		BotPermissionRequired: permissions.BotAdmin,
+		ParamSets: []common.ParamSet{{
+			Params: []common.PluginParams{
+				{Name: "enable", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Params: []common.PluginParams{
+				{Name: "disable", Type: common.Text, NotVariable: true},
+			},
+		}},
 	}
 }
 
