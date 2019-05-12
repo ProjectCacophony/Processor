@@ -65,6 +65,8 @@ func (p *Plugin) add(event *events.Event) {
 			event.Respond("rss.add.not-found")
 			return
 		}
+	} else {
+		feed.FeedLink = feedURL
 	}
 
 	for _, entry := range entries {

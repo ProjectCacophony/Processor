@@ -4,9 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mmcdole/gofeed"
 
@@ -45,18 +43,8 @@ func paramsExtractChannel(event *events.Event, args []string) (*discordgo.Channe
 }
 
 func getFeed(client *http.Client, parser *gofeed.Parser, feedURL string) (*gofeed.Feed, error) {
-	parsedFeedURL, err := url.Parse(feedURL)
-	if err != nil {
-		return nil, err
-	}
-
-	// add cache busting
-	newQueries := parsedFeedURL.Query()
-	newQueries.Set("_", strconv.FormatInt(time.Now().Unix(), 10))
-	parsedFeedURL.RawQuery = newQueries.Encode()
-
 	// download feed page
-	resp, err := client.Get(parsedFeedURL.String())
+	resp, err := client.Get(feedURL)
 	if err != nil {
 		return nil, err
 	}
