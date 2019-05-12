@@ -436,6 +436,71 @@ func (s *Server) Edit(p *Plugin, changes ServerChange) error {
 	return nil
 }
 
+func (s *Server) Censor(p *Plugin, reason string) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	if s.State == StateCensored {
+		return errors.New("server is already censored")
+	}
+
+	err := serverSetStateWithReason(p.db, s.ID, StateCensored, reason)
+	if err != nil {
+		return err
+	}
+
+	s.refreshQueues(p)
+
+	p.refreshList(s.BotID)
+
+	session, err := discord.NewSession(p.tokens, s.BotID)
+	if err != nil {
+		return err
+	}
+
+	for _, editorUserID := range s.EditorUserIDs {
+		channelID, err := discord.DMChannel(p.redis, session, editorUserID)
+		if err != nil {
+			continue
+		}
+
+		discord.SendComplexWithVars(
+			session,
+			p.Localizations(),
+			channelID,
+			&discordgo.MessageSend{
+				Content: "serverlist.dm.server-censored",
+			},
+			"server",
+			s,
+			"reason",
+			reason,
+		)
+	}
+
+	return nil
+}
+
+func (s *Server) Uncensor(p *Plugin) error {
+	if s == nil {
+		return errors.New("server is nil")
+	}
+
+	if s.State != StateCensored {
+		return errors.New("can only uncensor servers that are censored")
+	}
+
+	err := serverSetState(p.db, s.ID, StateQueued)
+	if err != nil {
+		return err
+	}
+
+	s.refreshQueues(p)
+
+	return nil
+}
+
 func (s *Server) ApplyChange(p *Plugin, change ServerChange) error {
 	serverCategories := make([]ServerCategory, len(change.Categories))
 

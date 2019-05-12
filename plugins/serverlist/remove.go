@@ -1,6 +1,8 @@
 package serverlist
 
 import (
+	"strings"
+
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 
@@ -51,6 +53,11 @@ func (p *Plugin) handleRemove(event *events.Event) {
 
 	err := server.Remove(p, true)
 	if err != nil {
+		if strings.Contains(err.Error(), "can not remove servers that are censored") {
+			event.Respond("serverlist.remove.censored")
+			return
+		}
+
 		event.Except(err)
 		return
 	}

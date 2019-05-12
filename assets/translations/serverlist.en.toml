@@ -41,8 +41,8 @@ If it's waiting for approval please have patience until we have reviewed it."
 # queue
 "serverlist.queue.embed.description" = "\
 **To Approve**\nclick the ✅ Reaction\n\
-**To Reject**\n`/serverlist reject \"the reason\"`\n\
-**To Edit**\n`/serverlist edit {{.server.InviteCode}} <name|description|category> <new value>`\
+**To Reject**\n`.serverlist reject \"the reason\"`\n\
+**To Edit**\n`.serverlist edit {{.server.InviteCode}} <name|description|category> <new value>`\
 " # TODO: don't hardcode prefix
 
 # handleQueue
@@ -88,6 +88,8 @@ Reason: `{{.reason}}`."
 "serverlist.dm.server-unhidden" = "🔓 **The Server {{Join .server.Names \"; \"}} has been unhidden by an Editor!**"
 "serverlist.dm.server-expired" = "⏲ **The Invite for Server {{Join .server.Names \"; \"}} is expired!**\n\
 Please update the Invite to get back on the List."
+"serverlist.dm.server-censored" = "⚠ **The Server {{Join .server.Names \"; \"}} has been censored!**\n\
+Reason: `{{.reason}}`."
 
 # handleRemove
 "serverlist.remove.too-few-args" = "Please tell me the Invite, or Server ID of the Server you want to remove."
@@ -96,6 +98,7 @@ Please tell me the Invite, or Server ID of the Server you want to remove."
 "serverlist.remove.no-editor" = "**You are not an Editor of the Server you want to remove.**\n\
 Please contact one of the Editors to remove it."
 "serverlist.remove.success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been removed!"
+"serverlist.remove.censored" = "You cannot remove Servers that are censored."
 
 # handleHide
 "serverlist.hide.too-few-args" = "Please tell me the Invite, or Server ID of the Server you want to hide."
@@ -142,3 +145,9 @@ A moderator will approve the change as soon as possible."
 "serverlist.edit.editors-success" = "\
 The User **{{.editor}}** has been **{{if .removed}}removed{{else}}added{{end}}** as an Editor for **{{Join .server.Names \"; \"}}**"
 "serverlist.edit.invite-success" = "The Invite for {{Join .server.Names \"; \"}} has been updated"
+
+# handleCensor
+"serverlist.censor.too-few-args" = "Please specify which server you want to censor, and the reason."
+"serverlist.censor.no-server" = "I was not able to find the server you want to censor."
+"serverlist.censor.success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been censored!"
+"serverlist.censor.uncensor-success" = "The Server **\"{{Join .entry.Names \"; \"}}\"** has been but back into the queue!"

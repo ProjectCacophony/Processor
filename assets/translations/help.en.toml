@@ -13,6 +13,6 @@
 "help.ping.description" = "Simple ping command to check the response time of the bot. Good way to check if the bot is online."
 "help.prefix.description" = "Allows server admins to change the bots command prefix. Helpful to make sure it does not conflict with other bots on the server."
 "help.rss.description" = "Set up RSS feeds and have them posted into a discord channel."
-"help.serverlist.description" = "Uhh.... sekl what is this even doing :nayoungconfused:"
+"help.serverlist.description" = "Supports building a Server Index."
 "help.stocks.description" = "Stocks allow you to look up real time information about Symbols."
 "help.whitelist.description" = ""

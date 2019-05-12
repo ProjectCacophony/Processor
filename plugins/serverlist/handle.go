@@ -35,8 +35,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.tokens = params.Tokens
 
 	p.staffRoles = permissions.Or(
-		// sekl's dev cord / Admin
-		permissions.NewDiscordRole(p.state, "208673735580844032", "250710478068645890"),
+		permissions.BotAdmin,
 		// Test / Staff
 		permissions.NewDiscordRole(p.state, "561619599129444390", "561619665197989893"),
 	)
@@ -74,6 +73,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "help.serverlist.description",
+		Hide:        true,
 	}
 }
 
@@ -215,6 +215,17 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "edit":
 
 			p.handleEdit(event)
+			return true
+
+		case "censor", "uncensor":
+
+			event.Require(func() {
+
+				p.handleCensor(event)
+			},
+				permissions.Not(permissions.DiscordChannelDM),
+				p.staffRoles,
+			)
 			return true
 
 		}
