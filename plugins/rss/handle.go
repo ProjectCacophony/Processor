@@ -68,6 +68,22 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "help.rss.description",
+		ParamSets: []common.ParamSet{{
+			DiscordPermissionRequired: permissions.DiscordManageChannels,
+			PatreonOnly:               true,
+			Params: []common.PluginParams{
+				{Name: "add", Type: common.Text},
+				{Name: "channel", Type: common.Channel, Optional: true},
+				{Name: "link", Type: common.Text},
+			},
+		}, {
+			DiscordPermissionRequired: permissions.DiscordManageChannels,
+			Params: []common.PluginParams{
+				{Name: "remove", Type: common.Text},
+				{Name: "channel", Type: common.Channel, Optional: true},
+				{Name: "link", Type: common.Text},
+			},
+		}},
 	}
 }
 

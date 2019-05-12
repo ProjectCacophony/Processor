@@ -57,12 +57,29 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	if len(event.Fields()) == 1 && event.Fields()[0] == "help" {
-		listCommands(event, p.pluginHelpList, false)
+	if len(event.Fields()) < 1 || event.Fields()[0] != "help" {
+		return false
 	}
 
-	if len(event.Fields()) > 1 && event.Fields()[1] == "public" {
-		listCommands(event, p.pluginHelpList, true)
+	if len(event.Fields()) == 1 {
+		listCommands(event, p.pluginHelpList, false)
+		return true
+	}
+
+	if len(event.Fields()) > 1 {
+		if event.Fields()[1] == "public" {
+			listCommands(event, p.pluginHelpList, true)
+			return true
+		} else {
+
+			// check if second param is a plugin name
+			for _, help := range p.pluginHelpList {
+				if help.Name == event.Fields()[1] {
+					displayPluginCommands(event, help)
+					return true
+				}
+			}
+		}
 	}
 
 	return false

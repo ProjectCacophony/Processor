@@ -51,6 +51,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "help.prefix.description",
+		ParamSets: []common.ParamSet{{
+			DiscordPermissionRequired: permissions.DiscordAdministrator,
+			Params: []common.PluginParams{{
+				Name:    "New Prefix",
+				Type:    common.Text,
+				Example: "/",
+			}},
+		}},
 	}
 }
 

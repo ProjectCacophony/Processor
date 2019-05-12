@@ -55,3 +55,52 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 	}
 
 }
+
+func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
+
+	if pluginHelp.Hide {
+		event.Respond("help.no-plugin-doc")
+		return
+	}
+
+	output := fmt.Sprintf("__**%s**__\n%s", strings.Title(pluginHelp.Name), event.Translate(pluginHelp.Description))
+
+	if len(pluginHelp.ParamSets) == 0 {
+		event.RespondDM(output)
+		return
+	}
+
+	output += "\n\n"
+	commandsList := make([]string, len(pluginHelp.ParamSets))
+
+	for i, paramSet := range pluginHelp.ParamSets {
+		command := event.Prefix() + pluginHelp.Name
+
+		for _, param := range paramSet.Params {
+			if param.Optional {
+				command += fmt.Sprintf(" `%s?`", param.Name)
+			} else {
+				command += fmt.Sprintf(" `%s`", param.Name)
+			}
+		}
+
+		var requirements []string
+
+		if paramSet.PatreonOnly {
+			requirements = append(requirements, "Patrons Only")
+		}
+
+		if paramSet.DiscordPermissionRequired != nil {
+			requirements = append(requirements, fmt.Sprintf("Requires **%s**", paramSet.DiscordPermissionRequired.Name()))
+		}
+
+		if len(requirements) > 0 {
+			command += "\n\t-" + strings.Join(requirements, " | ")
+		}
+
+		commandsList[i] = command
+	}
+
+	output += strings.Join(commandsList, "\n")
+	event.Respond(output)
+}
