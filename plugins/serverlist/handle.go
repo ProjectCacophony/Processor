@@ -18,7 +18,7 @@ type Plugin struct {
 	state      *state.State
 	redis      *redis.Client
 	tokens     map[string]string
-	staffRoles interfaces.PermissionInterface
+	staffRoles interfaces.Permission
 }
 
 func (p *Plugin) Name() string {
