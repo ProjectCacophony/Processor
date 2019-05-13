@@ -101,7 +101,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		}
 
 		if paramSet.Description != "" {
-			command += fmt.Sprintf("\n\t*%s*", paramSet.Description)
+			command += fmt.Sprintf("\n\t*%s*", event.Translate(paramSet.Description))
 		}
 
 		var requirements []string

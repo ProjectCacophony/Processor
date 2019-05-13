@@ -69,7 +69,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Name:        p.Name(),
 		Description: "help.rss.description",
 		ParamSets: []common.ParamSet{{
-			Description:         "Add RSS feed to this channel or another channel if specified.",
+			Description:         "help.rss.add.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.PluginParam{
 				{Name: "add", Type: common.Text, NotVariable: true},
@@ -77,11 +77,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "link", Type: common.Text},
 			},
 		}, {
-			Description:         "Remove RSS feed from this channel or another channel if specified.",
+			Description:         "help.rss.remove.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.PluginParam{
 				{Name: "remove", Type: common.Text, NotVariable: true},
-				{Name: "channel", Type: common.Channel, Optional: true},
 				{Name: "link", Type: common.Text},
 			},
 		}},
