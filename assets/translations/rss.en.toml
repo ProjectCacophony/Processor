@@ -1,3 +1,8 @@
+# help
+"rss.help.description" = "Set up RSS feeds and have them posted into a discord channel."
+"rss.help.add.description" = "Add RSS feed to this channel or another channel if specified."
+"rss.help.remove.description" = "Remove RSS feed from this channel or another channel if specified."
+
 "rss.add.success" = "\
 {{- if not .dm }}\
 **I added the feed `{{.feed.Title}}` to {{.channel.Mention}}.**\n\

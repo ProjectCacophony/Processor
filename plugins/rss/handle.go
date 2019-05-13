@@ -67,9 +67,9 @@ func (p *Plugin) Localizations() []interfaces.Localization {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "help.rss.description",
+		Description: "rss.help.description",
 		ParamSets: []common.ParamSet{{
-			Description:         "help.rss.add.description",
+			Description:         "rss.help.add.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.PluginParam{
 				{Name: "add", Type: common.Text, NotVariable: true},
@@ -77,7 +77,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "link", Type: common.Text},
 			},
 		}, {
-			Description:         "help.rss.remove.description",
+			Description:         "rss.help.remove.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.PluginParam{
 				{Name: "remove", Type: common.Text, NotVariable: true},
