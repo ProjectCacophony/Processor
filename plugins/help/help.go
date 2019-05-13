@@ -65,8 +65,8 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 
 	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Name))
 
-	if pluginHelp.BotPermissionRequired != nil {
-		output += fmt.Sprintf(" | Requires **%s**", pluginHelp.BotPermissionRequired.Name())
+	if len(pluginHelp.PermissionsRequired) > 0 {
+		output += fmt.Sprintf(" | Requires **%s**", pluginHelp.PermissionsRequired)
 	}
 
 	if pluginHelp.PatreonOnly {
@@ -110,8 +110,8 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 			requirements = append(requirements, "Patrons Only")
 		}
 
-		if paramSet.DiscordPermissionRequired != nil {
-			requirements = append(requirements, fmt.Sprintf("Requires **%s**", paramSet.DiscordPermissionRequired.Name()))
+		if len(paramSet.PermissionsRequired) > 0 {
+			requirements = append(requirements, fmt.Sprintf("Requires **%s**", paramSet.PermissionsRequired))
 		}
 
 		if len(requirements) > 0 {

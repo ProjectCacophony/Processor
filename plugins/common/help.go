@@ -1,7 +1,9 @@
 package common
 
 import (
-	"gitlab.com/Cacophony/go-kit/permissions"
+	"strings"
+
+	"gitlab.com/Cacophony/go-kit/interfaces"
 )
 
 type ParamType int
@@ -25,22 +27,32 @@ type PluginHelp struct {
 	Hide        bool
 	PatreonOnly bool
 
-	DiscordPermissionRequired *permissions.Discord
-	BotPermissionRequired     *permissions.CacophonyBotPermission
+	PermissionsRequired Permissions
 }
 
 type ParamSet struct {
-	PatreonOnly               bool
-	Description               string
-	Params                    []PluginParams
-	DiscordPermissionRequired *permissions.Discord
-	BotPermissionRequired     *permissions.CacophonyBotPermission
+	PatreonOnly         bool
+	Description         string
+	Params              []PluginParam
+	PermissionsRequired Permissions
 }
 
-type PluginParams struct {
+type PluginParam struct {
 	Name        string
 	Example     string
 	Type        ParamType
 	Optional    bool
 	NotVariable bool // indicates if the parameter is defined by the user
+}
+
+type Permissions []interfaces.Permission
+
+func (p Permissions) String() string {
+	var permissionsText string
+	for _, permission := range p {
+		permissionsText += permission.Name() + ", "
+	}
+	permissionsText = strings.TrimRight(permissionsText, ", ")
+
+	return permissionsText
 }

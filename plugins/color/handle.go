@@ -48,11 +48,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Name:        p.Name(),
 		Description: "help.color.description",
 		ParamSets: []common.ParamSet{{
-			Params: []common.PluginParams{
+			Params: []common.PluginParam{
 				{Name: "Hex Code", Type: common.Text},
 			},
 		}, {
-			Params: []common.PluginParams{
+			Params: []common.PluginParam{
 				{Name: "RGB Numbers", Type: common.Text},
 			},
 		}},
