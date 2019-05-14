@@ -74,7 +74,7 @@ Added `{{HumanizeTime $entry.CreatedAt}}`\n\
 {{end}}\
 So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\
 {{else}}\
-**Looks like there is no Server added to the serverlist yet.**\n\
+**Looks like you have not added any Servers to the Serverlist yet.**\n\
 {{end}}\
 "
 
