@@ -16,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/lastfm"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/Processor/plugins/prefix"
+	"gitlab.com/Cacophony/Processor/plugins/quickactions"
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 	"gitlab.com/Cacophony/Processor/plugins/serverlist"
 	"gitlab.com/Cacophony/Processor/plugins/stocks"
@@ -63,6 +64,7 @@ var (
 		&prefix.Plugin{},
 		&help.Plugin{},
 		&stocks.Plugin{},
+		&quickactions.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

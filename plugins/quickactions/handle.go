@@ -1,0 +1,79 @@
+package quickactions
+
+import (
+	"github.com/go-redis/redis"
+	"gitlab.com/Cacophony/Processor/plugins/common"
+	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/localization"
+	"go.uber.org/zap"
+)
+
+type Plugin struct {
+	logger *zap.Logger
+	redis  *redis.Client
+}
+
+func (p *Plugin) Name() string {
+	return "quickactions"
+}
+
+func (p *Plugin) Start(params common.StartParameters) error {
+	p.logger = params.Logger
+	p.redis = params.Redis
+
+	return nil
+}
+
+func (p *Plugin) Stop(params common.StopParameters) error {
+	return nil
+}
+
+func (p *Plugin) Priority() int {
+	return 0
+}
+
+func (p *Plugin) Passthrough() bool {
+	return false
+}
+
+func (p *Plugin) Localizations() []interfaces.Localization {
+	local, err := localization.NewFileSource("assets/translations/quickactions.en.toml", "en")
+	if err != nil {
+		p.logger.Error("failed to load localization", zap.Error(err))
+	}
+
+	return []interfaces.Localization{local}
+}
+
+func (p *Plugin) Help() *common.PluginHelp {
+	return &common.PluginHelp{
+		Name:        p.Name(),
+		Description: "quickactions.help.description",
+	}
+}
+
+func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.MessageReactionAddType {
+		return p.handleReaction(event)
+	}
+
+	// TODO: should we do this?
+	// if event.Type == events.MessageCreateType &&
+	// 	event.DM() &&
+	// 	event.MessageCreate.Type == discordgo.MessageTypeChannelPinnedMessage &&
+	// 	event.MessageCreate.Author != nil &&
+	// 	event.MessageCreate.Author.Bot &&
+	// 	event.MessageCreate.Author.ID == event.BotUserID {
+	// 	event.Discord().Client.ChannelMessageDelete(
+	// 		event.MessageCreate.ChannelID,
+	// 		event.MessageCreate.ID,
+	// 	)
+	// }
+
+	if !event.Command() {
+		return false
+	}
+
+	return false
+}

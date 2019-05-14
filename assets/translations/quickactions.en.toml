@@ -1,0 +1,8 @@
+# help
+"quickactions.help.description" = "Perform various actions on Discord - anywhere."
+
+# starMessage
+"quickactions.star.message.content" = "\
+🌟 <https://discordapp.com/channels/{{.message.GuildID}}/{{.message.ChannelID}}/{{.message.ID}}>\n\
+{{.message.Content}}\
+"
