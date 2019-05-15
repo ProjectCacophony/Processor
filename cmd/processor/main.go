@@ -136,7 +136,7 @@ func main() {
 	)
 
 	// init processor
-	processor, err := events.NewProcessor(
+	consumer, err := events.NewConsumer(
 		logger.With(zap.String("feature", "processor")),
 		ServiceName,
 		config.AMQPDSN,
@@ -167,7 +167,7 @@ func main() {
 
 	// start processor
 	go func() {
-		err := processor.Start()
+		err := consumer.Start()
 		if err != nil {
 			logger.Fatal("processor error received", zap.Error(err))
 		}
