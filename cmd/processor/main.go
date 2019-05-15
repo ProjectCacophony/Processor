@@ -167,7 +167,7 @@ func main() {
 
 	// start processor
 	go func() {
-		err := consumer.Start()
+		err := consumer.Start(context.TODO())
 		if err != nil {
 			logger.Fatal("processor error received", zap.Error(err))
 		}
