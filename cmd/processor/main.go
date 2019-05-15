@@ -140,8 +140,6 @@ func main() {
 		logger.With(zap.String("feature", "processor")),
 		ServiceName,
 		config.AMQPDSN,
-		"cacophony",
-		"cacophony.discord.#",
 		config.ConcurrentProcessingLimit,
 		handler,
 	)

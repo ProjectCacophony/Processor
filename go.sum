@@ -522,8 +522,8 @@ github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q
 github.com/yudai/gojsondiff v1.0.0/go.mod h1:AY32+k2cwILAkW1fbgxQ5mUmMiZFgLIV+FBNExI05xg=
 github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82/go.mod h1:lgjkn3NuSvDfVJdfcVVdX+jpBxNmX4rDAzaS45IcYoM=
 github.com/yudai/pp v2.0.1+incompatible/go.mod h1:PuxR/8QJ7cyCkFp/aUDS+JY727OFEZkTdatxwunjIkc=
-gitlab.com/Cacophony/go-kit v0.0.0-20190515163431-e5b36945f68a h1:FTw+C3zJxCrn5E3NsL8rEdOFIoLf4Dy2BCU2UxO/ULs=
-gitlab.com/Cacophony/go-kit v0.0.0-20190515163431-e5b36945f68a/go.mod h1:ZA3vKWuAL5kklwc041s0FvUx1yEIUu76ZfyM3wG608A=
+gitlab.com/Cacophony/go-kit v0.0.0-20190515171420-83e6790ae390 h1:mLMEpEiARb+R+9gAt/M8C8BXjT9A2H7XbAYD3YZV//A=
+gitlab.com/Cacophony/go-kit v0.0.0-20190515171420-83e6790ae390/go.mod h1:ZA3vKWuAL5kklwc041s0FvUx1yEIUu76ZfyM3wG608A=
 go.etcd.io/etcd v3.3.11+incompatible/go.mod h1:yaeTdrJi5lOmYerz05bd8+V7KubZs8YSFZfzsF9A6aI=
 go.mongodb.org/mongo-driver v1.0.0/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
