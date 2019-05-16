@@ -31,6 +31,7 @@ type PluginHelp struct {
 }
 
 type Command struct {
+	Name                string
 	PatreonOnly         bool
 	Description         string
 	Params              []CommandParam

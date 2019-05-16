@@ -84,7 +84,13 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 	commandsList := make([]string, len(pluginHelp.Commands))
 
 	for i, command := range pluginHelp.Commands {
-		commandText := event.Prefix() + pluginHelp.Name
+		var commandText string
+
+		if command.Name != "" {
+			commandText += "**" + command.Name + "**\n"
+		}
+
+		commandText += event.Prefix() + pluginHelp.Name
 
 		for _, param := range command.Params {
 			name := param.Name

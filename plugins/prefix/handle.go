@@ -42,12 +42,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Name:        p.Name(),
 		Description: "prefix.help.description",
 		Commands: []common.Command{{
+			Name: "View Prefix",
+		}, {
+			Name:                "Set Prefix",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
-			Params: []common.CommandParam{{
-				Name:    "prefix",
-				Type:    common.Text,
-				Example: "/",
-			}},
+			Params: []common.CommandParam{
+				{Name: "prefix", Type: common.Text},
+			},
 		}},
 	}
 }
