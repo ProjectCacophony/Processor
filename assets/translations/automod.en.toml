@@ -1,4 +1,10 @@
+
+
 "automod.not-dm" = "This module can not be used in DMs."
+
+#help info
+"automod.help.description" = "Set up automatic actions such as sending messages, kicking/banning users, and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions."
+
 
 # cmdAdd
 "automod.add.too-few" = "You didn't tell me enough information."

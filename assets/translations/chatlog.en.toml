@@ -1,3 +1,6 @@
+# help info
+"chatlog.help.description" = "Enable chat logging to always store messages sent in your server, even if they are deleted in discord."
+
 # handleEnable
 "chatlog.enable.already-enabled" = "Looks like the Chatlog is already enabled on this Server."
 "chatlog.enable.success" = "**I enabled the Chatlog on this server!**\n\

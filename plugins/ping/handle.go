@@ -34,7 +34,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "help.ping.description",
+		Description: "ping.help.description",
 	}
 }
 

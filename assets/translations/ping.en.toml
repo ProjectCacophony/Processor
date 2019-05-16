@@ -1,3 +1,6 @@
+# help info
+"ping.help.description" = "Simple ping command to check the response time of the bot. Good way to check if the bot is online."
+
 # handlePing
 "ping.ping-response.embed.title" = "**:onfire: Latency**"
 "ping.ping-response.embed.field.DiscordToGateway.title" = "Discord to Gateway"

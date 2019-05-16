@@ -1,3 +1,7 @@
+# help info
+"color.help.description" = "Display the color of a given hex code or RGB values."
+
+
 # handleColor
 "color.too-few-arguments" = "Please tell me a hex code. :detective:"
 "color.invalid-color" = "You did not give me a valid hex code or RGB values. :neutral:"

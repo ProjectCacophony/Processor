@@ -35,7 +35,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "help.color.description",
+		Description: "color.help.description",
 		ParamSets: []common.ParamSet{{
 			Params: []common.PluginParam{
 				{Name: "Hex Code", Type: common.Text},

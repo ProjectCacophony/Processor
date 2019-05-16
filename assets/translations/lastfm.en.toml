@@ -1,3 +1,7 @@
+# help info
+"lastfm.help.description" = "View and track your lastfm stats like play counts, top albums, and top artists. You can also view the stats for a whole server to see whats popular among your friends."
+
+
 # common
 "lastfm.no-subcommand" = "Please specify a valid sub-command. :glare:"
 "lastfm.no-user" = "Please tell me a Last.Fm Username. :smile:\nYou can save your username using `{{.prefix}}lf set <username>`."

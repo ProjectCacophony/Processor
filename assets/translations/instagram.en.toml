@@ -1,3 +1,6 @@
+# help info
+"instagram.help.description" = "Have the bot watch a certain instagram account and have it post updates in a given channel."
+
 "instagram.add.success" = "\
 {{- if not .dm }}\
 **I added the Instagram Feed for <https://instagram.com/{{.instagramUser.Username}}> to {{.channel.Mention}}.**\n\

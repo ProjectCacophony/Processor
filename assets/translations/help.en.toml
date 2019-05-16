@@ -3,17 +3,5 @@
 
 "help.no-plugin-doc" = "Could not find any docs for that plugin."
 
-# plugin descriptions
-"help.automod.description" = "Set up automatic actions such as sending messages, kicking/banning users, and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions."
-"help.chatlog.description" = "Enable chat logging to always store messages sent in your server, even if they are deleted in discord."
-"help.color.description" = "Display the color of a given hex code or RGB values."
-"help.dev.description" = ""
-"help.gall.description" = "Set up the bot to watch a gall forum and post updates on the forum in a given discord channel."
+#help info
 "help.help.description" = ""
-"help.instagram.description" = "Have the bot watch a certain instagram account and have it post updates in a given channel."
-"help.lastfm.description" = "View and track your lastfm stats like play counts, top albums, and top artists. You can also view the stats for a whole server to see whats popular among your friends."
-"help.ping.description" = "Simple ping command to check the response time of the bot. Good way to check if the bot is online."
-"help.prefix.description" = "Allows server admins to change the bots command prefix. Helpful to make sure it does not conflict with other bots on the server."
-"help.serverlist.description" = "Supports building a Server Index."
-"help.stocks.description" = "Stocks allow you to look up real time information about Symbols."
-"help.whitelist.description" = ""

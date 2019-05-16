@@ -1,3 +1,7 @@
+# help info
+"gall.help.description" = "Set up the bot to watch a gall forum and post updates on the forum in a given discord channel."
+
+
 "gall.add.success" = "\
 {{- if not .dm }}\
 **I added the board `{{.boardID}}` to {{.channel.Mention}}.**\n\

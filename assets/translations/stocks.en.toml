@@ -1,3 +1,7 @@
+# help info
+"stocks.help.description" = "Stocks allow you to look up real time information about Symbols."
+
+
 # handleStocks
 "stocks.no-symbol" = "Please tell me the Symbol of the Stock you want to find out about."
 "stocks.symbol-not-found" = "**I was not able to find the given Symbol!**\n\

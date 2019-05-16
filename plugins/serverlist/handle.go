@@ -64,7 +64,7 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "help.serverlist.description",
+		Description: "serverlist.help.description",
 		Hide:        true,
 	}
 }

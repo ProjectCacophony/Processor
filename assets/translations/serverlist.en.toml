@@ -1,4 +1,7 @@
 "serverlist.too-few" = "Too few arguments"
+# help info
+"serverlist.help.description" = "Supports building a Server Index."
+
 
 # handleCategoryCreate
 "serverlist.category-create.no-keywords" = "Please specify at least one Keyword"
