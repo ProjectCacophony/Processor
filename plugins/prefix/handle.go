@@ -43,7 +43,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Description: "prefix.help.description",
 		Commands: []common.Command{{
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
-			Params: []common.PluginParam{{
+			Params: []common.CommandParam{{
 				Name:    "prefix",
 				Type:    common.Text,
 				Example: "/",

@@ -37,11 +37,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Name:        p.Name(),
 		Description: "color.help.description",
 		Commands: []common.Command{{
-			Params: []common.PluginParam{
+			Params: []common.CommandParam{
 				{Name: "Hex Code", Type: common.Text},
 			},
 		}, {
-			Params: []common.PluginParam{
+			Params: []common.CommandParam{
 				{Name: "RGB Numbers", Type: common.Text},
 			},
 		}},

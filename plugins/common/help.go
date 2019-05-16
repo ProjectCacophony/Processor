@@ -33,11 +33,11 @@ type PluginHelp struct {
 type Command struct {
 	PatreonOnly         bool
 	Description         string
-	Params              []PluginParam
+	Params              []CommandParam
 	PermissionsRequired Permissions
 }
 
-type PluginParam struct {
+type CommandParam struct {
 	Name        string
 	Example     string
 	Type        ParamType

@@ -49,11 +49,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Description:         "chatlog.help.description",
 		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 		Commands: []common.Command{{
-			Params: []common.PluginParam{
+			Params: []common.CommandParam{
 				{Name: "enable", Type: common.Text, NotVariable: true},
 			},
 		}, {
-			Params: []common.PluginParam{
+			Params: []common.CommandParam{
 				{Name: "disable", Type: common.Text, NotVariable: true},
 			},
 		}},
