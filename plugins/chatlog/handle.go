@@ -50,11 +50,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 		Commands: []common.Command{{
 			Params: []common.CommandParam{
-				{Name: "enable", Type: common.Text, NotVariable: true},
+				{Name: "enable", Type: common.Hardcoded},
 			},
 		}, {
 			Params: []common.CommandParam{
-				{Name: "disable", Type: common.Text, NotVariable: true},
+				{Name: "disable", Type: common.Hardcoded},
 			},
 		}},
 	}

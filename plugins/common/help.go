@@ -10,6 +10,8 @@ type ParamType int
 
 const (
 	Text ParamType = iota
+	QuotedText
+	Hardcoded
 	User
 	Channel
 	Link
@@ -39,11 +41,10 @@ type Command struct {
 }
 
 type CommandParam struct {
-	Name        string
-	Example     string
-	Type        ParamType
-	Optional    bool
-	NotVariable bool // indicates if the parameter is defined by the user
+	Name     string
+	Example  string
+	Type     ParamType
+	Optional bool
 }
 
 type Permissions []interfaces.Permission

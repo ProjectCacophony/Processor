@@ -104,8 +104,17 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 				name = "?" + name
 			}
 
-			if !param.NotVariable {
+			switch param.Type {
+			case common.Hardcoded:
+			case common.QuotedText:
+				name = "\"<" + name + ">\""
+			case common.Text:
 				name = "<" + name + ">"
+			case common.User:
+				name = "<@" + name + ">"
+			case common.Channel:
+				name = "<#" + name + ">"
+
 			}
 
 			commandText += " " + name
@@ -125,7 +134,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		}
 
 		if len(command.PermissionsRequired) > 0 {
-			requirements = append(requirements, fmt.Sprintf("Requires **%s**", command.PermissionsRequired))
+			requirements = append(requirements, fmt.Sprintf("Requires *%s*", command.PermissionsRequired))
 		}
 
 		if len(requirements) > 0 {
