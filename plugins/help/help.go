@@ -29,7 +29,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
 			strings.Title(pluginHelp.Name), event.Prefix(), pluginHelp.Name)
 
-		if pluginHelp.PatreonOnly {
+		if containsPatronPermission(pluginHelp.PermissionsRequired) {
 			summeryText += " | Patrons Only"
 		}
 
@@ -70,7 +70,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		output += fmt.Sprintf(" | Requires **%s**", pluginHelp.PermissionsRequired)
 	}
 
-	if pluginHelp.PatreonOnly {
+	if containsPatronPermission(pluginHelp.PermissionsRequired) {
 		output += " | Patrons Only"
 	}
 
@@ -129,7 +129,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 
 		var requirements []string
 
-		if command.PatreonOnly {
+		if containsPatronPermission(command.PermissionsRequired) {
 			requirements = append(requirements, "Patrons Only")
 		}
 

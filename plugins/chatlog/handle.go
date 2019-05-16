@@ -44,10 +44,12 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:                p.Name(),
-		PatreonOnly:         true,
-		Description:         "chatlog.help.description",
-		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+		Name:        p.Name(),
+		Description: "chatlog.help.description",
+		PermissionsRequired: []interfaces.Permission{
+			permissions.BotAdmin,
+			permissions.Patron,
+		},
 		Commands: []common.Command{{
 			Params: []common.CommandParam{
 				{Name: "enable", Type: common.Flag},
@@ -76,6 +78,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		},
 		permissions.DiscordAdministrator,
 		permissions.BotAdmin,
+		permissions.Patron,
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),

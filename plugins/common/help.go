@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 type ParamType int
@@ -26,15 +27,13 @@ type PluginHelp struct {
 
 	Commands []Command
 
-	Hide        bool
-	PatreonOnly bool
+	Hide bool
 
 	PermissionsRequired Permissions
 }
 
 type Command struct {
 	Name                string
-	PatreonOnly         bool
 	Description         string
 	Params              []CommandParam
 	PermissionsRequired Permissions
@@ -51,7 +50,13 @@ type Permissions []interfaces.Permission
 
 func (p Permissions) String() (permissionsText string) {
 	for _, permission := range p {
+		// skip Patron permissions, as we display it in a special way
+		if permission == permissions.Patron {
+			continue
+		}
+
 		permissionsText += permission.Name() + ", "
 	}
+
 	return strings.TrimSuffix(permissionsText, ", ")
 }

@@ -14,3 +14,13 @@ func containsBotAdminPermission(permissionsInput common.Permissions) bool {
 
 	return false
 }
+
+func containsPatronPermission(permissionsInput common.Permissions) bool {
+	for _, permission := range permissionsInput {
+		if permission == permissions.Patron {
+			return true
+		}
+	}
+
+	return false
+}
