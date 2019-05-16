@@ -47,7 +47,7 @@ Go Service - Binary Build:
   image: golang:1.12-stretch
   artifacts:
     paths:
-    - /go/bin/linux.amd64
+    - bin/linux.amd64
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
