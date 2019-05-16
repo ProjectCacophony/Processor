@@ -144,7 +144,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		commandsList[i] = commandSummary + "\n"
 	}
 
-	output += "__**Commands**__\n\n"
+	output += "__**Commands**__\n"
 	output += strings.Join(commandsList, "")
 	event.Respond(output)
 }

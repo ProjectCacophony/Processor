@@ -72,6 +72,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			},
 		}, {
 			Name:                "Create a Category",
+			Description:         "Sort By Options: `alphabetical`, `adding_date`, `member_count`\n\t\tGroup By Options: `alphabetical`",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
 				{Name: "category", Type: common.Hardcoded},
@@ -102,6 +103,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			},
 		}, {
 			Name:                "Censor a Server",
+			Description:         "Run the command again to uncensor a Server.",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
 				{Name: "censor", Type: common.Hardcoded},
@@ -143,13 +145,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "list", Type: common.Hardcoded},
 			},
 		}, {
-			Name: "Hide a Servers",
+			Name:        "Hide a Servers",
+			Description: "Run the command again to unhide the Server.",
 			Params: []common.CommandParam{
 				{Name: "hide", Type: common.Hardcoded},
 				{Name: "Server Invite", Type: common.Text},
 			},
 		}, {
-			Name: "Edit a Server Name",
+			Name:        "Edit a Server Name",
+			Description: "When editing the Server Name, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Hardcoded},
 				{Name: "Server Invite", Type: common.Text},
@@ -157,7 +161,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "New Server Name, if multiple, separated by ;", Type: common.QuotedText},
 			},
 		}, {
-			Name: "Edit a Server Description",
+			Name:        "Edit a Server Description",
+			Description: "When editing the Server Description, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Hardcoded},
 				{Name: "Server Invite", Type: common.Text},
@@ -165,7 +170,17 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "New Server Description", Type: common.QuotedText},
 			},
 		}, {
-			Name: "Edit a Server Invite",
+			Name:        "Edit a Server Category",
+			Description: "When editing the Server Category, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
+			Params: []common.CommandParam{
+				{Name: "edit", Type: common.Hardcoded},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "category ", Type: common.Hardcoded},
+				{Name: "New Category, if multiple, separated by ;", Type: common.QuotedText},
+			},
+		}, {
+			Name:        "Edit a Server Invite",
+			Description: "Adds as an Editor if the User is not an Editor so far.\n\t\tRemoves as an Editor if the User is an Editor.\n\t\tAll Editors have equal rights about the Listing, they can all edit, hide, and remove the Server.\n\t\tPlease make sure you only add Users you trust as Editors",
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Hardcoded},
 				{Name: "Server Invite", Type: common.Text},
