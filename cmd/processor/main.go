@@ -153,9 +153,6 @@ func main() {
 	httpRouter := api.NewRouter()
 	httpServer := api.NewHTTPServer(config.Port, httpRouter)
 
-	// load localization files
-	plugins.LoadLocalizations(logger.With(zap.String("feature", "load_localizations")))
-
 	// init plugins
 	plugins.StartPlugins(
 		logger.With(zap.String("feature", "start_plugins")),

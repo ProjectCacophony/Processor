@@ -85,6 +85,9 @@ func StartPlugins(
 	featureFlagger *featureflag.FeatureFlagger,
 ) {
 
+	// load localizations
+	loadLocalizations(logger)
+
 	// get help list from all pluguins for help module
 	pluginHelpList := make([]*common.PluginHelp, len(PluginList))
 	for i, plugin := range PluginList {
@@ -138,7 +141,7 @@ func StopPlugins(
 	}
 }
 
-func LoadLocalizations(logger *zap.Logger) {
+func loadLocalizations(logger *zap.Logger) {
 	files, err := filepath.Glob("assets/translations/*.en.toml")
 	if err != nil {
 		logger.Error("could not load any localization files", zap.Error(err))
