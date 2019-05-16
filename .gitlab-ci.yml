@@ -19,9 +19,9 @@ Go Lint:
   stage: prepare
   extends: .Go Service - Go Lint
 
-Docker Build:
-  stage: build
-  extends: .Go Service - Docker Build
+#Docker Build:
+#  stage: build
+#  extends: .Go Service - Docker Build
 
 Docker Release:
   stage: release
@@ -40,3 +40,45 @@ Sentry Staging:
   extends: .Sentry - Sentry Deploy
   variables:
     SENTRY_ENV: "staging"
+
+Go Service - Binary Build:
+  stage: prepare
+  image: golang:1.12-stretch
+  artifacts:
+    paths:
+    - /src/bin/linux.amd64
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .go/
+    policy: pull
+  script:
+    - cd /src
+    - make all
+
+Go Service - Docker Build:
+  stage: build
+  image: docker:latest
+  variables:
+    DOCKER_IMAGE          : "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}"
+    DOCKER_IMAGE_PREV     : "${CI_REGISTRY_IMAGE}:${CI_COMMIT_BEFORE_SHA}"
+    DOCKER_DRIVER         : overlay
+  # retry: 2
+  services:
+    - docker:dind
+  before_script:
+    - >
+      docker login
+      --username "${CI_REGISTRY_USER}"
+      --password "${CI_REGISTRY_PASSWORD}"
+      "${CI_REGISTRY}"
+    - ln -s ./.go ./go
+  script:
+    - docker pull "${DOCKER_IMAGE_PREV}" || true
+    - >
+      docker build
+      --cache-from "${DOCKER_IMAGE_PREV}"
+      --tag "${DOCKER_IMAGE}"
+      --build-arg GOPROXY
+      "${PWD}"
+    - docker push "${DOCKER_IMAGE}"
