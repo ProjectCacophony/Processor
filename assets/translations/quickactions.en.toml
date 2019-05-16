@@ -3,6 +3,5 @@
 
 # starMessage
 "quickactions.star.message.content" = "\
-🌟 <https://discordapp.com/channels/{{.message.GuildID}}/{{.message.ChannelID}}/{{.message.ID}}>\n\
-{{.message.Content}}\
+🌟 <https://discordapp.com/channels/{{.message.GuildID}}/{{.message.ChannelID}}/{{.message.ID}}>\
 "

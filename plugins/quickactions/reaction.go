@@ -61,11 +61,11 @@ func (p *Plugin) starMessage(event *events.Event) {
 	}
 
 	// copy message into DMs
-	// TODO: better message
 	messageIDs, err := event.SendComplex(
 		channelID,
 		&discordgo.MessageSend{
 			Content: "quickactions.star.message.content",
+			Embed:   getStarEmbed(message),
 		},
 		"message",
 		message,
