@@ -7,6 +7,7 @@ import (
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 const PluginHelpListKey = "pluginHelpList"
@@ -84,14 +85,18 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 	commandsList := make([]string, len(pluginHelp.Commands))
 
 	for i, command := range pluginHelp.Commands {
-		var commandSummary string
 
+		// commands that are only for bot admins should only output if a bot admin is running the help command
+		if strings.Contains(command.PermissionsRequired.String(), "Bot Admin") && !event.Has(permissions.BotAdmin) {
+			continue
+		}
+
+		var commandSummary string
 		if command.Name != "" {
 			commandSummary += "**" + command.Name + "**\n"
 		}
 
 		commandText := event.Prefix() + pluginHelp.Name
-
 		for _, param := range command.Params {
 			name := param.Name
 
@@ -105,12 +110,12 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 
 			commandText += " " + name
 		}
-
 		commandText = "`" + commandText + "`"
+
 		commandSummary += commandText
 
 		if command.Description != "" {
-			commandSummary += fmt.Sprintf("\n\t*%s*", event.Translate(command.Description))
+			commandSummary += fmt.Sprintf("\n\t\t*%s*", event.Translate(command.Description))
 		}
 
 		var requirements []string
@@ -127,10 +132,10 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 			commandSummary += "\n\t\t- " + strings.Join(requirements, " | ")
 		}
 
-		commandsList[i] = commandSummary
+		commandsList[i] = commandSummary + "\n"
 	}
 
 	output += "__**Commands**__\n\n"
-	output += strings.Join(commandsList, "\n")
+	output += strings.Join(commandsList, "")
 	event.Respond(output)
 }

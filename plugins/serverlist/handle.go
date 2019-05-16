@@ -85,7 +85,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name:                "Set the Serverlist Log Channel",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "log", Type: common.Text},
+				{Name: "log", Type: common.Text, NotVariable: true},
 			},
 		}, {
 			Name:                "Set the Serverlist Queue Channel",
