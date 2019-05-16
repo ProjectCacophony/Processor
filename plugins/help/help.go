@@ -87,7 +87,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 	for i, command := range pluginHelp.Commands {
 
 		// commands that are only for bot admins should only output if a bot admin is running the help command
-		if strings.Contains(command.PermissionsRequired.String(), "Bot Admin") && !event.Has(permissions.BotAdmin) {
+		if containsBotAdminPermission(command.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
 		}
 

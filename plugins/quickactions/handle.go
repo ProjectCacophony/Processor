@@ -47,19 +47,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return p.handleReaction(event)
 	}
 
-	// TODO: should we do this?
-	// if event.Type == events.MessageCreateType &&
-	// 	event.DM() &&
-	// 	event.MessageCreate.Type == discordgo.MessageTypeChannelPinnedMessage &&
-	// 	event.MessageCreate.Author != nil &&
-	// 	event.MessageCreate.Author.Bot &&
-	// 	event.MessageCreate.Author.ID == event.BotUserID {
-	// 	event.Discord().Client.ChannelMessageDelete(
-	// 		event.MessageCreate.ChannelID,
-	// 		event.MessageCreate.ID,
-	// 	)
-	// }
-
 	if !event.Command() {
 		return false
 	}
