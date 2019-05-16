@@ -1,7 +1,10 @@
 package plugins
 
 import (
+	"path/filepath"
 	"sort"
+
+	"gitlab.com/Cacophony/go-kit/localization"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
@@ -40,8 +43,6 @@ type Plugin interface {
 	Priority() int
 
 	Passthrough() bool
-
-	Localizations() []interfaces.Localization
 
 	Action(event *events.Event) bool
 
@@ -100,6 +101,7 @@ func StartPlugins(
 			State:          state,
 			FeatureFlagger: featureFlagger,
 			PluginHelpList: pluginHelpList,
+			Localizations:  LocalizationsList,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -107,8 +109,6 @@ func StartPlugins(
 			)
 		}
 		// TODO: do not send events to plugins that failed to start
-
-		LocalizationsList = append(LocalizationsList, plugin.Localizations()...)
 	}
 }
 
@@ -135,6 +135,22 @@ func StopPlugins(
 				zap.Error(err),
 			)
 		}
+	}
+}
+
+func LoadLocalizations(logger *zap.Logger) {
+	files, err := filepath.Glob("assets/translations/*.en.toml")
+	if err != nil {
+		logger.Error("could not load any localization files", zap.Error(err))
+		return
+	}
+
+	for _, path := range files {
+		local, err := localization.NewFileSource(path, "en")
+		if err != nil {
+			logger.Error("failed to load localization file", zap.Error(err))
+		}
+		LocalizationsList = append(LocalizationsList, local)
 	}
 }
 

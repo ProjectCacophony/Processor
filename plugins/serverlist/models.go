@@ -161,7 +161,7 @@ func (s *Server) QueueApprove(p *Plugin) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-approved",
@@ -233,7 +233,7 @@ func (s *Server) QueueReject(p *Plugin, reason string) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-rejected",
@@ -279,7 +279,7 @@ func (s *Server) Remove(p *Plugin, editor bool) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-removed",
@@ -325,7 +325,7 @@ func (s *Server) Hide(p *Plugin) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-hidden",
@@ -369,7 +369,7 @@ func (s *Server) Unhide(p *Plugin) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-unhidden",
@@ -467,7 +467,7 @@ func (s *Server) Censor(p *Plugin, reason string) error {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			p.localizations,
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-censored",

@@ -30,7 +30,7 @@ func (p *Plugin) handleExpired(event *events.Event) {
 
 		discord.SendComplexWithVars(
 			session,
-			p.Localizations(),
+			event.Localizations(),
 			channelID,
 			&discordgo.MessageSend{
 				Content: "serverlist.dm.server-expired",

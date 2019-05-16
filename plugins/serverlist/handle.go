@@ -6,19 +6,19 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
-	"gitlab.com/Cacophony/go-kit/localization"
 	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
 type Plugin struct {
-	logger     *zap.Logger
-	db         *gorm.DB
-	state      *state.State
-	redis      *redis.Client
-	tokens     map[string]string
-	staffRoles interfaces.Permission
+	logger        *zap.Logger
+	db            *gorm.DB
+	state         *state.State
+	redis         *redis.Client
+	tokens        map[string]string
+	staffRoles    interfaces.Permission
+	localizations []interfaces.Localization
 }
 
 func (p *Plugin) Name() string {
@@ -33,6 +33,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.redis = params.Redis
 	p.tokens = params.Tokens
+	p.localizations = params.Localizations
 
 	p.staffRoles = permissions.Or(
 		permissions.BotAdmin,
@@ -58,15 +59,6 @@ func (p *Plugin) Priority() int {
 
 func (p *Plugin) Passthrough() bool {
 	return false
-}
-
-func (p *Plugin) Localizations() []interfaces.Localization {
-	local, err := localization.NewFileSource("assets/translations/serverlist.en.toml", "en")
-	if err != nil {
-		p.logger.Error("failed to load localization", zap.Error(err))
-	}
-
-	return []interfaces.Localization{local}
 }
 
 func (p *Plugin) Help() *common.PluginHelp {

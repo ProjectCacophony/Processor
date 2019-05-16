@@ -4,6 +4,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/featureflag"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -16,6 +17,7 @@ type StartParameters struct {
 	State          *state.State
 	FeatureFlagger *featureflag.FeatureFlagger
 	PluginHelpList []*PluginHelp
+	Localizations  []interfaces.Localization
 }
 
 type StopParameters struct {
@@ -25,4 +27,5 @@ type StopParameters struct {
 	Tokens         map[string]string
 	State          *state.State
 	FeatureFlagger *featureflag.FeatureFlagger
+	Localizations  []interfaces.Localization
 }
