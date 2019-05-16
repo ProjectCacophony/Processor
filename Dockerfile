@@ -8,7 +8,7 @@ RUN apt-get update && TERM=linux DEBIAN_FRONTEND=noninteractive apt-get install 
   && rm -rf /var/lib/apt/lists/*
 
 # copy binary into image
-COPY /src/bin/linux.amd64 /binary
+COPY ./bin/linux.amd64/processor /processor
 
 # copy assets into image
 COPY ./assets ./assets
@@ -20,4 +20,4 @@ EXPOSE 8000
 USER nobody
 
 # run the binary
-ENTRYPOINT [ "/binary" ]
+ENTRYPOINT [ "/processor" ]

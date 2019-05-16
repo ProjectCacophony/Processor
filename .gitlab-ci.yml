@@ -41,12 +41,13 @@ Sentry Staging:
   variables:
     SENTRY_ENV: "staging"
 
+# TODO: new stage, to use Lint cache?
 Go Service - Binary Build:
   stage: prepare
   image: golang:1.12-stretch
   artifacts:
     paths:
-    - /src/bin/linux.amd64
+    - /go/bin/linux.amd64
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -76,7 +77,6 @@ Go Service - Docker Build:
       --username "${CI_REGISTRY_USER}"
       --password "${CI_REGISTRY_PASSWORD}"
       "${CI_REGISTRY}"
-    - ln -s ./.go ./go
   script:
     - docker pull "${DOCKER_IMAGE_PREV}" || true
     - >
