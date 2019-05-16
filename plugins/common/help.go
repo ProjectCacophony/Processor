@@ -47,12 +47,9 @@ type PluginParam struct {
 
 type Permissions []interfaces.Permission
 
-func (p Permissions) String() string {
-	var permissionsText string
+func (p Permissions) String() (permissionsText string) {
 	for _, permission := range p {
 		permissionsText += permission.Name() + ", "
 	}
-	permissionsText = strings.TrimRight(permissionsText, ", ")
-
-	return permissionsText
+	return strings.TrimSuffix(permissionsText, ", ")
 }
