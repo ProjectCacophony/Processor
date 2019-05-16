@@ -52,8 +52,12 @@ Go Service - Binary Build:
     paths:
       - .go/
     policy: pull
+  variables:
+    # redefine GOPATH to cache it, but keeps the old GOBIN path, as it is in the $PATH
+    # see https://gitlab.com/gitlab-org/gitlab-ce/issues/4431
+    GOPATH  : ${CI_PROJECT_DIR}/.go
+    GOBIN   : /go/bin
   script:
-    - cd /src
     - make all
 
 Go Service - Docker Build:
