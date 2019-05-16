@@ -84,13 +84,13 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 	commandsList := make([]string, len(pluginHelp.Commands))
 
 	for i, command := range pluginHelp.Commands {
-		var commandText string
+		var commandSummary string
 
 		if command.Name != "" {
-			commandText += "**" + command.Name + "**\n"
+			commandSummary += "**" + command.Name + "**\n"
 		}
 
-		commandText += event.Prefix() + pluginHelp.Name
+		commandText := event.Prefix() + pluginHelp.Name
 
 		for _, param := range command.Params {
 			name := param.Name
@@ -100,14 +100,17 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 			}
 
 			if !param.NotVariable {
-				name = "`<" + name + ">`"
+				name = "<" + name + ">"
 			}
 
 			commandText += " " + name
 		}
 
+		commandText = "`" + commandText + "`"
+		commandSummary += commandText
+
 		if command.Description != "" {
-			commandText += fmt.Sprintf("\n\t*%s*", event.Translate(command.Description))
+			commandSummary += fmt.Sprintf("\n\t*%s*", event.Translate(command.Description))
 		}
 
 		var requirements []string
@@ -121,13 +124,13 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 		}
 
 		if len(requirements) > 0 {
-			commandText += "\n\t- " + strings.Join(requirements, " | ")
+			commandSummary += "\n\t\t- " + strings.Join(requirements, " | ")
 		}
 
-		commandsList[i] = commandText
+		commandsList[i] = commandSummary
 	}
 
 	output += "__**Commands**__\n\n"
-	output += strings.Join(commandsList, "\n\n")
+	output += strings.Join(commandsList, "\n")
 	event.Respond(output)
 }

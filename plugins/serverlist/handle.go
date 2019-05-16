@@ -65,7 +65,128 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "serverlist.help.description",
-		Hide:        true,
+		Commands: []common.Command{{
+			Name: "List all Categories",
+			Params: []common.CommandParam{
+				{Name: "category", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name:                "Create a Category",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "category", Type: common.Text, NotVariable: true},
+				{Name: "create", Type: common.Text, NotVariable: true},
+				{Name: "#channel", Type: common.Text},
+				{Name: "keywords, seporate by ;", Type: common.Text},
+				{Name: "sory by, seporate by ;", Type: common.Text},
+				{Name: "group by, for categories", Type: common.Text, Optional: true},
+			},
+		}, {
+			Name:                "Set the Serverlist Log Channel",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "log", Type: common.Text},
+			},
+		}, {
+			Name:                "Set the Serverlist Queue Channel",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "queue", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name:                "Reject the current Server",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "reject", Type: common.Text, NotVariable: true},
+				{Name: "reason", Type: common.Text},
+			},
+		}, {
+			Name:                "Censor a Server",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "censor", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "reason", Type: common.Text},
+			},
+		}, {
+			Name:                "Manually refresh the Queue Channel",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "queue", Type: common.Text, NotVariable: true},
+				{Name: "refresh", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name:                "Manually refresh the List Channels",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "list", Type: common.Text, NotVariable: true},
+				{Name: "refresh", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name:                "Clear the List Channel Cache",
+			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+			Params: []common.CommandParam{
+				{Name: "list", Type: common.Text, NotVariable: true},
+				{Name: "clear-cache", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name: "Submit a Server",
+			Params: []common.CommandParam{
+				{Name: "add", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "Description", Type: common.Text},
+				{Name: "Category, if multiple, separated by ;", Type: common.Text},
+			},
+		}, {
+			Name: "List your Servers",
+			Params: []common.CommandParam{
+				{Name: "list", Type: common.Text, NotVariable: true},
+			},
+		}, {
+			Name: "Hide a Servers",
+			Params: []common.CommandParam{
+				{Name: "hide", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+			},
+		}, {
+			Name: "Edit a Server Name",
+			Params: []common.CommandParam{
+				{Name: "edit", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "name", Type: common.Text, NotVariable: true},
+				{Name: "New Server Name, if multiple, separated by ;", Type: common.Text},
+			},
+		}, {
+			Name: "Edit a Server Description",
+			Params: []common.CommandParam{
+				{Name: "edit", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "description", Type: common.Text, NotVariable: true},
+				{Name: "New Server Description", Type: common.Text},
+			},
+		}, {
+			Name: "Edit a Server Invite",
+			Params: []common.CommandParam{
+				{Name: "edit", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "invite", Type: common.Text, NotVariable: true},
+				{Name: "New Server Invite", Type: common.Text},
+			},
+		}, {
+			Name: "Add/Remove Server Editors",
+			Params: []common.CommandParam{
+				{Name: "edit", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+				{Name: "editor", Type: common.Text, NotVariable: true},
+				{Name: "@user", Type: common.Text},
+			},
+		}, {
+			Name: "Remove a Server",
+			Params: []common.CommandParam{
+				{Name: "remove", Type: common.Text, NotVariable: true},
+				{Name: "Server Invite", Type: common.Text},
+			},
+		}},
 	}
 }
 
