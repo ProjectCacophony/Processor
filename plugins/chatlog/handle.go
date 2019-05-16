@@ -48,7 +48,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 		PatreonOnly:         true,
 		Description:         "chatlog.help.description",
 		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
-		ParamSets: []common.ParamSet{{
+		Commands: []common.Command{{
 			Params: []common.PluginParam{
 				{Name: "enable", Type: common.Text, NotVariable: true},
 			},

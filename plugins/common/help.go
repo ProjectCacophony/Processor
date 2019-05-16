@@ -22,7 +22,7 @@ type PluginHelp struct {
 	Name        string
 	Description string
 
-	ParamSets []ParamSet
+	Commands []Command
 
 	Hide        bool
 	PatreonOnly bool
@@ -30,7 +30,7 @@ type PluginHelp struct {
 	PermissionsRequired Permissions
 }
 
-type ParamSet struct {
+type Command struct {
 	PatreonOnly         bool
 	Description         string
 	Params              []PluginParam

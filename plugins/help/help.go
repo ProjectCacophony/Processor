@@ -75,18 +75,18 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 
 	output += fmt.Sprintf("\n%s", event.Translate(pluginHelp.Description))
 
-	if len(pluginHelp.ParamSets) == 0 {
+	if len(pluginHelp.Commands) == 0 {
 		event.Respond(output)
 		return
 	}
 
 	output += "\n\n"
-	commandsList := make([]string, len(pluginHelp.ParamSets))
+	commandsList := make([]string, len(pluginHelp.Commands))
 
-	for i, paramSet := range pluginHelp.ParamSets {
-		command := event.Prefix() + pluginHelp.Name
+	for i, command := range pluginHelp.Commands {
+		commandText := event.Prefix() + pluginHelp.Name
 
-		for _, param := range paramSet.Params {
+		for _, param := range command.Params {
 			name := param.Name
 
 			if param.Optional {
@@ -97,31 +97,31 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 				name = "`<" + name + ">`"
 			}
 
-			command += " " + name
+			commandText += " " + name
 		}
 
-		if paramSet.Description != "" {
-			command += fmt.Sprintf("\n\t*%s*", event.Translate(paramSet.Description))
+		if command.Description != "" {
+			commandText += fmt.Sprintf("\n\t*%s*", event.Translate(command.Description))
 		}
 
 		var requirements []string
 
-		if paramSet.PatreonOnly {
+		if command.PatreonOnly {
 			requirements = append(requirements, "Patrons Only")
 		}
 
-		if len(paramSet.PermissionsRequired) > 0 {
-			requirements = append(requirements, fmt.Sprintf("Requires **%s**", paramSet.PermissionsRequired))
+		if len(command.PermissionsRequired) > 0 {
+			requirements = append(requirements, fmt.Sprintf("Requires **%s**", command.PermissionsRequired))
 		}
 
 		if len(requirements) > 0 {
-			command += "\n\t- " + strings.Join(requirements, " | ")
+			commandText += "\n\t- " + strings.Join(requirements, " | ")
 		}
 
-		commandsList[i] = command
+		commandsList[i] = commandText
 	}
 
-	output += "__**Commands**__\n"
-	output += strings.Join(commandsList, "\n")
+	output += "__**Commands**__\n\n"
+	output += strings.Join(commandsList, "\n\n")
 	event.Respond(output)
 }

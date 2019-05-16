@@ -58,7 +58,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "rss.help.description",
-		ParamSets: []common.ParamSet{{
+		Commands: []common.Command{{
 			Description:         "rss.help.add.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.PluginParam{

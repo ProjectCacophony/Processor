@@ -41,7 +41,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "prefix.help.description",
-		ParamSets: []common.ParamSet{{
+		Commands: []common.Command{{
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
 			Params: []common.PluginParam{{
 				Name:    "prefix",
