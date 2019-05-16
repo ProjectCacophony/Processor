@@ -68,37 +68,37 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Commands: []common.Command{{
 			Name: "List all Categories",
 			Params: []common.CommandParam{
-				{Name: "category", Type: common.Hardcoded},
+				{Name: "category", Type: common.Flag},
 			},
 		}, {
 			Name:                "Create a Category",
 			Description:         "Sort By Options: `alphabetical`, `adding_date`, `member_count`\n\t\tGroup By Options: `alphabetical`",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "category", Type: common.Hardcoded},
-				{Name: "create", Type: common.Hardcoded},
+				{Name: "category", Type: common.Flag},
+				{Name: "create", Type: common.Flag},
 				{Name: "channel", Type: common.Channel},
-				{Name: "keywords, seporate by ;", Type: common.QuotedText},
-				{Name: "sory by, seporate by ;", Type: common.QuotedText},
+				{Name: "keywords, separate by ;", Type: common.QuotedText},
+				{Name: "sort by, separate by ;", Type: common.QuotedText},
 				{Name: "group by, for categories", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name:                "Set the Serverlist Log Channel",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "log", Type: common.Hardcoded},
+				{Name: "log", Type: common.Flag},
 			},
 		}, {
 			Name:                "Set the Serverlist Queue Channel",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "queue", Type: common.Hardcoded},
+				{Name: "queue", Type: common.Flag},
 			},
 		}, {
 			Name:                "Reject the current Server",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "reject", Type: common.Hardcoded},
+				{Name: "reject", Type: common.Flag},
 				{Name: "reason", Type: common.QuotedText},
 			},
 		}, {
@@ -106,7 +106,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description:         "Run the command again to uncensor a Server.",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "censor", Type: common.Hardcoded},
+				{Name: "censor", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 				{Name: "reason", Type: common.QuotedText},
 			},
@@ -114,91 +114,91 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name:                "Manually refresh the Queue Channel",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "queue", Type: common.Hardcoded},
-				{Name: "refresh", Type: common.Hardcoded},
+				{Name: "queue", Type: common.Flag},
+				{Name: "refresh", Type: common.Flag},
 			},
 		}, {
 			Name:                "Manually refresh the List Channels",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "list", Type: common.Hardcoded},
-				{Name: "refresh", Type: common.Hardcoded},
+				{Name: "list", Type: common.Flag},
+				{Name: "refresh", Type: common.Flag},
 			},
 		}, {
 			Name:                "Clear the List Channel Cache",
 			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 			Params: []common.CommandParam{
-				{Name: "list", Type: common.Hardcoded},
-				{Name: "clear-cache", Type: common.Hardcoded},
+				{Name: "list", Type: common.Flag},
+				{Name: "clear-cache", Type: common.Flag},
 			},
 		}, {
 			Name: "Submit a Server",
 			Params: []common.CommandParam{
-				{Name: "add", Type: common.Hardcoded},
+				{Name: "add", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 				{Name: "Description", Type: common.QuotedText},
-				{Name: "Category, if multiple, separated by ;", Type: common.QuotedText},
+				{Name: "Channel(s), or Category Name(s)", Type: common.QuotedText},
 			},
 		}, {
 			Name: "List your Servers",
 			Params: []common.CommandParam{
-				{Name: "list", Type: common.Hardcoded},
+				{Name: "list", Type: common.Flag},
 			},
 		}, {
 			Name:        "Hide a Servers",
 			Description: "Run the command again to unhide the Server.",
 			Params: []common.CommandParam{
-				{Name: "hide", Type: common.Hardcoded},
+				{Name: "hide", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 			},
 		}, {
 			Name:        "Edit a Server Name",
 			Description: "When editing the Server Name, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
-				{Name: "edit", Type: common.Hardcoded},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
-				{Name: "name", Type: common.Hardcoded},
+				{Name: "name", Type: common.Flag},
 				{Name: "New Server Name, if multiple, separated by ;", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Edit a Server Description",
 			Description: "When editing the Server Description, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
-				{Name: "edit", Type: common.Hardcoded},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
-				{Name: "description", Type: common.Hardcoded},
+				{Name: "description", Type: common.Flag},
 				{Name: "New Server Description", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Edit a Server Category",
 			Description: "When editing the Server Category, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
-				{Name: "edit", Type: common.Hardcoded},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
-				{Name: "category ", Type: common.Hardcoded},
-				{Name: "New Category, if multiple, separated by ;", Type: common.QuotedText},
+				{Name: "category ", Type: common.Flag},
+				{Name: "Channel(s), or Category Name(s)", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Edit a Server Invite",
 			Description: "Adds as an Editor if the User is not an Editor so far.\n\t\tRemoves as an Editor if the User is an Editor.\n\t\tAll Editors have equal rights about the Listing, they can all edit, hide, and remove the Server.\n\t\tPlease make sure you only add Users you trust as Editors",
 			Params: []common.CommandParam{
-				{Name: "edit", Type: common.Hardcoded},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
-				{Name: "invite", Type: common.Hardcoded},
+				{Name: "invite", Type: common.Flag},
 				{Name: "New Server Invite", Type: common.QuotedText},
 			},
 		}, {
 			Name: "Add/Remove Server Editors",
 			Params: []common.CommandParam{
-				{Name: "edit", Type: common.Hardcoded},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
-				{Name: "editor", Type: common.Hardcoded},
+				{Name: "editor", Type: common.Flag},
 				{Name: "user", Type: common.User},
 			},
 		}, {
 			Name: "Remove a Server",
 			Params: []common.CommandParam{
-				{Name: "remove", Type: common.Hardcoded},
+				{Name: "remove", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 			},
 		}},

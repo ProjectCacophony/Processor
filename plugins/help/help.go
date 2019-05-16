@@ -105,7 +105,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 			}
 
 			switch param.Type {
-			case common.Hardcoded:
+			case common.Flag:
 			case common.QuotedText:
 				name = "\"<" + name + ">\""
 			case common.Text:

@@ -11,7 +11,7 @@ type ParamType int
 const (
 	Text ParamType = iota
 	QuotedText
-	Hardcoded
+	Flag
 	User
 	Channel
 	Link

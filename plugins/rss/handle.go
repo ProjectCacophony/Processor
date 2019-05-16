@@ -62,7 +62,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description:         "rss.help.add.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.CommandParam{
-				{Name: "add", Type: common.Hardcoded},
+				{Name: "add", Type: common.Flag},
 				{Name: "channel", Type: common.Channel, Optional: true},
 				{Name: "link", Type: common.Text},
 			},
@@ -70,7 +70,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description:         "rss.help.remove.description",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 			Params: []common.CommandParam{
-				{Name: "remove", Type: common.Hardcoded},
+				{Name: "remove", Type: common.Flag},
 				{Name: "link", Type: common.Text},
 			},
 		}},
