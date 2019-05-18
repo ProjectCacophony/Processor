@@ -40,10 +40,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Description: "help.help.description",
 		Commands: []common.Command{{
 			Name: "List All Modules",
+			Params: []common.CommandParam{
+				{Name: "public", Type: common.Flag, Optional: true},
+			},
 		}, {
 			Name: "List Module Commands",
 			Params: []common.CommandParam{
 				{Name: "module name", Type: common.Text},
+				{Name: "public", Type: common.Flag, Optional: true},
 			},
 		}},
 	}
@@ -58,21 +62,30 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
+	var displayInChannel bool
+
+	for _, field := range event.Fields() {
+		if field == "public" {
+			displayInChannel = true
+		}
+	}
+
+	//
 	if len(event.Fields()) == 1 {
-		listCommands(event, p.pluginHelpList, false)
+		listCommands(event, p.pluginHelpList, displayInChannel)
 		return true
 	}
 
 	if len(event.Fields()) > 1 {
 		if event.Fields()[1] == "public" {
-			listCommands(event, p.pluginHelpList, true)
+			listCommands(event, p.pluginHelpList, displayInChannel)
 			return true
 		}
 
 		// check if second param is a plugin name
 		for _, help := range p.pluginHelpList {
 			if help.Name == event.Fields()[1] {
-				displayPluginCommands(event, help)
+				displayPluginCommands(event, help, displayInChannel)
 				return true
 			}
 		}

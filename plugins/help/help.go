@@ -51,13 +51,13 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		}
 
 		helpText += fmt.Sprintf("\n\nUse `%shelp public` to display the commands in a channel.", event.Prefix())
-		_, err := event.RespondDM(helpText, false)
+		_, err := event.RespondDM(helpText)
 		event.Except(err)
 	}
 
 }
 
-func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
+func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, displayInChannel bool) {
 
 	if pluginHelp.Hide {
 		event.Respond("help.no-plugin-doc")
@@ -146,5 +146,18 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp) {
 
 	output += "__**Commands**__\n"
 	output += strings.Join(commandsList, "")
-	event.Respond(output)
+
+	if displayInChannel {
+
+		event.Respond(output)
+	} else {
+		if !event.DM() {
+			_, err := event.Respond("help.message-sent-to-dm")
+			event.Except(err)
+		}
+
+		output += fmt.Sprintf("\n\nUse `%shelp %s public` to display the commands in a channel.", event.Prefix(), pluginHelp.Name)
+		_, err := event.RespondDM(output)
+		event.Except(err)
+	}
 }
