@@ -8,8 +8,10 @@ import (
 )
 
 type Plugin struct {
-	logger *zap.Logger
-	redis  *redis.Client
+	logger    *zap.Logger
+	redis     *redis.Client
+	publisher *events.Publisher
+	tokens    map[string]string
 }
 
 func (p *Plugin) Name() string {
@@ -19,6 +21,8 @@ func (p *Plugin) Name() string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.redis = params.Redis
+	p.publisher = params.Publisher
+	p.tokens = params.Tokens
 
 	return nil
 }
@@ -45,6 +49,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 func (p *Plugin) Action(event *events.Event) bool {
 	if event.Type == events.MessageReactionAddType {
 		return p.handleReaction(event)
+	}
+
+	if event.Type == events.CacophonyQuickactionRemind {
+		p.handleQuickactionRemind(event)
+		return true
 	}
 
 	if !event.Command() {
