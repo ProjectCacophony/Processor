@@ -33,6 +33,7 @@ func convertMessageToEmbed(message *discordgo.Message) *discordgo.MessageEmbed {
 	return embed
 }
 
+// TODO: put into go-kit
 func getMessage(
 	state *state.State,
 	discord *discord.Session,
