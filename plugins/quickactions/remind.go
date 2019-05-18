@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/discord/emoji"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -39,6 +41,21 @@ func (p *Plugin) remindMessage(event *events.Event) {
 		return
 	}
 
+	ackEmoji := emoji.GetWithout("ok")
+
+	err = discord.React(
+		p.redis,
+		event.Discord(),
+		event.MessageReactionAdd.ChannelID,
+		event.MessageReactionAdd.MessageID,
+		false,
+		ackEmoji,
+	)
+	if err != nil {
+		event.ExceptSilent(err)
+		return
+	}
+
 	// remove reaction if possible
 	if permissions.DiscordManageMessages.Match(
 		event.State(),
@@ -57,6 +74,21 @@ func (p *Plugin) remindMessage(event *events.Event) {
 			return
 		}
 	}
+
+	go func() {
+		time.Sleep(3 * time.Second)
+
+		err = event.Discord().Client.MessageReactionRemove(
+			event.MessageReactionAdd.ChannelID,
+			event.MessageReactionAdd.MessageID,
+			ackEmoji,
+			event.BotUserID,
+		)
+		if err != nil {
+			event.ExceptSilent(err)
+			return
+		}
+	}()
 }
 
 func (p *Plugin) handleQuickactionRemind(event *events.Event) {
