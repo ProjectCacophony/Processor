@@ -17,6 +17,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/Processor/plugins/instagram"
 	"gitlab.com/Cacophony/Processor/plugins/lastfm"
+	"gitlab.com/Cacophony/Processor/plugins/patreon"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/Processor/plugins/prefix"
 	"gitlab.com/Cacophony/Processor/plugins/quickactions"
@@ -51,6 +52,7 @@ type Plugin interface {
 
 var (
 	PluginList = []Plugin{
+		&patreon.Plugin{},
 		&ping.Plugin{},
 		&color.Plugin{},
 		&dev.Plugin{},
