@@ -5,6 +5,9 @@ include:
   - project: 'Cacophony/gitlab-ci'
     ref: master
     file: '/sentry.yml'
+  - project: 'Cacophony/gitlab-ci'
+    ref: master
+    file: '/notify.yml'
 
 variables:
   DEPLOYMENT_NAME: "processor"
@@ -36,39 +39,24 @@ Sentry Release:
   stage: Release
   extends: .Sentry - Sentry Release
 
-Deploy Staging:
+Deploy:
   stage: Staging
   extends: .Go Service - Deploy Staging
 
-Sentry Staging:
+Sentry Deploy:
   stage: Finalise Staging
   extends: .Sentry - Sentry Deploy
   variables:
     SENTRY_ENV: "staging"
 
-Notify Staging Success:
+Notify Success:
   stage: Finalise Staging
-  script:
-    - >
-      curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
-        -H 'Content-Type: application/json' \
-        -d $"{
-          \"content\": \"Deployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** successful ✅\",
-          \"username\": \"${CI_PROJECT_NAME}\"
-        }"
+  extends: .Notify - Success
   variables:
     DEPLOYMENT_ENV: "Staging"
 
-Notify Staging Error:
+Notify Error:
   stage: Finalise Staging
-  when: on_failure
-  script:
-    - >
-      curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
-        -H 'Content-Type: application/json' \
-        -d $"{
-          \"content\": \"<@&579232555849613322>\\nDeployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** failed ❌\",
-          \"username\": \"${CI_PROJECT_NAME}\"
-        }"
+  extends: .Notify - Error
   variables:
     DEPLOYMENT_ENV: "Staging"
