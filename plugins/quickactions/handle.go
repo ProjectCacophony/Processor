@@ -43,6 +43,16 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "quickactions.help.description",
+		Reactions: []common.Reaction{{
+			EmojiName:   "<:quickaction_remind_1h:579342313495592980>",
+			Description: "Will remind you about the message in 1 hour",
+		}, {
+			EmojiName:   "<:quickaction_remind_8h:579342223372582912>",
+			Description: "Will remind you about the message in 8 hours",
+		}, {
+			EmojiName:   "<:quickaction_remind_24h:579342223141896252>",
+			Description: "Will remind you about the message in 24 hours",
+		}},
 	}
 }
 

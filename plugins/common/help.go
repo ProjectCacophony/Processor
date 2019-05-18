@@ -22,20 +22,25 @@ const (
 )
 
 type PluginHelp struct {
-	Name        string
-	Description string
+	Name                string
+	Description         string
+	Commands            []Command
+	Reactions           []Reaction
+	Hide                bool
+	PermissionsRequired Permissions
+}
 
-	Commands []Command
-
-	Hide bool
-
+type Reaction struct {
+	Name                string
+	EmojiName           string
+	Description         string
 	PermissionsRequired Permissions
 }
 
 type Command struct {
 	Name                string
-	Description         string
 	Params              []CommandParam
+	Description         string
 	PermissionsRequired Permissions
 }
 

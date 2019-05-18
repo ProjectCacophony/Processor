@@ -58,97 +58,55 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 }
 
 func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, displayInChannel bool) {
-
 	if pluginHelp.Hide {
 		event.Respond("help.no-plugin-doc")
 		return
 	}
 
+	// Display module name
 	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Name))
 
+	// Check and display overall module permissions
 	if len(pluginHelp.PermissionsRequired) > 0 {
 		output += fmt.Sprintf(" | Requires **%s**", pluginHelp.PermissionsRequired)
 	}
-
 	if containsPatronPermission(pluginHelp.PermissionsRequired) {
 		output += " | Patrons Only"
 	}
 
-	output += fmt.Sprintf("\n%s", event.Translate(pluginHelp.Description))
+	// Output module description
+	output += fmt.Sprintf("\n%s\n\n", event.Translate(pluginHelp.Description))
 
-	if len(pluginHelp.Commands) == 0 {
-		event.Respond(output)
-		return
+	// Get module reactions if any
+	reactionList := make([]string, len(pluginHelp.Reactions))
+	for i, reaction := range pluginHelp.Reactions {
+		if containsBotAdminPermission(reaction.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
+			continue
+		}
+		reactionList[i] = formatReaction(reaction)
 	}
 
-	output += "\n\n"
+	// Get module commands if any
 	commandsList := make([]string, len(pluginHelp.Commands))
-
 	for i, command := range pluginHelp.Commands {
-
-		// commands that are only for bot admins should only output if a bot admin is running the help command
 		if containsBotAdminPermission(command.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
 		}
-
-		var commandSummary string
-		if command.Name != "" {
-			commandSummary += "**" + command.Name + "**\n"
-		}
-
-		commandText := event.Prefix() + pluginHelp.Name
-		for _, param := range command.Params {
-			name := param.Name
-
-			if param.Optional {
-				name = "?" + name
-			}
-
-			switch param.Type {
-			case common.Flag:
-			case common.QuotedText:
-				name = "\"<" + name + ">\""
-			case common.Text:
-				name = "<" + name + ">"
-			case common.User:
-				name = "<@" + name + ">"
-			case common.Channel:
-				name = "<#" + name + ">"
-
-			}
-
-			commandText += " " + name
-		}
-		commandText = "`" + commandText + "`"
-
-		commandSummary += commandText
-
-		if command.Description != "" {
-			commandSummary += fmt.Sprintf("\n\t\t*%s*", event.Translate(command.Description))
-		}
-
-		var requirements []string
-
-		if containsPatronPermission(command.PermissionsRequired) {
-			requirements = append(requirements, "Patrons Only")
-		}
-
-		if len(command.PermissionsRequired) > 0 {
-			requirements = append(requirements, fmt.Sprintf("Requires *%s*", command.PermissionsRequired))
-		}
-
-		if len(requirements) > 0 {
-			commandSummary += "\n\t\t- " + strings.Join(requirements, " | ")
-		}
-
-		commandsList[i] = commandSummary + "\n"
+		commandsList[i] = formatCommand(event, command, pluginHelp.Name)
 	}
 
-	output += "__**Commands**__\n"
-	output += strings.Join(commandsList, "")
+	if len(reactionList) > 0 {
+		output += "__**Reactions**__\n"
+		output += strings.Join(reactionList, "") + "\n"
+	}
 
+	if len(commandsList) > 0 {
+		output += "__**Commands**__\n"
+		output += strings.Join(commandsList, "")
+	}
+
+	// output to dm or channel
 	if displayInChannel {
-
 		event.Respond(output)
 	} else {
 		if !event.DM() {
@@ -156,8 +114,82 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 			event.Except(err)
 		}
 
-		output += fmt.Sprintf("\n\nUse `%shelp %s public` to display the commands in a channel.", event.Prefix(), pluginHelp.Name)
+		output += fmt.Sprintf("\n\nUse `%s%s help public` to display the commands in a channel.", event.Prefix(), pluginHelp.Name)
 		_, err := event.RespondDM(output)
 		event.Except(err)
 	}
+}
+
+func formatReaction(reaction common.Reaction) string {
+	var reactionSummary string
+	reactionSummary += fmt.Sprintf("%s **%s**", reaction.EmojiName, reaction.Description)
+
+	var requirements []string
+	if containsPatronPermission(reaction.PermissionsRequired) {
+		requirements = append(requirements, "Patrons Only")
+	}
+
+	if len(reaction.PermissionsRequired) > 0 {
+		requirements = append(requirements, fmt.Sprintf("Requires *%s*", reaction.PermissionsRequired))
+	}
+
+	if len(requirements) > 0 {
+		reactionSummary += "\n\t\t- " + strings.Join(requirements, " | ")
+	}
+
+	return reactionSummary + "\n"
+}
+
+func formatCommand(event *events.Event, command common.Command, pluginName string) string {
+	var commandSummary string
+	if command.Name != "" {
+		commandSummary += "**" + command.Name + "**\n"
+	}
+
+	commandText := event.Prefix() + pluginName
+	for _, param := range command.Params {
+		name := param.Name
+
+		if param.Optional {
+			name = "?" + name
+		}
+
+		switch param.Type {
+		case common.Flag:
+		case common.QuotedText:
+			name = "\"<" + name + ">\""
+		case common.Text:
+			name = "<" + name + ">"
+		case common.User:
+			name = "<@" + name + ">"
+		case common.Channel:
+			name = "<#" + name + ">"
+
+		}
+
+		commandText += " " + name
+	}
+	commandText = "`" + commandText + "`"
+
+	commandSummary += commandText
+
+	if command.Description != "" {
+		commandSummary += fmt.Sprintf("\n\t\t*%s*", event.Translate(command.Description))
+	}
+
+	var requirements []string
+
+	if containsPatronPermission(command.PermissionsRequired) {
+		requirements = append(requirements, "Patrons Only")
+	}
+
+	if len(command.PermissionsRequired) > 0 {
+		requirements = append(requirements, fmt.Sprintf("Requires *%s*", command.PermissionsRequired))
+	}
+
+	if len(requirements) > 0 {
+		commandSummary += "\n\t\t- " + strings.Join(requirements, " | ")
+	}
+
+	return commandSummary + "\n"
 }

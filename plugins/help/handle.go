@@ -70,7 +70,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		}
 	}
 
-	//
 	if len(event.Fields()) == 1 {
 		listCommands(event, p.pluginHelpList, displayInChannel)
 		return true
