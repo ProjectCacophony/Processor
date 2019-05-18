@@ -86,8 +86,12 @@ func (p *Plugin) starMessage(event *events.Event) {
 		messageIDs[0].ID,
 	)
 	if err != nil {
-		event.ExceptSilent(err)
-		return
+		if errD, ok := err.(*discordgo.RESTError); !ok ||
+			errD.Message == nil ||
+			errD.Message.Code != discordgo.ErrCodeMaximumPinsReached {
+			event.ExceptSilent(err)
+			return
+		}
 	}
 
 	// remove reaction if possible
