@@ -11,7 +11,7 @@ variables:
 
 stages:
   - Prepare
-  - Build
+  - Image
   - Release
   - Staging
   - Finalise Staging
@@ -25,7 +25,7 @@ Go Build:
   extends: .Go Service - Binary Build
 
 Docker Build:
-  stage: Build
+  stage: Image
   extends: .Go Service - Docker Build
 
 Docker Release:
@@ -41,7 +41,7 @@ Deploy Staging:
   extends: .Go Service - Deploy Staging
 
 Sentry Staging:
-  stage: Staging
+  stage: Finalise Staging
   extends: .Sentry - Sentry Deploy
   variables:
     SENTRY_ENV: "staging"
@@ -52,10 +52,10 @@ Notify Staging Success:
     - >
       curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
         -H 'Content-Type: application/json' \
-        -d $'{
-          "content": "Deployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** successful ✅",
-          "username": "${CI_PROJECT_NAME}"
-        }'
+        -d $"{
+          \"content\": \"Deployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** successful ✅\",
+          \"username\": \"${CI_PROJECT_NAME}\"
+        }"
   variables:
     DEPLOYMENT_ENV: "Staging"
 
@@ -66,9 +66,9 @@ Notify Staging Error:
     - >
       curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
         -H 'Content-Type: application/json' \
-        -d $'{
-          "content": "<@&579232555849613322>\\nDeployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** failed ❌",
-          "username": "${CI_PROJECT_NAME}"
-        }'
+        -d $"{
+          \"content\": \"<@&579232555849613322>\\nDeployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** failed ❌\",
+          \"username\": \"${CI_PROJECT_NAME}\"
+        }"
   variables:
     DEPLOYMENT_ENV: "Staging"
