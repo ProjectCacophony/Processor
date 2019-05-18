@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	starMessageEmoji = "disturd" // TODO: better emoji
+	starMessageEmoji = "quickaction_star"
 )
 
 func (p *Plugin) handleReaction(event *events.Event) bool {
@@ -71,6 +71,8 @@ func (p *Plugin) starMessage(event *events.Event) {
 		},
 		"message",
 		message,
+		"emoji",
+		event.MessageReactionAdd.Emoji.MessageFormat(),
 	)
 	if err != nil {
 		event.ExceptSilent(err)
