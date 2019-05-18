@@ -56,27 +56,27 @@ func (p *Plugin) remindMessage(event *events.Event) {
 		return
 	}
 
-	// remove reaction if possible
-	if permissions.DiscordManageMessages.Match(
-		event.State(),
-		event.BotUserID,
-		event.MessageReactionAdd.ChannelID,
-		false,
-	) {
-		err = event.Discord().Client.MessageReactionRemove(
-			event.MessageReactionAdd.ChannelID,
-			event.MessageReactionAdd.MessageID,
-			event.MessageReactionAdd.Emoji.APIName(),
-			event.MessageReactionAdd.UserID,
-		)
-		if err != nil {
-			event.ExceptSilent(err)
-			return
-		}
-	}
-
 	go func() {
 		time.Sleep(3 * time.Second)
+
+		// remove reaction if possible
+		if permissions.DiscordManageMessages.Match(
+			event.State(),
+			event.BotUserID,
+			event.MessageReactionAdd.ChannelID,
+			false,
+		) {
+			err = event.Discord().Client.MessageReactionRemove(
+				event.MessageReactionAdd.ChannelID,
+				event.MessageReactionAdd.MessageID,
+				event.MessageReactionAdd.Emoji.APIName(),
+				event.MessageReactionAdd.UserID,
+			)
+			if err != nil {
+				event.ExceptSilent(err)
+				return
+			}
+		}
 
 		err = event.Discord().Client.MessageReactionRemove(
 			event.MessageReactionAdd.ChannelID,
