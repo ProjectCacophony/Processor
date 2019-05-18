@@ -10,37 +10,65 @@ variables:
   DEPLOYMENT_NAME: "processor"
 
 stages:
-  - prepare
-  - build
-  - release
-  - staging
+  - Prepare
+  - Build
+  - Release
+  - Staging
+  - Finalise Staging
 
 Go Lint:
-  stage: prepare
+  stage: Prepare
   extends: .Go Service - Go Lint
 
 Go Build:
-  stage: prepare
+  stage: Prepare
   extends: .Go Service - Binary Build
 
 Docker Build:
-  stage: build
+  stage: Build
   extends: .Go Service - Docker Build
 
 Docker Release:
-  stage: release
+  stage: Release
   extends: .Go Service - Docker Release
 
 Sentry Release:
-  stage: release
+  stage: Release
   extends: .Sentry - Sentry Release
 
 Deploy Staging:
-  stage: staging
+  stage: Staging
   extends: .Go Service - Deploy Staging
 
 Sentry Staging:
-  stage: staging
+  stage: Staging
   extends: .Sentry - Sentry Deploy
   variables:
     SENTRY_ENV: "staging"
+
+Notify Staging Success:
+  stage: Finalise Staging
+  script:
+    - >
+      curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
+        -H 'Content-Type: application/json' \
+        -d $'{
+          "content": "Deployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** successful ✅",
+          "username": "${CI_PROJECT_NAME}"
+        }'
+  variables:
+    DEPLOYMENT_ENV: "Staging"
+
+Notify Staging Error:
+  stage: Finalise Staging
+  when: on_failure
+  script:
+    - >
+      curl -X "POST" "${DISCORD_WEBHOOK_DEPLOYMENTS}" \
+        -H 'Content-Type: application/json' \
+        -d $'{
+          "content": "<@&579232555849613322>\\nDeployment of **${CI_COMMIT_SHORT_SHA}** on **${DEPLOYMENT_ENV}** failed ❌",
+          "username": "${CI_PROJECT_NAME}"
+        }'
+  variables:
+    DEPLOYMENT_ENV: "Staging"
