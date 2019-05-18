@@ -36,8 +36,9 @@ func (p *Plugin) handleReaction(event *events.Event) bool {
 }
 
 func (p *Plugin) starMessage(event *events.Event) {
-	// TODO: use some cache to avoid calling API
-	message, err := event.Discord().Client.ChannelMessage(
+	message, err := getMessage(
+		event.State(),
+		event.Discord(),
 		event.MessageReactionAdd.ChannelID,
 		event.MessageReactionAdd.MessageID,
 	)
@@ -45,6 +46,7 @@ func (p *Plugin) starMessage(event *events.Event) {
 		event.ExceptSilent(err)
 		return
 	}
+
 	message.GuildID = event.MessageReactionAdd.GuildID // :(
 
 	// we need to get the channelID to pin the message,
