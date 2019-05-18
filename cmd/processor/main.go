@@ -85,6 +85,14 @@ func main() {
 	// gormDB.SetLogger(logger) TODO: write logger
 	defer gormDB.Close()
 
+	// init publisher
+	publisher, err := events.NewPublisher(config.AMQPDSN, gormDB)
+	if err != nil {
+		logger.Fatal("unable to initialise Events Publisher session",
+			zap.Error(err),
+		)
+	}
+
 	// init cacophony config
 	err = cacophonyConfig.InitConfig(gormDB)
 	if err != nil {
@@ -161,6 +169,7 @@ func main() {
 		config.DiscordTokens,
 		stateClient,
 		featureFlagger,
+		publisher,
 	)
 
 	// start processor
@@ -207,6 +216,7 @@ func main() {
 		config.DiscordTokens,
 		stateClient,
 		featureFlagger,
+		publisher,
 	)
 
 	err = httpServer.Shutdown(ctx)

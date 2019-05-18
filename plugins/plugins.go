@@ -85,6 +85,7 @@ func StartPlugins(
 	tokens map[string]string,
 	state *state.State,
 	featureFlagger *featureflag.FeatureFlagger,
+	publisher *events.Publisher,
 ) {
 
 	// load localizations
@@ -107,6 +108,7 @@ func StartPlugins(
 			FeatureFlagger: featureFlagger,
 			PluginHelpList: pluginHelpList,
 			Localizations:  LocalizationsList,
+			Publisher:      publisher,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
@@ -124,6 +126,7 @@ func StopPlugins(
 	tokens map[string]string,
 	state *state.State,
 	featureFlagger *featureflag.FeatureFlagger,
+	publisher *events.Publisher,
 ) {
 	var err error
 	for _, plugin := range PluginList {
@@ -134,6 +137,7 @@ func StopPlugins(
 			Tokens:         tokens,
 			State:          state,
 			FeatureFlagger: featureFlagger,
+			Publisher:      publisher,
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",

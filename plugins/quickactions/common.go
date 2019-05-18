@@ -6,7 +6,8 @@ import (
 	"gitlab.com/Cacophony/go-kit/state"
 )
 
-func getStarEmbed(message *discordgo.Message) *discordgo.MessageEmbed {
+// TODO: put into go-kit
+func convertMessageToEmbed(message *discordgo.Message) *discordgo.MessageEmbed {
 
 	embed := &discordgo.MessageEmbed{}
 
@@ -32,6 +33,7 @@ func getStarEmbed(message *discordgo.Message) *discordgo.MessageEmbed {
 	return embed
 }
 
+// TODO: put into go-kit
 func getMessage(
 	state *state.State,
 	discord *discord.Session,
