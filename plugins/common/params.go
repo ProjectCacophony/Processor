@@ -3,6 +3,7 @@ package common
 import (
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/state"
@@ -18,6 +19,7 @@ type StartParameters struct {
 	FeatureFlagger *featureflag.FeatureFlagger
 	PluginHelpList []*PluginHelp
 	Localizations  []interfaces.Localization
+	Publisher      *events.Publisher
 }
 
 type StopParameters struct {
@@ -28,4 +30,5 @@ type StopParameters struct {
 	State          *state.State
 	FeatureFlagger *featureflag.FeatureFlagger
 	Localizations  []interfaces.Localization
+	Publisher      *events.Publisher
 }
