@@ -4,4 +4,4 @@
 "help.no-plugin-doc" = "Could not find any docs for that plugin."
 
 #help info
-"help.help.description" = ""
+"help.help.description" = "Get helpful information about the bot and its various modules, along with each specific command that can be used."

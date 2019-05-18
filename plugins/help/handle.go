@@ -36,8 +36,16 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name: p.Name(),
-		Hide: true,
+		Name:        p.Name(),
+		Description: "help.help.description",
+		Commands: []common.Command{{
+			Name: "List All Modules",
+		}, {
+			Name: "List Module Commands",
+			Params: []common.CommandParam{
+				{Name: "module name", Type: common.Text},
+			},
+		}},
 	}
 }
 
