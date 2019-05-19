@@ -7,29 +7,19 @@ import (
 	"go.uber.org/zap"
 )
 
-func (p *Plugin) ranCustomCommand(event *events.Event) bool {
+func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	if len(event.Fields()) == 0 {
 		return false
 	}
 
-	// query entries
-	var entries []Entry
-	err := p.db.Find(&entries, "name = ? and ((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))",
-		event.Fields()[0],
-		event.UserID,
-		event.GuildID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-		return false
-	}
+	entries := p.getCommandEntries(event, event.Fields()[0])
 
 	if len(entries) == 0 {
 		return false
 	}
 
 	if len(entries) == 1 {
-		_, err = event.Respond(entries[0].Content)
+		_, err := event.Respond(entries[0].Content)
 		event.Except(err)
 		return true
 	}
@@ -56,4 +46,19 @@ func (p *Plugin) ranCustomCommand(event *events.Event) bool {
 	}
 
 	return false
+}
+
+func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (entries []Entry) {
+
+	// query entries
+	err := p.db.Find(&entries, "name = ? and ((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))",
+		commandName,
+		event.UserID,
+		event.GuildID,
+	).Error
+	if err != nil {
+		event.Logger().Error("error querying custom commands", zap.Error(err))
+	}
+
+	return
 }

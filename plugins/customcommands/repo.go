@@ -1,6 +1,7 @@
 package customcommands
 
 import (
+	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -42,4 +43,21 @@ func entryFindMany(db *gorm.DB, where ...interface{}) ([]Entry, error) {
 		return nil, err
 	}
 	return entries, err
+}
+
+func upsertEntry(db *gorm.DB, entry *Entry) error {
+	if entry == nil {
+		return errors.New("entry cannot be nil")
+	}
+
+	err := db.
+		Where("id = ?", entry.Model.ID).
+		Assign(entry).
+		FirstOrCreate(&Entry{}).
+		Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

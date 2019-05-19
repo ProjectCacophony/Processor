@@ -121,13 +121,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	if event.Fields()[0] != "commands" {
-		return p.ranCustomCommand(event)
+		return p.runCustomCommand(event)
 	}
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
 		case "add":
 			p.addCommand(event)
+			return true
+		case "edit":
+			p.editCommand(event)
 			return true
 		}
 	}
