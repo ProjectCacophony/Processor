@@ -2,9 +2,7 @@ package lastfm
 
 import (
 	"errors"
-	"net/http"
 	"strings"
-	"time"
 
 	"go.uber.org/zap"
 
@@ -20,7 +18,6 @@ type Plugin struct {
 	logger       *zap.Logger
 	db           *gorm.DB
 	lastfmClient *lastfm.Api
-	httpClient   *http.Client
 }
 
 func (p *Plugin) Name() string {
@@ -50,11 +47,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 
 	p.db = params.DB
 	p.logger = params.Logger
-
-	// TODO: global http client?
-	p.httpClient = &http.Client{
-		Timeout: time.Second * 10,
-	}
 
 	return nil
 }

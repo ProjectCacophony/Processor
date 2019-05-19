@@ -134,6 +134,11 @@ func main() {
 		)
 	}
 
+	// init http client
+	httpClient := &http.Client{
+		Timeout: 20 * time.Second,
+	}
+
 	// create handler
 	handler := handle(
 		logger,
@@ -143,6 +148,7 @@ func main() {
 		featureFlagger,
 		redisClient,
 		paginatorClient,
+		httpClient,
 		config.ProcessingDeadline,
 	)
 

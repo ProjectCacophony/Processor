@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"sync"
 	"time"
 
@@ -23,6 +24,7 @@ func handle(
 	featureFlagger *featureflag.FeatureFlagger,
 	redis *redis.Client,
 	paginator *paginator.Paginator,
+	httpClient *http.Client,
 	processingDeadline time.Duration,
 ) func(event *events.Event) error {
 	l := logger.With(zap.String("service", "processor"))
@@ -41,6 +43,7 @@ func handle(
 		event.WithLogger(l)
 		event.WithRedis(redis)
 		event.WithDB(db)
+		event.WithHTTPClient(httpClient)
 
 		event.Parse()
 

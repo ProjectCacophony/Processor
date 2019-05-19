@@ -71,7 +71,7 @@ func (p *Plugin) handleTopTracks(event *events.Event, lastfmClient *lastfm.Api, 
 	// 		if i > 0 && (i+1)%9 == 0 {
 	// 			// create the collage
 	// 			collageBytes, err := CollageFromURLs(
-	// 				p.httpClient,
+	// 				event.HTTPClient(),
 	// 				imageURLs,
 	// 				trackNames,
 	// 				900, 900,

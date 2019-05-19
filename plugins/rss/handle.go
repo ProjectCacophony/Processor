@@ -1,9 +1,7 @@
 package rss
 
 import (
-	"net/http"
 	"strings"
-	"time"
 
 	"github.com/mmcdole/gofeed"
 
@@ -19,11 +17,10 @@ import (
 )
 
 type Plugin struct {
-	logger     *zap.Logger
-	state      *state.State
-	db         *gorm.DB
-	parser     *gofeed.Parser
-	httpClient *http.Client
+	logger *zap.Logger
+	state  *state.State
+	db     *gorm.DB
+	parser *gofeed.Parser
 }
 
 func (p *Plugin) Name() string {
@@ -35,9 +32,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
 	p.parser = gofeed.NewParser()
-	p.httpClient = &http.Client{
-		Timeout: time.Second * 30,
-	}
 
 	return params.DB.AutoMigrate(Entry{}).Error
 }

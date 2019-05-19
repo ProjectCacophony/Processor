@@ -52,15 +52,15 @@ func (p *Plugin) add(event *events.Event) {
 		return
 	}
 
-	feed, err := getFeed(p.httpClient, p.parser, feedURL)
+	feed, err := getFeed(event.HTTPClient(), p.parser, feedURL)
 	if err != nil || len(feed.Items) == 0 {
-		feedURL, err = getFeedURLFromPage(p.httpClient, feedURL)
+		feedURL, err = getFeedURLFromPage(event.HTTPClient(), feedURL)
 		if err != nil {
 			event.Respond("rss.add.not-found")
 			return
 		}
 
-		feed, err = getFeed(p.httpClient, p.parser, feedURL)
+		feed, err = getFeed(event.HTTPClient(), p.parser, feedURL)
 		if err != nil || len(feed.Items) == 0 {
 			event.Respond("rss.add.not-found")
 			return
