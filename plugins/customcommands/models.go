@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Command struct {
+type Entry struct {
 	gorm.Model
 
 	Name          string
@@ -14,11 +14,11 @@ type Command struct {
 	UserID        string
 	Content       string
 	ObjectName    string
-	CreatedAt     time.Time
+	Date          time.Time
 	Triggered     int
 	IsUserCommand bool
 }
 
-func (*Command) TableName() string {
+func (*Entry) TableName() string {
 	return "custom_commands"
 }
