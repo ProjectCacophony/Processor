@@ -25,7 +25,7 @@ func handlePing(event *events.Event) {
 	if discordgo.EndpointDiscord != "https://discordapp.com/" {
 		beforeProxy := time.Now()
 		proxyResp, err := event.HTTPClient().Get(discordgo.EndpointDiscord + "status")
-		proxyDuration = time.Since(beforeProxy)
+		proxyDuration = time.Since(beforeProxy).Round(time.Millisecond)
 		if err != nil || proxyResp.StatusCode != http.StatusOK {
 			event.Except(err)
 			return
