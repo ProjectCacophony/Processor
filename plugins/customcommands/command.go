@@ -29,8 +29,9 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	for _, entry := range entries {
 		if entry.IsUserCommand {
 			userEntries = append(userEntries, entry)
+		} else {
+			serverEntries = append(serverEntries, entry)
 		}
-		serverEntries = append(serverEntries, entry)
 	}
 
 	if len(serverEntries) > 0 {

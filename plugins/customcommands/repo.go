@@ -25,26 +25,6 @@ func entryAdd(
 	}).Error
 }
 
-func entryFind(db *gorm.DB, where ...interface{}) (*Entry, error) {
-	var entry Entry
-
-	err := db.First(&entry, where...).Order("created_at DESC").Error
-	if err != nil {
-		return nil, err
-	}
-	return &entry, err
-}
-
-func entryFindMany(db *gorm.DB, where ...interface{}) ([]Entry, error) {
-	var entries []Entry
-
-	err := db.Find(&entries, where...).Order("created_at DESC").Error
-	if err != nil {
-		return nil, err
-	}
-	return entries, err
-}
-
 func entryUpsert(db *gorm.DB, entry *Entry) error {
 	if entry == nil {
 		return errors.New("entry cannot be nil")

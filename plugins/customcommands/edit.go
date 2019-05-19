@@ -61,6 +61,7 @@ func (p *Plugin) editCommand(event *events.Event) {
 		"cmdName", cmdName,
 		"isUserCommand", isUserOperation(event),
 	)
+	event.Except(err)
 }
 
 func askEntryToUpdate(event *events.Event, entries []Entry) {
@@ -125,6 +126,7 @@ func (p *Plugin) deleteCommand(event *events.Event) {
 		"cmdName", cmdName,
 		"isUserCommand", isUserOperation(event),
 	)
+	event.Except(err)
 }
 func askEntryToDelete(event *events.Event, entries []Entry) {
 	output := "**Which command would you like to delete?**```"
