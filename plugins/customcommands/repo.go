@@ -45,7 +45,7 @@ func entryFindMany(db *gorm.DB, where ...interface{}) ([]Entry, error) {
 	return entries, err
 }
 
-func upsertEntry(db *gorm.DB, entry *Entry) error {
+func entryUpsert(db *gorm.DB, entry *Entry) error {
 	if entry == nil {
 		return errors.New("entry cannot be nil")
 	}
@@ -60,4 +60,12 @@ func upsertEntry(db *gorm.DB, entry *Entry) error {
 	}
 
 	return nil
+}
+
+func entryRemove(db *gorm.DB, id uint) error {
+	if id == 0 {
+		return errors.New("empty ID passed")
+	}
+
+	return db.Delete(Entry{}, "id = ?", id).Error
 }

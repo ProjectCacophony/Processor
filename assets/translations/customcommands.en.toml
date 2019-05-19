@@ -3,6 +3,14 @@
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
 "customcommands.not-found" = "Could not find a command with that name."
 
+"customcommands.delete.success" = "\
+{{- if .isUserCommand }}\
+**I deleted your command `{{.cmdName}}`.**\n\
+{{ else }}\
+**I deleted the command `{{.cmdName}}` on this server.**\n\
+{{ end }}\
+"
+
 "customcommands.update.success" = "\
 {{- if .isUserCommand }}\
 **I update your command `{{.cmdName}}`!**\n\

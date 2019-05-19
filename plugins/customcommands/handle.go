@@ -69,10 +69,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Output", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Remove Command",
-			Description: "Use the optional parameter 'user', or use command in DM with bot to remove a command for just the user.",
+			Name:        "Delete Command",
+			Description: "Use the optional parameter 'user', or use command in DM with bot to delete a command for just the user.",
 			Params: []common.CommandParam{
-				{Name: "remove", Type: common.Flag},
+				{Name: "delete", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
 				{Name: "Command Name", Type: common.Text},
 			},
@@ -131,6 +131,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 			return true
 		case "edit":
 			p.editCommand(event)
+			return true
+		case "delete", "del", "remove":
+			p.deleteCommand(event)
 			return true
 		}
 	}
