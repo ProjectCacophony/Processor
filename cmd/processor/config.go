@@ -23,4 +23,5 @@ type config struct {
 	RedisPassword             string               `envconfig:"REDIS_PASSWORD"`
 	FeatureFlag               featureflag.Config   `envconfig:"FEATUREFLAG"`
 	ErrorTracking             errortracking.Config `envconfig:"ERRORTRACKING"`
+	DiscordAPIBase            string               `envconfig:"DISCORD_API_BASE"`
 }

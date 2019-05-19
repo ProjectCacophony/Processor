@@ -20,3 +20,5 @@ require (
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190516052701-61b8692d9a5c
 )
+
+replace gitlab.com/Cacophony/go-kit => ../go-kit

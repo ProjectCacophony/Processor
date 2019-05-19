@@ -9,6 +9,7 @@ import (
 	"time"
 
 	cacophonyConfig "gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/paginator"
 
@@ -42,6 +43,8 @@ func main() {
 	config.ErrorTracking.Version = config.Hash
 	config.ErrorTracking.Environment = config.ClusterEnvironment
 
+	discord.SetAPIBase(config.DiscordAPIBase)
+
 	// init logger
 	logger, err := logging.NewLogger(
 		config.Environment,
@@ -52,7 +55,7 @@ func main() {
 		},
 	)
 	if err != nil {
-		panic(errors.Wrap(err, "unable to initialise launcher"))
+		panic(errors.Wrap(err, "unable to initialise logger"))
 	}
 
 	// init raven
