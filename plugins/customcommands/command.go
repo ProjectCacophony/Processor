@@ -48,12 +48,58 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	return false
 }
 
+func (p *Plugin) runRandomCommand(event *events.Event) {
+	if len(event.Fields()) == 0 {
+		return
+	}
+
+	var entries []Entry
+	if isUserOperation(event) {
+		entries = p.getAllUserEntries(event)
+	} else {
+		entries = p.getAllServerEntries(event)
+	}
+
+	if len(entries) == 0 {
+		event.Respond("customcommands.no-commands")
+		return
+	}
+
+	seed := rand.Intn(len(entries))
+	event.Respond(entries[seed].Content)
+}
+
 func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (entries []Entry) {
 
 	// query entries
 	err := p.db.Find(&entries, "name = ? and ((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))",
 		commandName,
 		event.UserID,
+		event.GuildID,
+	).Error
+	if err != nil {
+		event.Logger().Error("error querying custom commands", zap.Error(err))
+	}
+
+	return
+}
+
+func (p *Plugin) getAllUserEntries(event *events.Event) (entries []Entry) {
+
+	// query entries
+	err := p.db.Find(&entries, "is_user_command = true and user_id = ?",
+		event.UserID,
+	).Error
+	if err != nil {
+		event.Logger().Error("error querying custom commands", zap.Error(err))
+	}
+
+	return
+}
+func (p *Plugin) getAllServerEntries(event *events.Event) (entries []Entry) {
+
+	// query entries
+	err := p.db.Find(&entries, "is_user_command = false and guild_id = ?",
 		event.GuildID,
 	).Error
 	if err != nil {

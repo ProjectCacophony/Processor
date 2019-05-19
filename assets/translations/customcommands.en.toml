@@ -2,6 +2,7 @@
 
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
 "customcommands.not-found" = "Could not find a command with that name."
+"customcommands.no-commands" = "Could not find any commands."
 
 "customcommands.delete.success" = "\
 {{- if .isUserCommand }}\

@@ -96,6 +96,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description: "Use a random server command.",
 			Params: []common.CommandParam{
 				{Name: "random", Type: common.Flag},
+				{Name: "user", Type: common.Flag, Optional: true},
 			},
 		}, {
 			Name:        "View Command Info",
@@ -134,6 +135,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 			return true
 		case "delete", "del", "remove":
 			p.deleteCommand(event)
+			return true
+
+		case "rand", "random":
+			p.runRandomCommand(event)
 			return true
 		}
 	}
