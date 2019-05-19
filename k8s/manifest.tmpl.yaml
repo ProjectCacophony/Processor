@@ -18,6 +18,7 @@ stringData:
   polrBaseURL: "{{POLR_BASE_URL}}"
   polrAPIKey: "{{POLR_API_KEY}}"
   iexCloudAPISecret: "{{IEXCLOUD_API_SECRET}}"
+  discordAPIBase: "{{DISCORD_API_BASE}}"
 
 ---
 apiVersion: apps/v1
@@ -128,6 +129,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: iexCloudAPISecret
+          - name: DISCORD_API_BASE
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: discordAPIBase
 
 
 ---
