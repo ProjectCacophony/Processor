@@ -1,6 +1,7 @@
 package ping
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -19,6 +20,18 @@ func handlePing(event *events.Event) {
 	discordToGateway := event.ReceivedAt.Sub(createdAt).Round(time.Millisecond)
 	gatewayToProcessor := time.Since(event.ReceivedAt).Round(time.Millisecond)
 
+	var proxyDuration time.Duration
+	// only test proxy ping if a proxy is configured
+	if discordgo.EndpointDiscord != "https://discordapp.com/" {
+		beforeProxy := time.Now()
+		proxyResp, err := event.HTTPClient().Get(discordgo.EndpointDiscord + "status")
+		proxyDuration = time.Since(beforeProxy)
+		if err != nil || proxyResp.StatusCode != http.StatusOK {
+			event.Except(err)
+			return
+		}
+	}
+
 	sendStart := time.Now()
 	messages, err := event.RespondComplex(
 		&discordgo.MessageSend{
@@ -28,6 +41,8 @@ func handlePing(event *events.Event) {
 		discordToGateway,
 		"GatewayToProcessor",
 		gatewayToProcessor,
+		"ProxyLatency",
+		proxyDuration,
 	)
 	if err != nil {
 		event.Except(err)
@@ -53,6 +68,8 @@ func handlePing(event *events.Event) {
 		discordToGateway,
 		"GatewayToProcessor",
 		gatewayToProcessor,
+		"ProxyLatency",
+		proxyDuration,
 		"SendDuration",
 		sendDuration,
 	)
@@ -85,6 +102,11 @@ func pingEmbed() *discordgo.MessageEmbed {
 			{
 				Name:   "ping.ping-response.embed.field.GatewayToProcessor.title",
 				Value:  "ping.ping-response.embed.field.GatewayToProcessor.value",
+				Inline: false,
+			},
+			{
+				Name:   "ping.ping-response.embed.field.ProxyLatency.title",
+				Value:  "ping.ping-response.embed.field.ProxyLatency.value",
 				Inline: false,
 			},
 			{
