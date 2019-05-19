@@ -12,6 +12,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/chatlog"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
+	"gitlab.com/Cacophony/Processor/plugins/customcommands"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
 	"gitlab.com/Cacophony/Processor/plugins/gall"
 	"gitlab.com/Cacophony/Processor/plugins/help"
@@ -68,6 +69,7 @@ var (
 		&help.Plugin{},
 		&stocks.Plugin{},
 		&quickactions.Plugin{},
+		&customcommands.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
