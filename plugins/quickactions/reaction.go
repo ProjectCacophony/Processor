@@ -15,19 +15,23 @@ func (p *Plugin) handleReaction(event *events.Event) bool {
 		return false
 	}
 
+	// following actions work in DMs too
+
+	if _, ok := remindEmoji[event.MessageReactionAdd.Emoji.Name]; ok {
+		p.remindMessage(event)
+
+		return true
+	}
+
 	// ignore in DMs
 	if channel.Type != discordgo.ChannelTypeGuildText {
 		return false
 	}
 
+	// following actions do NOT work in DMs
+
 	if event.MessageReactionAdd.Emoji.Name == starMessageEmoji {
 		p.starMessage(event)
-
-		return true
-	}
-
-	if _, ok := remindEmoji[event.MessageReactionAdd.Emoji.Name]; ok {
-		p.remindMessage(event)
 
 		return true
 	}
