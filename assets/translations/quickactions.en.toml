@@ -1,5 +1,9 @@
 # help
 "quickactions.help.description" = "Perform various actions on Discord - anywhere."
+"quickactions.help.star.description" = "Saves a message in your DMs"
+"quickactions.help.remind1.description" = "Will remind you about the message in one hour"
+"quickactions.help.remind8.description" = "Will remind you about the message in eight hours"
+"quickactions.help.remind24.description" = "Will remind you about the message in 24 hours"
 
 # common
 "quickactions.message.content" = "\

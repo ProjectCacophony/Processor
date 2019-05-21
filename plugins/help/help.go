@@ -83,7 +83,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 		if containsBotAdminPermission(reaction.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
 		}
-		reactionList[i] = formatReaction(reaction)
+		reactionList[i] = formatReaction(event, reaction)
 	}
 
 	// Get module commands if any
@@ -120,9 +120,13 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 	}
 }
 
-func formatReaction(reaction common.Reaction) string {
+func formatReaction(event *events.Event, reaction common.Reaction) string {
 	var reactionSummary string
-	reactionSummary += fmt.Sprintf("%s **%s**", reaction.EmojiName, reaction.Description)
+	reactionSummary += fmt.Sprintf(
+		"%s **%s**",
+		event.Translate(reaction.EmojiName),
+		event.Translate(reaction.Description),
+	)
 
 	var requirements []string
 	if containsPatronPermission(reaction.PermissionsRequired) {
