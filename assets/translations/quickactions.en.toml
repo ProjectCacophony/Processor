@@ -7,5 +7,5 @@
 
 # common
 "quickactions.message.content" = "\
-{{.emoji}} <https://discordapp.com/channels/{{.message.GuildID}}/{{.message.ChannelID}}/{{.message.ID}}>\
+{{.emoji}} <{{MessageLink .message}}>\
 "
