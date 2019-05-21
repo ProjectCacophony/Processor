@@ -145,7 +145,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "list", Type: common.Flag},
 			},
 		}, {
-			Name:        "Hide a Servers",
+			Name:        "Hide a Server",
 			Description: "Run the command again to unhide the Server.",
 			Params: []common.CommandParam{
 				{Name: "hide", Type: common.Flag},
