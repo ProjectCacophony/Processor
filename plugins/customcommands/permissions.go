@@ -1,6 +1,7 @@
 package customcommands
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -9,7 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-func (p *Plugin) togglePermission(event *events.Event) {
+func (p *Plugin) toggleCreatePermission(event *events.Event) {
 	if len(event.Fields()) > 3 {
 		event.Respond("common.invalid-params")
 		return
@@ -76,6 +77,40 @@ func (p *Plugin) togglePermission(event *events.Event) {
 	event.Respond("customcommands.permission-toggle", "who", "everyone", "canAdd", !current)
 }
 
+func (p *Plugin) toggleUsePermission(event *events.Event) {
+	if len(event.Fields()) > 3 {
+		event.Respond("common.invalid-params")
+		return
+	}
+	if len(event.Fields()) == 3 && event.Fields()[2] != "user" {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	key := serverCommandsUsePermissionKey
+	var isUserChange bool
+	if len(event.Fields()) == 3 && event.Fields()[2] == "user" {
+		key = userCommandsUsePermissionKey
+		isUserChange = true
+	}
+
+	fmt.Println("id use: ", isUserChange)
+
+	curPerm, err := config.GuildGetBool(p.db, event.GuildID, key)
+	if err != nil && err.Error() == "invalid Guild ID" {
+		event.Except(err)
+		return
+	}
+
+	err = config.GuildSetBool(p.db, event.GuildID, key, !curPerm)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("customcommands.permission-use-toggle", "level", isUserChange, "cantUse", !curPerm)
+}
+
 func (p *Plugin) canEditCommand(event *events.Event) bool {
 	if isUserOperation(event) {
 		return true
@@ -112,4 +147,30 @@ func (p *Plugin) canEditCommand(event *events.Event) bool {
 	}
 
 	return false
+}
+
+func (p *Plugin) canUseServerCommand(event *events.Event) bool {
+	if event.Has(permissions.DiscordAdministrator) {
+		return true
+	}
+
+	canUseServer, err := config.GuildGetBool(p.db, event.GuildID, serverCommandsUsePermissionKey)
+	if err != nil {
+		event.Except(err)
+		return false
+	}
+	return !canUseServer
+}
+
+func (p *Plugin) canUseUserCommand(event *events.Event) bool {
+	if event.Has(permissions.DiscordAdministrator) {
+		return true
+	}
+
+	canUsers, err := config.GuildGetBool(p.db, event.GuildID, userCommandsUsePermissionKey)
+	if err != nil {
+		event.Except(err)
+		return false
+	}
+	return !canUsers
 }

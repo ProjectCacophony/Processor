@@ -21,6 +21,17 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	}
 
 	if len(entries) == 1 {
+		if entries[0].IsUserCommand {
+			if !p.canUseUserCommand(event) {
+				event.Respond("customcommands.cant-use", "level", true)
+				return true
+			}
+		} else {
+			if !p.canUseServerCommand(event) {
+				event.Respond("customcommands.cant-use", "level", false)
+				return true
+			}
+		}
 		err := entries[0].run(event)
 		event.Except(err)
 		return true
@@ -29,14 +40,32 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	userEntries, serverEntries := seporateUserAndServerEntries(entries)
 
 	var entry Entry
+	var denidedByServerCommandPerm bool
+	var denidedByUserCommandPerm bool
 	if len(serverEntries) > 0 {
-		seed := rand.Intn(len(serverEntries))
-		entry = serverEntries[seed]
+		if p.canUseServerCommand(event) {
+			seed := rand.Intn(len(serverEntries))
+			entry = serverEntries[seed]
+		} else {
+			denidedByServerCommandPerm = true
+		}
 	}
 
-	if len(userEntries) > 0 {
-		seed := rand.Intn(len(userEntries))
-		entry = userEntries[seed]
+	if len(userEntries) > 0 && entry == (Entry{}) {
+		if p.canUseUserCommand(event) {
+			seed := rand.Intn(len(userEntries))
+			entry = userEntries[seed]
+		} else {
+			denidedByUserCommandPerm = true
+		}
+	}
+
+	if denidedByServerCommandPerm {
+		event.Respond("customcommands.cant-use", "level", false)
+		return true
+	} else if denidedByUserCommandPerm {
+		event.Respond("customcommands.cant-use", "level", true)
+		return true
 	}
 
 	if entry != (Entry{}) {
@@ -53,11 +82,29 @@ func (p *Plugin) runRandomCommand(event *events.Event) {
 		return
 	}
 
+	var denidedByServerCommandPerm bool
+	var denidedByUserCommandPerm bool
 	var entries []Entry
 	if isUserOperation(event) {
-		entries = p.getAllUserEntries(event)
+		if p.canUseUserCommand(event) {
+			entries = p.getAllUserEntries(event)
+		} else {
+			denidedByServerCommandPerm = true
+		}
 	} else {
-		entries = p.getAllServerEntries(event)
+		if p.canUseServerCommand(event) {
+			entries = p.getAllServerEntries(event)
+		} else {
+			denidedByUserCommandPerm = true
+		}
+	}
+
+	if denidedByServerCommandPerm {
+		event.Respond("customcommands.cant-use", "level", false)
+		return
+	} else if denidedByUserCommandPerm {
+		event.Respond("customcommands.cant-use", "level", true)
+		return
 	}
 
 	if len(entries) == 0 {

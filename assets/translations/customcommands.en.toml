@@ -3,9 +3,11 @@
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
 "customcommands.not-found" = "Could not find a command with that name."
 "customcommands.cant-edit" = "Looks like you don't have permission to edit this servers custom commands."
+"customcommands.cant-use" = "This server does not allow using {{- if .level}} user{{else}} the servers{{end}} custom commands."
 
 "customcommands.no-commands" = "Could not find any commands."
 "customcommands.permission-toggle" = "I  have set `{{.who}}` to be `{{- if .canAdd}}{{else}}un{{end}}able` to add new commands."
+"customcommands.permission-use-toggle" = "Users will now {{- if .cantUse}} not{{end}} be able to use {{- if .level}} their own {{else}} this servers {{end}}custom commands."
 
 "customcommands.delete.success" = "\
 {{- if .isUserCommand }}\

@@ -79,12 +79,12 @@ func (p *Plugin) Help() *common.PluginHelp {
 			},
 		}, {
 			Name: "Toggle Using Commands",
-			Description: "Toggle the ability to use the servers custom commands in a given channel, or leave out channel to toggle everywhere." +
+			Description: "Toggle the ability to use the servers custom commands." +
 				"\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands.",
 			Params: []common.CommandParam{
 				{Name: "toggle", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
-				{Name: "channel", Type: common.Channel, Optional: true},
+				// {Name: "channel", Type: common.Channel, Optional: true}, do we need channel specific?
 			},
 		}, {
 			Name:        "Toggle Adding Commands",
@@ -137,7 +137,13 @@ func (p *Plugin) Action(event *events.Event) bool {
 		switch event.Fields()[1] {
 		case "toggle-permissions":
 			event.Require(func() {
-				p.togglePermission(event)
+				p.toggleCreatePermission(event)
+			}, permissions.DiscordAdministrator)
+
+			return true
+		case "toggle":
+			event.Require(func() {
+				p.toggleUsePermission(event)
 			}, permissions.DiscordAdministrator)
 
 			return true
