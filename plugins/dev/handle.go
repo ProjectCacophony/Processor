@@ -43,6 +43,12 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.CacophonyQuestionnaireMatch &&
+		event.QuestionnaireMatch.Key == questionnaireKey {
+		p.handleDevQuestionnaireMatch(event)
+		return true
+	}
+
 	if !event.Command() || event.Fields()[0] != "dev" {
 		return false
 	}
@@ -89,6 +95,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 	case "permission":
 
 		p.handleDevPermission(event)
+		return
+	case "questionnaire":
+
+		p.handleDevQuestionnaire(event)
 		return
 	}
 

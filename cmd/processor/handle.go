@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
@@ -26,6 +27,7 @@ func handle(
 	paginator *paginator.Paginator,
 	httpClient *http.Client,
 	processingDeadline time.Duration,
+	questionnaire *events.Questionnaire,
 ) func(event *events.Event) error {
 	l := logger.With(zap.String("service", "processor"))
 
@@ -44,6 +46,7 @@ func handle(
 		event.WithRedis(redis)
 		event.WithDB(db)
 		event.WithHTTPClient(httpClient)
+		event.WithQuestionnaire(questionnaire)
 
 		event.Parse()
 
@@ -62,6 +65,15 @@ func handle(
 
 		var wg sync.WaitGroup
 		var handled bool
+
+		handled, err = questionnaire.Do(event.Context(), event)
+		if err != nil {
+			return errors.Wrap(err, "questionnaire unable to handle event")
+		}
+		if handled {
+			return nil
+		}
+
 		for _, plugin := range plugins.PluginList {
 			if !featureFlagger.IsEnabled(featureFlagPluginKey(plugin.Name()), true) {
 				l.Debug("skipping plugin as it is disabled by feature flags",

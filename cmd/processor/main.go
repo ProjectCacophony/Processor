@@ -139,6 +139,12 @@ func main() {
 		Timeout: 20 * time.Second,
 	}
 
+	questionnaire := events.NewQuestionnaire(
+		logger.With(zap.String("feature", "questionnaire")),
+		redisClient,
+		publisher,
+	)
+
 	// create handler
 	handler := handle(
 		logger,
@@ -150,6 +156,7 @@ func main() {
 		paginatorClient,
 		httpClient,
 		config.ProcessingDeadline,
+		questionnaire,
 	)
 
 	// init processor
