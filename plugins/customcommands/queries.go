@@ -20,19 +20,19 @@ func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (ent
 	return
 }
 
-func (p *Plugin) getAllAvailableEntries(event *events.Event) (entries []Entry) {
+// func (p *Plugin) getAllAvailableEntries(event *events.Event) (entries []Entry) {
 
-	// query entries
-	err := p.db.Find(&entries, "(is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?)",
-		event.UserID,
-		event.GuildID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-	}
+// 	// query entries
+// 	err := p.db.Find(&entries, "(is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?)",
+// 		event.UserID,
+// 		event.GuildID,
+// 	).Error
+// 	if err != nil {
+// 		event.Logger().Error("error querying custom commands", zap.Error(err))
+// 	}
 
-	return
-}
+// 	return
+// }
 
 func (p *Plugin) getAllUserEntries(event *events.Event) (entries []Entry) {
 

@@ -154,7 +154,7 @@ func (p *Plugin) listCommands(event *events.Event) {
 	}
 
 	// List user commands
-	var userList []string
+	userList := make([]string, len(userEntries))
 	for _, entry := range userEntries {
 		userList = append(userList, fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered))
 	}
