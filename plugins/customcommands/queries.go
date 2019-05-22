@@ -20,8 +20,8 @@ func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (ent
 	return
 }
 
+//  commented out to avoid lint issue. could be useful later
 // func (p *Plugin) getAllAvailableEntries(event *events.Event) (entries []Entry) {
-
 // 	// query entries
 // 	err := p.db.Find(&entries, "(is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?)",
 // 		event.UserID,
@@ -30,7 +30,6 @@ func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (ent
 // 	if err != nil {
 // 		event.Logger().Error("error querying custom commands", zap.Error(err))
 // 	}
-
 // 	return
 // }
 
