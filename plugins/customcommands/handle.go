@@ -133,6 +133,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "edit":
 			p.editCommand(event)
 			return true
+		case "list":
+			p.listCommands(event)
+			return true
 		case "delete", "del", "remove":
 			p.deleteCommand(event)
 			return true
