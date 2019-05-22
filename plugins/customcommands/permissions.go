@@ -1,7 +1,6 @@
 package customcommands
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -20,10 +19,13 @@ func (p *Plugin) toggleCreatePermission(event *events.Event) {
 	var inputRole *discordgo.Role
 	if len(event.Fields()) == 3 {
 		var err error
-		inputRole, err = event.State().Role(event.GuildID, event.Fields()[2])
-		if err != nil {
-			event.Respond("common.no-role")
-			return
+		inputRole, _ = event.State().RoleFromMention(event.GuildID, event.Fields()[2])
+		if inputRole == nil {
+			inputRole, err = event.State().Role(event.GuildID, event.Fields()[2])
+			if err != nil {
+				event.Respond("common.no-role")
+				return
+			}
 		}
 	}
 
@@ -94,8 +96,6 @@ func (p *Plugin) toggleUsePermission(event *events.Event) {
 		isUserChange = true
 	}
 
-	fmt.Println("id use: ", isUserChange)
-
 	curPerm, err := config.GuildGetBool(p.db, event.GuildID, key)
 	if err != nil && err.Error() == "invalid Guild ID" {
 		event.Except(err)
@@ -120,17 +120,12 @@ func (p *Plugin) canEditCommand(event *events.Event) bool {
 		return true
 	}
 
-	canEveryone, err := config.GuildGetBool(p.db, event.GuildID, everyoneCreatePermissionKey)
-	if err != nil {
-		event.Except(err)
-		return false
-	}
-
+	canEveryone, _ := config.GuildGetBool(p.db, event.GuildID, everyoneCreatePermissionKey)
 	if canEveryone {
 		return true
 	}
 
-	curRoles, err := config.GuildGetString(p.db, event.GuildID, rolesCreatePermissionToggleKey)
+	curRoles, _ := config.GuildGetString(p.db, event.GuildID, rolesCreatePermissionToggleKey)
 	if curRoles == "" {
 		return false
 	}
@@ -138,6 +133,9 @@ func (p *Plugin) canEditCommand(event *events.Event) bool {
 	roleIDs := strings.Split(curRoles, ",")
 
 	member, err := event.State().Member(event.GuildID, event.UserID)
+	if err != nil {
+		return false
+	}
 	for _, userRole := range member.Roles {
 		for _, allowedrole := range roleIDs {
 			if userRole == allowedrole {
