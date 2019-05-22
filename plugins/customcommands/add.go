@@ -12,6 +12,11 @@ func (p *Plugin) addCommand(event *events.Event) {
 
 	// TODO: check for attachments
 
+	if !p.canEditCommand(event) {
+		event.Respond("customcommands.cant-edit")
+		return
+	}
+
 	var cmdName string
 	var cmdContent string
 	if hasUserParam(event) {

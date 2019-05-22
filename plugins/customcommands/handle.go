@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"go.uber.org/zap"
 )
 
@@ -86,6 +87,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "channel", Type: common.Channel, Optional: true},
 			},
 		}, {
+			Name:        "Toggle Adding Commands",
+			Description: "Enable/disable the ability for everyone, or a specific role, to add new commands.",
+			Params: []common.CommandParam{
+				{Name: "toggle-permission", Type: common.Flag},
+				{Name: "Role ID or Name", Type: common.Text, Optional: true},
+			},
+		}, {
 			Name: "Search for Commands",
 			Params: []common.CommandParam{
 				{Name: "search", Type: common.Flag},
@@ -127,6 +135,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "toggle-permissions":
+			event.Require(func() {
+				p.togglePermission(event)
+			}, permissions.DiscordAdministrator)
+
+			return true
 		case "add":
 			p.addCommand(event)
 			return true

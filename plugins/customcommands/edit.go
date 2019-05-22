@@ -12,6 +12,11 @@ func (p *Plugin) editCommand(event *events.Event) {
 		return
 	}
 
+	if !p.canEditCommand(event) {
+		event.Respond("customcommands.cant-edit")
+		return
+	}
+
 	var cmdName string
 	var cmdContent string
 	if hasUserParam(event) {
@@ -78,6 +83,11 @@ func askEntryToUpdate(event *events.Event, entries []Entry) {
 func (p *Plugin) deleteCommand(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		event.Respond("common.invalid-params")
+		return
+	}
+
+	if !p.canEditCommand(event) {
+		event.Respond("customcommands.cant-edit")
 		return
 	}
 

@@ -1,2 +1,4 @@
 "common.to-few-params" = "Not enough command parameters."
 "common.invalid-params" = "Invalid command parameters."
+"common.message-sent-to-dm" = "Check your DMs :spy:"
+"common.no-role" = "I could not find the given role."

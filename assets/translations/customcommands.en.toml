@@ -2,7 +2,10 @@
 
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
 "customcommands.not-found" = "Could not find a command with that name."
+"customcommands.cant-edit" = "Looks like you don't have permission to edit this servers custom commands."
+
 "customcommands.no-commands" = "Could not find any commands."
+"customcommands.permission-toggle" = "I  have set `{{.who}}` to be `{{- if .canAdd}}{{else}}un{{end}}able` to add new commands."
 
 "customcommands.delete.success" = "\
 {{- if .isUserCommand }}\
