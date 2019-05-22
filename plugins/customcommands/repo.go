@@ -49,3 +49,10 @@ func entryRemove(db *gorm.DB, id uint) error {
 
 	return db.Delete(Entry{}, "id = ?", id).Error
 }
+
+func entryUpdateTriggered(db *gorm.DB, entry *Entry) error {
+	if entry == nil {
+		return errors.New("entry cannot be nil")
+	}
+	return db.Model(entry).Update("triggered", gorm.Expr("triggered + 1")).Error
+}

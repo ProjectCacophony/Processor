@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/events"
 )
 
 type Entry struct {
@@ -21,4 +22,13 @@ type Entry struct {
 
 func (*Entry) TableName() string {
 	return "custom_commands"
+}
+
+func (e *Entry) run(event *events.Event) error {
+	err := entryUpdateTriggered(event.DB(), e)
+	if err != nil {
+		return err
+	}
+	_, err = event.Respond(e.Content)
+	return err
 }

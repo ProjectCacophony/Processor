@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/go-kit/events"
-	"go.uber.org/zap"
 )
 
 func (p *Plugin) runCustomCommand(event *events.Event) bool {
@@ -22,22 +21,27 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	}
 
 	if len(entries) == 1 {
-		_, err := event.Respond(entries[0].Content)
+		err := entries[0].run(event)
 		event.Except(err)
 		return true
 	}
 
 	userEntries, serverEntries := seporateUserAndServerEntries(entries)
 
+	var entry Entry
 	if len(serverEntries) > 0 {
 		seed := rand.Intn(len(serverEntries))
-		event.Respond(serverEntries[seed].Content)
-		return true
+		entry = serverEntries[seed]
 	}
 
 	if len(userEntries) > 0 {
 		seed := rand.Intn(len(userEntries))
-		event.Respond(userEntries[seed].Content)
+		entry = userEntries[seed]
+	}
+
+	if entry != (Entry{}) {
+		err := entry.run(event)
+		event.Except(err)
 		return true
 	}
 
@@ -62,7 +66,7 @@ func (p *Plugin) runRandomCommand(event *events.Event) {
 	}
 
 	seed := rand.Intn(len(entries))
-	event.Respond(entries[seed].Content)
+	entries[seed].run(event)
 }
 
 func (p *Plugin) listCommands(event *events.Event) {
@@ -76,42 +80,42 @@ func (p *Plugin) listCommands(event *events.Event) {
 		displayInPublic = true
 	}
 
-	var entries []Entry
-	err := p.db.Select("name, sum(triggered) as triggered, is_user_command").Table((&Entry{}).TableName()).
-		Where("((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))", event.UserID, event.GuildID).
-		Group("name, is_user_command").Find(&entries).Error
-	if err != nil {
-		event.Respond("customcommands.no-commands")
-		return
-	}
-
+	// get all commands the user has access to, user and on the server
+	entries := p.getCommandsByTriggerCount(event)
 	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].Name < entries[j].Name
+		return entries[i].Triggered > entries[j].Triggered
 	})
 
+	var listText string
 	userEntries, serverEntries := seporateUserAndServerEntries(entries)
 
+	// List server commands if in a guild
+	if event.GuildID != "" {
+		guild, err := event.State().Guild(event.GuildID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		var serverList []string
+		for _, entry := range serverEntries {
+			serverList = append(serverList, fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered))
+		}
+
+		listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
+		listText += strings.Join(serverList, "\n")
+	}
+
+	// List user commands
 	var userList []string
 	for _, entry := range userEntries {
 		userList = append(userList, fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered))
 	}
-
-	var serverList []string
-	for _, entry := range serverEntries {
-		serverList = append(serverList, fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered))
-	}
-
-	guild, err := event.State().Guild(event.GuildID)
-	event.Except(err)
-
-	listText := fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
-	listText += strings.Join(serverList, "\n")
-
 	listText += fmt.Sprintf("\n\nYour Custom Commands (%d):\n", len(userEntries))
 	listText += strings.Join(userList, "\n")
 
 	if displayInPublic {
-		_, err = event.Respond(listText)
+		_, err := event.Respond(listText)
 		event.Except(err)
 	} else {
 
@@ -120,72 +124,7 @@ func (p *Plugin) listCommands(event *events.Event) {
 			event.Except(err)
 		}
 
-		_, err = event.RespondDM(listText)
+		_, err := event.RespondDM(listText)
 		event.Except(err)
 	}
-}
-
-func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (entries []Entry) {
-
-	// query entries
-	err := p.db.Find(&entries, "name = ? and ((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))",
-		commandName,
-		event.UserID,
-		event.GuildID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-	}
-
-	return
-}
-
-func (p *Plugin) getAllAvailableEntries(event *events.Event) (entries []Entry) {
-
-	// query entries
-	err := p.db.Find(&entries, "(is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?)",
-		event.UserID,
-		event.GuildID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-	}
-
-	return
-}
-
-func (p *Plugin) getAllUserEntries(event *events.Event) (entries []Entry) {
-
-	// query entries
-	err := p.db.Find(&entries, "is_user_command = true and user_id = ?",
-		event.UserID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-	}
-
-	return
-}
-func (p *Plugin) getAllServerEntries(event *events.Event) (entries []Entry) {
-
-	// query entries
-	err := p.db.Find(&entries, "is_user_command = false and guild_id = ?",
-		event.GuildID,
-	).Error
-	if err != nil {
-		event.Logger().Error("error querying custom commands", zap.Error(err))
-	}
-
-	return
-}
-
-func seporateUserAndServerEntries(entries []Entry) (userEntries []Entry, serverEntries []Entry) {
-	for _, entry := range entries {
-		if entry.IsUserCommand {
-			userEntries = append(userEntries, entry)
-		} else {
-			serverEntries = append(serverEntries, entry)
-		}
-	}
-	return
 }
