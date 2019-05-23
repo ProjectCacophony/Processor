@@ -5,6 +5,8 @@ const (
 	rolesCreatePermissionToggleKey     = "cacophony:processor:cc:roles-create"    // roleIDs comma delimted
 	denyServerCommandsUsePermissionKey = "cacophony:processor:cc:server-use"      // bool (true means can't use)
 	denyUserCommandsUsePermissionKey   = "cacophony:processor:cc:user-use"        // bool (true means can't use)
+	editQuestionnaireKey               = "cacophony:processor:dev:edit-questionnaire"
+	deleteQuestionnaireKey             = "cacophony:processor:dev:remove-questionnaire"
 )
 
 func seporateUserAndServerEntries(entries []Entry) (userEntries []Entry, serverEntries []Entry) {

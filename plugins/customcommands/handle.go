@@ -1,6 +1,9 @@
 package customcommands
 
 import (
+	"regexp"
+	"strconv"
+
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -125,6 +128,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.CacophonyQuestionnaireMatch {
+		return p.handleQuestionnaire(event)
+	}
+
 	if !event.Command() {
 		return false
 	}
@@ -170,6 +177,28 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "rand", "random":
 			p.runRandomCommand(event)
 			return true
+		}
+	}
+
+	return false
+}
+
+func (p *Plugin) handleQuestionnaire(event *events.Event) bool {
+	re := regexp.MustCompile("[0-9]+")
+
+	if event.MessageCreate == nil || event.MessageCreate.Content == "" {
+		return false
+	}
+
+	if enteredNum, err := strconv.Atoi(re.FindString(event.MessageCreate.Content)); err == nil {
+
+		switch event.QuestionnaireMatch.Key {
+		case editQuestionnaireKey:
+			return p.handleEditResponse(event, enteredNum)
+		case deleteQuestionnaireKey:
+			return p.handleDeleteResponse(event, enteredNum)
+		default:
+			return false
 		}
 	}
 
