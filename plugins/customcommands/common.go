@@ -1,10 +1,10 @@
 package customcommands
 
 const (
-	everyoneCreatePermissionKey    = "cacophony:processor:cc:everyone-create" // bool
-	rolesCreatePermissionToggleKey = "cacophony:processor:cc:roles-create"    // roleIDs comma delimted
-	serverCommandsUsePermissionKey = "cacophony:processor:cc:server-use"      // bool (true means can't use)
-	userCommandsUsePermissionKey   = "cacophony:processor:cc:user-use"        // bool (true means can't use)
+	everyoneCreatePermissionKey        = "cacophony:processor:cc:everyone-create" // bool
+	rolesCreatePermissionToggleKey     = "cacophony:processor:cc:roles-create"    // roleIDs comma delimted
+	denyServerCommandsUsePermissionKey = "cacophony:processor:cc:server-use"      // bool (true means can't use)
+	denyUserCommandsUsePermissionKey   = "cacophony:processor:cc:user-use"        // bool (true means can't use)
 )
 
 func seporateUserAndServerEntries(entries []Entry) (userEntries []Entry, serverEntries []Entry) {

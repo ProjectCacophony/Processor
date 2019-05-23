@@ -89,10 +89,10 @@ func (p *Plugin) toggleUsePermission(event *events.Event) {
 		return
 	}
 
-	key := serverCommandsUsePermissionKey
+	key := denyServerCommandsUsePermissionKey
 	var isUserChange bool
 	if len(event.Fields()) == 3 && event.Fields()[2] == "user" {
-		key = userCommandsUsePermissionKey
+		key = denyUserCommandsUsePermissionKey
 		isUserChange = true
 	}
 
@@ -152,12 +152,8 @@ func (p *Plugin) canUseServerCommand(event *events.Event) bool {
 		return true
 	}
 
-	canUseServer, err := config.GuildGetBool(p.db, event.GuildID, serverCommandsUsePermissionKey)
-	if err != nil {
-		event.Except(err)
-		return false
-	}
-	return !canUseServer
+	cantUse, _ := config.GuildGetBool(p.db, event.GuildID, denyServerCommandsUsePermissionKey)
+	return !cantUse
 }
 
 func (p *Plugin) canUseUserCommand(event *events.Event) bool {
@@ -165,10 +161,6 @@ func (p *Plugin) canUseUserCommand(event *events.Event) bool {
 		return true
 	}
 
-	canUsers, err := config.GuildGetBool(p.db, event.GuildID, userCommandsUsePermissionKey)
-	if err != nil {
-		event.Except(err)
-		return false
-	}
-	return !canUsers
+	cantUse, _ := config.GuildGetBool(p.db, event.GuildID, denyUserCommandsUsePermissionKey)
+	return !cantUse
 }
