@@ -147,9 +147,13 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}, permissions.DiscordAdministrator)
 
 			return true
+		case "info":
+			p.displayCommandInfo(event)
+			return true
 		case "add":
 			p.addCommand(event)
 			return true
+
 		case "edit":
 			p.editCommand(event)
 			return true

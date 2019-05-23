@@ -5,7 +5,11 @@ import (
 	"math/rand"
 	"sort"
 	"strings"
+	"time"
 
+	"github.com/bwmarrin/discordgo"
+
+	"github.com/dustin/go-humanize"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -174,4 +178,69 @@ func (p *Plugin) listCommands(event *events.Event) {
 		_, err := event.RespondDM(listText)
 		event.Except(err)
 	}
+}
+
+func (p *Plugin) displayCommandInfo(event *events.Event) {
+	if len(event.Fields()) != 3 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	commands := p.getCommandEntries(event, event.Fields()[2])
+	if len(commands) == 0 {
+		event.Respond("customcommands.not-found")
+		return
+	}
+
+	sort.Slice(commands, func(i, j int) bool {
+		return commands[i].Date.Before(commands[j].Date)
+	})
+
+	totalTriggered := commands[0].Triggered
+	command := commands[0]
+	content := commands[0].Content
+	userInfo := "*Unknown*"
+
+	// if multi commands of same name
+	if len(commands) > 1 {
+
+		totalTriggered = 0
+		commandCreator := commands[0].UserID
+		commandArray := make([]string, len(commands))
+		for i, cmd := range commands {
+
+			// combind all triggers from each command of same name
+			totalTriggered += cmd.Triggered
+
+			// check if all commands of same name were uploaded by same user
+			if cmd.UserID != commandCreator {
+				userInfo = "*Multi Users*"
+			}
+
+			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.Content)
+		}
+		content = "__Multi Commands__\n"
+		content += strings.Join(commandArray, "\n")
+	} else {
+
+		// get user info
+		user, err := event.State().User(command.UserID)
+		if err == nil && user != nil {
+			userInfo = fmt.Sprintf("%s#%s", user.Username, user.Discriminator)
+		}
+	}
+
+	embed := &discordgo.MessageSend{
+		Embed: &discordgo.MessageEmbed{
+			Title:       fmt.Sprintf("Custom Command: `%s`", command.Name),
+			Description: content,
+			Fields: []*discordgo.MessageEmbedField{
+				{Name: "Author", Value: userInfo},
+				{Name: "Times triggered", Value: humanize.Comma(int64(totalTriggered))},
+				{Name: "Created At", Value: fmt.Sprintf("%s UTC", command.Date.Format(time.ANSIC))},
+			},
+		},
+	}
+
+	event.RespondComplex(embed)
 }
