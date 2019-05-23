@@ -164,7 +164,7 @@ func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
 		return true
 	}
 
-	if len(commands) < enteredNum-1 {
+	if len(commands) < enteredNum {
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
@@ -291,7 +291,7 @@ func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool 
 		return true
 	}
 
-	if len(commands) < enteredNum-1 {
+	if len(commands) < enteredNum {
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
