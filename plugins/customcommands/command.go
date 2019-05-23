@@ -144,9 +144,9 @@ func (p *Plugin) listCommands(event *events.Event) {
 			return
 		}
 
-		var serverList []string
-		for _, entry := range serverEntries {
-			serverList = append(serverList, fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered))
+		serverList := make([]string, len(serverEntries))
+		for i, entry := range serverEntries {
+			serverList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
 		}
 
 		listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
