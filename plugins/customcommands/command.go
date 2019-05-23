@@ -207,7 +207,7 @@ func (p *Plugin) displayCommandInfo(event *events.Event) {
 			Description: content,
 			Fields: []*discordgo.MessageEmbedField{
 				{Name: "Author", Value: userInfo},
-				{Name: "Times triggered", Value: humanize.Comma(int64(totalTriggered))},
+				{Name: "Times Triggered", Value: humanize.Comma(int64(totalTriggered))},
 				{Name: "Created At", Value: fmt.Sprintf("%s UTC", command.Date.Format(time.ANSIC))},
 			},
 		},
