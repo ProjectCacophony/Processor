@@ -102,42 +102,16 @@ func (p *Plugin) editCommand(event *events.Event) {
 		entries[0].Content = cmdContent
 		p.processCommandEdit(event, entries[0], isUserOperation(event))
 	default:
-		// TODO: finish processing the one they want to update
-		askEntryToUpdate(event, entries, cmdContent)
+		output := "**Multiple commands with this name, which command would you like to update?**```"
+		for i, entry := range entries {
+			output += fmt.Sprintf("%d: %s\n", i+1, entry.Content)
+		}
+		output += "```"
+		event.Respond(output)
+
+		openEditQuestionnaire(event, entries, cmdContent, isUserOperation(event), true)
 		return
 	}
-}
-
-func askEntryToUpdate(event *events.Event, commands []Entry, newContent string) {
-	commandBytes, err := json.Marshal(commands)
-	event.Except(err)
-
-	err = event.Questionnaire().Register(
-		editQuestionnaireKey,
-		events.QuestionnaireFilter{
-			GuildID:   event.GuildID,
-			ChannelID: event.ChannelID,
-			UserID:    event.UserID,
-			Type:      events.MessageCreateType,
-		},
-		map[string]interface{}{
-			"commands":        string(commandBytes),
-			"newContent":      newContent,
-			"isUserOperation": isUserOperation(event),
-		},
-	)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	output := "**Multiple commands with this name, which command would you like to update?**```"
-	for i, entry := range commands {
-		output += fmt.Sprintf("%d: %s\n", i+1, entry.Content)
-	}
-	output += "```"
-
-	event.Respond(output)
 }
 
 func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
@@ -165,6 +139,7 @@ func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
 	}
 
 	if len(commands) < enteredNum {
+		openEditQuestionnaire(event, commands, newContent, isUserOperation, true)
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
@@ -238,39 +213,16 @@ func (p *Plugin) deleteCommand(event *events.Event) {
 	case 1:
 		p.processCommandDelete(event, entries[0], isUserOp)
 	default:
-		askEntryToDelete(event, entries)
+		output := "**Multiple commands with this name, which command would you like to delete?**```"
+		for i, entry := range entries {
+			output += fmt.Sprintf("%d: %s\n", i+1, entry.Content)
+		}
+		output += "```"
+
+		event.Respond(output)
+		openEditQuestionnaire(event, entries, "", isUserOperation(event), false)
 		return
 	}
-}
-func askEntryToDelete(event *events.Event, commands []Entry) {
-	commandBytes, err := json.Marshal(commands)
-	event.Except(err)
-
-	err = event.Questionnaire().Register(
-		deleteQuestionnaireKey,
-		events.QuestionnaireFilter{
-			GuildID:   event.GuildID,
-			ChannelID: event.ChannelID,
-			UserID:    event.UserID,
-			Type:      events.MessageCreateType,
-		},
-		map[string]interface{}{
-			"commands":        string(commandBytes),
-			"isUserOperation": isUserOperation(event),
-		},
-	)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	output := "**Multiple commands with this name, which command would you like to delete?**```"
-	for i, entry := range commands {
-		output += fmt.Sprintf("%d: %s\n", i+1, entry.Content)
-	}
-	output += "```"
-
-	event.Respond(output)
 }
 
 func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool {
@@ -292,12 +244,13 @@ func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool 
 	}
 
 	if len(commands) < enteredNum {
+		openEditQuestionnaire(event, commands, "", isUserOperation, false)
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
 		)
 		event.Except(err)
-		return false
+		return true
 	}
 
 	p.processCommandDelete(event, commands[enteredNum-1], isUserOperation)
@@ -319,4 +272,35 @@ func (p *Plugin) processCommandDelete(event *events.Event, command Entry, isUser
 		"isUserCommand", isUserOperation,
 	)
 	event.Except(err)
+}
+
+func openEditQuestionnaire(event *events.Event, commands []Entry, newContent string, isUserOp, isEdit bool) {
+	commandBytes, err := json.Marshal(commands)
+	event.Except(err)
+
+	payload := map[string]interface{}{
+		"commands":        string(commandBytes),
+		"isUserOperation": isUserOp,
+	}
+
+	key := deleteQuestionnaireKey
+	if isEdit {
+		key = editQuestionnaireKey
+		payload["newContent"] = newContent
+	}
+
+	err = event.Questionnaire().Register(
+		key,
+		events.QuestionnaireFilter{
+			GuildID:   event.GuildID,
+			ChannelID: event.ChannelID,
+			UserID:    event.UserID,
+			Type:      events.MessageCreateType,
+		},
+		payload,
+	)
+	if err != nil {
+		event.Except(err)
+		return
+	}
 }
