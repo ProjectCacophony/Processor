@@ -95,7 +95,7 @@ func (p *Plugin) editCommand(event *events.Event) {
 	var err error
 	switch len(entries) {
 	case 0:
-		event.Respond("customcommands.not-found")
+		event.Respond("customcommands.name-not-found")
 		return
 	case 1:
 		entries[0].Content = cmdContent
@@ -166,7 +166,7 @@ func (p *Plugin) deleteCommand(event *events.Event) {
 	var err error
 	switch len(entries) {
 	case 0:
-		event.Respond("customcommands.not-found")
+		event.Respond("customcommands.name-not-found")
 		return
 	case 1:
 		err = entryRemove(p.db, entries[0].Model.ID)

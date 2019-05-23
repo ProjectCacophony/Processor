@@ -1,7 +1,8 @@
 "customcommands.help.description" = "Server mods can add custom commands that anyone can use in your server! Also users can add your own custom commands that you can use anywhere."
 
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
-"customcommands.not-found" = "Could not find a command with that name."
+"customcommands.name-not-found" = "Could not find a command with that name."
+"customcommands.no-commands-found" = "Could not find any commands."
 "customcommands.cant-edit" = "Looks like you don't have permission to edit this servers custom commands."
 "customcommands.cant-use" = "This server does not allow using {{- if .level}} user{{else}} the servers{{end}} custom commands."
 

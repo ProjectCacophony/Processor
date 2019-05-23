@@ -135,7 +135,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
-		case "toggle-permissions":
+		case "toggle-permissions", "toggle-permission":
 			event.Require(func() {
 				p.toggleCreatePermission(event)
 			}, permissions.DiscordAdministrator)
@@ -147,8 +147,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}, permissions.DiscordAdministrator)
 
 			return true
-		case "info":
+		case "info", "i":
 			p.displayCommandInfo(event)
+			return true
+		case "search", "find":
+			p.searchCommand(event)
 			return true
 		case "add":
 			p.addCommand(event)

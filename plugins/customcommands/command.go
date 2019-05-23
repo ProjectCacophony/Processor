@@ -133,37 +133,8 @@ func (p *Plugin) listCommands(event *events.Event) {
 
 	// get all commands the user has access to, user and on the server
 	entries := p.getCommandsByTriggerCount(event)
-	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].Triggered > entries[j].Triggered
-	})
 
-	var listText string
-	userEntries, serverEntries := seporateUserAndServerEntries(entries)
-
-	// List server commands if in a guild
-	if event.GuildID != "" {
-		guild, err := event.State().Guild(event.GuildID)
-		if err != nil {
-			event.Except(err)
-			return
-		}
-
-		serverList := make([]string, len(serverEntries))
-		for i, entry := range serverEntries {
-			serverList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
-		}
-
-		listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
-		listText += strings.Join(serverList, "\n")
-	}
-
-	// List user commands
-	userList := make([]string, len(userEntries))
-	for i, entry := range userEntries {
-		userList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
-	}
-	listText += fmt.Sprintf("\n\nYour Custom Commands (%d):\n", len(userEntries))
-	listText += strings.Join(userList, "\n")
+	listText := createListCommandOutput(event, entries)
 
 	if displayInPublic {
 		_, err := event.Respond(listText)
@@ -188,7 +159,7 @@ func (p *Plugin) displayCommandInfo(event *events.Event) {
 
 	commands := p.getCommandEntries(event, event.Fields()[2])
 	if len(commands) == 0 {
-		event.Respond("customcommands.not-found")
+		event.Respond("customcommands.name-not-found")
 		return
 	}
 
@@ -243,4 +214,65 @@ func (p *Plugin) displayCommandInfo(event *events.Event) {
 	}
 
 	event.RespondComplex(embed)
+}
+
+func (p *Plugin) searchCommand(event *events.Event) {
+	if len(event.Fields()) != 3 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	commands := p.searchForCommand(event, event.Fields()[2])
+	if len(commands) == 0 {
+		event.Respond("customcommands.name-not-found")
+		return
+	}
+
+	listText := createListCommandOutput(event, commands)
+
+	_, err := event.Respond(listText)
+	event.Except(err)
+}
+
+func createListCommandOutput(event *events.Event, entries []Entry) (listText string) {
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].Triggered > entries[j].Triggered
+	})
+
+	userEntries, serverEntries := seporateUserAndServerEntries(entries)
+
+	// List server commands if in a guild
+	if event.GuildID != "" {
+		guild, err := event.State().Guild(event.GuildID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		serverList := make([]string, len(serverEntries))
+		for i, entry := range serverEntries {
+			serverList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
+		}
+
+		if len(serverList) != 0 {
+			listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
+			listText += strings.Join(serverList, "\n") + "\n"
+		}
+	}
+
+	// List user commands
+	userList := make([]string, len(userEntries))
+	for i, entry := range userEntries {
+		userList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
+	}
+	if len(userList) != 0 {
+		listText += fmt.Sprintf("\nYour Custom Commands (%d):\n", len(userEntries))
+		listText += strings.Join(userList, "\n")
+	}
+
+	if listText == "" {
+		listText = "customcommands.no-commands-found"
+	}
+
+	return
 }

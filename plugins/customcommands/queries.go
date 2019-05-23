@@ -20,6 +20,20 @@ func (p *Plugin) getCommandEntries(event *events.Event, commandName string) (ent
 	return
 }
 
+func (p *Plugin) searchForCommand(event *events.Event, searchTerm string) (entries []Entry) {
+	// query entries
+	err := p.db.Find(&entries, "name like ? and ((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))",
+		"%"+searchTerm+"%",
+		event.UserID,
+		event.GuildID,
+	).Error
+	if err != nil {
+		event.Logger().Error("error querying custom commands", zap.Error(err))
+	}
+
+	return
+}
+
 //  commented out to avoid lint issue. could be useful later
 // func (p *Plugin) getAllAvailableEntries(event *events.Event) (entries []Entry) {
 // 	// query entries
