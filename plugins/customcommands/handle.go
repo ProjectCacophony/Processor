@@ -155,7 +155,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 			return true
 		case "info", "i":
-			p.displayCommandInfo(event)
+			p.getCommandInfo(event)
 			return true
 		case "search", "find":
 			p.searchCommand(event)

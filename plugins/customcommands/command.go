@@ -24,6 +24,11 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 		return false
 	}
 
+	if len(event.Fields()) == 2 && event.Fields()[1] == "info" {
+		p.displayCommandsInfo(event, entries)
+		return true
+	}
+
 	if len(entries) == 1 {
 		if entries[0].IsUserCommand {
 			if !p.canUseUserCommand(event) {
@@ -151,7 +156,7 @@ func (p *Plugin) listCommands(event *events.Event) {
 	}
 }
 
-func (p *Plugin) displayCommandInfo(event *events.Event) {
+func (p *Plugin) getCommandInfo(event *events.Event) {
 	if len(event.Fields()) != 3 {
 		event.Respond("common.invalid-params")
 		return
@@ -162,6 +167,11 @@ func (p *Plugin) displayCommandInfo(event *events.Event) {
 		event.Respond("customcommands.name-not-found")
 		return
 	}
+
+	p.displayCommandsInfo(event, commands)
+}
+
+func (p *Plugin) displayCommandsInfo(event *events.Event, commands []Entry) {
 
 	sort.Slice(commands, func(i, j int) bool {
 		return commands[i].Date.Before(commands[j].Date)
