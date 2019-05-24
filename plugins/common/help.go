@@ -39,6 +39,7 @@ type Reaction struct {
 
 type Command struct {
 	Name                string
+	SkipRootCommand     bool
 	Params              []CommandParam
 	Description         string
 	PermissionsRequired Permissions

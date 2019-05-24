@@ -151,7 +151,12 @@ func formatCommand(event *events.Event, command common.Command, pluginName strin
 	}
 
 	commandText := event.Prefix() + pluginName
-	for _, param := range command.Params {
+
+	if command.SkipRootCommand {
+		commandText = event.Prefix()
+	}
+
+	for i, param := range command.Params {
 		name := param.Name
 
 		if param.Optional {
@@ -171,7 +176,11 @@ func formatCommand(event *events.Event, command common.Command, pluginName strin
 
 		}
 
-		commandText += " " + name
+		if command.SkipRootCommand && i == 0 {
+			commandText += name
+		} else {
+			commandText += " " + name
+		}
 	}
 	commandText = "`" + commandText + "`"
 

@@ -117,6 +117,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Name", Type: common.Text},
 			},
 		}, {
+			Name:            "View Command Info",
+			Description:     "View information on who added a command, how many times it has been used, and when it was made.",
+			SkipRootCommand: true,
+			Params: []common.CommandParam{
+				{Name: "Command Name", Type: common.Text},
+				{Name: "info", Type: common.Flag},
+			},
+		}, {
 			Name:        "Use User Commad",
 			Description: "Generally not needed unless a server command has the same name as your personal command.",
 			Params: []common.CommandParam{
