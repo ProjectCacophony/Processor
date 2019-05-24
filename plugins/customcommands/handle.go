@@ -191,15 +191,18 @@ func (p *Plugin) handleQuestionnaire(event *events.Event) bool {
 	}
 
 	if enteredNum, err := strconv.Atoi(re.FindString(event.MessageCreate.Content)); err == nil {
-
+		var handled bool
 		switch event.QuestionnaireMatch.Key {
 		case editQuestionnaireKey:
-			return p.handleEditResponse(event, enteredNum)
+			handled = p.handleEditResponse(event, enteredNum)
 		case deleteQuestionnaireKey:
-			return p.handleDeleteResponse(event, enteredNum)
-		default:
-			return false
+			handled = p.handleDeleteResponse(event, enteredNum)
 		}
+		if !handled {
+			event.Questionnaire().Redo(event)
+		}
+	} else {
+		event.Questionnaire().Redo(event)
 	}
 
 	return false
