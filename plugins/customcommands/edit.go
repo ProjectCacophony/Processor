@@ -139,7 +139,6 @@ func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
 	}
 
 	if len(commands) < enteredNum {
-		openEditQuestionnaire(event, commands, newContent, isUserOperation, true)
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
@@ -244,13 +243,12 @@ func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool 
 	}
 
 	if len(commands) < enteredNum {
-		openEditQuestionnaire(event, commands, "", isUserOperation, false)
 		_, err = event.Send(
 			event.ChannelID,
 			"Invalid number entered.",
 		)
 		event.Except(err)
-		return true
+		return false
 	}
 
 	p.processCommandDelete(event, commands[enteredNum-1], isUserOperation)

@@ -190,8 +190,8 @@ func (p *Plugin) handleQuestionnaire(event *events.Event) bool {
 		return false
 	}
 
+	var handled bool
 	if enteredNum, err := strconv.Atoi(re.FindString(event.MessageCreate.Content)); err == nil {
-		var handled bool
 		switch event.QuestionnaireMatch.Key {
 		case editQuestionnaireKey:
 			handled = p.handleEditResponse(event, enteredNum)
@@ -205,5 +205,5 @@ func (p *Plugin) handleQuestionnaire(event *events.Event) bool {
 		event.Questionnaire().Redo(event)
 	}
 
-	return false
+	return handled
 }
