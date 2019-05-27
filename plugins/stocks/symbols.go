@@ -8,7 +8,9 @@ import (
 
 const priorityRegion = "US"
 
-var priorityOrderExpr = gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)
+var priorityOrderExpr = gorm.Expr(
+	"case when region = ? then 1 else 2 end ASC", priorityRegion,
+)
 
 func findSymbol(db *gorm.DB, symbol string) (*Symbol, error) {
 	var symbolEntry Symbol
