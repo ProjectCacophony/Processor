@@ -8,13 +8,15 @@ import (
 
 const priorityRegion = "US"
 
+var priorityOrderExpr = gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)
+
 func findSymbol(db *gorm.DB, symbol string) (*Symbol, error) {
 	var symbolEntry Symbol
 
 	// try to match exact symbol
 	err := db.
 		Where("symbol = ?", symbol).
-		Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+		Order(priorityOrderExpr).
 		First(&symbolEntry).
 		Error
 	if err != nil &&
@@ -23,7 +25,7 @@ func findSymbol(db *gorm.DB, symbol string) (*Symbol, error) {
 		// try to match symbol with undefined country suffix
 		err = db.
 			Where("symbol LIKE  ? || '-%'", symbol).
-			Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+			Order(priorityOrderExpr).
 			First(&symbolEntry).
 			Error
 		if err != nil &&
@@ -32,7 +34,7 @@ func findSymbol(db *gorm.DB, symbol string) (*Symbol, error) {
 			// try to match company name
 			err = db.
 				Where("UPPER(name) LIKE  '%' || ? || '%'", symbol).
-				Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+				Order(priorityOrderExpr).
 				First(&symbolEntry).
 				Error
 		}
