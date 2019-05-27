@@ -4,8 +4,19 @@
 "quickactions.help.remind1.description" = "Will remind you about the message in one hour"
 "quickactions.help.remind8.description" = "Will remind you about the message in eight hours"
 "quickactions.help.remind24.description" = "Will remind you about the message in 24 hours"
+"quickactions.help.remindCustom.description" = "Will remidn you about the message in a custom duration"
 
 # common
 "quickactions.message.content" = "\
 {{.emoji}} <{{MessageLink .message}}>\
+"
+
+# remindAskCustomDelay
+"quickactions.remind.ask-custom-delay" = "\
+<@{{.UserID}}> In how much time do you want to be reminded? (eg `2h`)"
+"quickactions.remind.invalid-custom-delay" = "\
+**The duration you told me is invalid.**\n\
+Please make sure you follow the right format.\n\
+For example: `2h`, or `10m`\
+The minimum delay is five minutes\
 "

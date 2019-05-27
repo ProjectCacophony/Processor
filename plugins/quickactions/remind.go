@@ -1,6 +1,8 @@
 package quickactions
 
 import (
+	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -8,52 +10,244 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord/emoji"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
+const questionnaireRemindKey = "cacophony:processor:quickactions:remind"
+
 var remindEmoji = map[string]time.Duration{
-	"quickaction_remind_1h":  1 * time.Hour,
-	"quickaction_remind_8h":  8 * time.Hour,
-	"quickaction_remind_24h": 24 * time.Hour,
+	"quickaction_remind_custom": 0, // custom delay
+	"quickaction_remind_1h":     1 * time.Hour,
+	"quickaction_remind_8h":     8 * time.Hour,
+	"quickaction_remind_24h":    24 * time.Hour,
 }
 
 func (p *Plugin) remindMessage(event *events.Event) {
-	newEvent, err := events.New(events.CacophonyQuickactionRemind)
-	if err != nil {
-		event.ExceptSilent(err)
-		return
-	}
-	newEvent.QuickactionRemind = &events.QuickactionRemind{
+	params := quickactionParams{
 		GuildID:   event.MessageReactionAdd.GuildID,
 		ChannelID: event.MessageReactionAdd.ChannelID,
 		MessageID: event.MessageReactionAdd.MessageID,
 		Emoji:     &event.MessageReactionAdd.Emoji,
 		ToUserID:  event.MessageReactionAdd.UserID,
+		BotUserID: event.BotUserID,
+		Delay:     remindEmoji[event.MessageReactionAdd.Emoji.Name],
 	}
-	newEvent.BotUserID = event.BotUserID
+	if params.Delay <= 0 {
+		p.remindAskCustomDelay(event, params)
+		return
+	}
 
-	err = p.publisher.PublishAt(
+	err := p.setupQuickactionRemind(
 		event.Context(),
-		newEvent,
-		time.Now().Add(remindEmoji[event.MessageReactionAdd.Emoji.Name]),
+		event.State(),
+		event.Discord(),
+		params,
+	)
+	if err != nil {
+		event.ExceptSilent(err)
+	}
+}
+
+func (p *Plugin) remindAskCustomDelay(
+	event *events.Event,
+	params quickactionParams,
+) {
+	data, err := params.Marshal()
+	if err != nil {
+		event.ExceptSilent(err)
+		return
+	}
+
+	messages, err := event.Send(
+		event.ChannelID,
+		"quickactions.remind.ask-custom-delay",
+		"UserID",
+		event.MessageReactionAdd.UserID,
 	)
 	if err != nil {
 		event.ExceptSilent(err)
 		return
+	}
+	if len(messages) <= 0 {
+		return
+	}
+
+	err = event.Questionnaire().Register(
+		questionnaireRemindKey,
+		events.QuestionnaireFilter{
+			GuildID:   event.GuildID,
+			ChannelID: event.ChannelID,
+			UserID:    event.MessageReactionAdd.UserID,
+			Type:      events.MessageCreateType,
+		},
+		map[string]interface{}{
+			"params":                      string(data),
+			"question_message_channel_id": messages[0].ChannelID,
+			"question_message_id":         messages[0].ID,
+		},
+	)
+	if err != nil {
+		event.ExceptSilent(err)
+		return
+	}
+}
+
+func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
+	var params quickactionParams
+	err := params.Unmarshal([]byte(event.QuestionnaireMatch.Payload["params"].(string)))
+	if err != nil {
+		event.ExceptSilent(err)
+	}
+
+	duration, err := time.ParseDuration(event.MessageCreate.Content)
+	if err != nil || duration < 5*time.Minute {
+		messages, _ := event.Send(
+			event.ChannelID,
+			"quickactions.remind.invalid-custom-delay",
+		)
+
+		go func() {
+			time.Sleep(5 * time.Second)
+
+			// delete questionnaire response message if possible
+			if permissions.DiscordManageMessages.Match(
+				event.State(),
+				params.BotUserID,
+				params.ChannelID,
+				false,
+			) {
+				event.Discord().Client.ChannelMessageDelete(
+					event.ChannelID,
+					event.MessageID,
+				)
+			}
+
+			// delete questionnaire question message
+			event.Discord().Client.ChannelMessageDelete(
+				event.QuestionnaireMatch.Payload["question_message_channel_id"].(string),
+				event.QuestionnaireMatch.Payload["question_message_id"].(string),
+			)
+
+			// delete questionnaire error message
+			for _, message := range messages {
+				event.Discord().Client.ChannelMessageDelete(
+					message.ChannelID,
+					message.ID,
+				)
+			}
+
+			// remove reaction if possible
+			if permissions.DiscordManageMessages.Match(
+				event.State(),
+				params.BotUserID,
+				params.ChannelID,
+				false,
+			) {
+				event.Discord().Client.MessageReactionRemove(
+					params.ChannelID,
+					params.MessageID,
+					params.Emoji.APIName(),
+					params.ToUserID,
+				)
+			}
+		}()
+		return
+	}
+
+	params.Delay = duration
+
+	err = p.setupQuickactionRemind(
+		event.Context(),
+		event.State(),
+		event.Discord(),
+		params,
+	)
+	if err != nil {
+		event.ExceptSilent(err)
+	}
+
+	go func() {
+		time.Sleep(1 * time.Second)
+
+		// delete questionnaire response message if possible
+		if permissions.DiscordManageMessages.Match(
+			event.State(),
+			params.BotUserID,
+			params.ChannelID,
+			false,
+		) {
+			event.Discord().Client.ChannelMessageDelete(
+				event.ChannelID,
+				event.MessageID,
+			)
+		}
+
+		// delete questionnaire question message
+		event.Discord().Client.ChannelMessageDelete(
+			event.QuestionnaireMatch.Payload["question_message_channel_id"].(string),
+			event.QuestionnaireMatch.Payload["question_message_id"].(string),
+		)
+	}()
+}
+
+type quickactionParams struct {
+	GuildID   string
+	ChannelID string
+	MessageID string
+	Emoji     *discordgo.Emoji
+	ToUserID  string
+	BotUserID string
+	Delay     time.Duration
+}
+
+func (qp *quickactionParams) Marshal() ([]byte, error) {
+	return json.Marshal(qp)
+}
+
+func (qp *quickactionParams) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, qp)
+}
+
+func (p *Plugin) setupQuickactionRemind(
+	ctx context.Context,
+	state *state.State,
+	session *discord.Session,
+	params quickactionParams,
+) error {
+	newEvent, err := events.New(events.CacophonyQuickactionRemind)
+	if err != nil {
+		return err
+	}
+	newEvent.QuickactionRemind = &events.QuickactionRemind{
+		GuildID:   params.GuildID,
+		ChannelID: params.ChannelID,
+		MessageID: params.MessageID,
+		Emoji:     params.Emoji,
+		ToUserID:  params.ToUserID,
+	}
+	newEvent.BotUserID = params.BotUserID
+
+	err = p.publisher.PublishAt(
+		ctx,
+		newEvent,
+		time.Now().Add(params.Delay),
+	)
+	if err != nil {
+		return err
 	}
 
 	ackEmoji := emoji.GetWithout("ok")
 
 	err = discord.React(
 		p.redis,
-		event.Discord(),
-		event.MessageReactionAdd.ChannelID,
-		event.MessageReactionAdd.MessageID,
+		session,
+		params.ChannelID,
+		params.MessageID,
 		false,
 		ackEmoji,
 	)
 	if err != nil {
-		event.ExceptSilent(err)
-		return
+		return err
 	}
 
 	go func() {
@@ -61,34 +255,28 @@ func (p *Plugin) remindMessage(event *events.Event) {
 
 		// remove reaction if possible
 		if permissions.DiscordManageMessages.Match(
-			event.State(),
-			event.BotUserID,
-			event.MessageReactionAdd.ChannelID,
+			state,
+			params.BotUserID,
+			params.ChannelID,
 			false,
 		) {
-			err = event.Discord().Client.MessageReactionRemove(
-				event.MessageReactionAdd.ChannelID,
-				event.MessageReactionAdd.MessageID,
-				event.MessageReactionAdd.Emoji.APIName(),
-				event.MessageReactionAdd.UserID,
+			session.Client.MessageReactionRemove(
+				params.ChannelID,
+				params.MessageID,
+				params.Emoji.APIName(),
+				params.ToUserID,
 			)
-			if err != nil {
-				event.ExceptSilent(err)
-				return
-			}
 		}
 
-		err = event.Discord().Client.MessageReactionRemove(
-			event.MessageReactionAdd.ChannelID,
-			event.MessageReactionAdd.MessageID,
+		session.Client.MessageReactionRemove(
+			params.ChannelID,
+			params.MessageID,
 			ackEmoji,
-			event.BotUserID,
+			params.BotUserID,
 		)
-		if err != nil {
-			event.ExceptSilent(err)
-			return
-		}
 	}()
+
+	return nil
 }
 
 func (p *Plugin) handleQuickactionRemind(event *events.Event) {

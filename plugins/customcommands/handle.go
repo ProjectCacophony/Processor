@@ -215,6 +215,4 @@ func (p *Plugin) handleQuestionnaire(event *events.Event) {
 	} else {
 		event.Questionnaire().Redo(event)
 	}
-
-	return
 }

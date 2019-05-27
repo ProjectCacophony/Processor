@@ -60,6 +60,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 				EmojiName:   "<:quickaction_remind_24h:579342223141896252>",
 				Description: "quickactions.help.remind24.description",
 			},
+			{
+				EmojiName:   "<:quickaction_remind_custom:582444736519077889>",
+				Description: "quickactions.help.remindCustom.description",
+			},
 		},
 	}
 }
@@ -74,8 +78,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	if !event.Command() {
-		return false
+	if event.Type == events.CacophonyQuestionnaireMatch &&
+		event.QuestionnaireMatch.Key == questionnaireRemindKey {
+		p.handleRemindQuestionnaire(event)
+		return true
 	}
 
 	return false
