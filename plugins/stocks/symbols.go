@@ -6,17 +6,35 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+const priorityRegion = "US"
+
 func findSymbol(db *gorm.DB, symbol string) (*Symbol, error) {
 	var symbolEntry Symbol
-	err := db.Where("symbol = ?", symbol).First(&symbolEntry).Error
+
+	// try to match exact symbol
+	err := db.
+		Where("symbol = ?", symbol).
+		Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+		First(&symbolEntry).
+		Error
 	if err != nil &&
 		strings.Contains(err.Error(), "record not found") {
 
-		err = db.Where("symbol LIKE  ? || '-%'", symbol).First(&symbolEntry).Error
+		// try to match symbol with undefined country suffix
+		err = db.
+			Where("symbol LIKE  ? || '-%'", symbol).
+			Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+			First(&symbolEntry).
+			Error
 		if err != nil &&
 			strings.Contains(err.Error(), "record not found") {
 
-			err = db.Where("UPPER(name) LIKE  '%' || ? || '%'", symbol).First(&symbolEntry).Error
+			// try to match company name
+			err = db.
+				Where("UPPER(name) LIKE  '%' || ? || '%'", symbol).
+				Order(gorm.Expr("case when region = ? then 1 else 2 end ASC", priorityRegion)).
+				First(&symbolEntry).
+				Error
 		}
 	}
 
