@@ -19,6 +19,7 @@ stringData:
   polrAPIKey: "{{POLR_API_KEY}}"
   iexCloudAPISecret: "{{IEXCLOUD_API_SECRET}}"
   discordAPIBase: "{{DISCORD_API_BASE}}"
+  googleCloudCredentials: "{{GOOGLE_CLOUD_CREDENTIALS}}"
 
 ---
 apiVersion: apps/v1
@@ -51,6 +52,10 @@ spec:
               port: {{PORT}}
             initialDelaySeconds: 5
             periodSeconds: 10
+          volumeMounts:
+          - mountPath: "/secrets"
+            name: google-cloud
+            readOnly: true
           env:
           - name: PORT
             value: "{{PORT}}"
@@ -64,6 +69,8 @@ spec:
             value: "{{CLUSTER_ENVIRONMENT}}"
           - name: HASH
             value: "{{HASH}}"
+          - name: GOOGLE_CLOUD_CREDENTIALS
+            value: "/secrets/google-cloud"
           - name: DISCORD_TOKENS
             valueFrom:
               secretKeyRef:
@@ -134,6 +141,13 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: discordAPIBase
+      volumes:
+        - name: google-cloud
+          secret:
+            secretName: processor-secret
+            items:
+            - key: googleCloudCredentials
+              path: google-cloud
 
 
 ---
