@@ -28,7 +28,7 @@ metadata:
   namespace: cacophony
 type: Opaque
 data:
-  googleCloudCredentials: "{{GOOGLE_CLOUD_CREDENTIALS}}"
+  googleCloudCredentials: "{{GOOGLE_APPLICATION_CREDENTIALS}}"
 
 
 ---
@@ -79,7 +79,7 @@ spec:
             value: "{{CLUSTER_ENVIRONMENT}}"
           - name: HASH
             value: "{{HASH}}"
-          - name: GOOGLE_CLOUD_CREDENTIALS
+          - name: GOOGLE_APPLICATION_CREDENTIALS
             value: "/secrets/google-cloud"
           - name: DISCORD_TOKENS
             valueFrom:
