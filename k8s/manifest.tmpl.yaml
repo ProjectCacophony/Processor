@@ -19,7 +19,17 @@ stringData:
   polrAPIKey: "{{POLR_API_KEY}}"
   iexCloudAPISecret: "{{IEXCLOUD_API_SECRET}}"
   discordAPIBase: "{{DISCORD_API_BASE}}"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: processor-secret-files
+  namespace: cacophony
+type: Opaque
+data:
   googleCloudCredentials: "{{GOOGLE_CLOUD_CREDENTIALS}}"
+
 
 ---
 apiVersion: apps/v1
@@ -144,7 +154,7 @@ spec:
       volumes:
         - name: google-cloud
           secret:
-            secretName: processor-secret
+            secretName: processor-secret-files
             items:
             - key: googleCloudCredentials
               path: google-cloud
