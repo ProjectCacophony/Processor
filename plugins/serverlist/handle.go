@@ -12,13 +12,13 @@ import (
 )
 
 type Plugin struct {
-	logger        *zap.Logger
-	db            *gorm.DB
-	state         *state.State
-	redis         *redis.Client
-	tokens        map[string]string
-	staffRoles    interfaces.Permission
-	localizations []interfaces.Localization
+	logger           *zap.Logger
+	db               *gorm.DB
+	state            *state.State
+	redis            *redis.Client
+	tokens           map[string]string
+	staffPermissions interfaces.Permission
+	localizations    []interfaces.Localization
 }
 
 func (p *Plugin) Name() string {
@@ -35,7 +35,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.tokens = params.Tokens
 	p.localizations = params.Localizations
 
-	p.staffRoles = permissions.Or(
+	p.staffPermissions = permissions.Or(
 		permissions.BotAdmin,
 		// Test / Staff
 		permissions.NewDiscordRole(p.state, "561619599129444390", "561619665197989893"),
@@ -238,7 +238,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleCategoryCreate(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						p.staffRoles,
+						p.staffPermissions,
 					)
 					return true
 				}
@@ -262,7 +262,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleQueueRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						p.staffRoles,
+						p.staffPermissions,
 					)
 					return true
 				}
@@ -273,7 +273,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleQueue(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				p.staffRoles,
+				p.staffPermissions,
 			)
 			return true
 
@@ -290,7 +290,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleListRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						p.staffRoles,
+						p.staffPermissions,
 					)
 					return true
 
@@ -301,7 +301,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 						p.handleListClearCache(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
-						p.staffRoles,
+						p.staffPermissions,
 					)
 					return true
 
@@ -315,7 +315,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleQueueReject(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				p.staffRoles,
+				p.staffPermissions,
 			)
 			return true
 
@@ -336,7 +336,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleLog(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				p.staffRoles,
+				p.staffPermissions,
 			)
 			return true
 
@@ -352,7 +352,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 				p.handleCensor(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
-				p.staffRoles,
+				p.staffPermissions,
 			)
 			return true
 

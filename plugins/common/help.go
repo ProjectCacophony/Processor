@@ -56,6 +56,11 @@ type Permissions []interfaces.Permission
 
 func (p Permissions) String() (permissionsText string) {
 	for _, permission := range p {
+		if permission == nil {
+			permissionsText += "N/A, "
+			continue
+		}
+
 		// skip Patron permissions, as we display it in a special way
 		if permission == permissions.Patron {
 			continue

@@ -4,8 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	lock "github.com/bsm/redis-lock"
 
 	"gitlab.com/Cacophony/go-kit/discord"
@@ -52,7 +50,7 @@ func (p *Plugin) handleQueueReaction(event *events.Event) bool {
 		return false
 	}
 
-	if !event.Has(permissions.BotAdmin) {
+	if !event.Has(p.staffPermissions) {
 		return false
 	}
 

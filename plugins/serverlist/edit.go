@@ -7,8 +7,6 @@ import (
 
 	"gitlab.com/Cacophony/go-kit/state"
 
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/lib/pq"
 
 	"github.com/bwmarrin/discordgo"
@@ -39,7 +37,7 @@ func (p *Plugin) handleEdit(event *events.Event) {
 	}
 
 	if !stringSliceContains(event.UserID, server.EditorUserIDs) &&
-		!event.Has(permissions.BotAdmin) {
+		!event.Has(p.staffPermissions) {
 		event.Respond("serverlist.edit.no-editor")
 		return
 	}
