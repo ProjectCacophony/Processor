@@ -118,6 +118,17 @@ func (p *Plugin) refreshQueue(guildIDs ...string) {
 	}
 }
 
+func (p *Plugin) clearQueueChannel(channelID, messageID string, session *discordgo.Session) {
+	messagesArray, err := session.ChannelMessages(channelID, 100, "", messageID, "")
+	if err != nil {
+		return
+	}
+
+	for _, msg := range messagesArray {
+		session.ChannelMessageDelete(channelID, msg.ID)
+	}
+}
+
 func (p *Plugin) approveCurrentServer(botID, guildID string) error {
 	queueMessage, err := p.getCurrentQueueMessage(guildID)
 	if err != nil {
@@ -224,6 +235,8 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 			queue,
 		)
 	}
+
+	p.clearQueueChannel(channelID, currentQueueMessage.MessageID, session.Client)
 
 	activeItem := queueFind(currentQueueMessage.CurrentServerID, queue)
 	if activeItem != nil {
