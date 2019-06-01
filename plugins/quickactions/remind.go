@@ -112,6 +112,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 			// delete questionnaire response message if possible
 			if permissions.DiscordManageMessages.Match(
 				event.State(),
+				p.db,
 				params.BotUserID,
 				params.ChannelID,
 				false,
@@ -139,6 +140,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 			// remove reaction if possible
 			if permissions.DiscordManageMessages.Match(
 				event.State(),
+				p.db,
 				params.BotUserID,
 				params.ChannelID,
 				false,
@@ -172,6 +174,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 		// delete questionnaire response message if possible
 		if permissions.DiscordManageMessages.Match(
 			event.State(),
+			p.db,
 			params.BotUserID,
 			params.ChannelID,
 			false,
@@ -256,6 +259,7 @@ func (p *Plugin) setupQuickactionRemind(
 		// remove reaction if possible
 		if permissions.DiscordManageMessages.Match(
 			state,
+			p.db,
 			params.BotUserID,
 			params.ChannelID,
 			false,

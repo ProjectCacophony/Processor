@@ -2,6 +2,7 @@ package quickactions
 
 import (
 	"github.com/go-redis/redis"
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
@@ -12,6 +13,7 @@ type Plugin struct {
 	redis     *redis.Client
 	publisher *events.Publisher
 	tokens    map[string]string
+	db        *gorm.DB
 }
 
 func (p *Plugin) Name() string {
@@ -23,6 +25,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.redis = params.Redis
 	p.publisher = params.Publisher
 	p.tokens = params.Tokens
+	p.db = params.DB
 
 	return nil
 }

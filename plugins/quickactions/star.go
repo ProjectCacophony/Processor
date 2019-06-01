@@ -73,6 +73,7 @@ func (p *Plugin) starMessage(event *events.Event) {
 	// remove reaction if possible
 	if permissions.DiscordManageMessages.Match(
 		event.State(),
+		p.db,
 		event.BotUserID,
 		event.MessageReactionAdd.ChannelID,
 		false,
