@@ -17,7 +17,7 @@ func (p *Plugin) remove(event *events.Event) {
     ( ( (guild_id = ? AND dm = false) OR (channel_or_user_id = ? AND dm = true) ) AND dm = ? )
 AND (instagram_username = ?)
 `,
-		event.GuildID, event.UserID, event.DM(), event.Fields()[2],
+		event.GuildID, event.UserID, event.DM(), extractInstagramUsername(event.Fields()[2]),
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {

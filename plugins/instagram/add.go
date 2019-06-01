@@ -28,8 +28,6 @@ func (p *Plugin) add(event *events.Event) {
 		return
 	}
 
-	input := strings.Trim(fields[0], "<>")
-
 	entries, err := entryFindMany(p.db,
 		"((guild_id = ? AND dm = false) OR (channel_or_user_id = ? AND dm = true)) AND dm = ?",
 		event.GuildID, event.UserID, event.DM(),
@@ -44,7 +42,7 @@ func (p *Plugin) add(event *events.Event) {
 		return
 	}
 
-	instagramUser, err := p.ginsta.UserByUsername(event.Context(), input)
+	instagramUser, err := p.ginsta.UserByUsername(event.Context(), extractInstagramUsername(fields[0]))
 	if err != nil {
 		if strings.Contains(err.Error(), "unexpected status code: 404") {
 			event.Respond("instagram.add.not-found")
