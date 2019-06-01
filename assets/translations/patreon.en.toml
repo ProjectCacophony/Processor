@@ -1,1 +1,12 @@
 "patreon.help.description" = "Get information on robyul patreon and see a list of all our great supporters."
+
+# handleStatus
+"patreon.status.response" = "\
+{{if .activePatron}}\
+**You are an active Patron!** :snuggle:\n\
+Thank you very much\
+{{else}}\
+**You are not an active Patron** :sad:\n\
+If you want to become one please visit <https://byul.ro/patreon>\
+{{end}}\
+"
