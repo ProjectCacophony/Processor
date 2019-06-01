@@ -410,7 +410,7 @@ func (s *Server) Edit(p *Plugin, changes ServerChange) error {
 		change.Change.Categories = changes.Categories
 	}
 
-	if s.State == StateQueued {
+	if s.State == StateQueued && s.Change.State == "" {
 		err := s.ApplyChange(p, changes)
 		if err != nil {
 			return err

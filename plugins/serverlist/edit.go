@@ -63,6 +63,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 		} else {
 			invite, err = discord.Invite(p.redis, event.Discord(), values[0])
 			if err != nil {
+				if errD, ok := err.(*discordgo.RESTError); ok &&
+					errD.Message != nil &&
+					errD.Message.Code == discordgo.ErrCodeUnknownInvite {
+					event.Respond("serverlist.edit.invalid-invite")
+					return
+				}
 				event.Except(err)
 				return
 			}
@@ -75,6 +81,11 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 		if invite.Guild.ID != server.GuildID {
 			event.Respond("serverlist.edit.invalid-invite-guild")
+			return
+		}
+
+		if invite.Code == server.InviteCode {
+			event.Respond("serverlist.edit.no-changes")
 			return
 		}
 
@@ -110,6 +121,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			return
 		}
 
+		if (len(server.Change.Names) <= 0 && matchStringSlice(names, server.Names)) ||
+			(len(server.Change.Names) > 0 && matchStringSlice(names, server.Change.Names)) {
+			event.Respond("serverlist.edit.no-changes")
+			return
+		}
+
 		changes.Names = names
 
 	case "description":
@@ -118,6 +135,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			event.Respond("serverlist.edit.description-too-long",
 				"limit", descriptionCharacterLimit,
 			)
+			return
+		}
+
+		if (server.Change.Description == "" && values[0] == server.Description) ||
+			(server.Change.Description != "" && values[0] == server.Change.Description) {
+			event.Respond("serverlist.edit.no-changes")
 			return
 		}
 
@@ -178,6 +201,12 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 		if len(categoryIDs) == 0 {
 			event.Respond("serverlist.edit.no-categories")
+			return
+		}
+
+		if (len(server.Change.Categories) <= 0 && matchInt64Slice(categoryIDs, serverCategoriesToInt64(server.Categories))) ||
+			(len(server.Change.Categories) > 0 && matchInt64Slice(categoryIDs, server.Change.Categories)) {
+			event.Respond("serverlist.edit.no-changes")
 			return
 		}
 
@@ -242,8 +271,6 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 	}
 
-	// TODO: how to edit editors?
-
 	err = server.Edit(p, changes)
 	if err != nil {
 		event.Except(err)
@@ -252,4 +279,42 @@ func (p *Plugin) handleEdit(event *events.Event) {
 
 	_, err = event.Respond("serverlist.edit.queued")
 	event.Except(err)
+}
+
+func matchStringSlice(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func matchInt64Slice(a, b []int64) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func serverCategoriesToInt64(categories []ServerCategory) []int64 {
+	result := make([]int64, len(categories))
+
+	for i, category := range categories {
+		result[i] = int64(category.CategoryID)
+	}
+
+	return result
 }
