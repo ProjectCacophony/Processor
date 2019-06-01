@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/discord"
 
 	"github.com/bwmarrin/discordgo"
@@ -106,17 +107,6 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 		titleText = "**🔄 Server Update**"
 	}
 
-	var categoryText string
-	for _, category := range server.Categories {
-		channel, err := p.state.Channel(category.Category.ChannelID)
-		if err == nil && channel.ParentID != "" {
-			categoryText += "<#" + channel.ParentID + "> / "
-		}
-
-		categoryText += "<#" + category.Category.ChannelID + ">, "
-	}
-	categoryText = strings.TrimRight(categoryText, ", ")
-
 	var nameChange, inviteChange, descriptionChange, categoryChange string
 	if len(server.Change.Names) > 0 {
 		nameChange = "\n➡\n" + strings.Join(server.Change.Names, "; ")
@@ -129,20 +119,7 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 	}
 	if len(server.Change.Categories) > 0 {
 		categoryChange = "\n➡\n"
-		for _, categoryID := range server.Change.Categories {
-			category, err := categoryFind(p.db, "id = ?", categoryID)
-			if err != nil {
-				continue
-			}
-
-			channel, err := p.state.Channel(category.ChannelID)
-			if err == nil && channel.ParentID != "" {
-				categoryChange += "<#" + channel.ParentID + "> / "
-			}
-
-			categoryChange += "<#" + category.ChannelID + ">, "
-		}
-		categoryChange = strings.TrimRight(categoryChange, ", ")
+		categoryChange += p.getCategoryText(server, p.getChangeCategories(server))
 	}
 	embed := &discordgo.MessageEmbed{
 		Title:       "⌛ Serverlist Queue: " + titleText,
@@ -190,7 +167,7 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 			},
 			{
 				Name:   "🗃 Category",
-				Value:  categoryText + categoryChange,
+				Value:  p.getCategoryText(server, server.Categories) + categoryChange,
 				Inline: false,
 			},
 		},
@@ -217,4 +194,64 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 	}
 
 	return embed
+}
+
+func (p *Plugin) getCategoryText(server *Server, categories []ServerCategory) string {
+	names := server.Names
+	if len(server.Change.Names) > 0 {
+		names = server.Change.Names
+	}
+
+	var categoryText string
+	for _, category := range categories {
+		channel, err := p.state.Channel(category.Category.ChannelID)
+		if err == nil && channel.ParentID != "" {
+			categoryText += "<#" + channel.ParentID + "> / "
+		}
+
+		categoryText += "<#" + category.Category.ChannelID + ">"
+
+		if channel.Type == discordgo.ChannelTypeGuildCategory {
+			var groupByChannels []string
+
+			for _, name := range names {
+				groupByChannel := category.Category.GroupBy.ChannelName(name)
+				if !stringSliceContains(groupByChannel, groupByChannels) {
+					groupByChannels = append(groupByChannels, groupByChannel)
+				}
+			}
+
+			if len(groupByChannels) > 0 {
+				categoryText += " / "
+
+				for _, groupByChannel := range groupByChannels {
+					categoryText += " #" + groupByChannel
+				}
+			}
+		}
+
+		categoryText += ", "
+	}
+
+	return strings.TrimRight(categoryText, ", ")
+}
+
+func (p *Plugin) getChangeCategories(server *Server) []ServerCategory {
+	var result []ServerCategory // nolint: prealloc
+
+	for _, categoryID := range server.Change.Categories {
+		category, err := categoryFind(p.db, "id = ?", categoryID)
+		if err != nil {
+			continue
+		}
+
+		result = append(result, ServerCategory{
+			Model:      gorm.Model{},
+			ServerID:   server.ID,
+			CategoryID: category.ID,
+			Category:   *category,
+		})
+	}
+
+	return result
 }
