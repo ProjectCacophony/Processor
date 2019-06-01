@@ -284,6 +284,8 @@ github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 gitlab.com/Cacophony/go-kit v0.0.0-20190601153250-b6ddc0d5a019 h1:GucAVLGnasq6fn316JgZuSO5yST80e9MNKBbQcFT9h8=
 gitlab.com/Cacophony/go-kit v0.0.0-20190601153250-b6ddc0d5a019/go.mod h1:qS9LtqTOTviteGNZXp444/iT6UdzXQX/uglyrwrVhe8=
+gitlab.com/Cacophony/go-kit v0.0.0-20190601154157-dda2243acf0d h1:BBfVkrv3XU7oKbcayz6bLhb6oTspV+QN9tvF4N4zlJ8=
+gitlab.com/Cacophony/go-kit v0.0.0-20190601154157-dda2243acf0d/go.mod h1:qS9LtqTOTviteGNZXp444/iT6UdzXQX/uglyrwrVhe8=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/etcd v3.3.12+incompatible/go.mod h1:yaeTdrJi5lOmYerz05bd8+V7KubZs8YSFZfzsF9A6aI=
 go.mongodb.org/mongo-driver v1.0.1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
