@@ -1,5 +1,11 @@
 package serverlist
 
+import (
+	"regexp"
+)
+
+var regexpAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9]+")
+
 type ServersSorter struct {
 	SortBy  []SortBy
 	Servers []*ServerToPost
@@ -27,8 +33,8 @@ func (s ServersSorter) Less(i, j int) bool {
 			}
 
 		case SortByAlphabetical:
-			if s.Servers[i].Name != s.Servers[j].Name {
-				return s.Servers[i].Name < s.Servers[j].Name
+			if s.Servers[i].SortName != s.Servers[j].SortName {
+				return s.Servers[i].SortName < s.Servers[j].SortName
 			}
 		}
 	}

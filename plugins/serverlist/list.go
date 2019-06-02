@@ -187,8 +187,9 @@ type ChannelServersToPost struct {
 }
 
 type ServerToPost struct {
-	Server *Server
-	Name   string
+	Server   *Server
+	Name     string
+	SortName string
 }
 
 func (p *Plugin) clearListChannel(session *discord.Session, channelToPost *ChannelServersToPost) error {
@@ -420,8 +421,9 @@ func (p *Plugin) addToServersToPost(
 		}
 
 		serversToPost[i].Servers = append(serversToPost[i].Servers, &ServerToPost{
-			Server: &server,
-			Name:   name,
+			Server:   &server,
+			Name:     name,
+			SortName: regexpAlphanumeric.ReplaceAllString(name, ""),
 		})
 		return serversToPost
 	}
@@ -442,8 +444,9 @@ func (p *Plugin) addToServersToPost(
 		ChannelID: channel.ID,
 		Servers: []*ServerToPost{
 			{
-				Server: &server,
-				Name:   name,
+				Server:   &server,
+				Name:     name,
+				SortName: regexpAlphanumeric.ReplaceAllString(name, ""),
 			},
 		},
 		Category: category,
