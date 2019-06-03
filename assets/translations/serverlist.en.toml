@@ -90,7 +90,8 @@ Reason: `{{.reason}}`."
 "serverlist.dm.server-hidden" = "🔒 **The Server {{Join .server.Names \"; \"}} has been hidden by an Editor!**"
 "serverlist.dm.server-unhidden" = "🔓 **The Server {{Join .server.Names \"; \"}} has been unhidden by an Editor!**"
 "serverlist.dm.server-expired" = "⏲ **The Invite for Server {{Join .server.Names \"; \"}} is expired!**\n\
-Please update the Invite to get back on the List."
+Please update the Invite to get back on the List:\n\
+`{{.prefix}}serverlist edit {{.server.InviteCode}} invite <New Invite>`"
 "serverlist.dm.server-censored" = "⚠ **The Server {{Join .server.Names \"; \"}} has been censored!**\n\
 Reason: `{{.reason}}`."
 

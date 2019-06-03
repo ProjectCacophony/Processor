@@ -37,6 +37,8 @@ func (p *Plugin) handleExpired(event *events.Event) {
 			},
 			"server",
 			server,
+			"prefix",
+			event.Prefix(),
 		)
 	}
 }
