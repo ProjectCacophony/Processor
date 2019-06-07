@@ -4,12 +4,12 @@ import (
 	"path/filepath"
 	"sort"
 
+	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/go-kit/localization"
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
-	"gitlab.com/Cacophony/Processor/plugins/chatlog"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/customcommands"
@@ -62,7 +62,7 @@ var (
 		&whitelist.Plugin{},
 		&gall.Plugin{},
 		&rss.Plugin{},
-		&chatlog.Plugin{},
+		&eventlog.Plugin{},
 		&instagram.Plugin{},
 		&serverlist.Plugin{},
 		&prefix.Plugin{},

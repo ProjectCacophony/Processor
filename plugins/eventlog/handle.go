@@ -1,4 +1,4 @@
-package chatlog
+package eventlog
 
 import (
 	"strings"
@@ -20,7 +20,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) Name() string {
-	return "chatlog"
+	return "eventlog"
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -45,20 +45,31 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
-		Description: "chatlog.help.description",
+		Description: "eventlog.help.description",
 		PermissionsRequired: []interfaces.Permission{
 			permissions.BotAdmin,
 			permissions.Patron,
 		},
-		Commands: []common.Command{{
-			Params: []common.CommandParam{
-				{Name: "enable", Type: common.Flag},
+		Commands: []common.Command{
+			{
+				Name:        "eventlog.help.status.name",
+				Description: "eventlog.help.status.description",
 			},
-		}, {
-			Params: []common.CommandParam{
-				{Name: "disable", Type: common.Flag},
+			{
+				Name:        "eventlog.help.enable.name",
+				Description: "eventlog.help.enable.description",
+				Params: []common.CommandParam{
+					{Name: "enable", Type: common.Flag},
+				},
 			},
-		}},
+			{
+				Name:        "eventlog.help.disable.name",
+				Description: "eventlog.help.disable.description",
+				Params: []common.CommandParam{
+					{Name: "disable", Type: common.Flag},
+				},
+			},
+		},
 	}
 }
 
@@ -67,7 +78,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	if event.Fields()[0] != "chatlog" {
+	if event.Fields()[0] != "eventlog" {
 		return false
 	}
 
@@ -77,8 +88,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleCommand(event)
 		},
 		permissions.DiscordAdministrator,
-		permissions.BotAdmin,
-		permissions.Patron,
+		permissions.Or(
+			permissions.BotAdmin,
+			permissions.Patron,
+		),
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),

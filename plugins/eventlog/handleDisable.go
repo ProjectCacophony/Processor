@@ -1,4 +1,4 @@
-package chatlog
+package eventlog
 
 import (
 	"strings"
@@ -9,23 +9,23 @@ import (
 )
 
 func (p *Plugin) handleDisable(event *events.Event) {
-	enabled, err := config.GuildGetBool(p.db, event.GuildID, chatlogEnabledKey)
+	enabled, err := config.GuildGetBool(p.db, event.GuildID, eventlogEnableKey)
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		event.Except(err)
 		return
 	}
 
 	if !enabled {
-		event.Respond("chatlog.disable.already-disabled")
+		event.Respond("eventlog.disable.already-disabled")
 		return
 	}
 
-	err = config.GuildSetBool(p.db, event.GuildID, chatlogEnabledKey, false)
+	err = config.GuildSetBool(p.db, event.GuildID, eventlogEnableKey, false)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	_, err = event.Respond("chatlog.disable.success")
+	_, err = event.Respond("eventlog.disable.success")
 	event.Except(err)
 }

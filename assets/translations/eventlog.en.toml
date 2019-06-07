@@ -1,0 +1,29 @@
+# help info
+"eventlog.help.description" = "Enable chat logging to always store messages sent in your server, even if they are deleted in discord."
+"eventlog.help.status.name" = "Display status"
+"eventlog.help.status.description" = "Shows the current Eventlog status"
+"eventlog.help.enable.name" = "Enables the Eventlog"
+"eventlog.help.enable.description" = "Future Events will be stored."
+"eventlog.help.disable.name" = "Disables the Eventlog"
+"eventlog.help.disable.description" = "Future Events will not be stored anymore."
+
+# handleEnable
+"eventlog.enable.already-enabled" = "Looks like the Eventlog is already enabled on this Server."
+"eventlog.enable.success" = "**I enabled the Eventlog on this server!**\n\
+Please be aware that it may take up to one minute until the change is active."
+
+# handleDisable
+"eventlog.disable.already-disabled" = "Looks like the Eventlog is not enabled on this Server."
+"eventlog.disable.success" = "**I disabled the Eventlog on this server!**\n\
+Please be aware that it may take up to one minute until the change is active."
+
+# handleStatus
+"eventlog.status.message" = "\
+{{ if .enabled }}\
+**The Eventlog is currently enabled**\n\
+You can disable it using `{{.prefix}}eventlog disable`\
+{{ else }}\
+**The Eventlog is currently disabled**\n\
+You can enable it using `{{.prefix}}eventlog enable`\
+{{ end }}\
+"

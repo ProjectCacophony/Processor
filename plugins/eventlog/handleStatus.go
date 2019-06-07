@@ -1,4 +1,4 @@
-package chatlog
+package eventlog
 
 import (
 	"strings"
@@ -9,12 +9,12 @@ import (
 )
 
 func (p *Plugin) handleStatus(event *events.Event) {
-	enabled, err := config.GuildGetBool(p.db, event.GuildID, chatlogEnabledKey)
+	enabled, err := config.GuildGetBool(p.db, event.GuildID, eventlogEnableKey)
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		event.Except(err)
 		return
 	}
 
-	_, err = event.Respond("chatlog.status.message", "enabled", enabled)
+	_, err = event.Respond("eventlog.status.message", "enabled", enabled)
 	event.Except(err)
 }
