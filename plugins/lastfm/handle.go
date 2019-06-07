@@ -67,6 +67,72 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "lastfm.help.description",
+		Commands: []common.Command{
+			{
+				Name:        "lastfm.help.lf.name",
+				Description: "lastfm.help.lf.description",
+			},
+			{
+				Name:        "lastfm.help.np.name",
+				Description: "lastfm.help.np.description",
+				Params: []common.CommandParam{
+					{Name: "np", Type: common.Flag},
+					{Name: "Last.FM Username", Type: common.Text},
+				},
+			},
+			{
+				Name:        "lastfm.help.ta.name",
+				Description: "lastfm.help.ta.description",
+				Params: []common.CommandParam{
+					{Name: "ta", Type: common.Flag},
+					{Name: "week|month|quarter|6month|year|overall (default)", Type: common.Text, Optional: true},
+					{Name: "Last.FM Username", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "lastfm.help.tt.name",
+				Description: "lastfm.help.tt.description",
+				Params: []common.CommandParam{
+					{Name: "tt", Type: common.Flag},
+					{Name: "week|month|quarter|6month|year|overall (default)", Type: common.Text, Optional: true},
+					{Name: "Last.FM Username", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "lastfm.help.tal.name",
+				Description: "lastfm.help.tal.description",
+				Params: []common.CommandParam{
+					{Name: "tal", Type: common.Flag},
+					{Name: "week|month|quarter|6month|year|overall (default)", Type: common.Text, Optional: true},
+					{Name: "Last.FM Username", Type: common.Text, Optional: true},
+					{Name: "collage", Type: common.Flag, Optional: true},
+				},
+			},
+			{
+				Name:        "lastfm.help.recent.name",
+				Description: "lastfm.help.recent.description",
+				Params: []common.CommandParam{
+					{Name: "recent", Type: common.Flag},
+					{Name: "Last.FM Username", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "lastfm.help.about.name",
+				Description: "lastfm.help.about.description",
+				Params: []common.CommandParam{
+					{Name: "about", Type: common.Flag},
+					{Name: "Last.FM Username", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "lastfm.help.set.name",
+				Description: "lastfm.help.set.description",
+				Params: []common.CommandParam{
+					{Name: "set", Type: common.Flag},
+					{Name: "Last.FM Username", Type: common.Text},
+				},
+			},
+		},
 	}
 }
 
