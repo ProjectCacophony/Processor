@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"github.com/Seklfreak/ginside"
@@ -61,6 +62,32 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "gall.help.description",
+		Commands: []common.Command{
+			{
+				Name:        "gall.help.list.name",
+				Description: "gall.help.list.description",
+			},
+			{
+				Name:                "gall.help.add.name",
+				Description:         "gall.help.add.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "add", Type: common.Flag},
+					{Name: "Gallery Name", Type: common.Text},
+					{Name: "channel", Type: common.Channel, Optional: true},
+					{Name: "all", Type: common.Flag, Optional: true},
+				},
+			},
+			{
+				Name:                "gall.help.remove.name",
+				Description:         "gall.help.remove.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "remove", Type: common.Flag},
+					{Name: "Gallery Name", Type: common.Text},
+				},
+			},
+		},
 	}
 }
 

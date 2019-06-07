@@ -1,6 +1,11 @@
 # help info
-"gall.help.description" = "Set up the bot to watch a gall forum and post updates on the forum in a given discord channel."
-
+"gall.help.description" = "Set up the bot to watch a gall forum (<https://gall.dcinside.com/>) and post updates on the forum in a given discord channel."
+"gall.help.list.name" = "List Gall Feeds"
+"gall.help.list.description" = "Displays all Gall Feeds set up on this Server, or in your DMs."
+"gall.help.add.name" = "Add a Gall Feed"
+"gall.help.add.description" = "Adds a given Gall Feed to the current channel, or a specific channel if given."
+"gall.help.remove.name" = "Remove a Gall Feed"
+"gall.help.remove.description" = "Removes a given Gall Account from the feeds."
 
 "gall.add.success" = "\
 {{- if not .dm }}\
