@@ -1,7 +1,11 @@
 # help
 "rss.help.description" = "Set up RSS feeds and have them posted into a discord channel."
-"rss.help.add.description" = "Add RSS feed to this channel or another channel if specified."
-"rss.help.remove.description" = "Remove RSS feed from this channel or another channel if specified."
+"rss.help.list.name" = "List RSS Feeds"
+"rss.help.list.description" = "Displays all RSS Feeds set up on this Server, or in your DMs."
+"rss.help.add.name" = "Add a RSS Feed"
+"rss.help.add.description" = "Adds a RSS feed to this channel or another channel if specified."
+"rss.help.remove.name"= "Remove a RSS Feed"
+"rss.help.remove.description" = "Removes a given Instagram Account from the feeds."
 
 "rss.add.success" = "\
 {{- if not .dm }}\

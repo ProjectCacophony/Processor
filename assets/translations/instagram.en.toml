@@ -5,7 +5,7 @@
 "instagram.help.add.name" = "Add an Instagram Feed"
 "instagram.help.add.description" = "Adds a given Instagram Account to the current channel, or a specific channel if given."
 "instagram.help.remove.name" = "Remove an Instagram Feed"
-"instagram.help.remove.description" = "Adds a given Instagram Account from the feeds."
+"instagram.help.remove.description" = "Removes a given Instagram Account from the feeds."
 
 "instagram.add.success" = "\
 {{- if not .dm }}\

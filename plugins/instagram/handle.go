@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Seklfreak/ginsta"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
 
@@ -62,11 +63,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 			{
 				Name:        "instagram.help.list.name",
 				Description: "instagram.help.list.description",
-				Params:      []common.CommandParam{},
 			},
 			{
-				Name:        "instagram.help.add.name",
-				Description: "instagram.help.remove.description",
+				Name:                "instagram.help.add.name",
+				Description:         "instagram.help.add.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "add", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
@@ -74,8 +75,9 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
-				Name:        "instagram.help.remove.name",
-				Description: "instagram.help.remove.description",
+				Name:                "instagram.help.remove.name",
+				Description:         "instagram.help.remove.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "remove", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},

@@ -52,22 +52,30 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "rss.help.description",
-		Commands: []common.Command{{
-			Description:         "rss.help.add.description",
-			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
-			Params: []common.CommandParam{
-				{Name: "add", Type: common.Flag},
-				{Name: "channel", Type: common.Channel, Optional: true},
-				{Name: "link", Type: common.Text},
+		Commands: []common.Command{
+			{
+				Name:        "rss.help.list.name",
+				Description: "rss.help.list.description",
 			},
-		}, {
-			Description:         "rss.help.remove.description",
-			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
-			Params: []common.CommandParam{
-				{Name: "remove", Type: common.Flag},
-				{Name: "link", Type: common.Text},
+			{
+				Name:                "rss.help.add.name",
+				Description:         "rss.help.add.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "add", Type: common.Flag},
+					{Name: "link", Type: common.Text},
+					{Name: "channel", Type: common.Channel, Optional: true},
+				},
+			}, {
+				Name:                "rss.help.add.description",
+				Description:         "rss.help.remove.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "remove", Type: common.Flag},
+					{Name: "link", Type: common.Text},
+				},
 			},
-		}},
+		},
 	}
 }
 
