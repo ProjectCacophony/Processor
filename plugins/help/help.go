@@ -147,7 +147,7 @@ func formatReaction(event *events.Event, reaction common.Reaction) string {
 func formatCommand(event *events.Event, command common.Command, pluginName string) string {
 	var commandSummary string
 	if command.Name != "" {
-		commandSummary += "**" + command.Name + "**\n"
+		commandSummary += "**" + event.Translate(command.Name) + "**\n"
 	}
 
 	commandText := event.Prefix() + pluginName

@@ -1,5 +1,8 @@
 # help info
 "instagram.help.description" = "Have the bot watch a certain instagram account and have it post updates in a given channel."
+"instagram.help.list.name" = "List Instagram Feeds"
+"instagram.help.add.name" = "Add an Instagram Feed"
+"instagram.help.remove.name" = "Remove an Instagram Feed"
 
 "instagram.add.success" = "\
 {{- if not .dm }}\

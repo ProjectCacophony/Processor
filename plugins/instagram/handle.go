@@ -58,6 +58,27 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "instagram.help.description",
+		Commands: []common.Command{
+			{
+				Name:   "instagram.help.list.name",
+				Params: []common.CommandParam{},
+			},
+			{
+				Name: "instagram.help.add.name",
+				Params: []common.CommandParam{
+					{Name: "add", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+					{Name: "channel", Type: common.Channel, Optional: true},
+				},
+			},
+			{
+				Name: "instagram.help.remove.name",
+				Params: []common.CommandParam{
+					{Name: "remove", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+		},
 	}
 }
 
