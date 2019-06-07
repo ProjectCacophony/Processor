@@ -47,7 +47,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name:                "Set Prefix",
 			PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
 			Params: []common.CommandParam{
-				{Name: "prefix", Type: common.Text},
+				{Name: "set", Type: common.Flag},
+				{Name: "new prefix", Type: common.Text},
 			},
 		}},
 	}
