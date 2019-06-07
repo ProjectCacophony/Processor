@@ -1,6 +1,7 @@
 # help info
 "stocks.help.description" = "Stocks allow you to look up real time information about Symbols."
-"stocks.help.display.name" = "Displays information about a given Stock."
+"stocks.help.display.name" = "Displays information about a given Stock"
+"stocks.help.display.description" = "Shows information like the current trading price and more."
 
 # handleStocks
 "stocks.no-symbol" = "Please tell me the Symbol of the Stock you want to find out about."

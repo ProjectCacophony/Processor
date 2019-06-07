@@ -1,8 +1,11 @@
 # help info
 "instagram.help.description" = "Have the bot watch a certain instagram account and have it post updates in a given channel."
 "instagram.help.list.name" = "List Instagram Feeds"
+"instagram.help.list.description" = "Displays all Instagram Feeds set up on this Server, or in your DMs."
 "instagram.help.add.name" = "Add an Instagram Feed"
+"instagram.help.add.description" = "Adds a given Instagram Account to the current channel, or a specific channel if given."
 "instagram.help.remove.name" = "Remove an Instagram Feed"
+"instagram.help.remove.description" = "Adds a given Instagram Account from the feeds."
 
 "instagram.add.success" = "\
 {{- if not .dm }}\
