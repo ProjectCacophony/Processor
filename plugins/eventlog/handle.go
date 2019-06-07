@@ -88,10 +88,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleCommand(event)
 		},
 		permissions.DiscordAdministrator,
-		permissions.Or(
-			permissions.BotAdmin,
-			permissions.Patron,
-		),
+		permissions.BotAdmin,
+		// TODO
+		// permissions.Or(
+		// 	permissions.BotAdmin,
+		// 	permissions.Patron,
+		// ),
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),

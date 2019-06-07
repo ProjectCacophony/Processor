@@ -4,6 +4,7 @@ import (
 	"regexp"
 
 	"github.com/go-redis/redis"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
 
@@ -78,8 +79,43 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name: p.Name(),
-		Hide: true,
+		Name:        p.Name(),
+		Description: "whitelist.help.description",
+		PermissionsRequired: []interfaces.Permission{
+			permissions.BotAdmin,
+			permissions.Patron,
+		},
+		Commands: []common.Command{
+			{
+				Name:        "whitelist.help.list.name",
+				Description: "whitelist.help.list.description",
+			},
+			{
+				Name:        "whitelist.help.add.name",
+				Description: "whitelist.help.add.description",
+				Params: []common.CommandParam{
+					{Name: "add", Type: common.Flag},
+					{Name: "Discord Invite", Type: common.DiscordInvite},
+				},
+			},
+			{
+				Name:        "whitelist.help.remove.name",
+				Description: "whitelist.help.remove.description",
+				Params: []common.CommandParam{
+					{Name: "remove", Type: common.Flag},
+					{Name: "Discord Invite", Type: common.DiscordInvite},
+				},
+			},
+			{
+				Name:                "whitelist.help.blacklist.name",
+				Description:         "whitelist.help.blacklist.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				Params: []common.CommandParam{
+					{Name: "blacklist", Type: common.Flag},
+					{Name: "Discord Invite", Type: common.DiscordInvite},
+				},
+			},
+		},
 	}
 }
 
@@ -97,9 +133,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		switch event.Fields()[1] {
 		case "list":
 
-			event.Require(func() {
-				p.whitelistList(event)
-			}, permissions.BotAdmin)
+			p.whitelistList(event)
 			return true
 
 		case "remove":
@@ -111,7 +145,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 			event.Require(func() {
 				p.blacklistAdd(event)
-			}, permissions.BotAdmin)
+			},
+				permissions.BotAdmin,
+			)
 			return true
 		}
 
@@ -119,6 +155,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.whitelistAdd(event)
 		},
 			permissions.BotAdmin,
+			// TODO
+			// permissions.Or(
+			// 	permissions.BotAdmin,
+			// 	permissions.Patron,
+			// ),
 		)
 		return true
 	}

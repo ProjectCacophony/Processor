@@ -1,3 +1,14 @@
+# help
+"whitelist.help.description" = "Whitelist a Server to use with the Bot"
+"whitelist.help.list.name" = "List Servers"
+"whitelist.help.list.description" = "List all Servers you have whitelisted."
+"whitelist.help.add.name" = "Whitelist a Server"
+"whitelist.help.add.description" = "When you Whitelist a Server the Bot can be used on this Server."
+"whitelist.help.remove.name" = "Unwhitelist a Server"
+"whitelist.help.remove.description" = "When you Unwhitelist a Server the Bot cannot be used there anymore."
+"whitelist.help.blacklist.name" = "Blacklist a Server"
+"whitelist.help.blacklist.description" = "Blacklisted Server will always be ignored, even if they are whitelisted."
+
 # whitelistAdd
 "whitelist.add.already-whitelisted" = "**This server is already whitelisted!**\n\
 What are you doing… :thinking:"
