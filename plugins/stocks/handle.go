@@ -63,6 +63,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "stocks.help.description",
+		Commands: []common.Command{
+			{
+				Name: "stocks.help.display.name",
+				Params: []common.CommandParam{
+					{Name: "Symbol", Type: common.Text},
+				},
+			},
+		},
 	}
 }
 
