@@ -1,3 +1,20 @@
+# help
+"dev.help.description" = "Perform Dev Actions"
+"dev.help.emoji.name" = "List all Emoji"
+"dev.help.emoji.description" = "Show all Emoji from go-kit"
+"dev.help.sleep.name" = "Sleep"
+"dev.help.sleep.description" = "Sleep for the given amount of time"
+"dev.help.state.name" = "User state"
+"dev.help.state.description" = "Shows various information about an User stored in the state"
+"dev.help.state-guilds.name" = "Guilds state"
+"dev.help.state-guilds.description" = "Shows Guilds stored in the state"
+"dev.help.translate.name" = "Translate debug"
+"dev.help.error.name" = "Trigger error"
+"dev.help.permission.name" = "User Permission"
+"dev.help.permission.description" = "Tests if an User has a permission\n<https://discordapi.com/permissions.html>"
+"dev.help.questionnaire.name" = "Start a Questionnaire"
+"dev.help.questionnaire.description" = "You will have to respond with a message"
+
 # Action
 "dev.no-subcommand" = "Please specify a valid sub-command. :nayoung:"
 

@@ -3,6 +3,7 @@ package dev
 import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
@@ -37,8 +38,71 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name: p.Name(),
-		Hide: true,
+		Name:                p.Name(),
+		Description:         "dev.help.description",
+		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+		Commands: []common.Command{
+			{
+				Name:        "dev.help.emoji.name",
+				Description: "dev.help.emoji.description",
+				Params: []common.CommandParam{
+					{Name: "emoji", Type: common.Flag},
+				},
+			},
+			{
+				Name:        "dev.help.sleep.name",
+				Description: "dev.help.sleep.description",
+				Params: []common.CommandParam{
+					{Name: "sleep", Type: common.Flag},
+					{Name: "seconds", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "dev.help.state.name",
+				Description: "dev.help.state.description",
+				Params: []common.CommandParam{
+					{Name: "state", Type: common.Flag},
+					{Name: "user ID", Type: common.User, Optional: true},
+				},
+			},
+			{
+				Name:        "dev.help.state-guilds.name",
+				Description: "dev.help.state-guilds.description",
+				Params: []common.CommandParam{
+					{Name: "state", Type: common.Flag},
+					{Name: "guilds", Type: common.Flag},
+				},
+			},
+			{
+				Name: "dev.help.translate.name",
+				Params: []common.CommandParam{
+					{Name: "translate", Type: common.Flag},
+				},
+			},
+			{
+				Name: "dev.help.error.name",
+				Params: []common.CommandParam{
+					{Name: "error", Type: common.Flag},
+					{Name: "error message", Type: common.Text, Optional: true},
+				},
+			},
+			{
+				Name:        "dev.help.permission.name",
+				Description: "dev.help.permission.description",
+				Params: []common.CommandParam{
+					{Name: "permission", Type: common.Flag},
+					{Name: "permission code", Type: common.Text, Example: "2048: Send Messages"},
+					{Name: "user mention", Type: common.User, Optional: true},
+				},
+			},
+			{
+				Name:        "dev.help.questionnaire.name",
+				Description: "dev.help.questionnaire.description",
+				Params: []common.CommandParam{
+					{Name: "questionnaire", Type: common.Flag},
+				},
+			},
+		},
 	}
 }
 
