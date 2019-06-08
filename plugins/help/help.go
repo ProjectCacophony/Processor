@@ -29,6 +29,10 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
 			strings.Title(pluginHelp.Name), event.Prefix(), pluginHelp.Name)
 
+		if containsBotAdminPermission(pluginHelp.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
+			continue
+		}
+
 		if containsPatronPermission(pluginHelp.PermissionsRequired) {
 			summeryText += " | Patrons Only"
 		}
