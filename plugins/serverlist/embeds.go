@@ -215,7 +215,7 @@ func (p *Plugin) getCategoryText(server *Server, categories []ServerCategory) st
 			var groupByChannels []string
 
 			for _, name := range names {
-				groupByChannel := category.Category.GroupBy.ChannelName(name)
+				groupByChannel := category.Category.GroupBy.ChannelName(getSortName(name))
 				if !stringSliceContains(groupByChannel, groupByChannels) {
 					groupByChannels = append(groupByChannels, groupByChannel)
 				}

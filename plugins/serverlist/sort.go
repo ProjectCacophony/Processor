@@ -2,9 +2,14 @@ package serverlist
 
 import (
 	"regexp"
+	"strings"
 )
 
 var regexpAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9]+")
+
+func getSortName(input string) string {
+	return strings.ToLower(regexpAlphanumeric.ReplaceAllString(input, ""))
+}
 
 type ServersSorter struct {
 	SortBy  []SortBy

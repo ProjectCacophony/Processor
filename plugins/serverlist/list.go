@@ -423,7 +423,7 @@ func (p *Plugin) addToServersToPost(
 		serversToPost[i].Servers = append(serversToPost[i].Servers, &ServerToPost{
 			Server:   &server,
 			Name:     name,
-			SortName: strings.ToLower(regexpAlphanumeric.ReplaceAllString(name, "")),
+			SortName: getSortName(name),
 		})
 		return serversToPost
 	}
@@ -446,7 +446,7 @@ func (p *Plugin) addToServersToPost(
 			{
 				Server:   &server,
 				Name:     name,
-				SortName: strings.ToLower(regexpAlphanumeric.ReplaceAllString(name, "")),
+				SortName: getSortName(name),
 			},
 		},
 		Category: category,
