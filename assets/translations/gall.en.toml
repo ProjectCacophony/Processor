@@ -30,9 +30,9 @@ All posts will be posted there.\
 {{range $entry := .entries}}\
 **{{$entry.BoardID}}**{{ if not $entry.DM }} in <#{{$entry.ChannelID}}>{{ end }}\
 , {{if $entry.Recommended}}recommended{{else}}all{{end}} posts will be posted\n\
-added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} `{{HumanizeTime $entry.CreatedAt}}`, \
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
-last check `{{HumanizeTime $entry.LastCheck}}` \
+last check {{TimeFormatShort $entry.LastCheck $.timezone}} \
 {{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}}\n\
 {{end}}\

@@ -15,7 +15,7 @@
 {{range $category := .categories}}\
 `{{Join $category.Keywords \"; \"}}` in <#{{$category.ChannelID}}>\n\
 sort by `{{Join $category.SortBy \"; \"}}`{{if $category.GroupBy}}, group by `{{$category.GroupBy}}`{{end}}\n\
-added by `{{Escape $category.By.String}}` `{{HumanizeTime $category.CreatedAt}}`\n\
+added by `{{Escape $category.By.String}}` at {{TimeFormat $category.CreatedAt $.timezone}}\n\
 \n\
 {{end}}\
 So far **{{len .categories}}** Categorie(s) set up.\n\
@@ -72,7 +72,7 @@ If it's waiting for approval please have patience until we have reviewed it."
 `{{$entry.InviteCode}} \"{{Join $entry.Names \"; \"}}\" \"{{Join $entry.Categories \"; \"}}\"`\n\
 Status `{{$entry.State}}`{{if $entry.Reason}}: `{{$entry.Reason}}`{{end}} \
 Editors {{range $editor := $entry.Editors}}`{{$editor}}` {{end}}\
-Added `{{HumanizeTime $entry.CreatedAt}}`\n\
+Added at {{TimeFormat $entry.CreatedAt $.timezone}}\n\
 \n\
 {{end}}\
 So far **{{len .entries}}** Server{{if gt (len .entries) 1}}s{{end}}.\n\

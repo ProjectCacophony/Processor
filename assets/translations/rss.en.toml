@@ -26,9 +26,9 @@ Link: <{{.feed.Link}}> / Feed: <{{.feed.FeedLink}}>\
 {{range $entry := .entries}}\
 **{{$entry.Name}}**{{ if not $entry.DM }} in <#{{$entry.ChannelID}}>{{ end }}\
 , <{{$entry.URL}}> / <{{$entry.FeedURL}}>\n\
-added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} `{{HumanizeTime $entry.CreatedAt}}`, \
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
-last check `{{HumanizeTime $entry.LastCheck}}` \
+last check {{TimeFormatShort $entry.LastCheck $.timezone}} \
 {{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}}\n\
 {{end}}\
