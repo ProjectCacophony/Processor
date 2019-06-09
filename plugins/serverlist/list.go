@@ -464,7 +464,7 @@ func (p *Plugin) getDiscordCategoryChannel(
 		return nil, err
 	}
 
-	channelName := category.GroupBy.ChannelName(name)
+	channelName := category.GroupBy.ChannelName(getSortName(name))
 
 	for _, listGuildChannel := range listGuild.Channels {
 		if listGuildChannel.ParentID != category.ChannelID {
