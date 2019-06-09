@@ -1,0 +1,20 @@
+# help
+"stats.help.description" = "Find out statistics and information about various things"
+"stats.help.user.name" = "User Stats"
+"stats.help.user.description" = "Show information about an User"
+
+# handleUser
+"stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
+"stats.user.embed.description" = "\
+[Avatar]({{.user.AvatarURL \"1024\"}})\n\
+ID: `#{{.user.ID}}`\
+"
+"stats.user.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Account Created{{end}}"
+"stats.user.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{HumanizeTime .createdAt}}{{end}}" # TODO: exact date
+"stats.user.embed.field.joined-at.name" = "{{if not (TimeIsZero .joinedAt)}}Joined this Server{{end}}"
+"stats.user.embed.field.joined-at.value" = "{{if not (TimeIsZero .joinedAt)}}{{HumanizeTime .joinedAt}}{{end}}" # TODO: exact date
+"stats.user.embed.field.premium-since.name" = "{{if not (TimeIsZero .premiumSince)}}Boosting this Server since{{end}}"
+"stats.user.embed.field.premium-since.value" = "{{if not (TimeIsZero .premiumSince)}}{{HumanizeTime .premiumSince}}{{end}}" # TODO: exact date
+"stats.user.embed.thumbnail.url" = "{{.user.AvatarURL \"256\"}}"
+"stats.user.embed.field.roles.name" = "{{if .member}}Roles{{end}}"
+"stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"

@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
+	"gitlab.com/Cacophony/Processor/plugins/stats"
 	"gitlab.com/Cacophony/go-kit/localization"
 
 	"github.com/go-redis/redis"
@@ -70,6 +71,7 @@ var (
 		&stocks.Plugin{},
 		&quickactions.Plugin{},
 		&customcommands.Plugin{},
+		&stats.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
