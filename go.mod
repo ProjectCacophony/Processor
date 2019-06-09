@@ -11,12 +11,12 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/jinzhu/gorm v1.9.8
-	github.com/kelseyhightower/envconfig v1.3.0
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.1.1
 	github.com/mmcdole/gofeed v1.0.0-beta2
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/pkg/errors v0.8.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20190601154157-dda2243acf0d
+	gitlab.com/Cacophony/go-kit v0.0.0-20190609070925-5da7f126521c
 	go.uber.org/zap v1.10.0
-	golang.org/x/image v0.0.0-20190516052701-61b8692d9a5c
+	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 )
