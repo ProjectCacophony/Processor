@@ -18,6 +18,7 @@ func (p *Plugin) handleUser(event *events.Event) {
 	createdAt, _ := discordgo.SnowflakeTimestamp(user.ID)
 
 	// optional information for members
+	var userNr int
 	var joinedAt, premiumSince time.Time
 	var roles []*discordgo.Role
 	member, err := event.State().Member(event.GuildID, user.ID)
@@ -39,6 +40,33 @@ func (p *Plugin) handleUser(event *events.Event) {
 		sort.Slice(roles, func(i, j int) bool {
 			return roles[i].Position > roles[j].Position
 		})
+
+		guild, err := event.State().Guild(event.GuildID)
+		if err == nil {
+			sort.Slice(guild.Members[:], func(i, j int) bool {
+				if guild.Members[i].JoinedAt == "" || guild.Members[j].JoinedAt == "" {
+					return false
+				}
+
+				iMemberTime, err := guild.Members[i].JoinedAt.Parse()
+				if err != nil {
+					return false
+				}
+				jMemberTime, err := guild.Members[j].JoinedAt.Parse()
+				if err != nil {
+					return false
+				}
+
+				return iMemberTime.Before(jMemberTime)
+			})
+
+			for i, sortedMember := range guild.Members[:] {
+				if sortedMember.User.ID == user.ID {
+					userNr = i + 1
+					break
+				}
+			}
+		}
 	}
 
 	var color int
@@ -83,8 +111,7 @@ func (p *Plugin) handleUser(event *events.Event) {
 		"joinedAt", joinedAt,
 		"premiumSince", premiumSince,
 		"roles", roles,
+		"userNr", userNr,
 	)
 	event.Except(err)
-
-	// TODO: display member number
 }

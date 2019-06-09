@@ -229,8 +229,8 @@ github.com/uber/jaeger-client-go v2.15.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v1.5.0/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
-gitlab.com/Cacophony/go-kit v0.0.0-20190609084104-5414cebb73c3 h1:Supqpo+9MZ+nvyOPOCWJ3HhwvTj+HWxVV2NvgsbY2pI=
-gitlab.com/Cacophony/go-kit v0.0.0-20190609084104-5414cebb73c3/go.mod h1:oTyB3eGuNv3EPUJ3aDjzlzVqM1wnuw20FhtTZ5tNluM=
+gitlab.com/Cacophony/go-kit v0.0.0-20190609133247-2f1d21696587 h1:B3FrhLaaXQrPZ3aKd/vjFs7msdc8MywmerwL7ctAO5E=
+gitlab.com/Cacophony/go-kit v0.0.0-20190609133247-2f1d21696587/go.mod h1:oTyB3eGuNv3EPUJ3aDjzlzVqM1wnuw20FhtTZ5tNluM=
 go.mongodb.org/mongo-driver v1.0.1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=

@@ -10,11 +10,14 @@
 ID: `#{{.user.ID}}`\
 "
 "stats.user.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Account Created{{end}}"
-"stats.user.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{HumanizeTime .createdAt}}{{end}}" # TODO: exact date
+"stats.user.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
 "stats.user.embed.field.joined-at.name" = "{{if not (TimeIsZero .joinedAt)}}Joined this Server{{end}}"
-"stats.user.embed.field.joined-at.value" = "{{if not (TimeIsZero .joinedAt)}}{{HumanizeTime .joinedAt}}{{end}}" # TODO: exact date
+"stats.user.embed.field.joined-at.value" = "\
+{{if not (TimeIsZero .joinedAt)}}{{TimeFormat .joinedAt .timezone}}\n{{end}}\
+{{if gt .userNr 0}}Member Nr `{{HumanizeNumber .userNr}}`{{end}}\
+"
 "stats.user.embed.field.premium-since.name" = "{{if not (TimeIsZero .premiumSince)}}Boosting this Server since{{end}}"
-"stats.user.embed.field.premium-since.value" = "{{if not (TimeIsZero .premiumSince)}}{{HumanizeTime .premiumSince}}{{end}}" # TODO: exact date
+"stats.user.embed.field.premium-since.value" = "{{if not (TimeIsZero .premiumSince)}}{{TimeFormat .premiumSince .timezone}}{{end}}"
 "stats.user.embed.thumbnail.url" = "{{.user.AvatarURL \"256\"}}"
 "stats.user.embed.field.roles.name" = "{{if .member}}Roles{{end}}"
 "stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"
