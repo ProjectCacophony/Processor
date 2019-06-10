@@ -3,6 +3,8 @@ package stats
 import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 type Plugin struct {
@@ -41,6 +43,22 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "User", Type: common.User, Optional: true},
 				},
 			},
+			{
+				Name:        "stats.help.server.name",
+				Description: "stats.help.server.description",
+				Params: []common.CommandParam{
+					{Name: "server", Type: common.Flag},
+				},
+			},
+			{
+				Name:                "stats.help.server-specific.name",
+				Description:         "stats.help.server-specific.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				Params: []common.CommandParam{
+					{Name: "server", Type: common.Flag},
+					{Name: "server ID", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -55,9 +73,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	if event.Fields()[1] == "user" {
+	switch event.Fields()[1] {
+
+	case "user":
 		p.handleUser(event)
 		return true
+
+	case "server", "guild":
+		p.handleServer(event)
+		return true
+
 	}
 
 	return false

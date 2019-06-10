@@ -2,6 +2,10 @@
 "stats.help.description" = "Find out statistics and information about various things"
 "stats.help.user.name" = "User Stats"
 "stats.help.user.description" = "Show information about an User"
+"stats.help.server.name" = "Server Stats"
+"stats.help.server.description" = "Show information about a Server"
+"stats.help.server-specific.name" = "Specific Server Stats"
+"stats.help.server-specific.description" = "Show information about a specific Server"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -21,3 +25,42 @@ ID: `#{{.user.ID}}`\
 "stats.user.embed.thumbnail.url" = "{{.user.AvatarURL \"256\"}}"
 "stats.user.embed.field.roles.name" = "{{if .member}}Roles{{end}}"
 "stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"
+
+# handleServer
+"stats.server.embed.title" = "{{.server.Name}}"
+"stats.server.embed.description" = "\
+{{if .server.Icon}}[Icon]({{.iconURL}}) {{end}}\
+{{if .server.Splash}}[Splash]({{.splashURL}}) {{end}}\
+{{if .server.Banner}}[Banner]({{.bannerURL}}) {{end}}\n\
+{{if .server.Unavailable}}⚠ Guild is currently Unavailable ⚠\n{{end}}\
+ID: `#{{.server.ID}}`\n\
+{{if .server.Description}}Description: `{{.server.Description}}`\n{{end}}\
+{{if .server.VanityURLCode}}Vanity Invite: https://discord.gg/{{.server.VanityURLCode}}\n{{end}}\
+Region: `{{.server.Region}}`\
+"
+"stats.server.embed.thumbnail.url" = "{{if .server.Icon}}{{.iconURL}}{{end}}"
+"stats.server.embed.image.url" = "{{if .server.Banner}}{{.bannerURL}}{{end}}"
+"stats.server.embed.field.owner.name" = "Owner"
+"stats.server.embed.field.owner.value" = "{{.owner}}\n`#{{.owner.ID}}`"
+"stats.server.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Server Created{{end}}"
+"stats.server.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
+"stats.server.embed.field.members.name" = "Members"
+"stats.server.embed.field.members.value" = "`{{HumanizeNumber .server.MemberCount}}`"
+"stats.server.embed.field.roles.name" = "Roles"
+"stats.server.embed.field.roles.value" = "`{{HumanizeNumber (len .server.Roles)}}`"
+"stats.server.embed.field.emoji.name" = "Emoji"
+"stats.server.embed.field.emoji.value" = "`{{HumanizeNumber (len .server.Emojis)}}`" # TODO: show animated vs not
+"stats.server.embed.field.channels.name" = "Channels"
+"stats.server.embed.field.channels.value" = "`{{HumanizeNumber (len .server.Channels)}}`" # TODO: show type
+"stats.server.embed.field.features.name" = "{{if .server.Features}}Features{{end}}"
+"stats.server.embed.field.features.value" = "{{range .server.Features}}`{{.}}` {{end}}"
+"stats.server.embed.field.nitro-boost.name" = "{{if .server.PremiumSubscriptionCount}}Nitro Boost{{end}}"
+"stats.server.embed.field.nitro-boost.value" = "{{if .server.PremiumSubscriptionCount}}\
+Boosters `{{.HumanizeNumber .server.PremiumSubscriptionCount}}`\n\
+Tier: `\
+{{if eq .server.PremiumTier 0}}None\
+{{else if eq .server.PremiumTier 1}}Tier 1\
+{{else if eq .server.PremiumTier 2}}Tier 2\
+{{else if eq .server.PremiumTier 3}}Tier 3\
+{{else}}{{.server.PremiumTier}}{{end}}`\
+{{end}}"
