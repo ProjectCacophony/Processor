@@ -87,9 +87,9 @@ func (p *Plugin) handleServer(event *events.Event) {
 		"server", server,
 		"owner", owner,
 		"createdAt", createdAt,
-		"iconURL", discordgo.EndpointGuildIcon(server.ID, server.Icon),
-		"splashURL", discordgo.EndpointGuildSplash(server.ID, server.Splash),
-		"bannerURL", discordgo.EndpointGuildBanner(server.ID, server.Banner),
+		"iconURL", discordgo.EndpointGuildIcon(server.ID, server.Icon)+"?size=1024",
+		"splashURL", discordgo.EndpointGuildSplash(server.ID, server.Splash)+"?size=1024",
+		"bannerURL", discordgo.EndpointGuildBanner(server.ID, server.Banner)+"?size=1024",
 	)
 	event.Except(err)
 }

@@ -45,7 +45,7 @@ Region: `{{.server.Region}}`\
 "stats.server.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Server Created{{end}}"
 "stats.server.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
 "stats.server.embed.field.members.name" = "Members"
-"stats.server.embed.field.members.value" = "`{{HumanizeNumber .server.MemberCount}}`"
+"stats.server.embed.field.members.value" = "`{{HumanizeNumber (len .server.Members)}}`"
 "stats.server.embed.field.roles.name" = "Roles"
 "stats.server.embed.field.roles.value" = "`{{HumanizeNumber (len .server.Roles)}}`"
 "stats.server.embed.field.emoji.name" = "Emoji"
