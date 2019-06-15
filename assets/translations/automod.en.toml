@@ -43,7 +43,7 @@ Please react with ✅ if you do."
 **Looks like there are no rules on this server so far.** :thinking:\n\
 You can create the first rule: `{{.prefix}}automod add […]` \
 {{end}}\
-{{ if .logChannelID }}The log will be posted in <#{{.logChannelID}}>.{{ end }}\
+{{ if .logChannelID }}\nThe log will be posted in <#{{.logChannelID}}>.{{ end }}\
 "
 
 # cmdElements
