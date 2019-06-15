@@ -1,15 +1,19 @@
 package automod
 
 import (
+	"encoding/json"
 	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
+	"gitlab.com/Cacophony/go-kit/discord"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
+
+const confirmUpdateRuleQuestionnaireKey = "cacophony:processor:automod:confirm-update-rule"
 
 func (p *Plugin) cmdAdd(event *events.Event) {
 	if len(event.Fields()) < 3 {
@@ -132,6 +136,59 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 			event.Except(err)
 			return
 		}
+	}
+
+	var existingRulesWithName int
+	err = p.db.Model(models.Rule{}).Where(models.Rule{
+		Name:    newRule.Name,
+		GuildID: event.GuildID,
+	}).Count(&existingRulesWithName).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+	if existingRulesWithName > 0 {
+		messages, err := event.Respond("automod.add.confirm-update-duplicate")
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		ruleData, err := json.Marshal(&newRule)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		err = event.Questionnaire().Register(
+			confirmUpdateRuleQuestionnaireKey,
+			events.QuestionnaireFilter{
+				GuildID:   event.GuildID,
+				ChannelID: event.ChannelID,
+				UserID:    event.UserID,
+				Type:      events.MessageReactionAddType,
+			},
+			map[string]interface{}{
+				"messageID": messages[0].ID,
+				"rule":      string(ruleData),
+			},
+		)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		err = discord.React(
+			event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "✅",
+		)
+		if err != nil {
+			return
+		}
+		discord.React(
+			event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "❌",
+		)
+
+		return
 	}
 
 	err = p.db.Save(&newRule).Error

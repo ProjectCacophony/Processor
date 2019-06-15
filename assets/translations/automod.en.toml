@@ -26,6 +26,9 @@ Please keep in mind that it can take up to one minute until the rule will be app
 {{ if .logChannelID }}Looks like you have no Automod Log Channel set up so far.\n\
 The log will be posted in <#{{.logChannelID}}>.{{ end }}\
 "
+"automod.add.confirm-update-duplicate" = "**There is already a rule with that name**\n\
+Do you want to update that rule?\n\
+Please react with ✅ if you do."
 
 # cmdRemove
 "automod.remove.too-few" = "Please tell me the name of the rule to remove."

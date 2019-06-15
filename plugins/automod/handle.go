@@ -110,9 +110,17 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-	if event.Type == events.MessageCreateType {
+	switch event.Type {
+
+	case events.MessageCreateType:
 		process := p.handleAsCommand(event)
 		if process {
+			return true
+		}
+
+	case events.CacophonyQuestionnaireMatch:
+		if event.QuestionnaireMatch.Key == confirmUpdateRuleQuestionnaireKey {
+			p.handleConfirmUpdateRuleQuestionnaire(event)
 			return true
 		}
 	}
