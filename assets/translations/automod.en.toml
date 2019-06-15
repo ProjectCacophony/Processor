@@ -95,10 +95,12 @@ Comparison Types: >, =, and < [comparison type; amount]"
 "automod.actions.apply_role" = "Applies the given role. [role]"
 "automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
-Stores eventual Messages, Users and Channels in the Rule Context. [tag; type; decay duration; amount]"
+Stores eventual Messages, Users and Channels in the Rule Context.\n\
+Types: guild, channel, or user [tag; type; decay duration; amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message; channel]"
 "automod.actions.delete_message" = "Deletes all Message found in the Rule Context."
 "automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
 "automod.actions.ban_user" = "Bans all Users found in the Rule Context."
-"automod.actions.reset_bucket" = "Resets the amount of leaky bucket. [tag; type]"
+"automod.actions.reset_bucket" = "Resets the amount of leaky bucket.\n\
+Types: guild, channel, or user [tag; type]"
 "automod.actions.react" = "Reacts with the given Emoji. [emoji…]"
