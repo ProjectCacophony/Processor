@@ -6,6 +6,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
@@ -61,6 +62,50 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "automod.help.description",
+		PermissionsRequired: []interfaces.Permission{
+			permissions.DiscordAdministrator,
+		},
+		Commands: []common.Command{
+			{
+				Name:        "automod.help.status.name",
+				Description: "automod.help.status.description",
+			},
+			{
+				Name:        "automod.help.elements.name",
+				Description: "automod.help.elements.description",
+				Params: []common.CommandParam{
+					{Name: "elements", Type: common.Flag},
+				},
+			},
+			{
+				Name:        "automod.help.add.name",
+				Description: "automod.help.add.description",
+				Params: []common.CommandParam{
+					{Name: "add", Type: common.Flag},
+					{Name: "rule name", Type: common.Text},
+					{Name: "trigger", Type: common.Text},
+					{Name: "filters…", Type: common.Text},
+					{Name: "actions…", Type: common.Text},
+					{Name: "stop", Type: common.Flag, Optional: true},
+					{Name: "silent", Type: common.Flag, Optional: true},
+				},
+			},
+			{
+				Name:        "automod.help.remove.name",
+				Description: "automod.help.remove.description",
+				Params: []common.CommandParam{
+					{Name: "remove", Type: common.Flag},
+					{Name: "rule name", Type: common.Text},
+				},
+			},
+			{
+				Name:        "automod.help.log.name",
+				Description: "automod.help.log.description",
+				Params: []common.CommandParam{
+					{Name: "log", Type: common.Flag},
+				},
+			},
+		},
 	}
 }
 
@@ -125,6 +170,5 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		return true
 	}
 
-	// TODO: display unknown command message
-	return true
+	return false
 }

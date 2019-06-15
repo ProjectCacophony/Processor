@@ -1,10 +1,17 @@
-
-
 "automod.not-dm" = "This module can not be used in DMs."
 
 #help info
 "automod.help.description" = "Set up automatic actions such as sending messages, kicking/banning users, and reacting with emojis. Define triggers, such as setting banned words, to trigger these actions."
-
+"automod.help.status.name" = "Status"
+"automod.help.status.description" = "Shows active rules"
+"automod.help.elements.name" = "Elements"
+"automod.help.elements.description" = "Shows all elements you can use for rules"
+"automod.help.add.name" = "Add Rule"
+"automod.help.add.description" = "Create a new rule"
+"automod.help.remove.name" = "Remove Rule"
+"automod.help.remove.description" = "Delete an existing rule"
+"automod.help.log.name" = "Set Log Channel"
+"automod.help.log.description" = "Sets the Automod Log channel to the current channel"
 
 # cmdAdd
 "automod.add.too-few" = "You didn't tell me enough information."
@@ -40,7 +47,7 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 "automod.elements.response" = "\
 **Triggers**\n\
 {{range $item := .triggers}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
-**Filters**\n\
+**Filters** (you can add `not` in front of a filter name)\n\
 {{range $item := .filters}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
 **Actions**\n\
 {{range $item := .actions}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
