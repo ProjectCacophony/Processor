@@ -2,6 +2,7 @@ package actions
 
 import (
 	"errors"
+	"math/rand"
 	"regexp"
 	"strings"
 
@@ -12,7 +13,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-var emojiRegex = regexp.MustCompile(`^[\x{00A0}-\x{1F9EF}]|<(a)?:[^<>:]+:[0-9]+>$`)
+var emojiRegex = regexp.MustCompile(`[\x{00A0}-\x{1F9EF}]|<(a)?:[^<>:]+:[0-9]+>`)
 
 type React struct {
 }
@@ -30,14 +31,16 @@ func (t React) NewItem(env *models.Env, args []string) (interfaces.ActionItemInt
 		return nil, errors.New("too few arguments")
 	}
 
-	if !emojiRegex.MatchString(args[0]) {
+	matches := emojiRegex.FindAllString(args[0], -1)
+
+	if len(matches) <= 0 {
 		return nil, errors.New("invalid emoji")
 	}
 
 	// TODO: confirm that we have access to the emoji
 
 	return &ReactItem{
-		Reaction: strings.Trim(args[0], "<>"),
+		Reactions: matches,
 	}, nil
 }
 
@@ -46,7 +49,7 @@ func (t React) Description() string {
 }
 
 type ReactItem struct {
-	Reaction string
+	Reactions []string
 }
 
 func (t *ReactItem) Do(env *models.Env) {
@@ -81,7 +84,7 @@ func (t *ReactItem) Do(env *models.Env) {
 			message.ChanneID,
 			message.ID,
 			false,
-			t.Reaction,
+			strings.Trim(t.Reactions[rand.Intn(len(t.Reactions))], "<>"),
 		)
 
 		doneMessageIDs[message.ID] = true
