@@ -129,7 +129,8 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 
 		if !rule.Silent {
 			err := h.postLog(env, rule)
-			if err != nil {
+			if err != nil &&
+				err != state.ErrBotForGuildStateNotFound {
 				event.ExceptSilent(err)
 			}
 		}
