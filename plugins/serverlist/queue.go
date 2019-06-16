@@ -134,6 +134,9 @@ func (p *Plugin) approveCurrentServer(botID, guildID string) error {
 	if err != nil {
 		return errors.Wrap(err, "error getting QueueMessage from config")
 	}
+	if queueMessage == nil {
+		return nil
+	}
 
 	queue, err := p.getQueue(botID)
 	if err != nil {
@@ -152,6 +155,9 @@ func (p *Plugin) rejectCurrentServer(botID, guildID, reason string) error {
 	queueMessage, err := p.getCurrentQueueMessage(guildID)
 	if err != nil {
 		return errors.Wrap(err, "error getting QueueMessage from config")
+	}
+	if queueMessage == nil {
+		return nil
 	}
 
 	queue, err := p.getQueue(botID)
