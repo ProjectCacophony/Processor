@@ -91,7 +91,7 @@ func (p *Plugin) clearListCache(botID string) error {
 func (p *Plugin) refreshList(botID string) error {
 	allList, err := p.getList(botID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failure getting current list")
 	}
 
 	session, err := discord.NewSession(p.tokens, botID)
@@ -109,7 +109,7 @@ func (p *Plugin) refreshList(botID string) error {
 
 				categoryChannel, err := p.state.Channel(category.Category.ChannelID)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure getting category channel from state")
 				}
 
 				switch categoryChannel.Type {
@@ -133,7 +133,7 @@ func (p *Plugin) refreshList(botID string) error {
 						name,
 					)
 					if err != nil {
-						return err
+						return errors.Wrap(err, "failure resolving channel for category channel")
 					}
 
 					serversToPost = p.addToServersToPost(
@@ -151,7 +151,7 @@ func (p *Plugin) refreshList(botID string) error {
 	for _, channelToPost := range serversToPost {
 		err = p.postChannel(session, channelToPost)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failure posting channel")
 		}
 	}
 
@@ -171,12 +171,15 @@ func (p *Plugin) refreshList(botID string) error {
 						errD.Message.Message == "404: Not Found") {
 					continue
 				}
-				return err
+				return errors.Wrap(err, "failure clearing channel list")
 			}
 		}
 	}
 
-	return p.setChannelServersToPost(botID, serversToPost)
+	return errors.Wrap(
+		p.setChannelServersToPost(botID, serversToPost),
+		"failure updating servers cache",
+	)
 }
 
 type ChannelServersToPost struct {
