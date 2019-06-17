@@ -100,6 +100,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:        "automod.help.history.name",
+				Description: "automod.help.history.description",
+				Params: []common.CommandParam{
+					{Name: "history", Type: common.Flag},
+				},
+			},
+			{
 				Name:        "automod.help.log.name",
 				Description: "automod.help.log.description",
 				Params: []common.CommandParam{
@@ -175,6 +182,13 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		event.Require(func() {
 			p.cmdLog(event)
 		}, permissions.DiscordAdministrator)
+
+		return true
+
+	case "history":
+		event.Require(func() {
+			p.cmdHistory(event)
+		}, permissions.DiscordManageServer)
 
 		return true
 	}

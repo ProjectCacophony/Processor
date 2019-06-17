@@ -12,6 +12,8 @@
 "automod.help.remove.description" = "Delete an existing rule"
 "automod.help.log.name" = "Set Log Channel"
 "automod.help.log.description" = "Sets the Automod Log channel to the current channel"
+"automod.help.history.name" = "Rule History"
+"automod.help.history.description" = "Shows recently executed Rules"
 
 # cmdAdd
 "automod.add.too-few" = "You didn't tell me enough information."
@@ -104,3 +106,18 @@ Types: guild, channel, or user [tag; type; decay duration; amount]"
 "automod.actions.reset_bucket" = "Resets the amount of leaky bucket.\n\
 Types: guild, channel, or user [tag; type]"
 "automod.actions.react" = "Reacts with the given Emoji. [emoji…]"
+
+# cmdHistory
+"automod.history.content" = "\
+{{if le (len .logs) 0}}\
+**No Rules have been executed so far**\n\
+Start by adding some rules.\
+{{else}}\
+__**Last {{len .logs}} Rule executions**__\n\
+{{range $log := .logs}}\
+{{TimeFormatShort $log.CreatedAt $.timezone}}: `{{$log.Rule.Name}}` \
+{{if not $log.ErrorMessage}}✅{{else}}⚠ {{$log.ErrorMessage}}{{end}}\
+\n\
+{{end}}\
+{{end}}\
+"

@@ -47,6 +47,7 @@ func (*RuleAction) TableName() string {
 type LogEntry struct {
 	gorm.Model
 	GuildID      string
+	Rule         Rule
 	RuleID       uint
 	ChannelIDs   pq.StringArray `gorm:"type:varchar[]"`
 	UserIDs      pq.StringArray `gorm:"type:varchar[]"`
