@@ -28,6 +28,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		models.Rule{},
 		models.RuleFilter{},
 		models.RuleAction{},
+		models.LogEntry{},
 	).Error
 	if err != nil {
 		return err

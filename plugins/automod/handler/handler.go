@@ -49,17 +49,8 @@ func NewHandler(
 	return handler, err
 }
 
-// nolint: nakedret
 func (h *Handler) Handle(event *events.Event) (process bool) {
 	process = false
-
-	env := &models.Env{
-		Event:   event,
-		State:   h.state,
-		Redis:   h.redis,
-		Handler: h,
-		Tokens:  h.tokens,
-	}
 
 	if event.GuildID == "" {
 		return
@@ -75,6 +66,14 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	var triggerMatched bool
 	var filtersMatched bool
 	for _, rule := range rules {
+		env := &models.Env{
+			Event:   event,
+			State:   h.state,
+			Redis:   h.redis,
+			Handler: h,
+			Tokens:  h.tokens,
+		}
+
 		triggerMatched = false
 
 		for _, trigger := range list.TriggerList {
@@ -127,14 +126,6 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			continue
 		}
 
-		if !rule.Silent {
-			err := h.postLog(env, rule)
-			if err != nil &&
-				err != state.ErrBotForGuildStateNotFound {
-				event.ExceptSilent(err)
-			}
-		}
-
 		for _, action := range list.ActionsList {
 			for _, ruleAction := range rule.Actions {
 				if action.Name() != ruleAction.Name {
@@ -149,6 +140,12 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 
 				item.Do(env)
 			}
+		}
+
+		err := h.logRun(env, rule, nil)
+		if err != nil &&
+			err != state.ErrBotForGuildStateNotFound {
+			event.ExceptSilent(err)
 		}
 
 		if rule.Stop {

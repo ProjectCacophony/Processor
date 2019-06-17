@@ -43,3 +43,17 @@ type RuleAction struct {
 func (*RuleAction) TableName() string {
 	return "automod_rule_actions"
 }
+
+type LogEntry struct {
+	gorm.Model
+	GuildID      string
+	RuleID       uint
+	ChannelIDs   pq.StringArray `gorm:"type:varchar[]"`
+	UserIDs      pq.StringArray `gorm:"type:varchar[]"`
+	MessageIDs   pq.StringArray `gorm:"type:varchar[]"`
+	ErrorMessage string
+}
+
+func (*LogEntry) TableName() string {
+	return "automod_log"
+}

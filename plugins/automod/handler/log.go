@@ -47,7 +47,36 @@ func (h *Handler) getLogChannelIDs() (map[string]string, error) {
 	return list, nil
 }
 
-func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
+func (h *Handler) logRun(env *models.Env, rule models.Rule, runError error) error {
+	messageIDs := make([]string, len(env.Messages))
+	for i, message := range env.Messages {
+		messageIDs[i] = message.ChanneID + ":" + message.ID
+	}
+
+	entry := &models.LogEntry{
+		GuildID:    env.GuildID,
+		RuleID:     rule.ID,
+		ChannelIDs: env.ChannelID,
+		UserIDs:    env.UserID,
+		MessageIDs: messageIDs,
+	}
+	if runError != nil {
+		entry.ErrorMessage = runError.Error()
+	}
+
+	err := h.db.Save(&entry).Error
+	if err != nil {
+		return err
+	}
+
+	if rule.Silent {
+		return nil
+	}
+
+	return h.postLog(env, rule, runError)
+}
+
+func (h *Handler) postLog(env *models.Env, rule models.Rule, runError error) error {
 	if env == nil || env.GuildID == "" {
 		return nil
 	}
@@ -96,24 +125,21 @@ func (h *Handler) postLog(env *models.Env, rule models.Rule) error {
 	}
 	actionsText = strings.TrimRight(actionsText, ", ")
 
+	description := "✅"
+	if runError != nil {
+		description = "⚠ " + runError.Error()
+	}
+	description += fmt.Sprintf("\nName: `%s`", rule.Name)
+
 	_, err = discord.SendComplexWithVars(
 		session,
 		nil,
 		channelID,
 		&discordgo.MessageSend{
 			Embed: &discordgo.MessageEmbed{
-				URL:         "",
-				Type:        "",
 				Title:       "Automod: Rule Triggered",
-				Description: fmt.Sprintf("Name: `%s`", rule.Name),
+				Description: description,
 				Timestamp:   time.Now().Format(time.RFC3339),
-				Color:       0,
-				Footer:      nil,
-				Image:       nil,
-				Thumbnail:   nil,
-				Video:       nil,
-				Provider:    nil,
-				Author:      nil,
 				Fields: []*discordgo.MessageEmbedField{
 					{
 						Name:   "User(s)",
