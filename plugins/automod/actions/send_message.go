@@ -40,7 +40,7 @@ type SendMessageItem struct {
 	Message string
 }
 
-func (t *SendMessageItem) Do(env *models.Env) {
+func (t *SendMessageItem) Do(env *models.Env) error {
 	doneChannelIDs := make(map[string]interface{})
 
 	for _, channelID := range env.ChannelID {
@@ -66,7 +66,7 @@ func (t *SendMessageItem) Do(env *models.Env) {
 			continue
 		}
 
-		discord.SendComplexWithVars(
+		_, err = discord.SendComplexWithVars(
 			session,
 			nil,
 			channelID,
@@ -74,7 +74,12 @@ func (t *SendMessageItem) Do(env *models.Env) {
 				Content: t.Message,
 			},
 		)
+		if err != nil {
+			return err
+		}
 
 		doneChannelIDs[channelID] = true
 	}
+
+	return nil
 }

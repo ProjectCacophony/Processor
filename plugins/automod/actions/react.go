@@ -52,7 +52,7 @@ type ReactItem struct {
 	Reactions []string
 }
 
-func (t *ReactItem) Do(env *models.Env) {
+func (t *ReactItem) Do(env *models.Env) error {
 	doneMessageIDs := make(map[string]interface{})
 
 	for _, message := range env.Messages {
@@ -78,7 +78,7 @@ func (t *ReactItem) Do(env *models.Env) {
 			continue
 		}
 
-		discord.React(
+		err = discord.React(
 			nil,
 			session,
 			message.ChanneID,
@@ -86,7 +86,12 @@ func (t *ReactItem) Do(env *models.Env) {
 			false,
 			strings.Trim(t.Reactions[rand.Intn(len(t.Reactions))], "<>"),
 		)
+		if err != nil {
+			return err
+		}
 
 		doneMessageIDs[message.ID] = true
 	}
+
+	return nil
 }

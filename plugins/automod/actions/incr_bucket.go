@@ -77,7 +77,7 @@ type IncrBucketItem struct {
 	Random    *rand.Rand
 }
 
-func (t *IncrBucketItem) Do(env *models.Env) {
+func (t *IncrBucketItem) Do(env *models.Env) error {
 	var keys []string
 	switch t.Type {
 	case events.GuildBucketType:
@@ -132,6 +132,7 @@ func (t *IncrBucketItem) Do(env *models.Env) {
 		})
 	}
 
+	return nil
 }
 
 func bucketTag(guildID, channelID, userID, tag string) string {

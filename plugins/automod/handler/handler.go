@@ -50,6 +50,8 @@ func NewHandler(
 }
 
 func (h *Handler) Handle(event *events.Event) (process bool) {
+	var err error
+
 	process = false
 
 	if event.GuildID == "" {
@@ -126,6 +128,8 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			continue
 		}
 
+		var runError error
+
 		for _, action := range list.ActionsList {
 			for _, ruleAction := range rule.Actions {
 				if action.Name() != ruleAction.Name {
@@ -138,11 +142,14 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 					return
 				}
 
-				item.Do(env)
+				err = item.Do(env)
+				if err != nil {
+					runError = err
+				}
 			}
 		}
 
-		err := h.logRun(env, rule, nil)
+		err = h.logRun(env, rule, runError)
 		if err != nil &&
 			err != state.ErrBotForGuildStateNotFound {
 			event.ExceptSilent(err)

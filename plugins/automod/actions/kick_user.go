@@ -30,7 +30,7 @@ func (t KickUser) Description() string {
 type KickUserItem struct {
 }
 
-func (t *KickUserItem) Do(env *models.Env) {
+func (t *KickUserItem) Do(env *models.Env) error {
 	doneUserIDs := make(map[string]interface{})
 
 	for _, userID := range env.UserID {
@@ -56,11 +56,16 @@ func (t *KickUserItem) Do(env *models.Env) {
 			continue
 		}
 
-		session.Client.GuildMemberDeleteWithReason(
+		// TODO: improve Reason
+		err = session.Client.GuildMemberDeleteWithReason(
 			env.GuildID, userID, "Kicked by Cacophony Automod",
 		)
-		// TODO: improve Reason
+		if err != nil {
+			return err
+		}
 
 		doneUserIDs[userID] = true
 	}
+
+	return nil
 }

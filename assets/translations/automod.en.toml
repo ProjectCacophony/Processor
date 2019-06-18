@@ -116,8 +116,9 @@ Start by adding some rules.\
 {{else}}\
 __**Last {{len .logs}} Rule executions**__\n\
 {{range $log := .logs}}\
-{{TimeFormatShort $log.CreatedAt $.timezone}}: `{{$log.Rule.Name}}` \
-{{if not $log.ErrorMessage}}✅{{else}}⚠ {{$log.ErrorMessage}}{{end}}\
+{{TimeFormatShort $log.CreatedAt $.timezone}}: \
+{{if $log.Rule.Name}}`{{$log.Rule.Name}}`{{else}}**Rule Deleted**{{end}} \
+{{if not $log.ErrorMessage}}✅{{else}}⚠ `{{$log.ErrorMessage}}`{{end}}\
 \n\
 {{end}}\
 {{end}}\

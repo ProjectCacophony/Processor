@@ -30,7 +30,7 @@ func (t DeleteMessage) Description() string {
 type DeleteMessageItem struct {
 }
 
-func (t *DeleteMessageItem) Do(env *models.Env) {
+func (t *DeleteMessageItem) Do(env *models.Env) error {
 	// TODO: group messages by channel ID, use bulk delete endpoint
 
 	doneMessageIDs := make(map[string]interface{})
@@ -57,8 +57,13 @@ func (t *DeleteMessageItem) Do(env *models.Env) {
 			continue
 		}
 
-		discord.Delete(nil, session, message.ChanneID, message.ID, false)
+		err = discord.Delete(nil, session, message.ChanneID, message.ID, false)
+		if err != nil {
+			return err
+		}
 
 		doneMessageIDs[message.ID] = true
 	}
+
+	return nil
 }

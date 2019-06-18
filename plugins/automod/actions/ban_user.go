@@ -30,7 +30,7 @@ func (t BanUser) Description() string {
 type BanUserItem struct {
 }
 
-func (t *BanUserItem) Do(env *models.Env) {
+func (t *BanUserItem) Do(env *models.Env) error {
 	doneUserIDs := make(map[string]interface{})
 
 	for _, userID := range env.UserID {
@@ -56,11 +56,16 @@ func (t *BanUserItem) Do(env *models.Env) {
 			continue
 		}
 
-		session.Client.GuildBanCreateWithReason(
+		// TODO: improve Reason
+		err = session.Client.GuildBanCreateWithReason(
 			env.GuildID, userID, "Banned by Cacophony Automod", 0,
 		)
-		// TODO: improve Reason
+		if err != nil {
+			return err
+		}
 
 		doneUserIDs[userID] = true
 	}
+
+	return nil
 }
