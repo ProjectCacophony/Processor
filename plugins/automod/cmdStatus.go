@@ -28,6 +28,11 @@ func (d sortRulesByName) Less(i, j int) bool {
 	return strings.ToLower(d[i].Name) < strings.ToLower(d[j].Name)
 }
 
+type enhancedRule struct {
+	models.Rule
+	RuleText string
+}
+
 func (p *Plugin) cmdStatus(event *events.Event) {
 	var rules []models.Rule
 	err := p.db.
@@ -42,28 +47,33 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 
 	sort.Sort(sortRulesByName(rules))
 
-	ruleTexts := make([]string, len(rules))
+	var ruleText string
+	enhancedRules := make([]enhancedRule, len(rules))
 	for i, rule := range rules {
-		ruleTexts[i] += addQuotesIfSpaces(rule.Name) + " "
-		ruleTexts[i] += addQuotesIfSpaces(rule.TriggerName) + " "
-		ruleTexts[i] += argsString(rule.TriggerValues)
+		ruleText = ""
+		ruleText += addQuotesIfSpaces(rule.Name) + " "
+		ruleText += addQuotesIfSpaces(rule.TriggerName) + " "
+		ruleText += argsString(rule.TriggerValues)
 		for _, filter := range rule.Filters {
 			if filter.Not {
-				ruleTexts[i] += "not "
+				ruleText += "not "
 			}
-			ruleTexts[i] += addQuotesIfSpaces(filter.Name) + " "
-			ruleTexts[i] += argsString(filter.Values)
+			ruleText += addQuotesIfSpaces(filter.Name) + " "
+			ruleText += argsString(filter.Values)
 		}
 		for _, action := range rule.Actions {
-			ruleTexts[i] += addQuotesIfSpaces(action.Name) + " "
-			ruleTexts[i] += argsString(action.Values)
+			ruleText += addQuotesIfSpaces(action.Name) + " "
+			ruleText += argsString(action.Values)
 		}
 		if rule.Stop {
-			ruleTexts[i] += "stop "
+			ruleText += "stop "
 		}
 		if rule.Silent {
-			ruleTexts[i] += "silent "
+			ruleText += "silent "
 		}
+
+		enhancedRules[i].Rule = rule
+		enhancedRules[i].RuleText = ruleText
 	}
 
 	logChannel, err := config.GuildGetString(p.db, event.GuildID, handler.AutomodLogKey)
@@ -74,7 +84,7 @@ func (p *Plugin) cmdStatus(event *events.Event) {
 
 	_, err = event.Respond(
 		"automod.status.response",
-		"ruleTexts", ruleTexts,
+		"rules", enhancedRules,
 		"logChannelID", logChannel,
 	)
 	event.Except(err)

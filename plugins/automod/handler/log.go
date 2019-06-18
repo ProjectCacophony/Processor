@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/permissions"
 
 	"github.com/bwmarrin/discordgo"
@@ -65,6 +66,14 @@ func (h *Handler) logRun(env *models.Env, rule models.Rule, runError error) erro
 	}
 
 	err := h.db.Save(&entry).Error
+	if err != nil {
+		return err
+	}
+
+	err = h.db.Model(models.Rule{}).
+		Where("id = ?", rule.ID).
+		Update("runs", gorm.Expr("runs + 1")).
+		Error
 	if err != nil {
 		return err
 	}

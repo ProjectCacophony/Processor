@@ -39,8 +39,9 @@ Please react with ✅ if you do."
 
 # cmdStatus
 "automod.status.response" = "\
-{{if gt (len .ruleTexts) 0}} \
-{{range $ruleText := .ruleTexts}}```\n{{$ruleText}}\n```{{end}} \
+{{if gt (len .rules) 0}} \
+{{range $rule := .rules}}```\n{{$rule.RuleText}}\n```\n\
+Added {{TimeFormat $rule.CreatedAt $.timezone}} `{{HumanizeNumber $rule.Runs}}` times triggered{{end}} \
 {{else}} \
 **Looks like there are no rules on this server so far.** :thinking:\n\
 You can create the first rule: `{{.prefix}}automod add […]` \

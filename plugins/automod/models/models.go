@@ -15,6 +15,7 @@ type Rule struct {
 	Actions       []RuleAction
 	Stop          bool
 	Silent        bool
+	Runs          int `gorm:"default:'0'"`
 }
 
 func (*Rule) TableName() string {
