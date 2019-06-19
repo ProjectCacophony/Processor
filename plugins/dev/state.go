@@ -144,8 +144,8 @@ func (p *Plugin) handleDevStateGuilds(event *events.Event) {
 			return
 		}
 
-		resp += fmt.Sprintf("**%s** (`#%s`) %d Members %d MemberCount\n",
-			guild.Name, guild.ID, len(guild.Members), guild.MemberCount,
+		resp += fmt.Sprintf("**%s** (`#%s`) %d MemberCount\n",
+			guild.Name, guild.ID, guild.MemberCount,
 		)
 	}
 	resp += fmt.Sprintf("in total **%d** guilds.\n", len(allGuilds))
