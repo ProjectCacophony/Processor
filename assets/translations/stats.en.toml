@@ -10,7 +10,7 @@
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
 "stats.user.embed.description" = "\
-[Avatar]({{.user.AvatarURL \"1024\"}})\n\
+[Avatar]({{.user.AvatarURL \"2048\"}})\n\
 ID: `#{{.user.ID}}`\
 "
 "stats.user.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Account Created{{end}}"
@@ -48,10 +48,23 @@ Region: `{{.server.Region}}`\
 "stats.server.embed.field.members.value" = "`{{HumanizeNumber .server.MemberCount}}`"
 "stats.server.embed.field.roles.name" = "Roles"
 "stats.server.embed.field.roles.value" = "`{{HumanizeNumber (len .server.Roles)}}`"
-"stats.server.embed.field.emoji.name" = "Emoji"
-"stats.server.embed.field.emoji.value" = "`{{HumanizeNumber (len .server.Emojis)}}`" # TODO: show animated vs not
-"stats.server.embed.field.channels.name" = "Channels"
-"stats.server.embed.field.channels.value" = "`{{HumanizeNumber (len .server.Channels)}}`" # TODO: show type
+"stats.server.embed.field.emoji.name" = "Emoji `Normal/Animated/Total`"
+"stats.server.embed.field.emoji.value" = "`\
+{{HumanizeNumber (int (sub (int64 (len .server.Emojis)) (int64 .emojiAnimated)))}}/\
+{{HumanizeNumber .emojiAnimated}}/\
+{{HumanizeNumber (len .server.Emojis)}}`"
+"stats.server.embed.field.channels.name" = "Channels `\
+{{if .channelsCount.Text}}Text/{{end}}\
+{{if .channelsCount.Category}}Category/{{end}}\
+{{if .channelsCount.Other}}Other/{{end}}\
+{{if .channelsCount.Total}}Total{{end}}\
+`"
+"stats.server.embed.field.channels.value" = "`\
+{{if .channelsCount.Text}}{{HumanizeNumber .channelsCount.Text}}/{{end}}\
+{{if .channelsCount.Category}}{{HumanizeNumber .channelsCount.Category}}/{{end}}\
+{{if .channelsCount.Other}}{{HumanizeNumber .channelsCount.Other}}/{{end}}\
+{{if .channelsCount.Total}}{{HumanizeNumber .channelsCount.Total}}{{end}}\
+`"
 "stats.server.embed.field.features.name" = "{{if .server.Features}}Features{{end}}"
 "stats.server.embed.field.features.value" = "{{range .server.Features}}`{{.}}` {{end}}"
 "stats.server.embed.field.nitro-boost.name" = "{{if .server.PremiumSubscriptionCount}}Nitro Boost{{end}}"

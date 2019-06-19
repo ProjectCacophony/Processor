@@ -19,6 +19,14 @@ func findServer(event *events.Event) (*discordgo.Guild, error) {
 	return event.State().Guild(event.GuildID)
 }
 
+type channelsCount struct {
+	Text     int
+	Voice    int
+	Category int
+	Other    int
+	Total    int
+}
+
 func (p *Plugin) handleServer(event *events.Event) {
 	server, err := findServer(event)
 	if err != nil {
@@ -36,6 +44,29 @@ func (p *Plugin) handleServer(event *events.Event) {
 	if err != nil {
 		event.Except(err)
 		return
+	}
+
+	var emojiAnimated int
+	for _, emoji := range server.Emojis {
+		if emoji.Animated {
+			emojiAnimated++
+		}
+	}
+
+	var channelsCount channelsCount
+	for _, channel := range server.Channels {
+		switch channel.Type {
+		case discordgo.ChannelTypeGuildText:
+			channelsCount.Text++
+		case discordgo.ChannelTypeGuildVoice:
+			channelsCount.Voice++
+		case discordgo.ChannelTypeGuildCategory:
+			channelsCount.Category++
+		default:
+			channelsCount.Other++
+		}
+
+		channelsCount.Total++
 	}
 
 	_, err = event.RespondComplex(&discordgo.MessageSend{
@@ -87,9 +118,11 @@ func (p *Plugin) handleServer(event *events.Event) {
 		"server", server,
 		"owner", owner,
 		"createdAt", createdAt,
-		"iconURL", discordgo.EndpointGuildIcon(server.ID, server.Icon)+"?size=1024",
-		"splashURL", discordgo.EndpointGuildSplash(server.ID, server.Splash)+"?size=1024",
-		"bannerURL", discordgo.EndpointGuildBanner(server.ID, server.Banner)+"?size=1024",
+		"iconURL", discordgo.EndpointGuildIcon(server.ID, server.Icon)+"?size=2048",
+		"splashURL", discordgo.EndpointGuildSplash(server.ID, server.Splash)+"?size=2048",
+		"bannerURL", discordgo.EndpointGuildBanner(server.ID, server.Banner)+"?size=2048",
+		"emojiAnimated", emojiAnimated,
+		"channelsCount", channelsCount,
 	)
 	event.Except(err)
 }

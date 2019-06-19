@@ -75,7 +75,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	switch event.Fields()[1] {
 
-	case "user":
+	case "user", "member":
 		p.handleUser(event)
 		return true
 
