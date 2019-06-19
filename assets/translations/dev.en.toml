@@ -26,7 +26,11 @@
 "dev.sleep.finished" = "I am done sleeping! :sweatsmile:"
 
 # handleDevTranslate
-"dev.translate.embed.description" = "```"
+"dev.translate.embed.description" = "\
+{{HumanizeNumber 999999}}\n\
+{{1 | plural \"one\" \"many\"}}\n\
+{{5 | plural \"one\" \"many\"}}\n\
+"
 
 # handleDevPermission
 "dev.permission" = "<@{{.userID}}> does{{if not .has}} **not**{{end}} have permission {{.permissionID}}."
