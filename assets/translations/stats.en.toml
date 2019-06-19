@@ -69,8 +69,8 @@ Region: `{{.server.Region}}`\
 "stats.server.embed.field.features.value" = "{{range .server.Features}}`{{.}}` {{end}}"
 "stats.server.embed.field.nitro-boost.name" = "{{if .server.PremiumSubscriptionCount}}Nitro Boost{{end}}"
 "stats.server.embed.field.nitro-boost.value" = "{{if .server.PremiumSubscriptionCount}}\
-Boosters `{{HumanizeNumber .server.PremiumSubscriptionCount}}`\n\
-Tier: `\
+Boosts `{{HumanizeNumber .server.PremiumSubscriptionCount}}`\n\
+Tier `\
 {{if eq .server.PremiumTier 0}}None\
 {{else if eq .server.PremiumTier 1}}Tier 1\
 {{else if eq .server.PremiumTier 2}}Tier 2\
