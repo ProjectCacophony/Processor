@@ -24,6 +24,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/logging"
 	"gitlab.com/Cacophony/go-kit/state"
+	objectStorage "gitlab.com/Cacophony/go-kit/storage"
 	"go.uber.org/zap"
 )
 
@@ -104,6 +105,14 @@ func main() {
 		)
 	}
 
+	// init object storage
+	err = events.InitObjectStorage(gormDB, config.ObjectStorageFQDN, config.GoogleCloudBucketName)
+	if err != nil {
+		logger.Fatal("unable to initialise object storage",
+			zap.Error(err),
+		)
+	}
+
 	// init state
 	botIDs := make([]string, len(config.DiscordTokens))
 	var i int
@@ -145,6 +154,23 @@ func main() {
 		publisher,
 	)
 
+	// init cloud storage bucket
+	var storage *events.Storage
+	storageBucket, err := objectStorage.NewStorageBucket(context.Background(), config.GoogleCloudBucketName)
+	if err != nil {
+		logger.Fatal("unable to initialise object storage bucket",
+			zap.Error(err),
+		)
+	} else if storageBucket != nil && gormDB != nil && logger != nil {
+		storage = events.NewStorage(logger, gormDB, storageBucket)
+		if storage == nil {
+			logger.Fatal("object storage not initialized")
+		} else {
+			logger.Info("Made storage")
+		}
+	}
+	defer storageBucket.Close()
+
 	// create handler
 	handler := handle(
 		logger,
@@ -157,6 +183,7 @@ func main() {
 		httpClient,
 		config.ProcessingDeadline,
 		questionnaire,
+		storage,
 	)
 
 	// init processor

@@ -24,4 +24,6 @@ type config struct {
 	FeatureFlag               featureflag.Config   `envconfig:"FEATUREFLAG"`
 	ErrorTracking             errortracking.Config `envconfig:"ERRORTRACKING"`
 	DiscordAPIBase            string               `envconfig:"DISCORD_API_BASE"`
+	GoogleCloudBucketName     string               `envconfig:"GCLOUD_BUCKET_NAME"`
+	ObjectStorageFQDN         string               `envconfig:"OBJECT_STORAGE_FQDN"`
 }

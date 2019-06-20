@@ -28,6 +28,7 @@ func handle(
 	httpClient *http.Client,
 	processingDeadline time.Duration,
 	questionnaire *events.Questionnaire,
+	storage *events.Storage,
 ) func(event *events.Event) error {
 	l := logger.With(zap.String("service", "processor"))
 
@@ -43,6 +44,7 @@ func handle(
 		event.WithState(stateClient)
 		event.WithPaginator(paginator)
 		event.WithLogger(l)
+		event.WithStorage(storage)
 		event.WithRedis(redis)
 		event.WithDB(db)
 		event.WithHTTPClient(httpClient)
