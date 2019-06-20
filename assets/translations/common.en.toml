@@ -2,3 +2,4 @@
 "common.invalid-params" = "Invalid command parameters."
 "common.message-sent-to-dm" = "Check your DMs :spy:"
 "common.no-role" = "I could not find the given role."
+"common.uploading-file" = "Uploading the file, one moment please. :sleeping:"
