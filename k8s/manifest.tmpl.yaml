@@ -20,6 +20,7 @@ stringData:
   iexCloudAPISecret: "{{IEXCLOUD_API_SECRET}}"
   discordAPIBase: "{{DISCORD_API_BASE}}"
   gcloudBucketName: "{{GCLOUD_BUCKET_NAME}}"
+  objectStorageFQDN: "{{OBJECT_STORAGE_FQDN}}"
 
 ---
 apiVersion: v1
@@ -157,6 +158,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: gcloudBucketName
+          - name: OBJECT_STORAGE_FQDN
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: objectStorageFQDN
       volumes:
         - name: google-cloud
           secret:
