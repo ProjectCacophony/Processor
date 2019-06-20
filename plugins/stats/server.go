@@ -2,6 +2,7 @@ package stats
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/go-redis/redis"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -30,6 +31,10 @@ type channelsCount struct {
 func (p *Plugin) handleServer(event *events.Event) {
 	server, err := findServer(event)
 	if err != nil {
+		if err == redis.Nil {
+			event.Respond("stats.server.not-found")
+			return
+		}
 		event.Except(err)
 		return
 	}

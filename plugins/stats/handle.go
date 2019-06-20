@@ -59,6 +59,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "server ID", Type: common.Text},
 				},
 			},
+			{
+				Name:        "stats.help.channel.name",
+				Description: "stats.help.channel.description",
+				Params: []common.CommandParam{
+					{Name: "channel", Type: common.Flag},
+					{Name: "Channel", Type: common.Channel, Optional: true},
+				},
+			},
 		},
 	}
 }
@@ -80,7 +88,17 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 
 	case "server", "guild":
-		p.handleServer(event)
+		event.RequireOr(
+			func() {
+				p.handleServer(event)
+			},
+			permissions.Not(permissions.DiscordChannelDM),
+			permissions.BotAdmin,
+		)
+		return true
+
+	case "channel":
+		p.handleChannel(event)
 		return true
 
 	}

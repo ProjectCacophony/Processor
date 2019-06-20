@@ -6,6 +6,8 @@
 "stats.help.server.description" = "Show information about a Server"
 "stats.help.server-specific.name" = "Specific Server Stats"
 "stats.help.server-specific.description" = "Show information about a specific Server"
+"stats.help.channel.name" = "Channel Stats"
+"stats.help.channel.description" = "Show information about a Channel"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -27,6 +29,7 @@ ID: `#{{.user.ID}}`\
 "stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"
 
 # handleServer
+"stats.server.not-found" = "Server not found"
 "stats.server.embed.title" = "{{.server.Name}}"
 "stats.server.embed.description" = "\
 {{if .server.Icon}}[Icon]({{.iconURL}}) {{end}}\
@@ -77,3 +80,28 @@ Tier `\
 {{else if eq .server.PremiumTier 3}}Tier 3\
 {{else}}{{.server.PremiumTier}}{{end}}`\
 {{end}}"
+
+# handleChannel
+"stats.channel.embed.title" = "{{if .channel.Name}}#{{.channel.Name}}{{else}}Unknown{{end}}"
+"stats.channel.embed.thumbnail.url" = "{{if .channel.Icon}}{{.iconURL}}{{end}}"
+"stats.channel.embed.description" = "\
+{{if .channel.Icon}}[Icon]({{.iconURL}})\n{{end}}\
+ID: `#{{.channel.ID}}`\n\
+Type: \
+{{if eq .channel.Type 0}}Text\
+{{else if eq .channel.Type 1}}DM\
+{{else if eq .channel.Type 2}}Voice\
+{{else if eq .channel.Type 3}}Group DM\
+{{else if eq .channel.Type 4}}Category\
+{{else}}Unknown (`{{.channel.Type}}`){{end}}\n\
+{{if .channel.NSFW}}NSFW\n{{end}}\
+{{if .channel.Bitrate}}Bitrate: `{{HumanizeNumber (int (div (int64 .channel.Bitrate) 1000))}}kbps`\n{{end}}\
+{{if .channel.UserLimit}}User Limit: `{{HumanizeNumber .channel.UserLimit}}`\n{{end}}\
+{{if .channel.Topic}}Topic: `{{.channel.Topic}}`\n{{end}}\
+{{if .parentChannel}}Parent: `#{{.parentChannel.Name}} #{{.parentChannel.ID}}` \n{{end}}\
+{{if .guild}}Server: `{{.guild.Name}} #{{.guild.ID}}`\n{{end}}\
+"
+"stats.channel.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Channel Created{{end}}"
+"stats.channel.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
+"stats.channel.embed.field.permission-overwrites.name" = "{{if .channel.PermissionOverwrites}}Permission Overwrites{{end}}"
+"stats.channel.embed.field.permission-overwrites.value" = "{{if .channel.PermissionOverwrites}}{{len (.channel.PermissionOverwrites)}}{{end}}"
