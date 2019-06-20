@@ -104,7 +104,10 @@ func (p *Plugin) handleEdit(event *events.Event) {
 			return
 		}
 
-		_, err = event.Respond("serverlist.edit.invite-success")
+		_, err = event.Respond(
+			"serverlist.edit.invite-success",
+			"server", server,
+		)
 		event.Except(err)
 		return
 
