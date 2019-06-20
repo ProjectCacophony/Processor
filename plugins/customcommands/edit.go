@@ -42,7 +42,9 @@ func (p *Plugin) addCommand(event *events.Event) {
 	var cmdContent string
 	if hasUserParam(event) {
 		cmdName = event.Fields()[3]
-		cmdContent = event.Fields()[4]
+		if len(event.Fields()) >= 5 {
+			cmdContent = event.Fields()[4]
+		}
 	} else {
 		cmdName = event.Fields()[2]
 		if len(event.Fields()) >= 4 {
@@ -90,7 +92,9 @@ func (p *Plugin) editCommand(event *events.Event) {
 	var cmdContent string
 	if hasUserParam(event) {
 		cmdName = event.Fields()[3]
-		cmdContent = event.Fields()[4]
+		if len(event.Fields()) >= 5 {
+			cmdContent = event.Fields()[4]
+		}
 	} else {
 		cmdName = event.Fields()[2]
 		if len(event.Fields()) >= 4 {
