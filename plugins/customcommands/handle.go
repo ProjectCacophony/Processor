@@ -24,7 +24,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
 
-	err := params.DB.AutoMigrate(Entry{}).Error
+	err := params.DB.AutoMigrate(CustomCommand{}).Error
 	if err != nil {
 		return err
 	}

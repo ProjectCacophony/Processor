@@ -18,19 +18,21 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 		return false
 	}
 
-	entries := p.getCommandEntries(event, event.Fields()[0])
-
-	if len(entries) == 0 {
+	// get all commands with that name
+	commands := p.getCommandEntries(event, event.Fields()[0])
+	if len(commands) == 0 {
 		return false
 	}
 
+	// are we getting the info for this command
 	if len(event.Fields()) == 2 && event.Fields()[1] == "info" {
-		p.displayCommandsInfo(event, entries)
+		p.displayCommandsInfo(event, commands)
 		return true
 	}
 
-	if len(entries) == 1 {
-		if entries[0].IsUserCommand {
+	// check if one command was returned, if so run that.
+	if len(commands) == 1 {
+		if commands[0].IsUserCommand {
 			if !p.canUseUserCommand(event) {
 				event.Respond("customcommands.cant-use", "level", true)
 				return true
@@ -41,49 +43,45 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 				return true
 			}
 		}
-		err := entries[0].run(event)
+		err := commands[0].run(event)
 		event.Except(err)
 		return true
 	}
 
-	userEntries, serverEntries := seporateUserAndServerEntries(entries)
+	// multiple commands exist with the given name, get a random one
+	userCommands, serverCommands := seporateUserAndServerCommands(commands)
 
-	var entry Entry
+	var command CustomCommand
 	var denidedByServerCommandPerm bool
-	var denidedByUserCommandPerm bool
-	if len(serverEntries) > 0 {
+	if len(serverCommands) > 0 {
 		if p.canUseServerCommand(event) {
-			seed := rand.Intn(len(serverEntries))
-			entry = serverEntries[seed]
+			seed := rand.Intn(len(serverCommands))
+			command = serverCommands[seed]
 		} else {
 			denidedByServerCommandPerm = true
 		}
 	}
 
-	if len(userEntries) > 0 && entry == (Entry{}) {
+	if len(userCommands) > 0 && command.Name == "" {
 		if p.canUseUserCommand(event) {
-			seed := rand.Intn(len(userEntries))
-			entry = userEntries[seed]
-		} else {
-			denidedByUserCommandPerm = true
+			seed := rand.Intn(len(userCommands))
+			command = userCommands[seed]
 		}
+	}
+
+	if command.Name != "" {
+		err := command.run(event)
+		event.Except(err)
+		return true
 	}
 
 	if denidedByServerCommandPerm {
 		event.Respond("customcommands.cant-use", "level", false)
 		return true
-	} else if denidedByUserCommandPerm {
-		event.Respond("customcommands.cant-use", "level", true)
-		return true
 	}
 
-	if entry != (Entry{}) {
-		err := entry.run(event)
-		event.Except(err)
-		return true
-	}
-
-	return false
+	event.Respond("customcommands.cant-use", "level", true)
+	return true
 }
 
 func (p *Plugin) runRandomCommand(event *events.Event) {
@@ -93,16 +91,16 @@ func (p *Plugin) runRandomCommand(event *events.Event) {
 
 	var denidedByServerCommandPerm bool
 	var denidedByUserCommandPerm bool
-	var entries []Entry
+	var commands []CustomCommand
 	if isUserOperation(event) {
 		if p.canUseUserCommand(event) {
-			entries = p.getAllUserEntries(event)
+			commands = p.getAllUserCommands(event)
 		} else {
 			denidedByServerCommandPerm = true
 		}
 	} else {
 		if p.canUseServerCommand(event) {
-			entries = p.getAllServerEntries(event)
+			commands = p.getAllServerCommands(event)
 		} else {
 			denidedByUserCommandPerm = true
 		}
@@ -116,13 +114,13 @@ func (p *Plugin) runRandomCommand(event *events.Event) {
 		return
 	}
 
-	if len(entries) == 0 {
+	if len(commands) == 0 {
 		event.Respond("customcommands.no-commands")
 		return
 	}
 
-	seed := rand.Intn(len(entries))
-	entries[seed].run(event)
+	seed := rand.Intn(len(commands))
+	commands[seed].run(event)
 }
 
 func (p *Plugin) listCommands(event *events.Event) {
@@ -137,9 +135,9 @@ func (p *Plugin) listCommands(event *events.Event) {
 	}
 
 	// get all commands the user has access to, user and on the server
-	entries := p.getCommandsByTriggerCount(event)
+	commands := p.getCommandsByTriggerCount(event)
 
-	listText := createListCommandOutput(event, entries)
+	listText := createListCommandOutput(event, commands)
 
 	if displayInPublic {
 		_, err := event.Respond(listText)
@@ -171,7 +169,7 @@ func (p *Plugin) getCommandInfo(event *events.Event) {
 	p.displayCommandsInfo(event, commands)
 }
 
-func (p *Plugin) displayCommandsInfo(event *events.Event, commands []Entry) {
+func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomCommand) {
 
 	sort.Slice(commands, func(i, j int) bool {
 		return commands[i].Date.Before(commands[j].Date)
@@ -199,6 +197,16 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []Entry) {
 			}
 
 			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.Content)
+
+			// check for command file
+			if cmd.File != nil {
+				if cmd.Content != "" {
+					commandArray[i] += fmt.Sprintf("\n%s", cmd.File.GetLink())
+				} else {
+					commandArray[i] += cmd.File.GetLink()
+
+				}
+			}
 		}
 		content = "__Multi Commands__\n"
 		content += strings.Join(commandArray, "\n")
@@ -244,12 +252,12 @@ func (p *Plugin) searchCommand(event *events.Event) {
 	event.Except(err)
 }
 
-func createListCommandOutput(event *events.Event, entries []Entry) (listText string) {
-	sort.Slice(entries, func(i, j int) bool {
-		return entries[i].Triggered > entries[j].Triggered
+func createListCommandOutput(event *events.Event, commands []CustomCommand) (listText string) {
+	sort.Slice(commands, func(i, j int) bool {
+		return commands[i].Triggered > commands[j].Triggered
 	})
 
-	userEntries, serverEntries := seporateUserAndServerEntries(entries)
+	userCommands, serverCommands := seporateUserAndServerCommands(commands)
 
 	// List server commands if in a guild
 	if event.GuildID != "" {
@@ -259,24 +267,24 @@ func createListCommandOutput(event *events.Event, entries []Entry) (listText str
 			return
 		}
 
-		serverList := make([]string, len(serverEntries))
-		for i, entry := range serverEntries {
-			serverList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
+		serverList := make([]string, len(serverCommands))
+		for i, command := range serverCommands {
+			serverList[i] = fmt.Sprintf("`%s` (used %d times)", command.Name, command.Triggered)
 		}
 
 		if len(serverList) != 0 {
-			listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverEntries))
+			listText += fmt.Sprintf("Custom Commands on `%s` (%d):\n", guild.Name, len(serverCommands))
 			listText += strings.Join(serverList, "\n") + "\n"
 		}
 	}
 
 	// List user commands
-	userList := make([]string, len(userEntries))
-	for i, entry := range userEntries {
-		userList[i] = fmt.Sprintf("`%s` (used %d times)", entry.Name, entry.Triggered)
+	userList := make([]string, len(userCommands))
+	for i, command := range userCommands {
+		userList[i] = fmt.Sprintf("`%s` (used %d times)", command.Name, command.Triggered)
 	}
 	if len(userList) != 0 {
-		listText += fmt.Sprintf("\nYour Custom Commands (%d):\n", len(userEntries))
+		listText += fmt.Sprintf("\nYour Custom Commands (%d):\n", len(userCommands))
 		listText += strings.Join(userList, "\n")
 	}
 

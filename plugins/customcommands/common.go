@@ -9,12 +9,12 @@ const (
 	deleteQuestionnaireKey             = "cacophony:processor:dev:remove-questionnaire"
 )
 
-func seporateUserAndServerEntries(entries []Entry) (userEntries []Entry, serverEntries []Entry) {
-	for _, entry := range entries {
+func seporateUserAndServerCommands(commands []CustomCommand) (userCommands []CustomCommand, serverCommands []CustomCommand) {
+	for _, entry := range commands {
 		if entry.IsUserCommand {
-			userEntries = append(userEntries, entry)
+			userCommands = append(userCommands, entry)
 		} else {
-			serverEntries = append(serverEntries, entry)
+			serverCommands = append(serverCommands, entry)
 		}
 	}
 	return

@@ -2,38 +2,54 @@ package customcommands
 
 import (
 	"errors"
-	"time"
 
 	"github.com/jinzhu/gorm"
 )
 
-func entryAdd(
-	db *gorm.DB,
-	name string,
-	userID string,
-	guildID string,
-	content string,
-	isUserCommand bool,
-) error {
-	return db.Create(&Entry{
-		Name:          name,
-		UserID:        userID,
-		GuildID:       guildID,
-		Content:       content,
-		Date:          time.Now(),
-		IsUserCommand: isUserCommand,
-	}).Error
+const (
+	noContent string = "No content or attachement."
+)
+
+func createCustomCommand(db *gorm.DB, command CustomCommand) error {
+	if command.Content == "" && command.File == nil {
+		return errors.New(noContent)
+	}
+
+	err := db.Create(&command).Error
+	if err != nil {
+		return err
+	}
+
+	if command.File != nil && command.Model.ID != 0 {
+
+		command.File.CustomCommandID = command.Model.ID
+		err := db.Save(&command.File).Error
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
-func entryUpsert(db *gorm.DB, entry *Entry) error {
-	if entry == nil {
-		return errors.New("entry cannot be nil")
+func upsertCustomCommand(db *gorm.DB, command *CustomCommand) error {
+	if command == nil {
+		return errors.New("command cannot be nil")
+	}
+
+	if command.File != nil && command.Model.ID != 0 {
+
+		command.File.CustomCommandID = command.Model.ID
+		err := db.Save(&command.File).Error
+		if err != nil {
+			return err
+		}
 	}
 
 	err := db.
-		Where("id = ?", entry.Model.ID).
-		Assign(entry).
-		FirstOrCreate(&Entry{}).
+		Where("id = ?", command.Model.ID).
+		Assign(command).
+		FirstOrCreate(&CustomCommand{}).
 		Error
 	if err != nil {
 		return err
@@ -42,17 +58,10 @@ func entryUpsert(db *gorm.DB, entry *Entry) error {
 	return nil
 }
 
-func entryRemove(db *gorm.DB, id uint) error {
-	if id == 0 {
+func removeCustomCommand(db *gorm.DB, command *CustomCommand) error {
+	if command.Model.ID == 0 {
 		return errors.New("empty ID passed")
 	}
 
-	return db.Delete(Entry{}, "id = ?", id).Error
-}
-
-func entryUpdateTriggered(db *gorm.DB, entry *Entry) error {
-	if entry == nil {
-		return errors.New("entry cannot be nil")
-	}
-	return db.Model(entry).Update("triggered", gorm.Expr("triggered + 1")).Error
+	return db.Delete(command).Error
 }

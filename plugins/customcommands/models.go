@@ -1,34 +1,48 @@
 package customcommands
 
 import (
+	"errors"
 	"time"
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Entry struct {
+type CustomCommand struct {
 	gorm.Model
 
 	Name          string
 	GuildID       string // Could be blank if IsUserCommand is true and it was made in DMs
 	UserID        string
 	Content       string
-	ObjectName    string
+	File          *events.FileInfo `gorm:"foreignkey:CustomCommandID"`
 	Date          time.Time
 	Triggered     int
 	IsUserCommand bool
 }
 
-func (*Entry) TableName() string {
+func (*CustomCommand) TableName() string {
 	return "custom_commands"
 }
 
-func (e *Entry) run(event *events.Event) error {
-	err := entryUpdateTriggered(event.DB(), e)
+func (c *CustomCommand) run(event *events.Event) error {
+	err := c.triggered(event.DB())
 	if err != nil {
 		return err
 	}
-	_, err = event.Respond(e.Content)
+
+	output := c.Content
+	if c.File != nil {
+		output += "\n" + c.File.GetLink()
+	}
+
+	_, err = event.Respond(output)
 	return err
+}
+
+func (c *CustomCommand) triggered(db *gorm.DB) error {
+	if c == nil {
+		return errors.New("command cannot be nil")
+	}
+	return db.Model(c).Update("triggered", gorm.Expr("triggered + 1")).Error
 }
