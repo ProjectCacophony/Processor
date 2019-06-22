@@ -46,16 +46,7 @@ func upsertCustomCommand(db *gorm.DB, command *CustomCommand) error {
 		}
 	}
 
-	err := db.
-		Where("id = ?", command.Model.ID).
-		Assign(command).
-		FirstOrCreate(&CustomCommand{}).
-		Error
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return db.Save(command).Error
 }
 
 func removeCustomCommand(db *gorm.DB, command *CustomCommand) error {
