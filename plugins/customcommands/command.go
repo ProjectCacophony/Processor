@@ -172,7 +172,7 @@ func (p *Plugin) getCommandInfo(event *events.Event) {
 func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomCommand) {
 
 	sort.Slice(commands, func(i, j int) bool {
-		return commands[i].Date.Before(commands[j].Date)
+		return commands[i].Model.CreatedAt.Before(commands[j].Model.CreatedAt)
 	})
 
 	totalTriggered := commands[0].Triggered
@@ -217,7 +217,7 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 			Fields: []*discordgo.MessageEmbedField{
 				{Name: "Author", Value: userInfo},
 				{Name: "Times Triggered", Value: humanize.Comma(int64(totalTriggered))},
-				{Name: "Created At", Value: fmt.Sprintf("%s UTC", command.Date.Format(time.ANSIC))},
+				{Name: "Created At", Value: fmt.Sprintf("%s UTC", command.Model.CreatedAt.Format(time.ANSIC))},
 			},
 		},
 	}

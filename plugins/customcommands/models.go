@@ -2,7 +2,6 @@ package customcommands
 
 import (
 	"errors"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -16,7 +15,6 @@ type CustomCommand struct {
 	UserID        string
 	Content       string
 	File          *events.FileInfo `gorm:"foreignkey:CustomCommandID"`
-	Date          time.Time
 	Triggered     int
 	IsUserCommand bool
 }
