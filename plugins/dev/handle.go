@@ -119,7 +119,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	event.Require(func() {
 		p.handleAsCommand(event)
-	}, permissions.DiscordManageServer)
+	}, permissions.BotAdmin)
 	return true
 }
 
