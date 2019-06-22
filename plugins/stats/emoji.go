@@ -7,6 +7,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/regexp"
 )
 
 func findEmoji(event *events.Event) (*discordgo.Emoji, string, error) {
@@ -14,7 +15,12 @@ func findEmoji(event *events.Event) (*discordgo.Emoji, string, error) {
 		for _, fieldA := range event.Fields() {
 			for _, fieldB := range event.Fields() {
 
-				emoji, err := event.State().Emoji(fieldA, fieldB)
+				fieldBIDParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(fieldB)
+				if len(fieldBIDParts) < 5 {
+					continue
+				}
+
+				emoji, err := event.State().Emoji(fieldA, fieldBIDParts[4])
 				if err == nil {
 					return emoji, fieldA, nil
 				}
@@ -23,7 +29,12 @@ func findEmoji(event *events.Event) (*discordgo.Emoji, string, error) {
 	}
 
 	for _, field := range event.Fields() {
-		emoji, err := event.State().Emoji(event.GuildID, field)
+		fieldParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(field)
+		if len(fieldParts) < 5 {
+			continue
+		}
+
+		emoji, err := event.State().Emoji(event.GuildID, fieldParts[4])
 		if err == nil {
 			return emoji, event.GuildID, nil
 		}
@@ -31,8 +42,6 @@ func findEmoji(event *events.Event) (*discordgo.Emoji, string, error) {
 
 	return nil, "", errors.New("emoji not found")
 }
-
-// TODO: extract emoji ID from emoji
 
 func (p *Plugin) handleEmoji(event *events.Event) {
 	emoji, guildID, err := findEmoji(event)
