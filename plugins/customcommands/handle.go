@@ -1,13 +1,13 @@
 package customcommands
 
 import (
-	"regexp"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/regexp"
 	"go.uber.org/zap"
 )
 
@@ -195,14 +195,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 }
 
 func (p *Plugin) handleQuestionnaire(event *events.Event) {
-	re := regexp.MustCompile("[0-9]+")
-
 	if event.MessageCreate == nil || event.MessageCreate.Content == "" {
 		return
 	}
 
 	var handled bool
-	if enteredNum, err := strconv.Atoi(re.FindString(event.MessageCreate.Content)); err == nil {
+	if enteredNum, err := strconv.Atoi(regexp.ContainsNumber.FindString(event.MessageCreate.Content)); err == nil {
 		switch event.QuestionnaireMatch.Key {
 		case editQuestionnaireKey:
 			handled = p.handleEditResponse(event, enteredNum)
