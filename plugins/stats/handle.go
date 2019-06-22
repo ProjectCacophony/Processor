@@ -109,6 +109,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "Guild ID", Type: common.Text},
 				},
 			},
+			{
+				Name:        "stats.help.emoji.name",
+				Description: "stats.help.emoji.description",
+				Params: []common.CommandParam{
+					{Name: "emoji", Type: common.Flag},
+					{Name: ":emoji: or emoji ID", Type: common.Text},
+				},
+			},
+			{
+				Name:                "stats.help.emoji-server.name",
+				Description:         "stats.help.emoji-server.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				Params: []common.CommandParam{
+					{Name: "emoji", Type: common.Flag},
+					{Name: ":emoji: or emoji ID", Type: common.Text},
+					{Name: "Server ID", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -155,6 +173,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.RequireOr(
 			func() {
 				p.handleRole(event)
+			},
+			permissions.Not(permissions.DiscordChannelDM),
+			permissions.BotAdmin,
+		)
+		return true
+
+	case "emoji":
+		event.RequireOr(
+			func() {
+				p.handleEmoji(event)
 			},
 			permissions.Not(permissions.DiscordChannelDM),
 			permissions.BotAdmin,

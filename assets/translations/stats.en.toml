@@ -16,6 +16,10 @@
 "stats.help.find.description" = "Displays matches for a given ID on your Server"
 "stats.help.find-server.name" = "Find an ID on a Server"
 "stats.help.find-server.description" = "Displays matches for a given ID a Server"
+"stats.help.emoji.name" = "Show Emoji Stats"
+"stats.help.emoji.description" = "Show information about an Emoji"
+"stats.help.emoji-server.name" = "Show Server's Emoji Stats"
+"stats.help.emoji-server.description" = "Show information about a specific server's Emoji"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -118,6 +122,7 @@ Type: \
 "stats.role.not-found" = "I was not able to find the given role"
 "stats.role.embed.title" = "@{{.role.Name}}"
 "stats.role.embed.description" = "\
+ID: `#{{.role.ID}}`\n\
 {{if .role.Managed}}Managed\n{{end}}\
 {{if .role.Mentionable}}Mentionable\n{{end}}\
 {{if .role.Hoist}}Hoisted\n{{end}}\
@@ -138,3 +143,19 @@ Type: \
 {{if .matches.Emoji}}ID is an Emoji on {{.targetGuild.Name}}\n{{$match = true}}{{end}}\
 {{if not $match}}No entity with the given ID found on {{.targetGuild.Name}}{{end}}\
 "
+
+# handleEmoji
+"stats.emoji.not-found" = "I was not able to find the given emoji"
+"stats.emoji.embed.title" = "{{.emoji.Name}}"
+"stats.emoji.embed.description" = "\
+{{if .emojiURL}}[Image]({{.emojiURL}})\n{{end}}\
+ID: `#{{.emoji.ID}}`\n\
+{{if .emoji.Animated}}Animated\n{{end}}\
+{{if .emoji.Managed}}Managed\n{{end}}\
+{{if not .emoji.RequireColons}}Does Not Require Colons\n{{end}}\
+"
+"stats.emoji.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Emoji Created{{end}}"
+"stats.emoji.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
+"stats.emoji.embed.field.roles.name" = "{{if .emoji.Roles}}Roles{{end}}"
+"stats.emoji.embed.field.roles.value" = "{{range $roleID := .emoji.Roles}}<@&{{$roleID}}>{{end}}"
+"stats.emoji.embed.thumbnail.url" = "{{if .emojiURL}}{{.emojiURL}}{{end}}"
