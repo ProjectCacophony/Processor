@@ -1,6 +1,8 @@
 package stats
 
 import (
+	"strconv"
+
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -85,6 +87,28 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "Server ID", Type: common.Text},
 				},
 			},
+			{
+				Name:            "stats.help.find.name",
+				Description:     "stats.help.find.description",
+				SkipPrefix:      true,
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "@Bot", Type: common.Flag},
+					{Name: "ID", Type: common.Text},
+				},
+			},
+			{
+				Name:                "stats.help.find-server.name",
+				Description:         "stats.help.find-server.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				SkipPrefix:          true,
+				SkipRootCommand:     true,
+				Params: []common.CommandParam{
+					{Name: "@Bot", Type: common.Flag},
+					{Name: "ID", Type: common.Text},
+					{Name: "Guild ID", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -92,6 +116,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 func (p *Plugin) Action(event *events.Event) bool {
 	if !event.Command() {
 		return false
+	}
+
+	if event.BotMentionCommand() {
+		_, err := strconv.Atoi(event.Fields()[0])
+		if err == nil {
+			p.handleFind(event, event.Fields()[0])
+			return true
+		}
 	}
 
 	if event.Fields()[0] != "stats" ||

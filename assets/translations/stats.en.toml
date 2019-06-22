@@ -12,6 +12,10 @@
 "stats.help.role.description" = "Show information about a Role"
 "stats.help.role-server.name" = "Server Role Stats"
 "stats.help.role-server.description" = "Show information about a specific server's Role"
+"stats.help.find.name" = "Find an ID on your Server"
+"stats.help.find.description" = "Displays matches for a given ID on your Server"
+"stats.help.find-server.name" = "Find an ID on a Server"
+"stats.help.find-server.description" = "Displays matches for a given ID a Server"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -123,3 +127,14 @@ Type: \
 "
 "stats.role.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Role Created{{end}}"
 "stats.role.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
+
+# handleFind
+"stats.find.response" = "\
+{{$match := false}}\
+{{if .matches.Guild}}ID is a Server\n{{$match = true}}{{end}}\
+{{if .matches.User}}ID is an User\n{{$match = true}}{{end}}\
+{{if .matches.Channel}}ID is a Channel on {{.targetGuild.Name}}\n{{$match = true}}{{end}}\
+{{if .matches.Role}}ID is a Role on {{.targetGuild.Name}}\n{{$match = true}}{{end}}\
+{{if .matches.Emoji}}ID is an Emoji on {{.targetGuild.Name}}\n{{$match = true}}{{end}}\
+{{if not $match}}No entity with the given ID found on {{.targetGuild.Name}}{{end}}\
+"
