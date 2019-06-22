@@ -183,8 +183,13 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 	// if multi commands of same name
 	if len(commands) > 1 {
 
-		totalTriggered = 0
 		commandCreator := commands[0].UserID
+		user, err := event.State().User(commandCreator)
+		if err == nil && user != nil {
+			userInfo = fmt.Sprintf("%s#%s", user.Username, user.Discriminator)
+		}
+
+		totalTriggered = 0
 		commandArray := make([]string, len(commands))
 		for i, cmd := range commands {
 
@@ -193,13 +198,13 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 
 			// check if all commands of same name were uploaded by same user
 			if cmd.UserID != commandCreator {
-				userInfo = "*Multi Users*"
+				userInfo = "*Multiple Users*"
 			}
 
 			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.getContent())
 		}
 
-		content = "__Multi Commands__\n"
+		content = "__Multiple Commands__\n"
 		content += strings.Join(commandArray, "\n")
 	} else {
 
