@@ -8,6 +8,10 @@
 "stats.help.server-specific.description" = "Show information about a specific Server"
 "stats.help.channel.name" = "Channel Stats"
 "stats.help.channel.description" = "Show information about a Channel"
+"stats.help.role.name" = "Role Stats"
+"stats.help.role.description" = "Show information about a Role"
+"stats.help.role-server.name" = "Server Role Stats"
+"stats.help.role-server.description" = "Show information about a specific server's Role"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -105,3 +109,18 @@ Type: \
 "stats.channel.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
 "stats.channel.embed.field.permission-overwrites.name" = "{{if .channel.PermissionOverwrites}}Permission Overwrites{{end}}"
 "stats.channel.embed.field.permission-overwrites.value" = "{{if .channel.PermissionOverwrites}}{{len (.channel.PermissionOverwrites)}}{{end}}"
+
+# handleRole
+"stats.role.not-found" = "I was not able to find the given role"
+"stats.role.embed.title" = "@{{.role.Name}}"
+"stats.role.embed.description" = "\
+{{if .role.Managed}}Managed\n{{end}}\
+{{if .role.Mentionable}}Mentionable\n{{end}}\
+{{if .role.Hoist}}Hoisted\n{{end}}\
+{{if .role.Hoist}}Hoisted\n{{end}}\
+{{if .colorCode}}Color: `#{{.colorCode}}`\n{{end}}\
+{{if .role.Permissions}}Permissions Bit Masks: `{{.role.Permissions}}`\n{{end}}\
+{{if .guild}}Server: `{{.guild.Name}} #{{.guild.ID}}`\n{{end}}\
+"
+"stats.role.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Role Created{{end}}"
+"stats.role.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"

@@ -67,6 +67,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "Channel", Type: common.Channel, Optional: true},
 				},
 			},
+			{
+				Name:        "stats.help.role.name",
+				Description: "stats.help.role.description",
+				Params: []common.CommandParam{
+					{Name: "role", Type: common.Flag},
+					{Name: "@role or role ID", Type: common.Text},
+				},
+			},
+			{
+				Name:                "stats.help.role-server.name",
+				Description:         "stats.help.role-server.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				Params: []common.CommandParam{
+					{Name: "role", Type: common.Flag},
+					{Name: "@role or role ID", Type: common.Text},
+					{Name: "Server ID", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -99,6 +117,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	case "channel":
 		p.handleChannel(event)
+		return true
+
+	case "role":
+		event.RequireOr(
+			func() {
+				p.handleRole(event)
+			},
+			permissions.Not(permissions.DiscordChannelDM),
+			permissions.BotAdmin,
+		)
 		return true
 
 	}
