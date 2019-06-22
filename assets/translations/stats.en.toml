@@ -136,6 +136,7 @@ ID: `#{{.role.ID}}`\n\
 # handleFind
 "stats.find.response" = "\
 {{$match := false}}\
+ID from {{TimeFormat .createdAt .timezone}}\n\
 {{if .matches.Guild}}ID is a Server\n{{$match = true}}{{end}}\
 {{if .matches.User}}ID is an User\n{{$match = true}}{{end}}\
 {{if .matches.Channel}}ID is a Channel on {{.targetGuild.Name}}\n{{$match = true}}{{end}}\

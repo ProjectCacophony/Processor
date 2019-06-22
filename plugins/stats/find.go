@@ -26,12 +26,21 @@ func (p *Plugin) handleFind(event *events.Event, ID string) {
 		}
 	}
 
-	if targetGuild == nil {
+	if targetGuild == nil && event.GuildID != "" {
 		targetGuild, err = event.State().Guild(event.GuildID)
 		if err != nil {
 			event.Except(err)
 			return
 		}
+	}
+
+	if targetGuild == nil {
+		return
+	}
+
+	createdAt, err := discordgo.SnowflakeTimestamp(ID)
+	if err != nil {
+		return
 	}
 
 	var matches findMatches
@@ -50,6 +59,7 @@ func (p *Plugin) handleFind(event *events.Event, ID string) {
 		"stats.find.response",
 		"matches", matches,
 		"targetGuild", targetGuild,
+		"createdAt", createdAt,
 	)
 	event.Except(err)
 }
