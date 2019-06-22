@@ -154,10 +154,12 @@ func formatCommand(event *events.Event, command common.Command, pluginName strin
 		commandSummary += "**" + event.Translate(command.Name) + "**\n"
 	}
 
-	commandText := event.Prefix() + pluginName
-
-	if command.SkipRootCommand {
-		commandText = event.Prefix()
+	var commandText string
+	if !command.SkipPrefix {
+		commandText += event.Prefix()
+	}
+	if !command.SkipRootCommand {
+		commandText += pluginName
 	}
 
 	for i, param := range command.Params {
