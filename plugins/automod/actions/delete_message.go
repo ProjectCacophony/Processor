@@ -16,7 +16,7 @@ func (t DeleteMessage) Name() string {
 }
 
 func (t DeleteMessage) Args() int {
-	return 1
+	return 0
 }
 
 func (t DeleteMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
