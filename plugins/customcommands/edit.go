@@ -198,15 +198,16 @@ func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
 
 func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomCommand, newContent string, newAttachement *discordgo.MessageAttachment, isUserOperation bool) {
 
-	if newAttachement != nil {
-		if originalCommand.File != nil {
-			err := event.DeleteFile(originalCommand.File)
-			if err != nil {
-				event.Except(err)
-				return
-			}
+	if originalCommand.File != nil {
+		err := event.DeleteFile(originalCommand.File)
+		if err != nil {
+			event.Except(err)
+			return
 		}
+		originalCommand.File = nil
+	}
 
+	if newAttachement != nil {
 		msgs, messageErr := event.Send(event.ChannelID, "common.uploading-file")
 
 		newFile, err := event.AddAttachement(newAttachement)
@@ -360,11 +361,7 @@ func openEditQuestionnaire(event *events.Event, commands []CustomCommand, newCon
 	if isEdit {
 		key = editQuestionnaireKey
 		payload["newContent"] = newContent
-
-		if len(event.MessageCreate.Attachments) > 0 {
-			payload["messageID"] = event.MessageID
-
-		}
+		payload["messageID"] = event.MessageID
 	}
 
 	err = event.Questionnaire().Register(
