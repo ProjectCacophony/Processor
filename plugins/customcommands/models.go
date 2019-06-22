@@ -25,18 +25,25 @@ func (*CustomCommand) TableName() string {
 	return "custom_commands"
 }
 
+func (c *CustomCommand) getContent() string {
+	output := c.Content
+
+	if c.File != nil && c.File.GetLink() != "" {
+		if output != "" {
+			output += "\n"
+		}
+		output += c.File.GetLink()
+	}
+	return output
+}
+
 func (c *CustomCommand) run(event *events.Event) error {
 	err := c.triggered(event.DB())
 	if err != nil {
 		return err
 	}
 
-	output := c.Content
-	if c.File != nil {
-		output += "\n" + c.File.GetLink()
-	}
-
-	_, err = event.Respond(output)
+	_, err = event.Respond(c.getContent())
 	return err
 }
 

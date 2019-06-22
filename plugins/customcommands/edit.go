@@ -130,20 +130,11 @@ func (p *Plugin) editCommand(event *events.Event) {
 		p.processCommandEdit(event, commands[0], cmdContent, newAttachement, isUserOperation(event))
 	default:
 		output := "**Multiple commands with this name, which command would you like to update?**```"
+
 		for i, entry := range commands {
-			output += fmt.Sprintf("%d) %s", i+1, entry.Content)
-
-			// check for command file
-			if entry.File != nil {
-				if entry.Content != "" {
-					output += fmt.Sprintf("\n%s", entry.File.GetLink())
-				} else {
-					output += entry.File.GetLink()
-
-				}
-			}
-			output += "\n"
+			output += fmt.Sprintf("%d) %s\n", i+1, entry.getContent())
 		}
+
 		output += "```"
 		event.Respond(output)
 
@@ -285,7 +276,7 @@ func (p *Plugin) deleteCommand(event *events.Event) {
 	default:
 		output := "**Multiple commands with this name, which command would you like to delete?**```"
 		for i, entry := range commands {
-			output += fmt.Sprintf("%d: %s\n", i+1, entry.Content)
+			output += fmt.Sprintf("%d: %s\n", i+1, entry.getContent())
 		}
 		output += "```"
 

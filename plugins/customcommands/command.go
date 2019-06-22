@@ -177,7 +177,7 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 
 	totalTriggered := commands[0].Triggered
 	command := commands[0]
-	content := commands[0].Content
+	content := commands[0].getContent()
 	userInfo := "*Unknown*"
 
 	// if multi commands of same name
@@ -196,18 +196,9 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 				userInfo = "*Multi Users*"
 			}
 
-			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.Content)
-
-			// check for command file
-			if cmd.File != nil {
-				if cmd.Content != "" {
-					commandArray[i] += fmt.Sprintf("\n%s", cmd.File.GetLink())
-				} else {
-					commandArray[i] += cmd.File.GetLink()
-
-				}
-			}
+			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.getContent())
 		}
+
 		content = "__Multi Commands__\n"
 		content += strings.Join(commandArray, "\n")
 	} else {
