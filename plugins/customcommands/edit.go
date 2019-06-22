@@ -207,12 +207,17 @@ func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomC
 			}
 		}
 
+		msgs, messageErr := event.Send(event.ChannelID, "common.uploading-file")
+
 		newFile, err := event.AddAttachement(newAttachement)
 		if err != nil {
 			event.Except(err)
 			return
 		}
 
+		if messageErr == nil && msgs[0] != nil {
+			event.Discord().Client.ChannelMessageDelete(event.ChannelID, msgs[0].ID)
+		}
 		originalCommand.File = newFile
 	}
 
