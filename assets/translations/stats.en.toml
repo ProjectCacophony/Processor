@@ -117,7 +117,6 @@ Type: \
 {{if .role.Managed}}Managed\n{{end}}\
 {{if .role.Mentionable}}Mentionable\n{{end}}\
 {{if .role.Hoist}}Hoisted\n{{end}}\
-{{if .role.Hoist}}Hoisted\n{{end}}\
 {{if .colorCode}}Color: `#{{.colorCode}}`\n{{end}}\
 {{if .role.Permissions}}Permissions Bit Masks: `{{.role.Permissions}}`\n{{end}}\
 {{if .guild}}Server: `{{.guild.Name}} #{{.guild.ID}}`\n{{end}}\
