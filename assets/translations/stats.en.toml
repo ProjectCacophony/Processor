@@ -173,7 +173,7 @@ ID: `#{{.emoji.ID}}`\n\
 {{if .invite.Guild.Description}}Description: `{{.invite.Guild.Description}}`\n{{end}}\
 {{if .invite.Channel}}Channel: `{{if .parentChannel}}#{{.parentChannel.Name}} / {{end}}#{{.invite.Channel.Name}} #{{.invite.Channel.ID}}`\n{{end}}\
 {{if .invite.Inviter}}Inviter: `{{.invite.Inviter}} #{{.invite.Inviter.ID}}`\n{{end}}\
-{{if .invite.Uses}}Uses: `{{HumanizeNumber .invite.Uses}}/{{if .invite.MaxUses}}{{HumanizeNumber .invite.MaxUses}}{{end}}`\n{{end}}\
+{{if .invite.Uses}}Uses: `{{HumanizeNumber .invite.Uses}}{{if .invite.MaxUses}}/{{HumanizeNumber .invite.MaxUses}}{{end}}`\n{{end}}\
 {{if .maxAge}}Valid For: {{.maxAge}}{{end}}\
 {{if .invite.Revoked}}Revoked\n{{end}}\
 {{if .invite.Temporary}}Temporary\n{{end}}\
