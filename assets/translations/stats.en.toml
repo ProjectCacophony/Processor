@@ -160,3 +160,28 @@ ID: `#{{.emoji.ID}}`\n\
 "stats.emoji.embed.field.roles.name" = "{{if .emoji.Roles}}Roles{{end}}"
 "stats.emoji.embed.field.roles.value" = "{{range $roleID := .emoji.Roles}}<@&{{$roleID}}>{{end}}"
 "stats.emoji.embed.thumbnail.url" = "{{if .emojiURL}}{{.emojiURL}}{{end}}"
+
+# handleInvite
+"stats.invite.not-found" = "I was not able to find the given Invite"
+"stats.invite.embed.title" = "discord.gg/{{.invite.Code}}"
+"stats.invite.embed.url" = "https://discord.gg/{{.invite.Code}}"
+"stats.invite.embed.description" = "\
+{{if .invite.Guild.Icon}}[Icon]({{.iconURL}}) {{end}}\
+{{if .invite.Guild.Splash}}[Splash]({{.splashURL}}) {{end}}\
+{{if .invite.Guild.Banner}}[Banner]({{.bannerURL}}) {{end}}\n\
+{{if .invite.Guild}}Server: `{{.invite.Guild.Name}} #{{.invite.Guild.ID}}`\n{{end}}\
+{{if .invite.Guild.Description}}Description: `{{.invite.Guild.Description}}`\n{{end}}\
+{{if .invite.Channel}}Channel: `{{if .parentChannel}}#{{.parentChannel.Name}} / {{end}}#{{.invite.Channel.Name}} #{{.invite.Channel.ID}}`\n{{end}}\
+{{if .invite.Inviter}}Inviter: `{{.invite.Inviter}} #{{.invite.Inviter.ID}}`\n{{end}}\
+{{if .invite.Uses}}Uses: `{{HumanizeNumber .invite.Uses}}/{{if .invite.MaxUses}}{{HumanizeNumber .invite.MaxUses}}{{end}}`\n{{end}}\
+{{if .maxAge}}Valid For: {{.maxAge}}{{end}}\
+{{if .invite.Revoked}}Revoked\n{{end}}\
+{{if .invite.Temporary}}Temporary\n{{end}}\
+{{if .invite.Unique}}Unique\n{{end}}\
+{{if .invite.ApproximateMemberCount}}Members: `{{if .invite.ApproximatePresenceCount}}{{HumanizeNumber .invite.ApproximatePresenceCount}}/{{end}}{{HumanizeNumber .invite.ApproximateMemberCount}}`\n{{end}}\
+"
+"stats.invite.embed.thumbnail.url" = "{{if .invite.Guild.Icon}}{{.iconURL}}{{end}}"
+"stats.invite.embed.image.url" = "{{if .invite.Guild.Banner}}{{.bannerURL}}{{end}}"
+"stats.invite.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Invite Created{{end}}"
+"stats.invite.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
+"stats.invite.embed.footer.text" = "{{if not .detailed}}Only public information available{{end}}"

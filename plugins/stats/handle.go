@@ -10,6 +10,7 @@ import (
 )
 
 type Plugin struct {
+	tokens map[string]string
 }
 
 func (p *Plugin) Name() string {
@@ -17,6 +18,8 @@ func (p *Plugin) Name() string {
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
+	p.tokens = params.Tokens
+
 	return nil
 }
 
@@ -187,6 +190,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 			permissions.Not(permissions.DiscordChannelDM),
 			permissions.BotAdmin,
 		)
+		return true
+
+	case "invite":
+		p.handleInvite(event)
 		return true
 
 	}
