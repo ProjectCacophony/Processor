@@ -67,6 +67,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 				EmojiName:   "<:quickaction_remind_custom:582444736519077889>",
 				Description: "quickactions.help.remindCustom.description",
 			},
+			{
+				EmojiName:   "<:quickaction_raw:593498575275556875>",
+				Description: "quickactions.help.raw.description",
+			},
 		},
 	}
 }

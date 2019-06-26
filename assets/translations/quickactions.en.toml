@@ -5,6 +5,7 @@
 "quickactions.help.remind8.description" = "Will remind you about the message in eight hours"
 "quickactions.help.remind24.description" = "Will remind you about the message in 24 hours"
 "quickactions.help.remindCustom.description" = "Will remind you about the message in a custom duration"
+"quickactions.help.raw.description" = "Get the raw content of a message"
 
 # common
 "quickactions.message.content" = "\
@@ -19,4 +20,12 @@
 Please make sure you follow the right format.\n\
 For example: `2h`, or `10m`\
 The minimum delay is five minutes\
+"
+
+# rawMessage
+"quickactions.raw.content" = "\
+{{.emoji}} <{{MessageLink .message}}>\n\
+```\n\
+{{.message.Content | replace \"```\" \"` ` `\"}}\n\
+```\
 "

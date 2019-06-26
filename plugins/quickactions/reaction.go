@@ -23,6 +23,12 @@ func (p *Plugin) handleReaction(event *events.Event) bool {
 		return true
 	}
 
+	if event.MessageReactionAdd.Emoji.Name == rawMessageEmoji {
+		p.rawMessage(event)
+
+		return true
+	}
+
 	// ignore in DMs
 	if channel.Type != discordgo.ChannelTypeGuildText {
 		return false
