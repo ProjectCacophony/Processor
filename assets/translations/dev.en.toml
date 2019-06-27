@@ -26,10 +26,12 @@
 "dev.sleep.finished" = "I am done sleeping! :sweatsmile:"
 
 # handleDevTranslate
+"dev.translate.macro" = "Test!"
 "dev.translate.embed.description" = "\
 {{HumanizeNumber 999999}}\n\
 {{1 | plural \"one\" \"many\"}}\n\
 {{5 | plural \"one\" \"many\"}}\n\
+{{template \"dev.translate.macro\"}}\n\
 "
 
 # handleDevPermission
