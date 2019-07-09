@@ -100,7 +100,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 	}
 
 	duration, err := time.ParseDuration(event.MessageCreate.Content)
-	if err != nil || duration < 5*time.Minute {
+	if err != nil || duration < 1*time.Minute {
 		messages, _ := event.Send(
 			event.ChannelID,
 			"quickactions.remind.invalid-custom-delay",

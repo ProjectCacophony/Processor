@@ -130,6 +130,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "Server ID", Type: common.Text},
 				},
 			},
+			{
+				Name:        "stats.help.search.name",
+				Description: "stats.help.search.description",
+				Params: []common.CommandParam{
+					{Name: "search", Type: common.Flag},
+					{Name: "Regular Expression", Type: common.Text},
+				},
+			},
+			{
+				Name:                "stats.help.search-server.name",
+				Description:         "stats.help.search-server.description",
+				PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+				Params: []common.CommandParam{
+					{Name: "search", Type: common.Flag},
+					{Name: "Regular Expression", Type: common.Text},
+					{Name: "Server ID", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -194,6 +212,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	case "invite":
 		p.handleInvite(event)
+		return true
+
+	case "search":
+		p.handleSearch(event)
 		return true
 
 	}

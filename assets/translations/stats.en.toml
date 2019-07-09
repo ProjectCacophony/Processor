@@ -20,6 +20,10 @@
 "stats.help.emoji.description" = "Show information about an Emoji"
 "stats.help.emoji-server.name" = "Show Server's Emoji Stats"
 "stats.help.emoji-server.description" = "Show information about a specific server's Emoji"
+"stats.help.search.name" = "Search for Members"
+"stats.help.search.description" = "Searches for a member using the given Regular Expression\nDetails: <https://golang.org/pkg/regexp/>"
+"stats.help.search-server.name" = "Search for Server's Members"
+"stats.help.search-server.description" = "Searches for a member on a specific server using the given Regular Expression\nDetails: <https://golang.org/pkg/regexp/>"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"
@@ -185,3 +189,17 @@ ID: `#{{.emoji.ID}}`\n\
 "stats.invite.embed.field.created-at.name" = "{{if not (TimeIsZero .createdAt)}}Invite Created{{end}}"
 "stats.invite.embed.field.created-at.value" = "{{if not (TimeIsZero .createdAt)}}{{TimeFormat .createdAt .timezone}}{{end}}"
 "stats.invite.embed.footer.text" = "{{if not .detailed}}Only public information available{{end}}"
+
+# handleSearch
+"stats.search.no-search-value" = "Please tell me what to search for!"
+"stats.search.search-value-invalid" = "**Invalid search value**\nPlease make sure the search text is a valid Regular Expression.\nDetails: <https://golang.org/pkg/regexp/>"
+"stats.search.content" = "\
+{{if not .members}}\
+Sorry, could not find any members for `{{Escape .searchText}}`.\
+{{else}}\
+Found {{if ge (len $.members) 10}}at least {{end}}**{{len $.members}}** members for `{{Escape .searchText}}`\n\
+{{range $member := .members}}\
+`{{Escape $member.User.String}}{{if $member.Nick}}: {{$member.Nick}}{{end}} (#{{$member.User.ID}})`\n\
+{{end}}\
+{{end}}\
+"
