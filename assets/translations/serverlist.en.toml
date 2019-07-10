@@ -26,7 +26,7 @@ So far **{{len .categories}}** Categorie(s) set up.\n\
 
 # handleAdd
 "serverlist.add.too-few" = "**You did not tell me enough about your server!** :shocked:\n\
-Usage: `{{.prefix}}serverlist add <Invite Link> <Description> <Categories, split by ;>\n\
+Usage: `{{.prefix}}serverlist add <Invite Link> \"<Description>\" <Categories, split by ;>`\n\
 For Example: `{{.prefix}}serverlist add discord.gg​/Example \"The Discord Server for the new Girl Group Example!\" \"girl group\"`\
 "
 "serverlist.add.invalid-invite" = "**Looks like the Invite Link is invalid**\n\
