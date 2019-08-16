@@ -21,6 +21,7 @@ stringData:
   discordAPIBase: "{{DISCORD_API_BASE}}"
   gcloudBucketName: "{{GCLOUD_BUCKET_NAME}}"
   objectStorageFQDN: "{{OBJECT_STORAGE_FQDN}}"
+  weverseToken: "{{WEVERSE_TOKEN}}"
 
 ---
 apiVersion: v1
@@ -163,6 +164,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: objectStorageFQDN
+          - name: WEVERSE_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: weverseToken
       volumes:
         - name: google-cloud
           secret:
