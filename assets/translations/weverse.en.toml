@@ -1,0 +1,64 @@
+# macros
+"weverse.macro.community-list" = "\
+The following communities are supported at the moment, please try one of them:\n\
+{{range $i, $community := .}}{{if $i}}, {{end}}`{{$community.Name}}`{{end}}.\
+"
+# add
+"weverse.add.too-few" = "\
+**Please tell me the name of the community to add.**\n\
+{{template \"weverse.macro.community-list\" .communities}}\
+"
+"weverse.add.too-many" = "Looks like you have reached the limit of how many Weverse feeds you can add."
+"weverse.add.not-found" = "\
+**I was not able to find the given community** :weary:\n\
+{{template \"weverse.macro.community-list\" .communities}}\
+"
+"weverse.add.duplicate" = "Looks like this Weverse feed is already set up in this channel."
+"weverse.add.success" = "\
+{{- if not .dm }}\
+**I added the Weverse feed for `{{.community.Name}}` to {{.channel.Mention}}.**\n\
+{{ else }}\
+**I will DM you the Instagram feed for `{{.community.Name}}`!**\n\
+{{ end }}\
+"
+
+# remove
+"weverse.remove.too-few" = "Please tell me which community feed to remove."
+"weverse.remove.not-found" = "I was not able to find this Weverse community feed."
+"weverse.remove.message" = "I removed the Weverse community feed **{{.entry.WeverseChannelName}}**{{ if not .entry.DM }} from <#{{.entry.ChannelOrUserID}}>{{ end }}."
+
+# status
+"weverse.status.message" = "\
+{{if gt (len .entries) 0}}\
+**Weverse community feeds set up**\n\
+{{range $entry := .entries}}\
+**{{$entry.WeverseChannelName}}**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
+`{{HumanizeNumber $entry.Posts}}` posts so far, \
+last check {{TimeFormatShort $entry.ArtistFeedLastCheck $.timezone}} \
+{{if eq $entry.ArtistFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.ArtistFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.ArtistFeedCheck.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
+media {{TimeFormatShort $entry.MediaFeedLastCheck $.timezone}} \
+{{if eq $entry.MediaFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.MediaFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.MediaFeedCheck.CheckMessage}}: `{{$entry.MediaFeedCheck.CheckMessage}}`{{end}} \
+notices {{TimeFormatShort $entry.NoticeFeedLastCheck $.timezone}} \
+{{if eq $entry.NoticeFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.NoticeFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.NoticeFeedCheck.CheckMessage}}: `{{$entry.NoticeFeedCheck.CheckMessage}}`{{end}}\
+\n\
+{{end}}\
+So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Weverse community feeds set up.\n\
+{{else}}\
+**Looks like there are no Weverse community feeds set up on here yet.**\n\
+You can add one: `{{.prefix}}weverse add <Community Name>`\
+{{end}}\
+\
+"
+
+# help info
+"weverse.help.description" = "Have the bot watch certain Weverse communities and have it post updates in a given channel."
+"weverse.help.list.name" = "List Weverse community feeds"
+"weverse.help.list.description" = "Displays all Weverse community feeds set up on this Server, or in your DMs."
+"weverse.help.add.name" = "Add a Weverse community feed"
+"weverse.help.add.description" = "Adds a given Weverse community to the current channel, or a specific channel if given."
+"weverse.help.remove.name" = "Remove a Weverse community feed"
+"weverse.help.remove.description" = "Removes a given Weverse community from the feeds."

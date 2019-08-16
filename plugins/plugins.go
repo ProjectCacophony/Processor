@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
+	"gitlab.com/Cacophony/Processor/plugins/weverse"
 	"gitlab.com/Cacophony/go-kit/localization"
 
 	"github.com/go-redis/redis"
@@ -72,6 +73,7 @@ var (
 		&quickactions.Plugin{},
 		&customcommands.Plugin{},
 		&stats.Plugin{},
+		&weverse.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
