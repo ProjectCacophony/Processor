@@ -46,15 +46,15 @@ func (p *Plugin) Action(event *events.Event) bool {
 	switch event.Fields()[0] {
 	case "ping":
 
-		handlePing(event)
+		p.handlePing(event)
 		return true
 	case "pong":
 
-		handlePong(event)
+		p.handlePong(event)
 		return true
 	case "pang":
 
-		handlePang(event)
+		p.handlePang(event)
 		return true
 	}
 

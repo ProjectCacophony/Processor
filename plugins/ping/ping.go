@@ -10,7 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func handlePing(event *events.Event) {
+func (p *Plugin) handlePing(event *events.Event) {
 	createdAt, err := event.MessageCreate.Timestamp.Parse()
 	if err != nil {
 		event.Except(err)
@@ -76,14 +76,14 @@ func handlePing(event *events.Event) {
 	event.Except(err)
 }
 
-func handlePong(event *events.Event) {
+func (p *Plugin) handlePong(event *events.Event) {
 	_, err := event.Respond("ping.pong-response")
 	if err != nil {
 		event.Except(err)
 	}
 }
 
-func handlePang(event *events.Event) {
+func (p *Plugin) handlePang(event *events.Event) {
 	_, err := event.Respond("ping.pang-response")
 	if err != nil {
 		event.Except(err)
