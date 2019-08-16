@@ -100,11 +100,6 @@ func pingEmbed() *discordgo.MessageEmbed {
 				Inline: false,
 			},
 			{
-				Name:   "ping.ping-response.embed.field.ProxyLatency.title",
-				Value:  "ping.ping-response.embed.field.ProxyLatency.value",
-				Inline: false,
-			},
-			{
 				Name:   "ping.ping-response.embed.field.SendDuration.title",
 				Value:  "ping.ping-response.embed.field.SendDuration.value",
 				Inline: false,

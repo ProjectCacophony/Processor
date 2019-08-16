@@ -7,10 +7,10 @@
 "ping.ping-response.embed.field.Event.value" = "\
 :discord: Discord • **{{.DiscordToGateway}}** ► 🚪 Gateway • **{{.GatewayToProcessor}}** ► ⚙ Processor\
 "
-"ping.ping-response.embed.field.ProxyLatency.title" = "Proxy"
-"ping.ping-response.embed.field.ProxyLatency.value" = "{{if .ProxyLatency}}**{{.ProxyLatency}}**{{end}}"
-"ping.ping-response.embed.field.SendDuration.title" = "Discord API"
-"ping.ping-response.embed.field.SendDuration.value" = "{{if .SendDuration}}**{{.SendDuration}}**{{end}}"
+"ping.ping-response.embed.field.SendDuration.title" = "Discord HTTP API"
+"ping.ping-response.embed.field.SendDuration.value" = "\
+{{if .SendDuration}}⚙ Processor{{if .ProxyLatency}} • **{{.ProxyLatency}}** ► 📨 Proxy{{end}} • **{{.SendDuration}}** ► :discord: Discord{{end}}\
+"
 
 # handlePong
 "ping.pong-response" = [
