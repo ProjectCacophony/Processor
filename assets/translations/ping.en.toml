@@ -3,13 +3,13 @@
 
 # handlePing
 "ping.ping-response.embed.title" = "**:onfire: Latency**"
-"ping.ping-response.embed.field.DiscordToGateway.title" = "Discord to Gateway"
-"ping.ping-response.embed.field.DiscordToGateway.value" = "**{{.DiscordToGateway}}**"
-"ping.ping-response.embed.field.GatewayToProcessor.title" = "Gateway to Processor"
-"ping.ping-response.embed.field.GatewayToProcessor.value" = "**{{.GatewayToProcessor}}**"
+"ping.ping-response.embed.field.Event.title" = "Discord Event"
+"ping.ping-response.embed.field.Event.value" = "\
+:discord: Discord • **{{.DiscordToGateway}}** ► 🚪 Gateway • **{{.GatewayToProcessor}}** ► ⚙ Processor\
+"
 "ping.ping-response.embed.field.ProxyLatency.title" = "Proxy"
 "ping.ping-response.embed.field.ProxyLatency.value" = "{{if .ProxyLatency}}**{{.ProxyLatency}}**{{end}}"
-"ping.ping-response.embed.field.SendDuration.title" = "HTTP API"
+"ping.ping-response.embed.field.SendDuration.title" = "Discord API"
 "ping.ping-response.embed.field.SendDuration.value" = "{{if .SendDuration}}**{{.SendDuration}}**{{end}}"
 
 # handlePong

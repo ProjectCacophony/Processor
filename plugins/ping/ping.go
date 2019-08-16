@@ -95,13 +95,8 @@ func pingEmbed() *discordgo.MessageEmbed {
 		Title: "ping.ping-response.embed.title",
 		Fields: []*discordgo.MessageEmbedField{
 			{
-				Name:   "ping.ping-response.embed.field.DiscordToGateway.title",
-				Value:  "ping.ping-response.embed.field.DiscordToGateway.value",
-				Inline: false,
-			},
-			{
-				Name:   "ping.ping-response.embed.field.GatewayToProcessor.title",
-				Value:  "ping.ping-response.embed.field.GatewayToProcessor.value",
+				Name:   "ping.ping-response.embed.field.Event.title",
+				Value:  "ping.ping-response.embed.field.Event.value",
 				Inline: false,
 			},
 			{
