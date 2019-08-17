@@ -56,9 +56,8 @@ func entryRemove(db *gorm.DB, id uint) error {
 	return db.Delete(Entry{}, "id = ?", id).Error
 }
 
-// TODO
-// func countPosts(db *gorm.DB, id uint) (int, error) {
-// 	var amount int
-// 	err := db.Model(&Post{}).Where("entry_id = ?", id).Count(&amount).Error
-// 	return amount, err
-// }
+func countPosts(db *gorm.DB, id uint) (int, error) {
+	var amount int
+	err := db.Model(&Post{}).Where("entry_id = ?", id).Count(&amount).Error
+	return amount, err
+}

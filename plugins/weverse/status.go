@@ -34,8 +34,7 @@ func (p *Plugin) status(event *events.Event) {
 		}
 		enhancedEntries[i].By = user
 
-		// TODO: when we store posts
-		// enhancedEntries[i].Posts, _ = countPosts(p.db, entry.ID)
+		enhancedEntries[i].Posts, _ = countPosts(p.db, entry.ID)
 	}
 
 	_, err = event.Respond("weverse.status.message",

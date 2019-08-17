@@ -3,6 +3,7 @@ package weverse
 import (
 	"time"
 
+	"github.com/lib/pq"
 	"gitlab.com/Cacophony/go-kit/feed"
 
 	"github.com/jinzhu/gorm"
@@ -33,17 +34,16 @@ func (*Entry) TableName() string {
 	return "weverse_entries"
 }
 
-// TODO
-// // Post model maintained by Worker
-// type Post struct {
-// 	gorm.Model
-// 	EntryID uint
-//
-// 	Type       string
-// 	PostID     string
-// 	MessageIDs pq.StringArray `gorm:"type:varchar[]"`
-// }
-//
-// func (*Post) TableName() string {
-// 	return "weverse_posts"
-// }
+// Post model maintained by Worker
+type Post struct {
+	gorm.Model
+	EntryID uint
+
+	PostType   string
+	PostID     int64
+	MessageIDs pq.StringArray `gorm:"type:varchar[]"`
+}
+
+func (*Post) TableName() string {
+	return "weverse_posts"
+}
