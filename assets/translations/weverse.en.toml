@@ -37,7 +37,7 @@ added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeF
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
 last check {{TimeFormatShort $entry.ArtistFeedLastCheck $.timezone}} \
 {{if eq $entry.ArtistFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.ArtistFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
-{{if $entry.ArtistFeedCheck.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
+{{if $entry.ArtistFeedCheck.CheckMessage}}: `{{$entry.ArtistFeedCheck.CheckMessage}}`{{end}} \
 media {{TimeFormatShort $entry.MediaFeedLastCheck $.timezone}} \
 {{if eq $entry.MediaFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.MediaFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.MediaFeedCheck.CheckMessage}}: `{{$entry.MediaFeedCheck.CheckMessage}}`{{end}} \

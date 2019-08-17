@@ -118,6 +118,7 @@ func StartPlugins(
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
+				zap.String("name", plugin.Name()),
 				zap.Error(err),
 			)
 		}
@@ -147,6 +148,7 @@ func StopPlugins(
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",
+				zap.String("name", plugin.Name()),
 				zap.Error(err),
 			)
 		}
