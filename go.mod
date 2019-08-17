@@ -2,7 +2,7 @@ module gitlab.com/Cacophony/Processor
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
-	github.com/Seklfreak/geverse v0.0.0-20190816190345-c4d5e2f7c493
+	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
 	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
 	github.com/Seklfreak/ginsta v0.0.0-20190516055424-e66040c5a770
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942

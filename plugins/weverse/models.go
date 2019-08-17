@@ -17,7 +17,7 @@ type Entry struct {
 	BotID           string // only relevant for DMs
 
 	WeverseChannelName string
-	WeverseChannelID   int
+	WeverseChannelID   int64
 
 	ArtistFeedLastCheck time.Time
 	ArtistFeedCheck     feed.Check `gorm:"embedded;embedded_prefix:artist_"`

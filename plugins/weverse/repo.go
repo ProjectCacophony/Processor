@@ -12,7 +12,7 @@ func entryAdd(
 	channelOrUserID string,
 	guildID string,
 	weverseChannelName string,
-	weverseChannelID int,
+	weverseChannelID int64,
 	botID string,
 	dm bool,
 ) error {

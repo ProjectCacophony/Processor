@@ -17,11 +17,9 @@ import (
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
-	"go.uber.org/zap"
 )
 
 type Plugin struct {
-	logger      *zap.Logger
 	state       *state.State
 	db          *gorm.DB
 	geverse     *geverse.Geverse
@@ -44,7 +42,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	}
 
 	p.state = params.State
-	p.logger = params.Logger
 	p.db = params.DB
 	p.geverse = geverse.NewGeverse(
 		&http.Client{
