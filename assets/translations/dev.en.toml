@@ -28,6 +28,8 @@
 # handleDevTranslate
 "dev.translate.macro" = "Test!"
 "dev.translate.embed.description" = "\
+:nayoung::nayoung::nayoung:\n\
+{{ \"wow https://google.com https://byul.ro/hnKOo\" | HideEmbeds }}\n\
 {{HumanizeNumber 999999}}\n\
 {{1 | plural \"one\" \"many\"}}\n\
 {{5 | plural \"one\" \"many\"}}\n\
