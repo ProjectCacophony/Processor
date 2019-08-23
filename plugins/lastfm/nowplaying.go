@@ -51,7 +51,7 @@ func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api,
 	if tracks[0].Album != "" {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:   "lastfm.album.title",
-			Value:  tracks[0].Album,
+			Value:  event.Translate("lastfm.album.value", "album", tracks[0].Album),
 			Inline: false,
 		})
 	}
