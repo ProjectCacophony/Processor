@@ -22,6 +22,7 @@ stringData:
   gcloudBucketName: "{{GCLOUD_BUCKET_NAME}}"
   objectStorageFQDN: "{{OBJECT_STORAGE_FQDN}}"
   weverseToken: "{{WEVERSE_TOKEN}}"
+  instagramSessionIDs: "{{INSTAGRAM_SESSION_IDS}}"
 
 ---
 apiVersion: v1
@@ -169,6 +170,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: weverseToken
+          - name: INSTAGRAM_SESSION_IDS
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: instagramSessionIDs
       volumes:
         - name: google-cloud
           secret:

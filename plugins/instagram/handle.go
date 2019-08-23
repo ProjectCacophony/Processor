@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Seklfreak/ginsta"
+	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
@@ -29,7 +30,17 @@ func (p *Plugin) Name() string {
 	return "instagram"
 }
 
+type config struct {
+	InstagramSessionIDs []string `envconfig:"INSTAGRAM_SESSION_IDS"`
+}
+
 func (p *Plugin) Start(params common.StartParameters) error {
+	var config config
+	err := envconfig.Process("", &config)
+	if err != nil {
+		return err
+	}
+
 	p.state = params.State
 	p.logger = params.Logger
 	p.db = params.DB
@@ -37,7 +48,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		&http.Client{
 			Timeout: time.Second * 30,
 		},
-		nil,
+		config.InstagramSessionIDs,
 	)
 
 	return params.DB.AutoMigrate(Entry{}).Error
