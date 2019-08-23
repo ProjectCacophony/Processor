@@ -13,10 +13,10 @@ func feedsPerGuildLimit(event *events.Event) int {
 	}
 
 	if event.DM() {
-		return 2
+		return 0
 	}
 
-	return 5
+	return 0
 }
 
 func paramsExtractChannel(event *events.Event, args []string) (*discordgo.Channel, []string, error) {
