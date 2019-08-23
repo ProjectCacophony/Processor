@@ -82,6 +82,7 @@ func handle(
 				l.Debug("skipping plugin as it is disabled by feature flags",
 					zap.String("plugin_name", plugin.Name()),
 					zap.String("user_id", event.UserID),
+					zap.String("event_id", event.ID),
 				)
 				continue
 			}
