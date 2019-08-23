@@ -1,0 +1,12 @@
+# help
+"shorten.help.description" = "Allows shortening links"
+"shorten.help.shorten.name" = "Shorten a link"
+"shorten.help.shorten.description" = "Will tell you a shortened version of the link"
+
+# handleShorten
+"shorten.shorten.too-few" = "Please tell me a link to shorten :thinking:"
+"shorten.shorten.content" = [
+"Here you go <{{.link | Shorten}}>! :salute:",
+"This should be shorter <{{.link | Shorten}}>! :sweatsmile:",
+"How do you like <{{.link | Shorten}}>? :wink:"
+]
