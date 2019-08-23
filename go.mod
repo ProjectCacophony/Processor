@@ -4,7 +4,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
 	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
-	github.com/Seklfreak/ginsta v0.0.0-20190516055424-e66040c5a770
+	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/bsm/redis-lock v8.0.0+incompatible
 	github.com/bwmarrin/discordgo v0.16.1-0.20190608205439-347a4f69b0b5

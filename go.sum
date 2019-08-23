@@ -40,8 +40,8 @@ github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586 h1:/CeD/ANJZ1YWv
 github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586/go.mod h1:wwBflTGJswLXVWg6kBM5vvno3yBNRytF2VeDSUb+Xl0=
 github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb h1:10eDd8gJhc0Hi0Av6JTxsR5j6AFGw1uIHPpLDt1T6ug=
 github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
-github.com/Seklfreak/ginsta v0.0.0-20190516055424-e66040c5a770 h1:azhYWaSXHcrQFgYRAyOzEcwStSN/taAm8eabZIBDI8U=
-github.com/Seklfreak/ginsta v0.0.0-20190516055424-e66040c5a770/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
+github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89 h1:lIq8Pd6oREFNu8c+gWRxJaqPe1T+IK2FAdxZiX9u/cA=
+github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942/go.mod h1:XdwC3B7PxCkYCXs4AzYEtvQxjsi93vc/kSV09u+AFWw=
 github.com/Seklfreak/polr-go v0.0.0-20190324143256-a87fed130937 h1:i7uyK5VEr5L/ZJEL4Bn8ff0dk+a5z0g9zJjSYxGyf0c=
@@ -241,8 +241,6 @@ github.com/uber/jaeger-client-go v2.15.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v1.5.0/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
-gitlab.com/Cacophony/go-kit v0.0.0-20190816211206-6fdf6f25c606 h1:kLJTU/67IXodEOngzWUILYXRXP7LKDi4JDemo9HSGlU=
-gitlab.com/Cacophony/go-kit v0.0.0-20190816211206-6fdf6f25c606/go.mod h1:HijGEFiq2c2Ii0I8JIcWpvEIrhoj+9wqDEEpwKSC1Gg=
 gitlab.com/Cacophony/go-kit v0.0.0-20190821200127-bf46b06b0770 h1:99aAhfq93uR9wKas+JPDVXfZDAYhK8YpYWbMJhSQ8bs=
 gitlab.com/Cacophony/go-kit v0.0.0-20190821200127-bf46b06b0770/go.mod h1:Khn4hINjJFHKbB0YccNv/0/+C9g6LYHZDS3Ck0jBJlA=
 go.mongodb.org/mongo-driver v1.0.1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
