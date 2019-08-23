@@ -49,6 +49,7 @@ func handle(
 		event.WithDB(db)
 		event.WithHTTPClient(httpClient)
 		event.WithQuestionnaire(questionnaire)
+		event.WithFeatureFlagger(featureFlagger)
 
 		event.Parse()
 
@@ -77,9 +78,10 @@ func handle(
 		}
 
 		for _, plugin := range plugins.PluginList {
-			if !featureFlagger.IsEnabled(featureFlagPluginKey(plugin.Name()), true) {
+			if !event.IsEnabled(featureFlagPluginKey(plugin.Name()), true) {
 				l.Debug("skipping plugin as it is disabled by feature flags",
 					zap.String("plugin_name", plugin.Name()),
+					zap.String("user_id", event.UserID),
 				)
 				continue
 			}
