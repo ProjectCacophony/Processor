@@ -54,6 +54,18 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "files…", Type: common.Attachment},
 				},
 			},
+			{
+				Name:        "uploads.help.list.name",
+				Description: "uploads.help.list.description",
+			},
+			{
+				Name:        "uploads.help.delete.name",
+				Description: "uploads.help.delete.description",
+				Params: []common.CommandParam{
+					{Name: "delete", Type: common.Flag},
+					{Name: "link", Type: common.Link},
+				},
+			},
 		},
 	}
 }
@@ -72,7 +84,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	// TODO: Commands…
+	if len(event.Fields()) >= 2 && (event.Fields()[1] == "delete" || event.Fields()[1] == "remove") {
+		p.handleDelete(event)
+		return true
+	}
 
 	p.handleList(event)
 	return true

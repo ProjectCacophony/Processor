@@ -1,7 +1,11 @@
 # help
-"uploads.help.description" = "Allows hosting files and managing hosted files"
+"uploads.help.description" = "Allows hosting files and managing hosted file.s"
 "uploads.help.upload.name" = "Upload a file"
 "uploads.help.upload.description" = "Uploads a file and gives you a public link for it."
+"uploads.help.list.name" = "List all uploaded files"
+"uploads.help.list.description" = "Displays all files you have uploaded so far."
+"uploads.help.delete.name" = "Delete a uploaded file"
+"uploads.help.delete.description" = "Permanently deletes a file from the storage."
 
 # handleUpload
 "uploads.upload.too-few" = "Please send me a file to upload. :detective:"
@@ -25,3 +29,8 @@ uploaded {{TimeFormat $upload.CreatedAt $.timezone}}\n\
 {{end}}\
 {{end}}\
 "
+
+# handleDelete
+"uploads.delete.not-found" = "**I was not able to find the file you want to delete!** :nomouth:\n\
+Please tell me the link of the file you want to delete."
+"uploads.delete.success" = "I removed the file `{{.upload.FileInfo.Filename}}`! :wave:"

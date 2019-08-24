@@ -35,3 +35,11 @@ func getUploads(
 
 	return uploads, err
 }
+
+func deleteUpload(db *gorm.DB, id uint) error {
+	if id == 0 {
+		return errors.New("empty ID passed")
+	}
+
+	return db.Delete(Upload{}, "id = ?", id).Error
+}
