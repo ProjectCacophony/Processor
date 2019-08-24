@@ -43,7 +43,10 @@ media {{TimeFormatShort $entry.MediaFeedLastCheck $.timezone}} \
 {{if $entry.MediaFeedCheck.CheckMessage}}: `{{$entry.MediaFeedCheck.CheckMessage}}`{{end}} \
 notices {{TimeFormatShort $entry.NoticeFeedLastCheck $.timezone}} \
 {{if eq $entry.NoticeFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.NoticeFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
-{{if $entry.NoticeFeedCheck.CheckMessage}}: `{{$entry.NoticeFeedCheck.CheckMessage}}`{{end}}\
+{{if $entry.NoticeFeedCheck.CheckMessage}}: `{{$entry.NoticeFeedCheck.CheckMessage}}`{{end}} \
+moments {{TimeFormatShort $entry.MomentFeedLastCheck $.timezone}} \
+{{if eq $entry.MomentFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.MomentFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.MomentFeedCheck.CheckMessage}}: `{{$entry.MomentFeedCheck.CheckMessage}}`{{end}} \
 \n\
 {{end}}\
 So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Weverse community feeds set up.\n\
