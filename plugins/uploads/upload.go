@@ -5,9 +5,7 @@ import (
 )
 
 func (p *Plugin) handleUpload(event *events.Event) {
-	// TODO: allow multiple uploads at once
-
-	var uploads []Upload
+	var uploads []Upload // nolint: prealloc
 
 	for _, attachment := range event.MessageCreate.Attachments {
 		file, err := event.AddAttachement(attachment)

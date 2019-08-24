@@ -11,3 +11,17 @@
 {{$upload.FileInfo.GetLink}}\n\
 {{end}}\
 "
+
+# handleList
+"uploads.list.content" = "\
+{{if lt (len .uploads) 1}}\
+**You haven't uploaded anything so far**\n\
+You can upload something by mentioning me with a file attachment!\n\
+{{else}}\
+{{range $upload := .uploads}}\
+uploaded {{TimeFormat $upload.CreatedAt $.timezone}}\n\
+`{{$upload.FileInfo.Filename}}` <{{$upload.FileInfo.GetLink}}> ({{HumanizeBytes (int64 $upload.FileInfo.Filesize)}})\n\
+\n\
+{{end}}\
+{{end}}\
+"

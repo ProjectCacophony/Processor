@@ -20,3 +20,18 @@ func addUpload(
 		UserID:     userID,
 	}).Error
 }
+
+func getUploads(
+	db *gorm.DB,
+	userID string,
+) ([]Upload, error) {
+	var uploads []Upload
+
+	err := db.
+		Preload("FileInfo").
+		Where("user_id = ?", userID).
+		Order("created_at ASC").
+		Find(&uploads).Error
+
+	return uploads, err
+}

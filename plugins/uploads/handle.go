@@ -68,7 +68,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	// Commands…
+	if event.Fields()[0] != "uploads" {
+		return false
+	}
 
-	return false
+	// TODO: Commands…
+
+	p.handleList(event)
+	return true
 }
