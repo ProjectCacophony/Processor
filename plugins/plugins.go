@@ -7,6 +7,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/shorten"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
+	"gitlab.com/Cacophony/Processor/plugins/uploads"
 	"gitlab.com/Cacophony/Processor/plugins/weverse"
 	"gitlab.com/Cacophony/go-kit/localization"
 
@@ -76,6 +77,7 @@ var (
 		&stats.Plugin{},
 		&weverse.Plugin{},
 		&shorten.Plugin{},
+		&uploads.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

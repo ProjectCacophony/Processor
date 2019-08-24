@@ -1,0 +1,13 @@
+# help
+"uploads.help.description" = "Allows hosting files and managing hosted files"
+"uploads.help.upload.name" = "Upload a file"
+"uploads.help.upload.description" = "Uploads a file and gives you a public link for it."
+
+# handleUpload
+"uploads.upload.too-few" = "Please send me a file to upload. :detective:"
+"uploads.upload.content" = "\n\
+**{{if lt (len .uploads) 2}}Here is your upload{{else}}Here are your uploads{{end}}** :highfive:\n\
+{{range $upload := .uploads}}\
+{{$upload.FileInfo.GetLink}}\n\
+{{end}}\
+"
