@@ -70,6 +70,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "instagram.help.description",
+		Hide:        true,
 		Commands: []common.Command{
 			{
 				Name:        "instagram.help.list.name",
