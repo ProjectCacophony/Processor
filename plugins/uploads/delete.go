@@ -36,5 +36,4 @@ func (p *Plugin) handleDelete(event *events.Event) {
 	}
 
 	event.Respond("uploads.delete.not-found")
-	return
 }
