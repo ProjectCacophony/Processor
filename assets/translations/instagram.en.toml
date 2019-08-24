@@ -32,9 +32,9 @@ last check {{TimeFormatShort $entry.LastCheck $.timezone}} \
 story {{TimeFormatShort $entry.StoriesLastCheck $.timezone}} \
 {{if eq $entry.StoriesCheck.CheckStatus \"success\"}}✅{{else if eq $entry.StoriesCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.StoriesCheck.CheckMessage}}: `{{$entry.StoriesCheck.CheckMessage}}`{{end}} \
-IGTV {{TimeFormatShort $entry.IGTVLastCheck $.timezone}} \
+{{- /* IGTV {{TimeFormatShort $entry.IGTVLastCheck $.timezone}} \
 {{if eq $entry.IGTVCheck.CheckStatus \"success\"}}✅{{else if eq $entry.IGTVCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
-{{if $entry.IGTVCheck.CheckMessage}}: `{{$entry.IGTVCheck.CheckMessage}}`{{end}}\
+{{if $entry.IGTVCheck.CheckMessage}}: `{{$entry.IGTVCheck.CheckMessage}}`{{end}} */}}\
 \n\
 {{end}}\
 So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Instagram Feeds set up.\n\
