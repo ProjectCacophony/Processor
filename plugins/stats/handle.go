@@ -157,7 +157,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	if event.BotMentionCommand() {
+	if event.BotMention() {
 		_, err := strconv.Atoi(event.Fields()[0])
 		if err == nil {
 			p.handleFind(event, event.Fields()[0])
