@@ -48,6 +48,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 	if !event.Command() {
 		return false
 	}
+	if event.Fields()[0] != "shorten" {
+		return false
+	}
 
 	p.handleShorten(event)
 
