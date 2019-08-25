@@ -70,7 +70,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "instagram.help.description",
-		Hide:        true,
+		// Hide:        true,
 		Commands: []common.Command{
 			{
 				Name:        "instagram.help.list.name",
@@ -92,6 +92,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "remove", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+			{
+				Name:                "instagram.help.disable-post.name",
+				Description:         "instagram.help.disable-post.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "disable-post", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+			{
+				Name:                "instagram.help.disable-story.name",
+				Description:         "instagram.help.disable-story.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "disable-story", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
 				},
 			},
@@ -130,6 +148,27 @@ func (p *Plugin) Action(event *events.Event) bool {
 			)
 
 			return true
+
+		case "disable-post", "disable-posts":
+			event.RequireOr(func() {
+				p.disable(event, modifyPosts)
+			},
+				permissions.DiscordManageChannels,
+				permissions.DiscordChannelDM,
+			)
+
+			return true
+
+		case "disable-story", "disable-stories":
+			event.RequireOr(func() {
+				p.disable(event, modifyStory)
+			},
+				permissions.DiscordManageChannels,
+				permissions.DiscordChannelDM,
+			)
+
+			return true
+
 		}
 	}
 

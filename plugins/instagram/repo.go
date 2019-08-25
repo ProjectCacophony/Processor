@@ -61,3 +61,22 @@ func countPosts(db *gorm.DB, id uint) (int, error) {
 	err := db.Model(&Post{}).Where("entry_id = ?", id).Count(&amount).Error
 	return amount, err
 }
+
+type modifyType int
+
+const (
+	modifyPosts modifyType = iota
+	modifyStory
+)
+
+func entryModify(db *gorm.DB, id uint, modification modifyType, value bool) error {
+	updates := &Entry{}
+	switch modification {
+	case modifyPosts:
+		updates.DisablePostFeed = value
+	case modifyStory:
+		updates.DisableStoryFeed = value
+	}
+
+	return db.Model(&Entry{}).Where("id = ?", id).Updates(updates).Error
+}

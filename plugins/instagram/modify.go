@@ -6,7 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) remove(event *events.Event) {
+func (p *Plugin) disable(event *events.Event, disableType modifyType) {
 	if len(event.Fields()) < 3 {
 		event.Respond("instagram.common.not-found")
 		return
@@ -21,18 +21,36 @@ AND (instagram_username = ?)
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("instagram.remove.not-found")
+			event.Respond("instagram.common.not-found")
 			return
 		}
 		event.Except(err)
 		return
 	}
 
-	err = entryRemove(p.db, entry.ID)
+	var alreadyApplied bool
+
+	switch disableType {
+	case modifyPosts:
+		if entry.DisablePostFeed {
+			alreadyApplied = true
+		}
+	case modifyStory:
+		if entry.DisableStoryFeed {
+			alreadyApplied = true
+		}
+	}
+
+	if alreadyApplied {
+		event.Respond("instagram.common.disable-already-applied")
+		return
+	}
+
+	err = entryModify(p.db, entry.ID, disableType, true)
 	if err != nil {
 		event.Except(err)
 	}
 
-	_, err = event.Respond("instagram.remove.message", "entry", entry)
+	_, err = event.Respond("instagram.disable.success", "entry", entry, "type", disableType)
 	event.Except(err)
 }
