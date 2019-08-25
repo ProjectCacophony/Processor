@@ -79,7 +79,7 @@ func (p *Plugin) toggleCreatePermission(event *events.Event) {
 	event.Respond("customcommands.permission-toggle", "who", "everyone", "canAdd", !current)
 }
 
-func (p *Plugin) toggleUsePermission(event *events.Event) {
+func (p *Plugin) toggleUsePermission(event *events.Event, disable bool) {
 	if len(event.Fields()) > 3 {
 		event.Respond("common.invalid-params")
 		return
@@ -96,19 +96,14 @@ func (p *Plugin) toggleUsePermission(event *events.Event) {
 		isUserChange = true
 	}
 
-	curPerm, err := config.GuildGetBool(p.db, event.GuildID, key)
-	if err != nil && err.Error() == "invalid Guild ID" {
-		event.Except(err)
-		return
-	}
-
-	err = config.GuildSetBool(p.db, event.GuildID, key, !curPerm)
+	p.logger.Info("here")
+	err := config.GuildSetBool(p.db, event.GuildID, key, disable)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	event.Respond("customcommands.permission-use-toggle", "level", isUserChange, "cantUse", !curPerm)
+	event.Respond("customcommands.permission-use-toggle", "level", isUserChange, "cantUse", disable)
 }
 
 func (p *Plugin) canEditCommand(event *events.Event) bool {
