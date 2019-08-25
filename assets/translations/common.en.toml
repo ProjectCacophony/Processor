@@ -3,3 +3,4 @@
 "common.message-sent-to-dm" = "Check your DMs :spy:"
 "common.no-role" = "I could not find the given role."
 "common.uploading-file" = "Uploading the file, one moment please. :sleeping:"
+"common.noStorageSpace" = "You have reached your max storage usage. :weary:"
