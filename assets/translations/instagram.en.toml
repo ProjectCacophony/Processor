@@ -7,9 +7,13 @@
 "instagram.help.remove.name" = "Remove an Instagram Feed"
 "instagram.help.remove.description" = "Removes a given Instagram Account from the feeds."
 "instagram.help.disable-post.name" = "Disable post feed"
-"instagram.help.disable-post.description" = "Stops posting of general posts for this feed."
+"instagram.help.disable-post.description" = "Stops posting general posts for this feed."
 "instagram.help.disable-story.name" = "Disable story feed"
-"instagram.help.disable-story.description" = "Stops posting of stories for this feed."
+"instagram.help.disable-story.description" = "Stops posting stories for this feed."
+"instagram.help.enable-post.name" = "Enable post feed"
+"instagram.help.enable-post.description" = "Starts posting general posts for this feed."
+"instagram.help.enable-story.name" = "Enable story feed"
+"instagram.help.enable-story.description" = "Starts posting stories for this feed."
 
 # common
 "instagram.common.not-found" = "**I could not find the instagram account**\n\
@@ -57,6 +61,11 @@ You can add one: `{{.prefix}}instagram add <Instagram Username>`\
 "instagram.remove.not-found" = "I was not able to find this Instagram Feed."
 
 # disable
-"instagram.common.disable-already-applied" = "This feed has already been disabled."
+"instagram.disable.already-applied" = "This feed has already been disabled."
 "instagram.disable.success" = "\
 The {{if eq .type 0}}post{{else if eq .type 1}}story{{end}} feed for **<https://instagram.com/{{.entry.InstagramUsername}}>** has been disabled."
+
+# enable
+"instagram.enable.already-applied" = "This feed has already been enabled."
+"instagram.enable.success" = "\
+The {{if eq .type 0}}post{{else if eq .type 1}}story{{end}} feed for **<https://instagram.com/{{.entry.InstagramUsername}}>** has been enabled."

@@ -70,7 +70,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "instagram.help.description",
-		// Hide:        true,
+		Hide:        true,
 		Commands: []common.Command{
 			{
 				Name:        "instagram.help.list.name",
@@ -110,6 +110,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "disable-story", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+			{
+				Name:                "instagram.help.enable-post.name",
+				Description:         "instagram.help.enable-post.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "enable-post", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+			{
+				Name:                "instagram.help.enable-story.name",
+				Description:         "instagram.help.enable-story.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "enable-story", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
 				},
 			},
@@ -162,6 +180,26 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "disable-story", "disable-stories":
 			event.RequireOr(func() {
 				p.disable(event, modifyStory)
+			},
+				permissions.DiscordManageChannels,
+				permissions.DiscordChannelDM,
+			)
+
+			return true
+
+		case "enable-post", "enable-posts":
+			event.RequireOr(func() {
+				p.enable(event, modifyPosts)
+			},
+				permissions.DiscordManageChannels,
+				permissions.DiscordChannelDM,
+			)
+
+			return true
+
+		case "enable-story", "enable-stories":
+			event.RequireOr(func() {
+				p.enable(event, modifyStory)
 			},
 				permissions.DiscordManageChannels,
 				permissions.DiscordChannelDM,

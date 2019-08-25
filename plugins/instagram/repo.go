@@ -70,13 +70,17 @@ const (
 )
 
 func entryModify(db *gorm.DB, id uint, modification modifyType, value bool) error {
-	updates := &Entry{}
+	var fieldName string
 	switch modification {
 	case modifyPosts:
-		updates.DisablePostFeed = value
+		fieldName = "disable_post_feed"
 	case modifyStory:
-		updates.DisableStoryFeed = value
+		fieldName = "disable_story_feed"
 	}
 
-	return db.Model(&Entry{}).Where("id = ?", id).Updates(updates).Error
+	if fieldName == "" {
+		return errors.New("invalid modification type")
+	}
+
+	return db.Model(&Entry{}).Where("id = ?", id).Update(fieldName, value).Error
 }
