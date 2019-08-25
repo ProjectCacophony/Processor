@@ -11,11 +11,13 @@ import (
 
 type Entry struct {
 	gorm.Model
-	GuildID         string
-	ChannelOrUserID string // UserID in case of DMs
-	DM              bool
-	AddedBy         string
-	BotID           string // only relevant for DMs
+	GuildID          string
+	ChannelOrUserID  string // UserID in case of DMs
+	DM               bool
+	DisablePostFeed  bool `gorm:"default:false"`
+	DisableStoryFeed bool `gorm:"default:false"`
+	AddedBy          string
+	BotID            string // only relevant for DMs
 
 	InstagramUsername  string
 	InstagramAccountID string

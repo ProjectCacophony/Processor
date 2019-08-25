@@ -1,5 +1,5 @@
 # help
-"uploads.help.description" = "Allows hosting files and managing hosted file.s"
+"uploads.help.description" = "Allows hosting files and managing hosted files."
 "uploads.help.upload.name" = "Upload a file"
 "uploads.help.upload.description" = "Uploads a file and gives you a public link for it."
 "uploads.help.list.name" = "List all uploaded files"
