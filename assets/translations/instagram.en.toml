@@ -38,12 +38,16 @@ Please tell me the username of the instagram feed you want to modify."
 **<https://instagram.com/{{$entry.InstagramUsername}}>**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
 added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
+{{if not $entry.DisablePostFeed }}\
 last check {{TimeFormatShort $entry.LastCheck $.timezone}} \
 {{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
+{{end}}\
+{{if not $entry.DisableStoryFeed }}\
 story {{TimeFormatShort $entry.StoriesLastCheck $.timezone}} \
 {{if eq $entry.StoriesCheck.CheckStatus \"success\"}}✅{{else if eq $entry.StoriesCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.StoriesCheck.CheckMessage}}: `{{$entry.StoriesCheck.CheckMessage}}`{{end}} \
+{{end}}\
 {{- /* IGTV {{TimeFormatShort $entry.IGTVLastCheck $.timezone}} \
 {{if eq $entry.IGTVCheck.CheckStatus \"success\"}}✅{{else if eq $entry.IGTVCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.IGTVCheck.CheckMessage}}: `{{$entry.IGTVCheck.CheckMessage}}`{{end}} */}}\
