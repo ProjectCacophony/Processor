@@ -62,9 +62,13 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 }
 
 func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, displayInChannel bool) {
+	// hidden module commands should only show for bot admins in dm
 	if pluginHelp.Hide {
-		event.Respond("help.no-plugin-doc")
-		return
+
+		if !(event.DM() && event.Has(permissions.BotAdmin)) {
+			event.Respond("help.no-plugin-doc")
+			return
+		}
 	}
 
 	// Display module name
