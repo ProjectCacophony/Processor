@@ -81,6 +81,12 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Name", Type: common.Text},
 			},
 		}, {
+			Name:        "customcommands.help.viewpermission.name",
+			Description: "customcommands.help.viewpermission.description",
+			Params: []common.CommandParam{
+				{Name: "permissions", Type: common.Flag},
+			},
+		}, {
 			Name:        "customcommands.help.usepermission.name",
 			Description: "customcommands.help.usepermission.description",
 			Params: []common.CommandParam{
@@ -92,7 +98,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name:        "customcommands.help.addpermission.name",
 			Description: "customcommands.help.addpermission.description",
 			Params: []common.CommandParam{
-				{Name: "toggle-permission", Type: common.Flag},
+				{Name: "enable/disable", Type: common.Flag},
+				{Name: "new", Type: common.Flag},
 				{Name: "Role ID or Name", Type: common.Text, Optional: true},
 			},
 		}, {
@@ -145,19 +152,27 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
-		case "toggle-permissions", "toggle-permission":
-			event.Require(func() {
-				p.toggleCreatePermission(event)
-			}, permissions.DiscordAdministrator)
-
-			return true
 		case "enable":
+			if len(event.Fields()) > 2 && event.Fields()[2] == "new" {
+				event.Require(func() {
+					p.toggleCreatePermission(event, true)
+				}, permissions.DiscordAdministrator)
+				return true
+			}
+
 			event.Require(func() {
 				p.toggleUsePermission(event, false)
 			}, permissions.DiscordAdministrator)
 
 			return true
 		case "disable":
+			if len(event.Fields()) > 2 && event.Fields()[2] == "new" {
+				event.Require(func() {
+					p.toggleCreatePermission(event, false)
+				}, permissions.DiscordAdministrator)
+				return true
+			}
+
 			event.Require(func() {
 				p.toggleUsePermission(event, true)
 			}, permissions.DiscordAdministrator)
@@ -185,6 +200,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		case "rand", "random":
 			p.runRandomCommand(event)
+			return true
+		case "permissions":
+			p.viewAllPermissions(event)
 			return true
 		}
 	}

@@ -10,9 +10,9 @@
 "customcommands.help.delete.name" = "Delete Command"
 "customcommands.help.delete.description" = "Use the optional parameter 'user', or use command in DM with bot to delete a command for just the user."
 "customcommands.help.usepermission.name" = "Toggle Using Commands"
-"customcommands.help.usepermission.description" = "Toggle the ability to use the servers custom commands.\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands."
+"customcommands.help.usepermission.description" = "Enable/Disable the ability to use the servers custom commands.\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands."
 "customcommands.help.addpermission.name" = "Toggle Adding Commands"
-"customcommands.help.addpermission.description" = "Enable/disable the ability for everyone, or a specific role, to add new commands."
+"customcommands.help.addpermission.description" = "Enable/Disable the ability for everyone, or a specific role, to add new commands. \n\t\tServer administrators are always able to make new commands regardless of this setting."
 "customcommands.help.search.name" = "Search for Commands"
 "customcommands.help.search.description" = ""
 "customcommands.help.random.name" = "Use Random Command"
@@ -21,6 +21,8 @@
 "customcommands.help.info.description" = "View information on who added a command, how many times it has been used, and when it was made."
 "customcommands.help.user.name" = "Use User Commad"
 "customcommands.help.user.description" = "Generally not needed unless a server command has the same name as your personal command."
+"customcommands.help.viewpermission.name" = "View Permission Settings"
+"customcommands.help.viewpermission.description" = "View the permissions settings for using and creating custom commands."
 
 # user facing errors
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
@@ -53,4 +55,9 @@
 {{ else }}\
 **I added the command `{{.cmdName}}` to the server!**\n\
 {{ end }}\
+"
+"customcommands.permissions" = "\
+**Using server commands:**: `{{if .cantUseServer}}Disabled{{else}}Enabled{{end}}`\n\
+**Using user commands:** `{{if .cantUseUser}}Disabled{{else}}Enabled{{end}}`\n\
+**Can make server commands:** `{{if .canEveryoneCreate}}Everyone{{else}}{{default \"None\" .enabledRoles}}{{end}}`\
 "
