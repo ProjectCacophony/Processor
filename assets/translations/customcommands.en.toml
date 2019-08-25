@@ -1,15 +1,38 @@
-"customcommands.help.description" = "Server mods can add custom commands that anyone can use in your server! Also users can add your own custom commands that you can use anywhere."
 
+# help info
+"customcommands.help.description" = "Server mods can add custom commands that anyone can use in your server! Also users can add your own custom commands that you can use anywhere."
+"customcommands.help.list.name" = "List Commands"
+"customcommands.help.list.description" = ""
+"customcommands.help.add.name" = "Add Command"
+"customcommands.help.add.description" = "Use the optional parameter 'user', or use command in DM with bot to make a command for just the user."
+"customcommands.help.edit.name" = "Edit Command"
+"customcommands.help.edit.description" = "Use the optional parameter 'user', or use command in DM with bot to edit a command for just the user."
+"customcommands.help.delete.name" = "Delete Command"
+"customcommands.help.delete.description" = "Use the optional parameter 'user', or use command in DM with bot to delete a command for just the user."
+"customcommands.help.usepermission.name" = "Toggle Using Commands"
+"customcommands.help.usepermission.description" = "Toggle the ability to use the servers custom commands.\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands."
+"customcommands.help.addpermission.name" = "Toggle Adding Commands"
+"customcommands.help.addpermission.description" = "Enable/disable the ability for everyone, or a specific role, to add new commands."
+"customcommands.help.search.name" = "Search for Commands"
+"customcommands.help.search.description" = ""
+"customcommands.help.random.name" = "Use Random Command"
+"customcommands.help.random.description" = "Use a random server command."
+"customcommands.help.info.name" = "View Command Info"
+"customcommands.help.info.description" = "View information on who added a command, how many times it has been used, and when it was made."
+"customcommands.help.user.name" = "Use User Commad"
+"customcommands.help.user.description" = "Generally not needed unless a server command has the same name as your personal command."
+
+# user facing errors
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
 "customcommands.name-not-found" = "Could not find a command with that name."
 "customcommands.no-commands-found" = "Could not find any commands."
 "customcommands.cant-edit" = "Looks like you don't have permission to edit this servers custom commands."
 "customcommands.cant-use" = "This server does not allow using {{- if .level}} user{{else}} the servers{{end}} custom commands."
-
 "customcommands.no-commands" = "Could not find any commands."
+
+# command responses
 "customcommands.permission-toggle" = "I  have set `{{.who}}` to be `{{- if .canAdd}}{{else}}un{{end}}able` to add new commands."
 "customcommands.permission-use-toggle" = "Users will now {{- if .cantUse}} not{{end}} be able to use {{- if .level}} their own {{else}} this servers {{end}}custom commands."
-
 "customcommands.delete.success" = "\
 {{- if .isUserCommand }}\
 **I deleted your command `{{.cmdName}}`.**\n\
@@ -17,7 +40,6 @@
 **I deleted the command `{{.cmdName}}` on this server.**\n\
 {{ end }}\
 "
-
 "customcommands.update.success" = "\
 {{- if .isUserCommand }}\
 **I update your command `{{.cmdName}}`!**\n\
@@ -25,7 +47,6 @@
 **I update the command `{{.cmdName}}` on this server!**\n\
 {{ end }}\
 "
-
 "customcommands.add.success" = "\
 {{- if .isUserCommand }}\
 **I added your new command `{{.cmdName}}`!**\n\

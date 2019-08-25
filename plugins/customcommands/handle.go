@@ -49,14 +49,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Name:        p.Name(),
 		Description: "customcommands.help.description",
 		Commands: []common.Command{{
-			Name: "List Commands",
+			Name: "customcommands.help.list.name",
 			Params: []common.CommandParam{
 				{Name: "list", Type: common.Flag},
 				{Name: "public", Type: common.Flag, Optional: true},
 			},
 		}, {
-			Name:        "Add Command",
-			Description: "Use the optional parameter 'user', or use command in DM with bot to make a command for just the user.",
+			Name:        "customcommands.help.add.name",
+			Description: "customcommands.help.add.description",
 			Params: []common.CommandParam{
 				{Name: "add", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
@@ -64,8 +64,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Output", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Edit Command",
-			Description: "Use the optional parameter 'user', or use command in DM with bot to edit a command for just the user.",
+			Name:        "customcommands.help.edit.name",
+			Description: "customcommands.help.edit.description",
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
@@ -73,60 +73,52 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Output", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Delete Command",
-			Description: "Use the optional parameter 'user', or use command in DM with bot to delete a command for just the user.",
+			Name:        "customcommands.help.delete.name",
+			Description: "customcommands.help.delete.description",
 			Params: []common.CommandParam{
 				{Name: "delete", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
 				{Name: "Command Name", Type: common.Text},
 			},
 		}, {
-			Name: "Toggle Using Commands",
-			Description: "Toggle the ability to use the servers custom commands." +
-				"\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands.",
+			Name:        "customcommands.help.usepermission.name",
+			Description: "customcommands.help.usepermission.description",
 			Params: []common.CommandParam{
 				{Name: "enable/disable", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
 				// {Name: "channel", Type: common.Channel, Optional: true}, do we need channel specific?
 			},
 		}, {
-			Name:        "Toggle Adding Commands",
-			Description: "Enable/disable the ability for everyone, or a specific role, to add new commands.",
+			Name:        "customcommands.help.addpermission.name",
+			Description: "customcommands.help.addpermission.description",
 			Params: []common.CommandParam{
 				{Name: "toggle-permission", Type: common.Flag},
 				{Name: "Role ID or Name", Type: common.Text, Optional: true},
 			},
 		}, {
-			Name: "Search for Commands",
+			Name: "customcommands.help.search.name",
 			Params: []common.CommandParam{
 				{Name: "search", Type: common.Flag},
 				{Name: "Command Name", Type: common.Text},
 			},
 		}, {
-			Name:        "Use Random Command",
-			Description: "Use a random server command.",
+			Name:        "customcommands.help.random.name",
+			Description: "customcommands.help.random.description",
 			Params: []common.CommandParam{
 				{Name: "random", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
 			},
 		}, {
-			Name:        "View Command Info",
-			Description: "View information on who added a command, how many times it has been used, and when it was made.",
-			Params: []common.CommandParam{
-				{Name: "info", Type: common.Flag},
-				{Name: "Command Name", Type: common.Text},
-			},
-		}, {
-			Name:            "View Command Info",
-			Description:     "View information on who added a command, how many times it has been used, and when it was made.",
+			Name:            "customcommands.help.info.name",
+			Description:     "customcommands.help.info.description",
 			SkipRootCommand: true,
 			Params: []common.CommandParam{
 				{Name: "Command Name", Type: common.Text},
 				{Name: "info", Type: common.Flag},
 			},
 		}, {
-			Name:        "Use User Commad",
-			Description: "Generally not needed unless a server command has the same name as your personal command.",
+			Name:        "customcommands.help.user.name",
+			Description: "customcommands.help.user.description",
 			Params: []common.CommandParam{
 				{Name: "user", Type: common.Flag},
 				{Name: "Command Name", Type: common.Text},
