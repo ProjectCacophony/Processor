@@ -12,7 +12,7 @@
 "customcommands.help.usepermission.name" = "Toggle Using Commands"
 "customcommands.help.usepermission.description" = "Enable/Disable the ability to use the servers custom commands.\n\t\tAdd 'user' to command to instead toggle the ability for users to use their own custom commands."
 "customcommands.help.addpermission.name" = "Toggle Adding Commands"
-"customcommands.help.addpermission.description" = "Enable/Disable the ability for everyone, or a specific role, to add new commands. \n\t\tServer administrators are always able to make new commands regardless of this setting."
+"customcommands.help.addpermission.description" = "Enable/Disable the ability for everyone, or a specific role, to add/edit commands. \n\t\tServer administrators are always able to edit commands regardless of this setting."
 "customcommands.help.search.name" = "Search for Commands"
 "customcommands.help.search.description" = ""
 "customcommands.help.random.name" = "Use Random Command"

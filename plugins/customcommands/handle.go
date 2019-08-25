@@ -99,7 +99,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description: "customcommands.help.addpermission.description",
 			Params: []common.CommandParam{
 				{Name: "enable/disable", Type: common.Flag},
-				{Name: "new", Type: common.Flag},
+				{Name: "edit", Type: common.Flag},
 				{Name: "Role ID or Name", Type: common.Text, Optional: true},
 			},
 		}, {
@@ -153,7 +153,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
 		case "enable":
-			if len(event.Fields()) > 2 && event.Fields()[2] == "new" {
+			if len(event.Fields()) > 2 && event.Fields()[2] == "edit" {
 				event.Require(func() {
 					p.toggleCreatePermission(event, true)
 				}, permissions.DiscordAdministrator)
@@ -166,7 +166,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 			return true
 		case "disable":
-			if len(event.Fields()) > 2 && event.Fields()[2] == "new" {
+			if len(event.Fields()) > 2 && event.Fields()[2] == "edit" {
 				event.Require(func() {
 					p.toggleCreatePermission(event, false)
 				}, permissions.DiscordAdministrator)
