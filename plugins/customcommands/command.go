@@ -19,7 +19,7 @@ func (p *Plugin) runCustomCommand(event *events.Event) bool {
 	}
 
 	// get all commands with that name
-	commands := p.getCommandEntries(event, event.Fields()[0])
+	commands := p.getCommandEntries(event, event.OriginalCommand())
 	if len(commands) == 0 {
 		return false
 	}
