@@ -48,7 +48,7 @@ func (p *Plugin) viewAllPermissions(event *events.Event) {
 		roleIDs = strings.Split(curRoles, ",")
 	}
 
-	var roleNames []string
+	var roleNames []string // nolint: prealloc
 	for _, roleID := range roleIDs {
 		role, err := event.State().Role(event.GuildID, roleID)
 		if err != nil || role == nil {
