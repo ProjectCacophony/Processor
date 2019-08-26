@@ -1,0 +1,7 @@
+"admin.help.description" = "Commands used by the Bot Admins only."
+
+"admin.help.storage.toggle.user.name" = "Toggle User Storage Permission"
+"admin.help.storage.toggle.user.description" = "Enable/Disable a users ability to use commands that upload files."
+
+
+"admin.storage.toggle" = "{{if .enable}}Enabled{{else}}Disabled{{end}} `{{.permission}}` for the user `{{.username}}`."
