@@ -3,6 +3,9 @@
 "trello.help.suggest.name" = "Suggest New Features"
 "trello.help.suggest.description" = ""
 
+"trello.help.issue.name" = "Report a Bug"
+"trello.help.issue.description" = ""
+
 # errors
 "trello.title.to-long" = "The title is too long. Please limit title to 50 characters and put the rest in description."
 

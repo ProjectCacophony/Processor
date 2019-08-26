@@ -72,6 +72,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "suggestion description", Type: common.QuotedText},
 				},
 			},
+			{
+				Name:            "trello.help.issue.name",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "issue", Type: common.Flag},
+					{Name: "issue title", Type: common.QuotedText},
+					{Name: "issue description", Type: common.QuotedText},
+				},
+			},
 		},
 	}
 }
@@ -82,7 +91,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	switch event.Fields()[0] {
-	case "suggest", "suggestion":
+	case "suggest", "suggestion", "issue", "bug":
 
 		p.handleSuggestion(event)
 		return true
