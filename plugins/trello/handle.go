@@ -2,7 +2,6 @@ package trello
 
 import (
 	"errors"
-	"fmt"
 
 	trello "github.com/VojtechVitek/go-trello"
 	"github.com/jinzhu/gorm"
@@ -32,22 +31,17 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		return nil
 	}
 
-	fmt.Printf("Key: %s", config.TrelloKey)
-	fmt.Printf("Token: %s", config.TrelloToken)
-
 	if config.TrelloKey == "" || config.TrelloToken == "" {
 		return errors.New("trello plugin configuration missing")
 	}
 
-	client, err := trello.NewAuthClient(
+	p.trello, err = trello.NewAuthClient(
 		config.TrelloKey,
 		&config.TrelloToken,
 	)
 	if err != nil {
 		return errors.New("trello plugin unable to initialize client")
 	}
-
-	p.trello = client
 
 	return nil
 }
