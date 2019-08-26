@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/Processor/plugins/admin"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
@@ -57,6 +58,7 @@ type Plugin interface {
 
 var (
 	PluginList = []Plugin{
+		&admin.Plugin{},
 		&patreon.Plugin{},
 		&ping.Plugin{},
 		&color.Plugin{},
