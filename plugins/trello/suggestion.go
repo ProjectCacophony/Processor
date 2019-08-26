@@ -30,7 +30,7 @@ func (p *Plugin) handleSuggestion(event *events.Event) {
 		issueDescription = event.Fields()[2]
 	}
 
-	list, err := p.trello.List(backlogBoardId)
+	list, err := p.trello.List(backlogBoardID)
 	if err != nil {
 		event.Except(err)
 		return
