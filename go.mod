@@ -6,6 +6,7 @@ require (
 	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
 	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
+	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
 	github.com/bwmarrin/discordgo v0.16.1-0.20190608205439-347a4f69b0b5
 	github.com/dustin/go-humanize v1.0.0

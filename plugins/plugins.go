@@ -30,6 +30,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 	"gitlab.com/Cacophony/Processor/plugins/serverlist"
 	"gitlab.com/Cacophony/Processor/plugins/stocks"
+	"gitlab.com/Cacophony/Processor/plugins/trello"
 	"gitlab.com/Cacophony/Processor/plugins/whitelist"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
@@ -58,6 +59,7 @@ type Plugin interface {
 
 var (
 	PluginList = []Plugin{
+		&trello.Plugin{},
 		&admin.Plugin{},
 		&patreon.Plugin{},
 		&ping.Plugin{},

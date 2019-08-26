@@ -1,0 +1,10 @@
+"trello.help.description" = "Add feedback about the bot, request new features, or report any bugs you find."
+
+"trello.help.suggest.name" = "Suggest New Features"
+"trello.help.suggest.description" = ""
+
+# errors
+"trello.title.to-long" = "The title is too long. Please limit title to 50 characters and put the rest in description."
+
+# responses
+"trello.suggestion.received" = "**Thank you!** We received your suggestion. :smile:"
