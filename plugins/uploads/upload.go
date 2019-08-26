@@ -26,7 +26,9 @@ func (p *Plugin) handleUpload(event *events.Event) {
 	for _, attachment := range event.MessageCreate.Attachments {
 		file, err := event.AddAttachement(attachment)
 		if err != nil {
-			if err.Error() == events.NoStorageSpace {
+			if err.Error() == events.NoStoragePermission {
+				event.Respond("common.noStoragePermission")
+			} else if err.Error() == events.NoStorageSpace {
 				event.Respond("common.noStorageSpace")
 			} else {
 				event.Except(err)
