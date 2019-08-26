@@ -23,6 +23,8 @@ stringData:
   objectStorageFQDN: "{{OBJECT_STORAGE_FQDN}}"
   weverseToken: "{{WEVERSE_TOKEN}}"
   instagramSessionIDs: "{{INSTAGRAM_SESSION_IDS}}"
+  trelloKey: "{{TRELLO_KEY}}"
+  trelloToken: "{{TRELLO_TOKEN}}"
 
 ---
 apiVersion: v1
@@ -175,6 +177,16 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: instagramSessionIDs
+          - name: TRELLO_KEY
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: trelloKey
+          - name: TRELLO_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: trelloToken
       volumes:
         - name: google-cloud
           secret:
