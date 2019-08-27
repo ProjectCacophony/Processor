@@ -70,7 +70,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Name:        p.Name(),
 		Description: "instagram.help.description",
-		Hide:        true,
 		Commands: []common.Command{
 			{
 				Name:        "instagram.help.list.name",
@@ -116,7 +115,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			{
 				Name:                "instagram.help.disable-story.name",
 				Description:         "instagram.help.disable-story.description",
-				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels, permissions.BotAdmin},
 				Params: []common.CommandParam{
 					{Name: "disable-story", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
@@ -125,7 +124,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			{
 				Name:                "instagram.help.enable-story.name",
 				Description:         "instagram.help.enable-story.description",
-				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels, permissions.BotAdmin},
 				Params: []common.CommandParam{
 					{Name: "enable-story", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
@@ -188,21 +187,27 @@ func (p *Plugin) Action(event *events.Event) bool {
 			return true
 
 		case "enable-post", "enable-posts":
-			event.RequireOr(func() {
+			event.Require(func() {
 				p.enable(event, modifyPosts)
 			},
-				permissions.DiscordManageChannels,
-				permissions.DiscordChannelDM,
+				permissions.BotAdmin,
+				permissions.Or(
+					permissions.DiscordManageChannels,
+					permissions.DiscordChannelDM,
+				),
 			)
 
 			return true
 
 		case "enable-story", "enable-stories":
-			event.RequireOr(func() {
+			event.Require(func() {
 				p.enable(event, modifyStory)
 			},
-				permissions.DiscordManageChannels,
-				permissions.DiscordChannelDM,
+				permissions.BotAdmin,
+				permissions.Or(
+					permissions.DiscordManageChannels,
+					permissions.DiscordChannelDM,
+				),
 			)
 
 			return true

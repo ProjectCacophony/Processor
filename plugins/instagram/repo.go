@@ -25,6 +25,8 @@ func entryAdd(
 		BotID:              botID,
 		InstagramUsername:  instagramUsername,
 		InstagramAccountID: instagramAccountID,
+
+		DisableStoryFeed: true,
 	}).Error
 }
 
