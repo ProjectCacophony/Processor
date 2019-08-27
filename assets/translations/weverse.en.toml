@@ -1,8 +1,37 @@
+# help info
+"weverse.help.description" = "Have the bot watch certain Weverse communities and have it post updates in a given channel."
+"weverse.help.list.name" = "List Weverse community feeds"
+"weverse.help.list.description" = "Displays all Weverse community feeds set up on this Server, or in your DMs."
+"weverse.help.add.name" = "Add a Weverse community feed"
+"weverse.help.add.description" = "Adds a given Weverse community to the current channel, or a specific channel if given."
+"weverse.help.remove.name" = "Remove a Weverse community feed"
+"weverse.help.remove.description" = "Removes a given Weverse community from the feeds."
+"weverse.help.disable-artist.name" = "Disable artist feed"
+"weverse.help.disable-artist.description" = "Stops posting artist posts for this feed."
+"weverse.help.enable-artist.name" = "Enable artist feed"
+"weverse.help.enable-artist.description" = "Starts posting artist posts for this feed."
+"weverse.help.disable-media.name" = "Disable media feed"
+"weverse.help.disable-media.description" = "Stops posting media uploads for this feed."
+"weverse.help.enable-media.name" = "Enable media feed"
+"weverse.help.enable-media.description" = "Starts posting media uploadds for this feed."
+"weverse.help.disable-notice.name" = "Disable notice feed"
+"weverse.help.disable-notice.description" = "Stops posting notices for this feed."
+"weverse.help.enable-notice.name" = "Enable notice feed"
+"weverse.help.enable-notice.description" = "Starts posting notices for this feed."
+"weverse.help.disable-moment.name" = "Disable moment feed"
+"weverse.help.disable-moment.description" = "Stops posting moments (artist stories) for this feed."
+"weverse.help.enable-moment.name" = "Enable story feed"
+"weverse.help.enable-moment.description" = "Starts posting moments (artist stories) for this feed."
+
 # macros
 "weverse.macro.community-list" = "\
 The following communities are supported at the moment, please try one of them:\n\
 {{range $i, $community := .}}{{if $i}}, {{end}}`{{$community.Name}}`{{end}}.\
 "
+
+# common
+"weverse.common.not-found" = "I was not able to find this Weverse community feed."
+
 # add
 "weverse.add.too-few" = "\
 **Please tell me the name of the community to add.**\n\
@@ -24,7 +53,6 @@ The following communities are supported at the moment, please try one of them:\n
 
 # remove
 "weverse.remove.too-few" = "Please tell me which community feed to remove."
-"weverse.remove.not-found" = "I was not able to find this Weverse community feed."
 "weverse.remove.message" = "I removed the Weverse community feed **{{.entry.WeverseChannelName}}**{{ if not .entry.DM }} from <#{{.entry.ChannelOrUserID}}>{{ end }}."
 
 # status
@@ -35,18 +63,26 @@ The following communities are supported at the moment, please try one of them:\n
 **{{$entry.WeverseChannelName}}**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
 added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
 `{{HumanizeNumber $entry.Posts}}` posts so far, \
+{{if not $entry.DisableArtistFeed }}\
 last check {{TimeFormatShort $entry.ArtistFeedLastCheck $.timezone}} \
 {{if eq $entry.ArtistFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.ArtistFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.ArtistFeedCheck.CheckMessage}}: `{{$entry.ArtistFeedCheck.CheckMessage}}`{{end}} \
+{{end}}\
+{{if not $entry.DisableMediaFeed }}\
 media {{TimeFormatShort $entry.MediaFeedLastCheck $.timezone}} \
 {{if eq $entry.MediaFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.MediaFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.MediaFeedCheck.CheckMessage}}: `{{$entry.MediaFeedCheck.CheckMessage}}`{{end}} \
+{{end}}\
+{{if not $entry.DisableNoticeFeed }}\
 notices {{TimeFormatShort $entry.NoticeFeedLastCheck $.timezone}} \
 {{if eq $entry.NoticeFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.NoticeFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.NoticeFeedCheck.CheckMessage}}: `{{$entry.NoticeFeedCheck.CheckMessage}}`{{end}} \
+{{end}}\
+{{if not $entry.DisableMomentFeed }}\
 moments {{TimeFormatShort $entry.MomentFeedLastCheck $.timezone}} \
 {{if eq $entry.MomentFeedCheck.CheckStatus \"success\"}}✅{{else if eq $entry.MomentFeedCheck.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
 {{if $entry.MomentFeedCheck.CheckMessage}}: `{{$entry.MomentFeedCheck.CheckMessage}}`{{end}} \
+{{end}}\
 \n\
 {{end}}\
 So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** Weverse community feeds set up.\n\
@@ -57,11 +93,12 @@ You can add one: `{{.prefix}}weverse add <Community Name>`\
 \
 "
 
-# help info
-"weverse.help.description" = "Have the bot watch certain Weverse communities and have it post updates in a given channel."
-"weverse.help.list.name" = "List Weverse community feeds"
-"weverse.help.list.description" = "Displays all Weverse community feeds set up on this Server, or in your DMs."
-"weverse.help.add.name" = "Add a Weverse community feed"
-"weverse.help.add.description" = "Adds a given Weverse community to the current channel, or a specific channel if given."
-"weverse.help.remove.name" = "Remove a Weverse community feed"
-"weverse.help.remove.description" = "Removes a given Weverse community from the feeds."
+# disable
+"weverse.disable.already-applied" = "This feed has already been disabled."
+"weverse.disable.success" = "\
+The {{if eq .type 0}}artist{{else if eq .type 1}}media{{else if eq .type 2}}notice{{else if eq .type 3}}moment{{end}} feed for **{{.entry.WeverseChannelName}}** has been disabled."
+
+# enable
+"weverse.enable.already-applied" = "This feed has already been enabled."
+"weverse.enable.success" = "\
+The {{if eq .type 0}}artist{{else if eq .type 1}}media{{else if eq .type 2}}notice{{else if eq .type 3}}moment{{end}} feed for **{{.entry.WeverseChannelName}}** has been disabled."

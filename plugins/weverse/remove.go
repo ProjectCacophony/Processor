@@ -21,7 +21,7 @@ func (p *Plugin) remove(event *events.Event) {
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "record not found") {
-			event.Respond("weverse.remove.not-found")
+			event.Respond("weverse.common.not-found")
 			return
 		}
 		event.Except(err)

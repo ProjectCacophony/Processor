@@ -1,6 +1,7 @@
 package weverse
 
 import (
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
@@ -11,11 +12,15 @@ import (
 
 type Entry struct {
 	gorm.Model
-	GuildID         string
-	ChannelOrUserID string // UserID in case of DMs
-	DM              bool
-	AddedBy         string
-	BotID           string // only relevant for DMs
+	GuildID           string
+	ChannelOrUserID   string // UserID in case of DMs
+	DM                bool
+	DisableArtistFeed bool `gorm:"default:false"`
+	DisableMediaFeed  bool `gorm:"default:false"`
+	DisableNoticeFeed bool `gorm:"default:false"`
+	DisableMomentFeed bool `gorm:"default:false"`
+	AddedBy           string
+	BotID             string // only relevant for DMs
 
 	WeverseChannelName string
 	WeverseChannelID   int64
@@ -49,4 +54,33 @@ type Post struct {
 
 func (*Post) TableName() string {
 	return "weverse_posts"
+}
+
+type modifyType int
+
+const (
+	modifyArtist modifyType = iota
+	modifyMedia
+	modifyNotice
+	modifyMoment
+)
+
+func entryModify(db *gorm.DB, id uint, modification modifyType, value bool) error {
+	var fieldName string
+	switch modification {
+	case modifyArtist:
+		fieldName = "disable_artist_feed"
+	case modifyMedia:
+		fieldName = "disable_media_feed"
+	case modifyNotice:
+		fieldName = "disable_notice_feed"
+	case modifyMoment:
+		fieldName = "disable_moment_feed"
+	}
+
+	if fieldName == "" {
+		return errors.New("invalid modification type")
+	}
+
+	return db.Model(&Entry{}).Where("id = ?", id).Update(fieldName, value).Error
 }

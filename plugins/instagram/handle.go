@@ -105,20 +105,20 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
-				Name:                "instagram.help.disable-story.name",
-				Description:         "instagram.help.disable-story.description",
-				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
-				Params: []common.CommandParam{
-					{Name: "disable-story", Type: common.Flag},
-					{Name: "Instagram Username", Type: common.Text},
-				},
-			},
-			{
 				Name:                "instagram.help.enable-post.name",
 				Description:         "instagram.help.enable-post.description",
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "enable-post", Type: common.Flag},
+					{Name: "Instagram Username", Type: common.Text},
+				},
+			},
+			{
+				Name:                "instagram.help.disable-story.name",
+				Description:         "instagram.help.disable-story.description",
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
+				Params: []common.CommandParam{
+					{Name: "disable-story", Type: common.Flag},
 					{Name: "Instagram Username", Type: common.Text},
 				},
 			},
