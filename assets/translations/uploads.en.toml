@@ -7,6 +7,9 @@
 "uploads.help.delete.name" = "Delete a uploaded file"
 "uploads.help.delete.description" = "Permanently deletes a file from the storage."
 
+# common
+"uploads.common.currentStorage" = "your storage: {{HumanizeBytes (int64 .StorageUsed)}}/{{if gt .StorageAvailable -1}}{{HumanizeBytes (add (int64 .StorageUsed) (int64 .StorageAvailable))}}{{else}}∞{{end}}"
+
 # handleUpload
 "uploads.upload.too-few" = "Please send me a file to upload. :detective:"
 "uploads.upload.content" = "\n\
@@ -21,6 +24,7 @@
 {{if lt (len .uploads) 1}}\
 **You haven't uploaded anything so far**\n\
 You can upload something by mentioning me with a file attachment!\n\
+\n\
 {{else}}\
 {{range $upload := .uploads}}\
 uploaded {{TimeFormat $upload.CreatedAt $.timezone}}\n\
@@ -28,6 +32,8 @@ uploaded {{TimeFormat $upload.CreatedAt $.timezone}}\n\
 \n\
 {{end}}\
 {{end}}\
+\
+{{template \"uploads.common.currentStorage\" .userStorage}}\
 "
 
 # handleDelete

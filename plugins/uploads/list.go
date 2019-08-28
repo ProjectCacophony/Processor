@@ -11,6 +11,12 @@ func (p *Plugin) handleList(event *events.Event) {
 		return
 	}
 
-	_, err = event.Respond("uploads.list.content", "uploads", uploads)
+	userStorage, err := event.GetUserStorageUsage()
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	_, err = event.Respond("uploads.list.content", "uploads", uploads, "userStorage", userStorage)
 	event.Except(err)
 }

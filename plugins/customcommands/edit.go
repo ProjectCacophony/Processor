@@ -32,15 +32,8 @@ func (p *Plugin) addCommand(event *events.Event) {
 
 		commandFile, err = event.AddAttachement(event.MessageCreate.Attachments[0])
 		if err != nil {
-			if err.Error() == events.NoStoragePermission {
-				event.Respond("common.noStoragePermission")
-			} else if err.Error() == events.NoStorageSpace {
-				event.Respond("common.noStorageSpace")
-			} else {
-				event.Except(err)
-			}
-
 			event.Discord().Client.ChannelMessageDelete(event.ChannelID, msgs[0].ID)
+			event.Except(err)
 			return
 		}
 
@@ -221,15 +214,8 @@ func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomC
 
 		newFile, err := event.AddAttachement(newAttachement)
 		if err != nil {
-			if err.Error() == events.NoStoragePermission {
-				event.Respond("common.noStoragePermission")
-			} else if err.Error() == events.NoStorageSpace {
-				event.Respond("common.noStorageSpace")
-			} else {
-				event.Except(err)
-			}
-
 			event.Discord().Client.ChannelMessageDelete(event.ChannelID, msgs[0].ID)
+			event.Except(err)
 			return
 		}
 
