@@ -33,7 +33,7 @@ uploaded {{TimeFormat $upload.CreatedAt $.timezone}}\n\
 {{end}}\
 {{end}}\
 \
-{{template \"uploads.common.currentStorage\" .userStorage}}\
+{{if gt (len .uploads) 0}}storing {{HumanizeNumber (len .uploads)}} {{len .uploads | plural \"file\" \"files\"}}, {{end}}{{template \"uploads.common.currentStorage\" .userStorage}}\
 "
 
 # handleDelete
