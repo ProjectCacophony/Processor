@@ -5,7 +5,10 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
+	"mvdan.cc/xurls/v2"
 )
+
+var xurlsStrict = xurls.Strict()
 
 type Plugin struct {
 	logger *zap.Logger
@@ -78,6 +81,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if !event.Command() {
 		return false
+	}
+
+	if xurlsStrict.MatchString(event.OriginalCommand()) {
+		p.handleUpload(event)
+		return true
 	}
 
 	if event.Fields()[0] != "uploads" {

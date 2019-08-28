@@ -7,7 +7,7 @@ import (
 )
 
 func (p *Plugin) handleUpload(event *events.Event) {
-	if len(event.MessageCreate.Attachments) <= 0 {
+	if len(event.MessageCreate.Attachments) <= 0 && len(event.Fields()) <= 0 {
 		event.Respond("uploads.upload.too-few")
 		return
 	}
@@ -25,6 +25,28 @@ func (p *Plugin) handleUpload(event *events.Event) {
 
 	for _, attachment := range event.MessageCreate.Attachments {
 		file, err := event.AddAttachement(attachment)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		err = addUpload(p.db, file, event.UserID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		uploads = append(uploads, Upload{
+			FileInfo: *file,
+			UserID:   event.UserID,
+		})
+	}
+	for _, field := range append(event.Fields()[1:], event.OriginalCommand()) {
+		if !xurlsStrict.MatchString(field) {
+			continue
+		}
+
+		file, err := event.AddFileFromURL(field, "")
 		if err != nil {
 			event.Except(err)
 			return

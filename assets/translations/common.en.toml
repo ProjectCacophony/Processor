@@ -5,3 +5,5 @@
 "common.uploading-file" = "Uploading the file, one moment please. :sleeping:"
 "common.noStorageSpace" = "You have reached your max storage usage. :weary:"
 "common.noStoragePermission" = "You do not have permission to upload files :nogood:"
+"common.fileTooBig" = "The file is too big. Please try a smaller file."
+"common.couldNotExtractFilename" = "I could not extract the filename from the given file."
