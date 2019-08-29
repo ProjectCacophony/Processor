@@ -8,6 +8,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/shorten"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
+	"gitlab.com/Cacophony/Processor/plugins/weather"
 	"gitlab.com/Cacophony/Processor/plugins/weverse"
 	"gitlab.com/Cacophony/go-kit/localization"
 
@@ -59,6 +60,7 @@ type Plugin interface {
 
 var (
 	PluginList = []Plugin{
+		&weather.Plugin{},
 		&trello.Plugin{},
 		&admin.Plugin{},
 		&patreon.Plugin{},

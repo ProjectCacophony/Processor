@@ -1,6 +1,7 @@
 module gitlab.com/Cacophony/Processor
 
 require (
+	github.com/Jeffail/gabs v1.4.0
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
 	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
@@ -9,6 +10,7 @@ require (
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
 	github.com/bwmarrin/discordgo v0.16.1-0.20190608205439-347a4f69b0b5
+	github.com/davecgh/go-spew v1.1.1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
