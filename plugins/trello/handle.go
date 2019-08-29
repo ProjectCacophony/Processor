@@ -8,6 +8,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"go.uber.org/zap"
 )
 
@@ -92,8 +93,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	switch event.Fields()[0] {
 	case "suggest", "suggestion", "issue", "bug":
-
-		p.handleSuggestion(event)
+		event.Require(func() {
+			p.handleSuggestion(event)
+		}, permissions.BotAdmin)
 		return true
 	}
 
