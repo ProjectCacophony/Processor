@@ -174,7 +174,7 @@ func (p *Plugin) makeFieldFromDay(event *events.Event, day darksky.DataPoint, we
 	}
 
 	return &discordgo.MessageEmbedField{
-		Name: tm.Format("__**Monday (Jan 2)**__"),
+		Name: tm.Format("**Monday (Jan 2)**"),
 		Value: fmt.Sprintf(event.Translate(outputFormat),
 			p.getWeatherEmoji(day.Icon),
 			day.Summary,
