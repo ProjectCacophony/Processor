@@ -5,10 +5,13 @@ import "github.com/jinzhu/gorm"
 type Weather struct {
 	gorm.Model
 
-	Longitude   float32
-	Latitude    float32
-	AddressText string
-	UserId      string
+	Longitude float64
+	Latitude  float64
+
+	UserEnteredAddress string
+	Address            string
+	UserID             string
+	PlaceID            string
 }
 
 func (*Weather) TableName() string {

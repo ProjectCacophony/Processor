@@ -5,15 +5,17 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/shawntoffel/darksky"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
 )
 
 type Plugin struct {
-	logger *zap.Logger
-	db     *gorm.DB
-	config Config
+	logger  *zap.Logger
+	db      *gorm.DB
+	darkSky darksky.DarkSky
+	config  Config
 }
 
 func (p *Plugin) Name() string {
@@ -29,9 +31,11 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		return nil
 	}
 
-	if p.config.GoogleMapsKey == "" {
-		return errors.New("trello plugin configuration missing")
+	if p.config.GoogleMapsKey == "" || p.config.DarkSkyKey == "" {
+		return errors.New("weather plugin configuration missing")
 	}
+
+	p.darkSky = darksky.New(p.config.DarkSkyKey)
 
 	return nil
 }

@@ -3,3 +3,12 @@
 "weather.help.view" = "Check the weather."
 
 "weather.help.set" = "Set your default weather location."
+
+"weather.location.not-found" = "I can't find the location you are looking for. :thinking:"
+"weather.outputformat" = "%s **%s**\n🌡 Temperature **%s °C** (%s °F)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
+"weather.outputformat.daily" = "%s **%s**\n🌡 Temperature **%s/%s °C** (%s/%s °F)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
+"weather.outputformat.usa" = "%s **%s**\n🌡 Temperature **%s °F** (%s °C)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
+"weather.outputformat.daily.usa" = "%s **%s**\n🌡 Temperature **%s/%s °F** (%s/%s °C)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
+
+"weather.darkSky.logo" = "https://i.imgur.com/JlQzNZx.png"
+"weather.darkSky.mention" = "Powered by Dark Sky"
