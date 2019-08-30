@@ -37,7 +37,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 
 	p.darkSky = darksky.New(p.config.DarkSkyKey)
 
-	return nil
+	return params.DB.AutoMigrate(Weather{}).Error
 }
 
 func (p *Plugin) Stop(params common.StopParameters) error {
@@ -88,7 +88,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		if len(event.Fields()) > 2 {
 			switch event.Fields()[1] {
 			case "set":
-				// p.setUserWeather(event)
+				p.setUserWeather(event)
 				return true
 			}
 		}

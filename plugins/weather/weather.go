@@ -16,56 +16,24 @@ import (
 )
 
 func (p *Plugin) viewWeather(event *events.Event) {
+	var weather *Weather
 
-	if len(event.Fields()) == 0 {
-		return
+	if len(event.Fields()) < 2 {
+		var err error
+		weather, err = p.getUserWeather(event.UserID)
+
+		if err != nil {
+			event.Respond("weather.nosaved")
+			return
+		}
+	} else {
+		inputAddress := strings.Join(event.Fields()[1:], " ")
+		weather = p.getWeatherInfo(event, inputAddress)
 	}
 
-	inputAddress := strings.Join(event.Fields()[1:], " ")
-	escapedAddress := url.QueryEscape(inputAddress)
-
-	link := fmt.Sprintf(geocodeEndpoint, p.config.GoogleMapsKey, escapedAddress)
-
-	resp, err := event.HTTPClient().Get(link)
-	if resp != nil && resp.Body != nil {
-		defer resp.Body.Close()
-	}
-	if err != nil {
-		return
-	}
-
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	results, err := gabs.ParseJSON(bytes)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	if results.Path("status").Data().(string) != "OK" {
+	if weather == nil {
 		event.Respond("weather.location.not-found")
 		return
-	}
-
-	allLocationInfo, err := results.Path("results").Children()
-	if err != nil || len(allLocationInfo) == 0 {
-		event.Except(err)
-		return
-	}
-
-	locationInfo := allLocationInfo[0]
-
-	weather := &Weather{
-		UserID:             event.UserID,
-		Longitude:          locationInfo.Path("geometry.location.lng").Data().(float64),
-		Latitude:           locationInfo.Path("geometry.location.lat").Data().(float64),
-		UserEnteredAddress: inputAddress,
-		Address:            locationInfo.Path("formatted_address").Data().(string),
-		PlaceID:            locationInfo.Path("place_id").Data().(string),
 	}
 
 	forecast, err := p.darkSky.Forecast(darksky.ForecastRequest{
@@ -139,7 +107,92 @@ func (p *Plugin) viewWeather(event *events.Event) {
 		event.Except(err)
 		return
 	}
+}
 
+func (p *Plugin) setUserWeather(event *events.Event) {
+	if len(event.Fields()) < 3 {
+		event.Respond("common.to-few-params")
+		return
+	}
+
+	inputAddress := strings.Join(event.Fields()[2:], " ")
+	newInfo := p.getWeatherInfo(event, inputAddress)
+	if newInfo == nil {
+		event.Respond("weather.location.not-found")
+		return
+	}
+
+	currentInfo, err := p.getUserWeather(event.UserID)
+	if err != nil && currentInfo.UserID != "" {
+		fmt.Println("here")
+		currentInfo.Longitude = newInfo.Longitude
+		currentInfo.Latitude = newInfo.Latitude
+		currentInfo.Address = newInfo.Address
+		currentInfo.UserEnteredAddress = newInfo.UserEnteredAddress
+
+		err := currentInfo.saveToDB(p.db)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	} else {
+		fmt.Println("no here")
+		err := newInfo.saveToDB(p.db)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	}
+
+	event.Respond("weather.location.saved")
+}
+
+func (p *Plugin) getWeatherInfo(event *events.Event, inputAddress string) *Weather {
+	if inputAddress == "" {
+		return nil
+	}
+
+	escapedAddress := url.QueryEscape(inputAddress)
+	link := fmt.Sprintf(geocodeEndpoint, p.config.GoogleMapsKey, escapedAddress)
+
+	resp, err := event.HTTPClient().Get(link)
+	if resp != nil && resp.Body != nil {
+		defer resp.Body.Close()
+	}
+	if err != nil {
+		return nil
+	}
+
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		event.Except(err)
+		return nil
+	}
+
+	results, err := gabs.ParseJSON(bytes)
+	if err != nil {
+		event.Except(err)
+		return nil
+	}
+
+	if results.Path("status").Data().(string) != "OK" {
+		return nil
+	}
+
+	allLocationInfo, err := results.Path("results").Children()
+	if err != nil || len(allLocationInfo) == 0 {
+		return nil
+	}
+
+	locationInfo := allLocationInfo[0]
+	return &Weather{
+		UserID:             event.UserID,
+		Longitude:          locationInfo.Path("geometry.location.lng").Data().(float64),
+		Latitude:           locationInfo.Path("geometry.location.lat").Data().(float64),
+		UserEnteredAddress: inputAddress,
+		Address:            locationInfo.Path("formatted_address").Data().(string),
+		PlaceID:            locationInfo.Path("place_id").Data().(string),
+	}
 }
 
 func (p *Plugin) makeWeatherEmbed(event *events.Event, weather *Weather) *discordgo.MessageEmbed {

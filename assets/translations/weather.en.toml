@@ -5,6 +5,8 @@
 "weather.help.set" = "Set your default weather location."
 
 "weather.location.not-found" = "I can't find the location you are looking for. :thinking:"
+"weather.nosaved" = "No saved location information. Please set a default location with `{{.prefix}}weather set <location>`"
+"weather.location.saved" = "Your new location has been saved. :thumbsup:"
 "weather.outputformat" = "%s **%s**\n🌡 Temperature **%s °C** (%s °F)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
 "weather.outputformat.daily" = "%s **%s**\n🌡 Temperature **%s/%s °C** (%s/%s °F)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
 "weather.outputformat.usa" = "%s **%s**\n🌡 Temperature **%s °F** (%s °C)\n🌬 Wind **%s m/s** (%s mph)\n💦 Humidity **%s %%**"
