@@ -1,6 +1,7 @@
 package weather
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/url"
@@ -18,17 +19,15 @@ import (
 func (p *Plugin) viewWeather(event *events.Event) {
 	var weather *Weather
 
-	if len(event.Fields()) < 2 {
-		var err error
-		weather, err = p.getUserWeather(event.UserID)
-
-		if err != nil {
+	// check if they passed a location, otherwise check if they have one saved
+	if len(event.Fields()) > 1 {
+		weather = p.getWeatherInfo(event, strings.Join(event.Fields()[1:], " "))
+	} else {
+		weather = p.getUserWeather(event.UserID)
+		if weather == nil {
 			event.Respond("weather.nosaved")
 			return
 		}
-	} else {
-		inputAddress := strings.Join(event.Fields()[1:], " ")
-		weather = p.getWeatherInfo(event, inputAddress)
 	}
 
 	if weather == nil {
@@ -36,19 +35,40 @@ func (p *Plugin) viewWeather(event *events.Event) {
 		return
 	}
 
-	forecast, err := p.darkSky.Forecast(darksky.ForecastRequest{
-		Latitude:  darksky.Measurement(weather.Latitude),
-		Longitude: darksky.Measurement(weather.Longitude),
-		Options: darksky.ForecastRequestOptions{
-			Exclude: "minutely,hourly,alerts,flags",
-			Extend:  "",
-			Lang:    "en",
-			Units:   "si",
-		},
-	})
-	if err != nil {
-		event.Except(err)
-		return
+	var forecast darksky.ForecastResponse
+
+	// check cache
+	cacheKey := fmt.Sprintf(placeKey, weather.PlaceID)
+	forecastBytes, err := p.redis.Get(cacheKey).Bytes()
+	if err != nil || len(forecastBytes) == 0 {
+		forecast, err = p.darkSky.Forecast(darksky.ForecastRequest{
+			Latitude:  darksky.Measurement(weather.Latitude),
+			Longitude: darksky.Measurement(weather.Longitude),
+			Options: darksky.ForecastRequestOptions{
+				Exclude: "minutely,hourly,alerts,flags",
+				Extend:  "",
+				Lang:    "en",
+				Units:   "si",
+			},
+		})
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		forcastData, err := json.Marshal(forecast)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		p.redis.Set(cacheKey, forcastData, placeCacheDuration)
+	} else {
+		err = json.Unmarshal(forecastBytes, &forecast)
+		if err != nil {
+			event.Except(err)
+			return
+		}
 	}
 
 	outputFormat := "weather.outputformat"
@@ -85,28 +105,30 @@ func (p *Plugin) viewWeather(event *events.Event) {
 	}
 
 	embeds = append(embeds, currentWeatherEmbed)
-	embeds = append(embeds, p.makeWeatherEmbed(event, weather))
-	embeds = append(embeds, p.makeWeatherEmbed(event, weather))
+	if len(forecast.Daily.Data) > 3 {
+		embeds = append(embeds, p.makeWeatherEmbed(event, weather))
+		embeds = append(embeds, p.makeWeatherEmbed(event, weather))
 
-	todayTime := forecast.Currently.Time
-	var pastToday bool
-	for _, day := range forecast.Daily.Data {
-		todayDate := time.Unix(int64(todayTime), 0).Format("02/01/06")
-		dayDate := time.Unix(int64(day.Time), 0).Format("02/01/06")
+		todayTime := forecast.Currently.Time
+		var pastToday bool
+		for _, day := range forecast.Daily.Data {
+			todayDate := time.Unix(int64(todayTime), 0).Format("02/01/06")
+			dayDate := time.Unix(int64(day.Time), 0).Format("02/01/06")
 
-		// dark sky apy does not return daily data in a reliable order. need to loop
-		// through daily info to find the current day, only get days after today
-		if !pastToday {
-			if todayDate == dayDate {
-				pastToday = true
+			// dark sky apy does not return daily data in a reliable order. need to loop
+			// through daily info to find the current day, only get days after today
+			if !pastToday {
+				if todayDate == dayDate {
+					pastToday = true
+				}
+				continue
 			}
-			continue
-		}
 
-		if len(embeds[1].Fields) < 3 {
-			embeds[1].Fields = append(embeds[1].Fields, p.makeFieldFromDay(event, day, weather))
-		} else if len(embeds[2].Fields) < 3 {
-			embeds[2].Fields = append(embeds[2].Fields, p.makeFieldFromDay(event, day, weather))
+			if len(embeds[1].Fields) < 3 {
+				embeds[1].Fields = append(embeds[1].Fields, p.makeFieldFromDay(event, day, weather))
+			} else if len(embeds[2].Fields) < 3 {
+				embeds[2].Fields = append(embeds[2].Fields, p.makeFieldFromDay(event, day, weather))
+			}
 		}
 	}
 
@@ -137,7 +159,7 @@ func (p *Plugin) setUserWeather(event *events.Event) {
 	}
 
 	var err error
-	currentInfo, _ := p.getUserWeather(event.UserID)
+	currentInfo := p.getUserWeather(event.UserID)
 	if currentInfo != nil && currentInfo.UserID != "" {
 		currentInfo.Longitude = newInfo.Longitude
 		currentInfo.Latitude = newInfo.Latitude

@@ -3,6 +3,7 @@ package weather
 import (
 	"errors"
 
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/shawntoffel/darksky"
@@ -16,6 +17,7 @@ type Plugin struct {
 	db      *gorm.DB
 	darkSky darksky.DarkSky
 	config  Config
+	redis   *redis.Client
 }
 
 func (p *Plugin) Name() string {
@@ -25,6 +27,7 @@ func (p *Plugin) Name() string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
+	p.redis = params.Redis
 
 	err := envconfig.Process("", &p.config)
 	if err != nil {

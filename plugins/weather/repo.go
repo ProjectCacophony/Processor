@@ -1,12 +1,11 @@
 package weather
 
-func (p *Plugin) getUserWeather(userID string) (*Weather, error) {
+func (p *Plugin) getUserWeather(userID string) *Weather {
 	var weatherInfo Weather
-	err := p.db.
+	p.db.
 		Model(Weather{}).
 		Where(Weather{UserID: userID}).
-		First(&weatherInfo).
-		Error
+		First(&weatherInfo)
 
-	return &weatherInfo, err
+	return &weatherInfo
 }
