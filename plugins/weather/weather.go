@@ -88,10 +88,24 @@ func (p *Plugin) viewWeather(event *events.Event) {
 	embeds = append(embeds, p.makeWeatherEmbed(event, weather))
 	embeds = append(embeds, p.makeWeatherEmbed(event, weather))
 
-	for i, day := range forecast.Daily.Data {
-		if i <= 2 {
+	todayTime := forecast.Currently.Time
+	var pastToday bool
+	for _, day := range forecast.Daily.Data {
+		todayDate := time.Unix(int64(todayTime), 0).Format("02/01/06")
+		dayDate := time.Unix(int64(day.Time), 0).Format("02/01/06")
+
+		// dark sky apy does not return daily data in a reliable order. need to loop
+		// through daily info to find the current day, only get days after today
+		if !pastToday {
+			if todayDate == dayDate {
+				pastToday = true
+			}
+			continue
+		}
+
+		if len(embeds[1].Fields) < 3 {
 			embeds[1].Fields = append(embeds[1].Fields, p.makeFieldFromDay(event, day, weather))
-		} else if i >= 3 && i <= 5 {
+		} else if len(embeds[2].Fields) < 3 {
 			embeds[2].Fields = append(embeds[2].Fields, p.makeFieldFromDay(event, day, weather))
 		}
 	}
