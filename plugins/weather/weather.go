@@ -24,7 +24,7 @@ func (p *Plugin) viewWeather(event *events.Event) {
 		weather = p.getWeatherInfo(event, strings.Join(event.Fields()[1:], " "))
 	} else {
 		weather = p.getUserWeather(event.UserID)
-		if weather == nil {
+		if weather == nil || weather.UserID == "" {
 			event.Respond("weather.nosaved")
 			return
 		}
