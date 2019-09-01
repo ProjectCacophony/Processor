@@ -28,6 +28,8 @@
 # INSTAGRAM_SESSION_IDS
 # TRELLO_KEY
 # TRELLO_TOKEN
+# GOOGLE_MAPS_KEY
+# DARK_SKY_KEY
 # base64 encoded file content:
 # GOOGLE_APPLICATION_CREDENTIALS
 
@@ -63,3 +65,5 @@ sed -i -e "s|{{WEVERSE_TOKEN}}|$WEVERSE_TOKEN|g" "$target"
 sed -i -e "s|{{INSTAGRAM_SESSION_IDS}}|$INSTAGRAM_SESSION_IDS|g" "$target"
 sed -i -e "s|{{TRELLO_KEY}}|$TRELLO_KEY|g" "$target"
 sed -i -e "s|{{TRELLO_TOKEN}}|$TRELLO_TOKEN|g" "$target"
+sed -i -e "s|{{DARK_SKY_KEY}}|$DARK_SKY_KEY|g" "$target"
+sed -i -e "s|{{GOOGLE_MAPS_KEY}}|$GOOGLE_MAPS_KEY|g" "$target"

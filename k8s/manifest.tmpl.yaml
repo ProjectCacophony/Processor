@@ -25,6 +25,9 @@ stringData:
   instagramSessionIDs: "{{INSTAGRAM_SESSION_IDS}}"
   trelloKey: "{{TRELLO_KEY}}"
   trelloToken: "{{TRELLO_TOKEN}}"
+  googleMapsKey: "{{GOOGLE_MAPS_KEY}}"
+  darkSkyKey: "{{DARK_SKY_KEY}}"
+
 
 ---
 apiVersion: v1
@@ -187,6 +190,16 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: trelloToken
+          - name: GOOGLE_MAPS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: googleMapsKey
+          - name: DARK_SKY_KEY
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: darkSkyKey
       volumes:
         - name: google-cloud
           secret:
