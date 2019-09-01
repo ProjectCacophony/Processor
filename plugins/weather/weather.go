@@ -136,26 +136,22 @@ func (p *Plugin) setUserWeather(event *events.Event) {
 		return
 	}
 
-	currentInfo, err := p.getUserWeather(event.UserID)
-	if err != nil && currentInfo.UserID != "" {
-		fmt.Println("here")
+	var err error
+	currentInfo, _ := p.getUserWeather(event.UserID)
+	if currentInfo != nil && currentInfo.UserID != "" {
 		currentInfo.Longitude = newInfo.Longitude
 		currentInfo.Latitude = newInfo.Latitude
 		currentInfo.Address = newInfo.Address
 		currentInfo.UserEnteredAddress = newInfo.UserEnteredAddress
+		currentInfo.PlaceID = newInfo.PlaceID
 
-		err := currentInfo.saveToDB(p.db)
-		if err != nil {
-			event.Except(err)
-			return
-		}
+		err = p.db.Save(currentInfo).Error
 	} else {
-		fmt.Println("no here")
-		err := newInfo.saveToDB(p.db)
-		if err != nil {
-			event.Except(err)
-			return
-		}
+		err = p.db.Save(newInfo).Error
+	}
+	if err != nil {
+		event.Except(err)
+		return
 	}
 
 	event.Respond("weather.location.saved")
