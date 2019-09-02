@@ -97,12 +97,9 @@ func (p *Plugin) viewWeather(event *events.Event) {
 			),
 			Inline: false,
 		},
-		{
-			Name:   "This week",
-			Value:  p.getWeatherEmoji(forecast.Daily.Icon) + " " + forecast.Daily.Summary,
-			Inline: false,
-		},
 	}
+
+	var threeDays []darksky.DataPoint
 
 	embeds = append(embeds, currentWeatherEmbed)
 	if len(forecast.Daily.Data) > 3 {
@@ -120,8 +117,13 @@ func (p *Plugin) viewWeather(event *events.Event) {
 			if !pastToday {
 				if todayDate == dayDate {
 					pastToday = true
+					threeDays = append(threeDays, day)
 				}
 				continue
+			}
+
+			if len(threeDays) < 3 {
+				threeDays = append(threeDays, day)
 			}
 
 			if len(embeds[1].Fields) < 3 {
@@ -131,6 +133,22 @@ func (p *Plugin) viewWeather(event *events.Event) {
 			}
 		}
 	}
+
+	currentWeatherEmbed.Fields = append(currentWeatherEmbed.Fields, &discordgo.MessageEmbedField{
+		Name: "This week",
+		Value: event.Translate(
+			"weather.current.week-summary",
+			"emoji", p.getWeatherEmoji,
+			"summaryIcon", forecast.Daily.Icon,
+			"summaryText", forecast.Daily.Summary,
+			"threeDays", threeDays,
+			"usa", weather.USA(),
+			"f", func(i float64) float64 {
+				return i*1.8 + 32
+			},
+		),
+		Inline: false,
+	})
 
 	err = event.Paginator().EmbedPaginator(
 		event.BotUserID,
@@ -250,7 +268,7 @@ func (p *Plugin) makeFieldFromDay(event *events.Event, day darksky.DataPoint, we
 	temp3 := strconv.FormatFloat(float64(day.TemperatureHigh)*1.8+32, 'f', 1, 64)
 	temp4 := strconv.FormatFloat(float64(day.TemperatureLow)*1.8+32, 'f', 1, 64)
 
-	if strings.Contains(weather.Address, "USA") {
+	if weather.USA() {
 		outputFormat = "weather.outputformat.daily.usa"
 		temp3 = strconv.FormatFloat(float64(day.TemperatureHigh), 'f', 1, 64)
 		temp4 = strconv.FormatFloat(float64(day.TemperatureLow), 'f', 1, 64)

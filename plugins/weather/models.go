@@ -1,6 +1,10 @@
 package weather
 
-import "github.com/jinzhu/gorm"
+import (
+	"strings"
+
+	"github.com/jinzhu/gorm"
+)
 
 type Weather struct {
 	gorm.Model
@@ -12,6 +16,10 @@ type Weather struct {
 	Address            string
 	UserID             string
 	PlaceID            string
+}
+
+func (w *Weather) USA() bool {
+	return strings.Contains(w.Address, "USA")
 }
 
 func (*Weather) TableName() string {

@@ -14,3 +14,10 @@
 
 "weather.darkSky.logo" = "https://i.imgur.com/JlQzNZx.png"
 "weather.darkSky.mention" = "Powered by Dark Sky"
+
+"weather.current.week-summary" = "{{call .emoji .summaryIcon}} {{.summaryText}}\n\
+{{range $i, $day := .threeDays}}\
+**{{if eq $i 0}}Today{{else if eq $i 1}}Tomorrow{{else}}{{ParseTimestamp (int64 $day.Time) | date \"Monday\"}}{{end}}** \
+{{if $.usa}}{{round (call $.f (float64 $day.TemperatureHigh)) 0}}/{{round (call $.f (float64 $day.TemperatureLow)) 0}} °F\
+{{else}}{{round $day.TemperatureHigh 0}}/{{round $day.TemperatureLow 0}} °C{{end}} \
+{{end}}"
