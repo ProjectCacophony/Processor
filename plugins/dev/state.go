@@ -144,7 +144,7 @@ func (p *Plugin) handleDevStateGuilds(event *events.Event) {
 			return
 		}
 
-		resp += fmt.Sprintf("**%s** (`#%s`) %d MemberCount\n",
+		resp += fmt.Sprintf("**%s** (`#%s`) %d Members\n",
 			guild.Name, guild.ID, guild.MemberCount,
 		)
 	}

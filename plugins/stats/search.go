@@ -43,7 +43,19 @@ func (p *Plugin) handleSearch(event *events.Event) {
 
 	var result []*discordgo.Member // nolint: prealloc
 
-	for _, member := range targetGuild.Members {
+	members, err := event.State().GuildMembers(targetGuild.ID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	for _, memberID := range members {
+		member, err := event.State().Member(targetGuild.ID, memberID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
 		if !(searchExp.MatchString(member.User.Username) ||
 			searchExp.MatchString(member.User.String()) ||
 			(member.Nick != "" && searchExp.MatchString(member.Nick))) {

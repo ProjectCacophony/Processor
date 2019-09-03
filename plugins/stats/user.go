@@ -41,32 +41,33 @@ func (p *Plugin) handleUser(event *events.Event) {
 			return roles[i].Position > roles[j].Position
 		})
 
-		guild, err := event.State().Guild(event.GuildID)
-		if err == nil {
-			sort.Slice(guild.Members[:], func(i, j int) bool {
-				if guild.Members[i].JoinedAt == "" || guild.Members[j].JoinedAt == "" {
-					return false
-				}
-
-				iMemberTime, err := guild.Members[i].JoinedAt.Parse()
-				if err != nil {
-					return false
-				}
-				jMemberTime, err := guild.Members[j].JoinedAt.Parse()
-				if err != nil {
-					return false
-				}
-
-				return iMemberTime.Before(jMemberTime)
-			})
-
-			for i, sortedMember := range guild.Members[:] {
-				if sortedMember.User.ID == user.ID {
-					userNr = i + 1
-					break
-				}
-			}
-		}
+		// TODO: guild.Members is not available anymore, is there a different way to get the member nr?
+		// 	guild, err := event.State().Guild(event.GuildID)
+		// 	if err == nil {
+		// 		sort.Slice(guild.Members[:], func(i, j int) bool {
+		// 			if guild.Members[i].JoinedAt == "" || guild.Members[j].JoinedAt == "" {
+		// 				return false
+		// 			}
+		//
+		// 			iMemberTime, err := guild.Members[i].JoinedAt.Parse()
+		// 			if err != nil {
+		// 				return false
+		// 			}
+		// 			jMemberTime, err := guild.Members[j].JoinedAt.Parse()
+		// 			if err != nil {
+		// 				return false
+		// 			}
+		//
+		// 			return iMemberTime.Before(jMemberTime)
+		// 		})
+		//
+		// 		for i, sortedMember := range guild.Members[:] {
+		// 			if sortedMember.User.ID == user.ID {
+		// 				userNr = i + 1
+		// 				break
+		// 			}
+		// 		}
+		// 	}
 	}
 
 	var color int
