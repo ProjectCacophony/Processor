@@ -5,6 +5,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/regexp"
 )
 
 // serversPerUserLimit returns the server limit for the current user
@@ -18,14 +19,14 @@ func serversPerUserLimit(event *events.Event) int {
 }
 
 func (p *Plugin) extractGuild(session *discord.Session, text string) (*discordgo.Guild, error) {
-	if p.snowflakeRegex.MatchString(text) {
+	if regexp.SnowflakeRegexp.MatchString(text) {
 		return &discordgo.Guild{
 			ID: text,
 		}, nil
 	}
 
 	var inviteCode string
-	parts := p.discordInviteRegex.FindStringSubmatch(text)
+	parts := regexp.DiscordInviteRegexp.FindStringSubmatch(text)
 	if len(parts) >= 6 {
 		inviteCode = parts[5]
 	}

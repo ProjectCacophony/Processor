@@ -1,8 +1,6 @@
 package whitelist
 
 import (
-	"regexp"
-
 	"github.com/go-redis/redis"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 
@@ -21,9 +19,6 @@ type Plugin struct {
 	state  *state.State
 	db     *gorm.DB
 	redis  *redis.Client
-
-	discordInviteRegex *regexp.Regexp
-	snowflakeRegex     *regexp.Regexp
 }
 
 func (p *Plugin) Name() string {
@@ -37,20 +32,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.db = params.DB
 	p.redis = params.Redis
-
-	p.discordInviteRegex, err = regexp.Compile(
-		`^(http(s)?:\/\/)?(discord\.gg(\/invite)?|discordapp\.com\/invite)\/([A-Za-z0-9-]+)$`,
-	)
-	if err != nil {
-		return err
-	}
-
-	p.snowflakeRegex, err = regexp.Compile(
-		`^[0-9]+$`,
-	)
-	if err != nil {
-		return err
-	}
 
 	err = params.DB.AutoMigrate(Entry{}, BlacklistEntry{}).Error
 	if err != nil {

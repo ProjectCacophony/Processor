@@ -42,7 +42,10 @@ func (p *Plugin) whitelistAdd(event *events.Event) {
 	}
 
 	if whitelistEntry != nil {
-		event.Respond("whitelist.add.already-whitelisted")
+		event.Respond(
+			"whitelist.add.already-whitelisted",
+			"inviteURL", inviteURL(event.BotUserID),
+		)
 		return
 	}
 

@@ -175,7 +175,7 @@ func loadLocalizations(logger *zap.Logger) {
 	for _, path := range files {
 		local, err := localization.NewFileSource(path, "en")
 		if err != nil {
-			logger.Error("failed to load localization file", zap.Error(err))
+			logger.Error("failed to load localization file", zap.String("file", path), zap.Error(err))
 		}
 		LocalizationsList = append(LocalizationsList, local)
 	}

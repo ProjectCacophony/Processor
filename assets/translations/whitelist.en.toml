@@ -11,7 +11,7 @@
 
 # whitelistAdd
 "whitelist.add.already-whitelisted" = "**This server is already whitelisted!**\n\
-What are you doing… :thinking:"
+If you need to invite me again, here you go: <{{Shorten .inviteURL}}>!"
 "whitelist.add.success" = "**I whitelisted the server {{.name}}!**\n\
 Please be aware that it can take up to one minute until the change is applied.\n\
 Come invite me: <{{Shorten .inviteURL}}>!\n\
