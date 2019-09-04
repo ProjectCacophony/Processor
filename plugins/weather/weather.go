@@ -259,7 +259,7 @@ func (p *Plugin) makeWeatherEmbed(event *events.Event, weather *Weather) *discor
 		Title: fmt.Sprintf("Weather in %s", weather.Address),
 		URL: fmt.Sprintf(darkskyForcastURL,
 			strconv.FormatFloat(weather.Latitude, 'f', -1, 64),
-			strconv.FormatFloat(weather.Latitude, 'f', -1, 64)),
+			strconv.FormatFloat(weather.Longitude, 'f', -1, 64)),
 		Footer: &discordgo.MessageEmbedFooter{
 			Text:    event.Translate("weather.darkSky.mention"),
 			IconURL: event.Translate("weather.darkSky.logo"),
