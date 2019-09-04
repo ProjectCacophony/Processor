@@ -5,3 +5,7 @@
 
 #help info
 "help.help.description" = "Get helpful information about the bot and its various modules, along with each specific command that can be used."
+
+"help.details.alt-names" = "{{(len .names) | plural \"Alternative name\" \"Alternative names\"}} \
+{{range $name := .names}} `{{$name}}`{{end}}\n\
+"

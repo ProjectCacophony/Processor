@@ -41,7 +41,7 @@ import (
 )
 
 type Plugin interface {
-	Name() string
+	Names() []string
 
 	// TODO: add context for deadline
 	Start(common.StartParameters) error
@@ -115,6 +115,13 @@ func StartPlugins(
 
 	var err error
 	for _, plugin := range PluginList {
+		if len(plugin.Names()) <= 0 {
+			logger.Error("plugin has no names, failed to launch",
+				zap.Error(err),
+			)
+			continue
+		}
+
 		err = plugin.Start(common.StartParameters{
 			Logger:         logger,
 			DB:             db,
@@ -128,7 +135,7 @@ func StartPlugins(
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",
-				zap.String("name", plugin.Name()),
+				zap.String("name", plugin.Names()[0]),
 				zap.Error(err),
 			)
 		}
@@ -158,7 +165,7 @@ func StopPlugins(
 		})
 		if err != nil {
 			logger.Error("failed to stop plugin",
-				zap.String("name", plugin.Name()),
+				zap.String("name", plugin.Names()[0]),
 				zap.Error(err),
 			)
 		}

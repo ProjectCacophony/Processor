@@ -22,7 +22,7 @@ const (
 )
 
 type PluginHelp struct {
-	Name                string
+	Names               []string
 	Description         string
 	Commands            []Command
 	Reactions           []Reaction

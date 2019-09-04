@@ -11,8 +11,8 @@ type Plugin struct {
 	logger *zap.Logger
 }
 
-func (p *Plugin) Name() string {
-	return "color"
+func (p *Plugin) Names() []string {
+	return []string{"color", "colour"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -34,7 +34,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "color.help.description",
 		Commands: []common.Command{{
 			Params: []common.CommandParam{

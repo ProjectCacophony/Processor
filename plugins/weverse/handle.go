@@ -26,8 +26,8 @@ type Plugin struct {
 	communities []geverse.Community
 }
 
-func (p *Plugin) Name() string {
-	return "weverse"
+func (p *Plugin) Names() []string {
+	return []string{"weverse"}
 }
 
 type weverseConfig struct {
@@ -73,7 +73,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "weverse.help.description",
 		Commands: []common.Command{
 			{

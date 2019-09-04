@@ -13,8 +13,8 @@ type Plugin struct {
 	tokens map[string]string
 }
 
-func (p *Plugin) Name() string {
-	return "stats"
+func (p *Plugin) Names() []string {
+	return []string{"stats"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -37,7 +37,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "stats.help.description",
 		Commands: []common.Command{
 			{

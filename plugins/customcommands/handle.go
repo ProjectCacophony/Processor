@@ -16,8 +16,8 @@ type Plugin struct {
 	db     *gorm.DB
 }
 
-func (p *Plugin) Name() string {
-	return "commands"
+func (p *Plugin) Names() []string {
+	return []string{"commands"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -46,7 +46,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "customcommands.help.description",
 		Commands: []common.Command{{
 			Name: "customcommands.help.list.name",
@@ -60,7 +60,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Params: []common.CommandParam{
 				{Name: "add", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 				{Name: "Command Output", Type: common.QuotedText},
 			},
 		}, {
@@ -69,7 +69,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 				{Name: "Command Output", Type: common.QuotedText},
 			},
 		}, {
@@ -78,7 +78,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Params: []common.CommandParam{
 				{Name: "delete", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 			},
 		}, {
 			Name:        "customcommands.help.viewpermission.name",
@@ -92,7 +92,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Params: []common.CommandParam{
 				{Name: "enable/disable", Type: common.Flag},
 				{Name: "user", Type: common.Flag, Optional: true},
-				// {Name: "channel", Type: common.Channel, Optional: true}, do we need channel specific?
+				// {Names: "channel", Type: common.Channel, Optional: true}, do we need channel specific?
 			},
 		}, {
 			Name:        "customcommands.help.addpermission.name",
@@ -100,13 +100,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Params: []common.CommandParam{
 				{Name: "enable/disable", Type: common.Flag},
 				{Name: "edit", Type: common.Flag},
-				{Name: "Role ID or Name", Type: common.Text, Optional: true},
+				{Name: "Role ID or Names", Type: common.Text, Optional: true},
 			},
 		}, {
 			Name: "customcommands.help.search.name",
 			Params: []common.CommandParam{
 				{Name: "search", Type: common.Flag},
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 			},
 		}, {
 			Name:        "customcommands.help.random.name",
@@ -120,7 +120,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description:     "customcommands.help.info.description",
 			SkipRootCommand: true,
 			Params: []common.CommandParam{
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 				{Name: "info", Type: common.Flag},
 			},
 		}, {
@@ -128,7 +128,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description: "customcommands.help.user.description",
 			Params: []common.CommandParam{
 				{Name: "user", Type: common.Flag},
-				{Name: "Command Name", Type: common.Text},
+				{Name: "Command Names", Type: common.Text},
 			},
 		}},
 	}

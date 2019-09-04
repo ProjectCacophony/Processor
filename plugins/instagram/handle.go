@@ -26,8 +26,8 @@ type Plugin struct {
 	ginsta *ginsta.Ginsta
 }
 
-func (p *Plugin) Name() string {
-	return "instagram"
+func (p *Plugin) Names() []string {
+	return []string{"instagram", "insta"}
 }
 
 type config struct {
@@ -68,7 +68,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "instagram.help.description",
 		Commands: []common.Command{
 			{

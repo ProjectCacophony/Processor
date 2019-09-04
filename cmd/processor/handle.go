@@ -78,16 +78,16 @@ func handle(
 		}
 
 		for _, plugin := range plugins.PluginList {
-			if !event.IsEnabled(featureFlagPluginKey(plugin.Name()), true) {
+			if !event.IsEnabled(featureFlagPluginKey(plugin.Names()[0]), true) {
 				l.Debug("skipping plugin as it is disabled by feature flags",
-					zap.String("plugin_name", plugin.Name()),
+					zap.String("plugin_name", plugin.Names()[0]),
 					zap.String("user_id", event.UserID),
 					zap.String("event_id", event.ID),
 				)
 				continue
 			}
 
-			event.WithLogger(l.With(zap.String("plugin", plugin.Name())))
+			event.WithLogger(l.With(zap.String("plugin", plugin.Names()[0])))
 
 			if plugin.Passthrough() {
 				// if passthrough, continue with next plugin asap
@@ -124,7 +124,7 @@ func executePlugin(logger *zap.Logger, plugin plugins.Plugin, event *events.Even
 			}
 
 			logger.Error("plugin failed to handle event",
-				zap.String("plugin", plugin.Name()),
+				zap.String("plugin", plugin.Names()[0]),
 				zap.String("event_type", string(event.Type)),
 				zap.Any("error", err),
 			)
@@ -134,9 +134,9 @@ func executePlugin(logger *zap.Logger, plugin plugins.Plugin, event *events.Even
 	// check if help command and redirect to help plugin
 	if len(event.Fields()) > 1 && event.Fields()[1] == "help" {
 		for _, p := range plugins.PluginList {
-			if p.Name() == "help" {
+			if p.Names()[0] == "help" {
 				event.Fields()[1] = event.Fields()[0]
-				event.Fields()[0] = p.Name()
+				event.Fields()[0] = p.Names()[0]
 				return p.Action(event)
 			}
 		}

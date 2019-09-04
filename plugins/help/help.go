@@ -16,7 +16,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 
 	// sort plugins by name
 	sort.Slice(pluginHelpList, func(i, j int) bool {
-		return pluginHelpList[i].Name < pluginHelpList[j].Name
+		return pluginHelpList[i].Names[0] < pluginHelpList[j].Names[0]
 	})
 
 	// build each plugins help text with the plugin name and description
@@ -27,7 +27,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		}
 
 		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
-			strings.Title(pluginHelp.Name), event.Prefix(), pluginHelp.Name)
+			strings.Title(pluginHelp.Names[0]), event.Prefix(), pluginHelp.Names)
 
 		if containsBotAdminPermission(pluginHelp.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
@@ -72,7 +72,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 	}
 
 	// Display module name
-	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Name))
+	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Names[0]))
 
 	// Check and display overall module permissions
 	if len(pluginHelp.PermissionsRequired) > 0 {
@@ -83,7 +83,11 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 	}
 
 	// Output module description
-	output += fmt.Sprintf("\n%s\n\n", event.Translate(pluginHelp.Description))
+	output += fmt.Sprintf("\n%s\n", event.Translate(pluginHelp.Description))
+	if len(pluginHelp.Names) > 1 {
+		output += event.Translate("help.details.alt-names", "names", pluginHelp.Names[1:])
+	}
+	output += "\n"
 
 	// Get module reactions if any
 	reactionList := make([]string, len(pluginHelp.Reactions))
@@ -100,7 +104,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 		if containsBotAdminPermission(command.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
 		}
-		commandsList[i] = formatCommand(event, command, pluginHelp.Name)
+		commandsList[i] = formatCommand(event, command, pluginHelp.Names[0])
 	}
 
 	if len(reactionList) > 0 {
@@ -122,7 +126,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 			event.Except(err)
 		}
 
-		output += fmt.Sprintf("\n\nUse `%s%s help public` to display the commands in a channel.", event.Prefix(), pluginHelp.Name)
+		output += fmt.Sprintf("\n\nUse `%s%s help public` to display the commands in a channel.", event.Prefix(), pluginHelp.Names)
 		_, err := event.RespondDM(output)
 		event.Except(err)
 	}

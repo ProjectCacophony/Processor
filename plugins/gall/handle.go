@@ -24,8 +24,8 @@ type Plugin struct {
 	ginside *ginside.GInside
 }
 
-func (p *Plugin) Name() string {
-	return "gall"
+func (p *Plugin) Names() []string {
+	return []string{"gall"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -60,7 +60,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "gall.help.description",
 		Commands: []common.Command{
 			{
@@ -73,7 +73,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "add", Type: common.Flag},
-					{Name: "Gallery Name", Type: common.Text},
+					{Name: "Gallery Names", Type: common.Text},
 					{Name: "channel", Type: common.Channel, Optional: true},
 					{Name: "all", Type: common.Flag, Optional: true},
 				},
@@ -84,7 +84,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},
 				Params: []common.CommandParam{
 					{Name: "remove", Type: common.Flag},
-					{Name: "Gallery Name", Type: common.Text},
+					{Name: "Gallery Names", Type: common.Text},
 				},
 			},
 		},

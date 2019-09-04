@@ -8,8 +8,8 @@ import (
 type Plugin struct {
 }
 
-func (p *Plugin) Name() string {
-	return "shorten"
+func (p *Plugin) Names() []string {
+	return []string{"shorten"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -30,7 +30,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "shorten.help.description",
 		Commands: []common.Command{
 			{

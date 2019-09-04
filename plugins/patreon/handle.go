@@ -12,8 +12,8 @@ type Plugin struct {
 	db     *gorm.DB
 }
 
-func (p *Plugin) Name() string {
-	return "patreon"
+func (p *Plugin) Names() []string {
+	return []string{"patreon"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -37,7 +37,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "patreon.help.description",
 		Commands: []common.Command{
 			{

@@ -11,8 +11,8 @@ type Plugin struct {
 	pluginHelpList []*common.PluginHelp
 }
 
-func (p *Plugin) Name() string {
-	return "help"
+func (p *Plugin) Names() []string {
+	return []string{"help"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -36,7 +36,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "help.help.description",
 		Commands: []common.Command{{
 			Name: "List All Modules",
@@ -83,9 +83,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		// check if second param is a plugin name
 		for _, help := range p.pluginHelpList {
-			if help.Name == event.Fields()[1] {
-				displayPluginCommands(event, help, displayInChannel)
-				return true
+			for _, name := range help.Names {
+				if name == event.Fields()[1] {
+					displayPluginCommands(event, help, displayInChannel)
+					return true
+				}
 			}
 		}
 	}

@@ -16,8 +16,8 @@ type Plugin struct {
 	db        *gorm.DB
 }
 
-func (p *Plugin) Name() string {
-	return "quickactions"
+func (p *Plugin) Names() []string {
+	return []string{"quickactions"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -44,7 +44,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "quickactions.help.description",
 		Reactions: []common.Reaction{
 			{

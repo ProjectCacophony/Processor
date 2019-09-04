@@ -23,8 +23,8 @@ type Plugin struct {
 	parser *gofeed.Parser
 }
 
-func (p *Plugin) Name() string {
-	return "rss"
+func (p *Plugin) Names() []string {
+	return []string{"rss", "feed"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -50,7 +50,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "rss.help.description",
 		Commands: []common.Command{
 			{
@@ -84,7 +84,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	if event.Fields()[0] != "rss" {
+	if event.Fields()[0] != "rss" && event.Fields()[0] != "feed" {
 		return false
 	}
 

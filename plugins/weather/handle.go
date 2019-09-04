@@ -20,8 +20,8 @@ type Plugin struct {
 	redis   *redis.Client
 }
 
-func (p *Plugin) Name() string {
-	return "weather"
+func (p *Plugin) Names() []string {
+	return []string{"weather"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -57,7 +57,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "weather.help.description",
 		Commands: []common.Command{
 			{

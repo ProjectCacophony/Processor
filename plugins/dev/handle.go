@@ -14,8 +14,8 @@ type Plugin struct {
 	logger *zap.Logger
 }
 
-func (p *Plugin) Name() string {
-	return "dev"
+func (p *Plugin) Names() []string {
+	return []string{"dev"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -38,7 +38,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:                p.Name(),
+		Names:               p.Names(),
 		Description:         "dev.help.description",
 		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
 		Commands: []common.Command{

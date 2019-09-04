@@ -19,8 +19,8 @@ type Plugin struct {
 	db      *gorm.DB
 }
 
-func (p *Plugin) Name() string {
-	return "automod"
+func (p *Plugin) Names() []string {
+	return []string{"automod", "am"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -61,7 +61,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "automod.help.description",
 		PermissionsRequired: []interfaces.Permission{
 			permissions.DiscordAdministrator,

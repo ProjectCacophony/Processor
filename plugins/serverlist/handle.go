@@ -21,8 +21,8 @@ type Plugin struct {
 	localizations    []interfaces.Localization
 }
 
-func (p *Plugin) Name() string {
-	return "serverlist"
+func (p *Plugin) Names() []string {
+	return []string{"serverlist"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -63,7 +63,7 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Name:        p.Name(),
+		Names:       p.Names(),
 		Description: "serverlist.help.description",
 		Commands: []common.Command{{
 			Name: "List all Categories",
@@ -137,7 +137,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "add", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 				{Name: "Description", Type: common.QuotedText},
-				{Name: "Channel(s), or Category Name(s)", Type: common.QuotedText},
+				{Name: "Channel(s), or Category Names(s)", Type: common.QuotedText},
 			},
 		}, {
 			Name: "List your Servers",
@@ -152,13 +152,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Server Invite", Type: common.Text},
 			},
 		}, {
-			Name:        "Edit a Server Name",
-			Description: "When editing the Server Name, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
+			Name:        "Edit a Server Names",
+			Description: "When editing the Server Names, the Server goes back to the Queue as the change has to be approved by a Moderator. \n\t\tIn lists that are sorted by \"Server Added At\" the position will not be lost after approval, as the Adding Date will not be changed.",
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 				{Name: "name", Type: common.Flag},
-				{Name: "New Server Name, if multiple, separated by ;", Type: common.QuotedText},
+				{Name: "New Server Names, if multiple, separated by ;", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Edit a Server Description",
@@ -176,7 +176,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "edit", Type: common.Flag},
 				{Name: "Server Invite", Type: common.Text},
 				{Name: "category ", Type: common.Flag},
-				{Name: "Channel(s), or Category Name(s)", Type: common.QuotedText},
+				{Name: "Channel(s), or Category Names(s)", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Edit a Server Invite",
