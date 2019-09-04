@@ -71,6 +71,15 @@ func (p *Plugin) viewWeather(event *events.Event) {
 		}
 	}
 
+	forecastLocation, err := time.LoadLocation(forecast.Timezone)
+	if err != nil {
+		forecastLocation, err = time.LoadLocation("UTC")
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	}
+
 	outputFormat := "weather.outputformat"
 	temp1 := strconv.FormatFloat(float64(forecast.Currently.Temperature), 'f', 1, 64)
 	temp2 := strconv.FormatFloat(float64(forecast.Currently.Temperature)*1.8+32, 'f', 1, 64)
@@ -109,8 +118,8 @@ func (p *Plugin) viewWeather(event *events.Event) {
 		todayTime := forecast.Currently.Time
 		var pastToday bool
 		for _, day := range forecast.Daily.Data {
-			todayDate := time.Unix(int64(todayTime), 0).Format("02/01/06")
-			dayDate := time.Unix(int64(day.Time), 0).Format("02/01/06")
+			todayDate := time.Unix(int64(todayTime), 0).In(forecastLocation).Format("02/01/06")
+			dayDate := time.Unix(int64(day.Time), 0).In(forecastLocation).Format("02/01/06")
 
 			// dark sky apy does not return daily data in a reliable order. need to loop
 			// through daily info to find the current day, only get days after today
@@ -127,9 +136,9 @@ func (p *Plugin) viewWeather(event *events.Event) {
 			}
 
 			if len(embeds[1].Fields) < 3 {
-				embeds[1].Fields = append(embeds[1].Fields, p.makeFieldFromDay(event, day, weather))
+				embeds[1].Fields = append(embeds[1].Fields, p.makeFieldFromDay(event, day, weather, forecastLocation))
 			} else if len(embeds[2].Fields) < 3 {
-				embeds[2].Fields = append(embeds[2].Fields, p.makeFieldFromDay(event, day, weather))
+				embeds[2].Fields = append(embeds[2].Fields, p.makeFieldFromDay(event, day, weather, forecastLocation))
 			}
 		}
 	}
@@ -259,8 +268,8 @@ func (p *Plugin) makeWeatherEmbed(event *events.Event, weather *Weather) *discor
 	}
 }
 
-func (p *Plugin) makeFieldFromDay(event *events.Event, day darksky.DataPoint, weather *Weather) *discordgo.MessageEmbedField {
-	tm := time.Unix(int64(day.Time), 0)
+func (p *Plugin) makeFieldFromDay(event *events.Event, day darksky.DataPoint, weather *Weather, loc *time.Location) *discordgo.MessageEmbedField {
+	tm := time.Unix(int64(day.Time), 0).In(loc)
 
 	outputFormat := "weather.outputformat.daily"
 	temp1 := strconv.FormatFloat(float64(day.TemperatureHigh), 'f', 1, 64)
