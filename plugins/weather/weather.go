@@ -151,9 +151,13 @@ func (p *Plugin) viewWeather(event *events.Event) {
 			"summaryIcon", forecast.Daily.Icon,
 			"summaryText", forecast.Daily.Summary,
 			"threeDays", threeDays,
+			"loc", forecastLocation,
 			"usa", weather.USA(),
 			"f", func(i float64) float64 {
 				return i*1.8 + 32
+			},
+			"getDayText", func(t darksky.Timestamp, loc *time.Location) string {
+				return time.Unix(int64(t), 0).In(loc).Format("Monday")
 			},
 		),
 		Inline: false,
