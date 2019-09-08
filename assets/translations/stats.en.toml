@@ -109,6 +109,8 @@ Type: \
 {{else if eq .channel.Type 2}}Voice\
 {{else if eq .channel.Type 3}}Group DM\
 {{else if eq .channel.Type 4}}Category\
+{{else if eq .channel.Type 5}}News\
+{{else if eq .channel.Type 6}}Store\
 {{else}}Unknown (`{{.channel.Type}}`){{end}}\n\
 {{if .channel.NSFW}}NSFW\n{{end}}\
 {{if .channel.Bitrate}}Bitrate: `{{HumanizeNumber (int (div (int64 .channel.Bitrate) 1000))}}kbps`\n{{end}}\
