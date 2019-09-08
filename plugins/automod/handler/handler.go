@@ -68,7 +68,10 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	var triggerMatched bool
 	var filtersMatched bool
 	for _, rule := range rules {
+		rule := rule
+
 		env := &models.Env{
+			Rule:    &rule,
 			Event:   event,
 			State:   h.state,
 			Redis:   h.redis,

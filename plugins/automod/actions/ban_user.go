@@ -58,7 +58,7 @@ func (t *BanUserItem) Do(env *models.Env) error {
 
 		// TODO: improve Reason
 		err = session.Client.GuildBanCreateWithReason(
-			env.GuildID, userID, "Banned by Cacophony Automod", 0,
+			env.GuildID, userID, automodReason(env, "Banned"), 0,
 		)
 		if err != nil {
 			return err

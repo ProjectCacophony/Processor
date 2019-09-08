@@ -58,7 +58,7 @@ func (t *KickUserItem) Do(env *models.Env) error {
 
 		// TODO: improve Reason
 		err = session.Client.GuildMemberDeleteWithReason(
-			env.GuildID, userID, "Kicked by Cacophony Automod",
+			env.GuildID, userID, automodReason(env, "Kicked"),
 		)
 		if err != nil {
 			return err

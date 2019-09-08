@@ -11,6 +11,7 @@ type HandlerInterface interface {
 }
 
 type Env struct {
+	Rule      *Rule
 	Event     *events.Event
 	State     *state.State
 	Redis     *redis.Client
