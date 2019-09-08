@@ -224,8 +224,6 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		currentQueueMessage = &QueueMessage{}
 	}
 
-	previousServerID := currentQueueMessage.CurrentServerID
-
 	var queueItem *Server
 	if len(queue) > 0 {
 		queueItem = queue[0]
@@ -262,8 +260,8 @@ func (p *Plugin) refreshQueueForGuild(guildID string) error {
 		return err
 	}
 
-	// ping if queue was empty before, but is not anymore
-	if previousServerID == 0 && len(queue) > 0 {
+	// send message to trigger unread mark
+	if len(queue) > 0 {
 		pingMessages, err := discord.SendComplexWithVars(
 			session,
 			p.localizations,
