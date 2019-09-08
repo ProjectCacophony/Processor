@@ -5,3 +5,9 @@
 
 
 "admin.storage.toggle" = "{{if .enable}}Enabled{{else}}Disabled{{end}} `{{.permission}}` for the user `{{.username}}`."
+
+# handleAs
+"admin.as.not-yourself" = "Sorry, you can not impersonate yourself! :thinking:"
+"admin.as.not-as-botadmin" = "Sorry, you can not impersonate Bot Admins! :spy:"
+"admin.as.progress" = "Performing as **{{.user.String | Escape}}**:\n\
+```\n{{.content | replace \"```\" \"` ` `\"}}\n```"

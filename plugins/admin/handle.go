@@ -10,8 +10,9 @@ import (
 )
 
 type Plugin struct {
-	state  *state.State
-	logger *zap.Logger
+	state     *state.State
+	logger    *zap.Logger
+	publisher *events.Publisher
 }
 
 func (p *Plugin) Names() []string {
@@ -21,6 +22,7 @@ func (p *Plugin) Names() []string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.logger = params.Logger
+	p.publisher = params.Publisher
 	return nil
 }
 
@@ -87,6 +89,16 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 			return
 		}
 
+		return
+
+	case "as":
+		if len(event.Fields()) < 3 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleAs(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
 		return
 	}
 }
