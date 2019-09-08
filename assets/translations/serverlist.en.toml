@@ -61,9 +61,6 @@ If it's waiting for approval please have patience until we have reviewed it."
 # handleListRefresh
 "serverlist.list-refresh.content" = "I refreshed the list for this server."
 
-# handleListClearCache
-"serverlist.list-clear-cache.content" = "I cleared the list cache for this server."
-
 # handleStatus
 "serverlist.status.content" = "\
 {{if gt (len .entries) 0}}\

@@ -12,24 +12,19 @@ import (
 )
 
 func (p *Plugin) handleListRefresh(event *events.Event) {
-	err := p.refreshList(event.BotUserID)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	_, err = event.Respond("serverlist.list-refresh.content")
-	event.Except(err)
-}
-
-func (p *Plugin) handleListClearCache(event *events.Event) {
 	err := p.clearListCache(event.BotUserID)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	_, err = event.Respond("serverlist.list-clear-cache.content")
+	err = p.refreshList(event.BotUserID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	_, err = event.Respond("serverlist.list-refresh.content")
 	event.Except(err)
 }
 

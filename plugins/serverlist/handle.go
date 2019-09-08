@@ -125,13 +125,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "refresh", Type: common.Flag},
 			},
 		}, {
-			Name:                "Clear the List Channel Cache",
-			PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
-			Params: []common.CommandParam{
-				{Name: "list", Type: common.Flag},
-				{Name: "clear-cache", Type: common.Flag},
-			},
-		}, {
 			Name: "Submit a Server",
 			Params: []common.CommandParam{
 				{Name: "add", Type: common.Flag},
@@ -288,17 +281,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 					event.Require(func() {
 
 						p.handleListRefresh(event)
-					},
-						permissions.Not(permissions.DiscordChannelDM),
-						p.staffPermissions,
-					)
-					return true
-
-				case "clear-cache":
-
-					event.Require(func() {
-
-						p.handleListClearCache(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
 						p.staffPermissions,
