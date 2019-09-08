@@ -53,6 +53,16 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "user", Type: common.User},
 				},
 			},
+			{
+				Name:        "admin.help.as.name",
+				Description: "admin.help.as.description",
+				Params: []common.CommandParam{
+					{Name: "as", Type: common.Flag},
+					{Name: "user", Type: common.User},
+					{Name: "command", Type: common.Text},
+					{Name: "…", Type: common.Text},
+				},
+			},
 		},
 	}
 }

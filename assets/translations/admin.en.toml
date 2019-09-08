@@ -2,7 +2,8 @@
 
 "admin.help.storage.toggle.user.name" = "Toggle User Storage Permission"
 "admin.help.storage.toggle.user.description" = "Enable/Disable a users ability to use commands that upload files."
-
+"admin.help.as.name" = "Impersonate an User"
+"admin.help.as.description" = "Executes a command as a different user."
 
 "admin.storage.toggle" = "{{if .enable}}Enabled{{else}}Disabled{{end}} `{{.permission}}` for the user `{{.username}}`."
 
