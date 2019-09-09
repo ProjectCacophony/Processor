@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) addCommand(event *events.Event) {
+func (p *Plugin) addCommand(event *events.Event, ccType customCommandType) {
 	if len(event.Fields()) < 4 && (len(event.Fields()) < 3 && len(event.MessageCreate.Attachments) == 0) {
 		event.Respond("common.invalid-params")
 		return
@@ -22,7 +23,7 @@ func (p *Plugin) addCommand(event *events.Event) {
 	}
 
 	var commandFile *events.FileInfo
-	if event.MessageCreate != nil && len(event.MessageCreate.Attachments) > 0 {
+	if ccType == customCommandTypeContent && event.MessageCreate != nil && len(event.MessageCreate.Attachments) > 0 {
 
 		msgs, err := event.Respond("common.uploading-file")
 		if err != nil {
@@ -59,6 +60,10 @@ func (p *Plugin) addCommand(event *events.Event) {
 		return
 	}
 
+	if ccType == customCommandTypeCommand {
+		cmdContent = strings.TrimPrefix(cmdContent, event.Prefix())
+	}
+
 	err := createCustomCommand(event.DB(), CustomCommand{
 		Name:          cmdName,
 		UserID:        event.UserID,
@@ -66,6 +71,7 @@ func (p *Plugin) addCommand(event *events.Event) {
 		Content:       cmdContent,
 		IsUserCommand: isUserOperation(event),
 		File:          commandFile,
+		Type:          ccType,
 	})
 	if err != nil {
 		event.Except(err)

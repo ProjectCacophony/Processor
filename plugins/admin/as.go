@@ -49,7 +49,7 @@ func (p *Plugin) handleAs(event *events.Event) {
 		event.Except(err)
 		if !recoverable {
 			p.logger.Fatal(
-				"received unrecoverable error while publishing questionnaire",
+				"received unrecoverable error while publishing \"sudo as\" message",
 				zap.Error(err),
 			)
 		}

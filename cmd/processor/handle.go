@@ -29,6 +29,7 @@ func handle(
 	processingDeadline time.Duration,
 	questionnaire *events.Questionnaire,
 	storage *events.Storage,
+	publisher *events.Publisher,
 ) func(event *events.Event) error {
 	l := logger.With(zap.String("service", "processor"))
 
@@ -50,6 +51,7 @@ func handle(
 		event.WithHTTPClient(httpClient)
 		event.WithQuestionnaire(questionnaire)
 		event.WithFeatureFlagger(featureFlagger)
+		event.WithPublisher(publisher)
 
 		event.Parse()
 

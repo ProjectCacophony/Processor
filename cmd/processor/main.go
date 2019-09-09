@@ -184,6 +184,7 @@ func main() {
 		config.ProcessingDeadline,
 		questionnaire,
 		storage,
+		publisher,
 	)
 
 	// init processor

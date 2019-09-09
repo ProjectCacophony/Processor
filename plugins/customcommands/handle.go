@@ -185,9 +185,13 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.searchCommand(event)
 			return true
 		case "add":
-			p.addCommand(event)
+			p.addCommand(event, customCommandTypeContent)
 			return true
-
+		case "add-alias":
+			event.Require(func() {
+				p.addCommand(event, customCommandTypeCommand)
+			}, permissions.DiscordManageServer, permissions.BotAdmin) // TODO: remove BotAdmin, just for dev
+			return true
 		case "edit":
 			p.editCommand(event)
 			return true

@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.uber.org/zap"
 )
 
 type CustomCommand struct {
@@ -17,6 +18,7 @@ type CustomCommand struct {
 	File          *events.FileInfo `gorm:"foreignkey:CustomCommandID"`
 	Triggered     int
 	IsUserCommand bool
+	Type          customCommandType
 }
 
 func (*CustomCommand) TableName() string {
@@ -41,8 +43,25 @@ func (c *CustomCommand) run(event *events.Event) error {
 		return err
 	}
 
-	_, err = event.Respond(c.getContent())
-	return err
+	switch c.Type {
+	case customCommandTypeContent:
+		_, err = event.Respond(c.getContent())
+		return err
+	case customCommandTypeCommand:
+		event.MessageCreate.Content = event.Prefix() + c.getContent()
+		err, recoverable := event.Publisher().Publish(event.Context(), event)
+		if err != nil {
+			if !recoverable {
+				event.Logger().Fatal(
+					"received unrecoverable error while publishing custom commands alias message",
+					zap.Error(err),
+				)
+			}
+		}
+		return err
+	}
+
+	return nil
 }
 
 func (c *CustomCommand) triggered(db *gorm.DB) error {
@@ -51,3 +70,10 @@ func (c *CustomCommand) triggered(db *gorm.DB) error {
 	}
 	return db.Model(c).Update("triggered", gorm.Expr("triggered + 1")).Error
 }
+
+type customCommandType int
+
+const (
+	customCommandTypeContent customCommandType = iota
+	customCommandTypeCommand
+)
