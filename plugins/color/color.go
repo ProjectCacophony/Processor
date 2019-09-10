@@ -78,7 +78,7 @@ func (p *Plugin) handleColor(event *events.Event) {
 	r := image.Rect(0, 0, 200, 200)
 	img := image.NewRGBA(r)
 	imageColor := color.RGBA{R: rgbArray[0], G: rgbArray[1], B: rgbArray[2], A: 255}
-	draw.Draw(img, img.Bounds(), &image.Uniform{imageColor}, image.ZP, draw.Src)
+	draw.Draw(img, img.Bounds(), &image.Uniform{imageColor}, image.Point{}, draw.Src)
 	finalImage := img.SubImage(r)
 
 	// encode image

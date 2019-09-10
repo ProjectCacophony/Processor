@@ -73,7 +73,7 @@ func CollageFromBytes(
 		Max: image.Point{X: width, Y: height},
 	})
 	backgroundColor := color.RGBA{R: 54, B: 57, G: 63, A: 0} // Discord Dark Theme background
-	draw.Draw(img, img.Bounds(), &image.Uniform{C: backgroundColor}, image.ZP, draw.Src)
+	draw.Draw(img, img.Bounds(), &image.Uniform{C: backgroundColor}, image.Point{}, draw.Src)
 
 	fontBytes, err := ioutil.ReadFile("assets/fonts/Spoqa Han Sans JP Bold.ttf")
 	if err != nil {
