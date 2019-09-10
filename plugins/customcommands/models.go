@@ -2,6 +2,7 @@ package customcommands
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -48,7 +49,8 @@ func (c *CustomCommand) run(event *events.Event) error {
 		_, err = event.Respond(c.getContent())
 		return err
 	case customCommandTypeCommand:
-		event.MessageCreate.Content = event.Prefix() + c.getContent()
+		event.MessageCreate.Content = event.Prefix() +
+			strings.TrimSpace(c.getContent()+" "+strings.Join(event.Fields()[1:], " "))
 		err, recoverable := event.Publisher().Publish(event.Context(), event)
 		if err != nil {
 			if !recoverable {
