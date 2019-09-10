@@ -38,7 +38,7 @@ func (p *Plugin) Stop(params common.StopParameters) error {
 }
 
 func (p *Plugin) Priority() int {
-	return 0
+	return -1000
 }
 
 func (p *Plugin) Passthrough() bool {
