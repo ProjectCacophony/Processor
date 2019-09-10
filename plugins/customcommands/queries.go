@@ -64,9 +64,9 @@ func (p *Plugin) getCommandsByTriggerCount(event *events.Event) (commands []Cust
 
 	err := p.db.
 		Table((&CustomCommand{}).TableName()).
-		Select("name, sum(triggered) as triggered, is_user_command").
+		Select("name, type, sum(triggered) as triggered, is_user_command").
 		Where("((is_user_command = true and user_id = ?) or (is_user_command = false and guild_id = ?))", event.UserID, event.GuildID).
-		Group("name, is_user_command").
+		Group("name, type, is_user_command").
 		Find(&commands).Error
 
 	if err != nil {

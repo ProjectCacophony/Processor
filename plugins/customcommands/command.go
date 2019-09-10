@@ -178,6 +178,9 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 	totalTriggered := commands[0].Triggered
 	command := commands[0]
 	content := commands[0].getContent()
+	if command.Type == customCommandTypeCommand {
+		content = "command alias: " + event.Prefix() + content
+	}
 	userInfo := "*Unknown*"
 
 	// if multi commands of same name
@@ -191,6 +194,7 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 
 		totalTriggered = 0
 		commandArray := make([]string, len(commands))
+		var commandContent string
 		for i, cmd := range commands {
 
 			// combind all triggers from each command of same name
@@ -201,7 +205,11 @@ func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomComma
 				userInfo = "*Multiple Users*"
 			}
 
-			commandArray[i] = fmt.Sprintf("%d) %s", i+1, cmd.getContent())
+			commandContent = cmd.getContent()
+			if cmd.Type == customCommandTypeCommand {
+				commandContent = "command alias: " + event.Prefix() + commandContent
+			}
+			commandArray[i] = fmt.Sprintf("%d) %s", i+1, commandContent)
 		}
 
 		content = "__Multiple Commands__\n"
@@ -254,6 +262,7 @@ func createListCommandOutput(event *events.Event, commands []CustomCommand) (lis
 	})
 
 	userCommands, serverCommands := seporateUserAndServerCommands(commands)
+	var aliasText string
 
 	// List server commands if in a guild
 	if event.GuildID != "" {
@@ -265,7 +274,11 @@ func createListCommandOutput(event *events.Event, commands []CustomCommand) (lis
 
 		serverList := make([]string, len(serverCommands))
 		for i, command := range serverCommands {
-			serverList[i] = fmt.Sprintf("`%s` (used %d times)", command.Name, command.Triggered)
+			aliasText = ""
+			if command.Type == customCommandTypeCommand {
+				aliasText = "command alias, "
+			}
+			serverList[i] = fmt.Sprintf("`%s` (%sused %d times)", command.Name, aliasText, command.Triggered)
 		}
 
 		if len(serverList) != 0 {
@@ -277,7 +290,11 @@ func createListCommandOutput(event *events.Event, commands []CustomCommand) (lis
 	// List user commands
 	userList := make([]string, len(userCommands))
 	for i, command := range userCommands {
-		userList[i] = fmt.Sprintf("`%s` (used %d times)", command.Name, command.Triggered)
+		aliasText = ""
+		if command.Type == customCommandTypeCommand {
+			aliasText = "command alias, "
+		}
+		userList[i] = fmt.Sprintf("`%s` (%sused %d times)", command.Name, aliasText, command.Triggered)
 	}
 	if len(userList) != 0 {
 		listText += fmt.Sprintf("\nYour Custom Commands (%d):\n", len(userCommands))

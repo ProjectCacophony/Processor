@@ -51,6 +51,12 @@ func (c *CustomCommand) run(event *events.Event) error {
 	case customCommandTypeCommand:
 		event.MessageCreate.Content = event.Prefix() +
 			strings.TrimSpace(c.getContent()+" "+strings.Join(event.Fields()[1:], " "))
+
+		event.Logger().Info("executing custom command",
+			zap.Uint("customcommand_id", c.ID),
+			zap.String("final_command", event.MessageCreate.Content),
+		)
+
 		err, recoverable := event.Publisher().Publish(event.Context(), event)
 		if err != nil {
 			if !recoverable {
