@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/regexp"
 	"go.uber.org/zap"
@@ -63,6 +64,16 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Command Names", Type: common.Text},
 				{Name: "Command Output", Type: common.QuotedText},
 			},
+		}, {
+			Name:        "customcommands.help.add-alias.name",
+			Description: "customcommands.help.add-alias.description",
+			Params: []common.CommandParam{
+				{Name: "add-alias", Type: common.Flag},
+				{Name: "user", Type: common.Flag, Optional: true},
+				{Name: "Command Alias", Type: common.Text},
+				{Name: "Actual Command", Type: common.QuotedText},
+			},
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
 		}, {
 			Name:        "customcommands.help.edit.name",
 			Description: "customcommands.help.edit.description",
@@ -190,7 +201,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "add-alias":
 			event.Require(func() {
 				p.addCommand(event, customCommandTypeCommand)
-			}, permissions.DiscordManageServer, permissions.BotAdmin) // TODO: remove BotAdmin, just for dev
+			}, permissions.DiscordManageServer)
 			return true
 		case "edit":
 			p.editCommand(event)

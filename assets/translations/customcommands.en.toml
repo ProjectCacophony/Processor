@@ -23,6 +23,8 @@
 "customcommands.help.user.description" = "Generally not needed unless a server command has the same name as your personal command."
 "customcommands.help.viewpermission.name" = "View Permission Settings"
 "customcommands.help.viewpermission.description" = "View the permissions settings for using and creating custom commands."
+"customcommands.help.add-alias.name" = "Add Alias"
+"customcommands.help.add-alias.description" = "Adds an alias for a Bot command."
 
 # user facing errors
 "customcommands.name.no-spaces" = "Custom commands can not contain spaces."
