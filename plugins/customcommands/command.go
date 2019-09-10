@@ -94,13 +94,13 @@ func (p *Plugin) runRandomCommand(event *events.Event) {
 	var commands []CustomCommand
 	if isUserOperation(event) {
 		if p.canUseUserCommand(event) {
-			commands = p.getAllUserCommands(event)
+			commands = p.getAllUserCommands(event, customCommandTypeContent)
 		} else {
 			denidedByServerCommandPerm = true
 		}
 	} else {
 		if p.canUseServerCommand(event) {
-			commands = p.getAllServerCommands(event)
+			commands = p.getAllServerCommands(event, customCommandTypeContent)
 		} else {
 			denidedByUserCommandPerm = true
 		}

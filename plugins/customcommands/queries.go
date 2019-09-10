@@ -36,11 +36,11 @@ func (p *Plugin) searchForCommand(event *events.Event, searchTerm string) (comma
 	return
 }
 
-func (p *Plugin) getAllUserCommands(event *events.Event) (commands []CustomCommand) {
+func (p *Plugin) getAllUserCommands(event *events.Event, firstType customCommandType, types ...customCommandType) (commands []CustomCommand) {
 
 	// query commands
-	err := p.db.Find(&commands, "is_user_command = true and user_id = ?",
-		event.UserID,
+	err := p.db.Find(&commands, "is_user_command = true and user_id = ? and type IN (?)",
+		event.UserID, append(types, firstType),
 	).Error
 	if err != nil {
 		event.Logger().Error("error querying custom commands", zap.Error(err))
@@ -48,11 +48,10 @@ func (p *Plugin) getAllUserCommands(event *events.Event) (commands []CustomComma
 
 	return
 }
-func (p *Plugin) getAllServerCommands(event *events.Event) (commands []CustomCommand) {
-
+func (p *Plugin) getAllServerCommands(event *events.Event, firstType customCommandType, types ...customCommandType) (commands []CustomCommand) {
 	// query commands
-	err := p.db.Find(&commands, "is_user_command = false and guild_id = ?",
-		event.GuildID,
+	err := p.db.Find(&commands, "is_user_command = false and guild_id = ? and type IN (?)",
+		event.GuildID, append(types, firstType),
 	).Error
 	if err != nil {
 		event.Logger().Error("error querying custom commands", zap.Error(err))
