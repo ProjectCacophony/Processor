@@ -24,6 +24,8 @@
 "stats.help.search.description" = "Searches for a member using the given Regular Expression\nDetails: <https://golang.org/pkg/regexp/>"
 "stats.help.search-server.name" = "Search for Server's Members"
 "stats.help.search-server.description" = "Searches for a member on a specific server using the given Regular Expression\nDetails: <https://golang.org/pkg/regexp/>"
+"stats.help.invite.name" = "Invite Stats"
+"stats.help.invite.description" = "Show information about a specific Invite"
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"

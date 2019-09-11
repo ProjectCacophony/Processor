@@ -91,6 +91,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:        "stats.help.invite.name",
+				Description: "stats.help.invite.description",
+				Params: []common.CommandParam{
+					{Name: "invite", Type: common.Flag},
+					{Name: "Discord Invite", Type: common.DiscordInvite},
+				},
+			},
+			{
 				Name:            "stats.help.find.name",
 				Description:     "stats.help.find.description",
 				SkipPrefix:      true,
