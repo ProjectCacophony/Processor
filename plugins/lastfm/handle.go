@@ -21,7 +21,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) Names() []string {
-	return []string{"lastfm", "lf"}
+	return []string{"lastfm", "lf", "fm"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -142,7 +142,8 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	if event.Fields()[0] != "lastfm" &&
-		event.Fields()[0] != "lf" {
+		event.Fields()[0] != "lf" &&
+		event.Fields()[0] != "fm" {
 		return false
 	}
 
