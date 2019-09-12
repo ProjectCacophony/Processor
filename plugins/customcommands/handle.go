@@ -199,9 +199,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.addCommand(event, customCommandTypeContent)
 			return true
 		case "add-alias":
-			event.Require(func() {
-				p.addCommand(event, customCommandTypeCommand)
-			}, permissions.DiscordManageServer)
+			p.addCommand(event, customCommandTypeCommand)
 			return true
 		case "edit":
 			p.editCommand(event)
