@@ -1,4 +1,4 @@
-package shorten
+package tools
 
 import (
 	"strings"
@@ -11,7 +11,7 @@ var xurlsStrict = xurls.Strict()
 
 func (p *Plugin) handleShorten(event *events.Event) {
 	if len(event.Fields()) < 2 {
-		event.Respond("shorten.shorten.too-few")
+		event.Respond("tools.shorten.too-few")
 		return
 	}
 
@@ -26,10 +26,10 @@ func (p *Plugin) handleShorten(event *events.Event) {
 	}
 
 	if link == "" {
-		event.Respond("shorten.shorten.too-few")
+		event.Respond("tools.shorten.too-few")
 		return
 	}
 
-	_, err := event.Respond("shorten.shorten.content", "link", link)
+	_, err := event.Respond("tools.shorten.content", "link", link)
 	event.Except(err)
 }

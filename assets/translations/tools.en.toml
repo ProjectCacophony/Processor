@@ -1,0 +1,12 @@
+# help
+"tools.help.description" = "Various tools"
+"tools.help.shorten.name" = "Shorten a link"
+"tools.help.shorten.description" = "Will tell you a shortened version of the link"
+
+# handleShorten
+"tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
+"tools.shorten.content" = [
+"Here you go <{{.link | Shorten}}>! :salute:",
+"This should be shorter <{{.link | Shorten}}>! :sweatsmile:",
+"How do you like <{{.link | Shorten}}>? :wink:"
+]

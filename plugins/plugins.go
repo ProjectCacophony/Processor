@@ -5,8 +5,8 @@ import (
 	"sort"
 
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
-	"gitlab.com/Cacophony/Processor/plugins/shorten"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
+	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
 	"gitlab.com/Cacophony/Processor/plugins/weather"
 	"gitlab.com/Cacophony/Processor/plugins/weverse"
@@ -82,7 +82,7 @@ var (
 		&customcommands.Plugin{},
 		&stats.Plugin{},
 		&weverse.Plugin{},
-		&shorten.Plugin{},
+		&tools.Plugin{},
 		&uploads.Plugin{},
 	}
 

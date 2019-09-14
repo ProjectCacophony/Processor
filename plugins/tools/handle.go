@@ -1,4 +1,4 @@
-package shorten
+package tools
 
 import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
@@ -9,7 +9,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) Names() []string {
-	return []string{"shorten"}
+	return []string{"tools", "shorten"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -31,12 +31,14 @@ func (p *Plugin) Passthrough() bool {
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Names:       p.Names(),
-		Description: "shorten.help.description",
+		Description: "tools.help.description",
 		Commands: []common.Command{
 			{
-				Name:        "shorten.help.shorten.name",
-				Description: "shorten.help.shorten.description",
+				Name:            "tools.help.shorten.name",
+				Description:     "tools.help.shorten.description",
+				SkipRootCommand: true,
 				Params: []common.CommandParam{
+					{Name: "shorten", Type: common.Flag},
 					{Name: "link", Type: common.Link},
 				},
 			},
@@ -48,11 +50,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 	if !event.Command() {
 		return false
 	}
-	if event.Fields()[0] != "shorten" {
-		return false
-	}
 
-	p.handleShorten(event)
+	switch event.Fields()[0] {
+	case "shorten":
+		p.handleShorten(event)
+		return true
+	}
 
 	return false
 }
