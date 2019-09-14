@@ -2,6 +2,8 @@
 "tools.help.description" = "Various tools"
 "tools.help.shorten.name" = "Shorten a link"
 "tools.help.shorten.description" = "Will tell you a shortened version of the link"
+"tools.help.choose.name" = "Choose item"
+"tools.help.choose.description" = "Makes the Bot choose from various options"
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -9,4 +11,12 @@
 "Here you go <{{.link | Shorten}}>! :salute:",
 "This should be shorter <{{.link | Shorten}}>! :sweatsmile:",
 "How do you like <{{.link | Shorten}}>? :wink:"
+]
+
+# handleChoose
+"tools.choose.too-few" = "Please tell me options to choose from"
+"tools.choose.result" = [
+"I chose **{{.pick}}**! :thumbsup:",
+"Do you like **{{.pick}}**? :shh:",
+"I am obviously choosing **{{.pick}}**! :wink:"
 ]

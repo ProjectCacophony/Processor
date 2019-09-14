@@ -9,7 +9,7 @@ type Plugin struct {
 }
 
 func (p *Plugin) Names() []string {
-	return []string{"tools", "shorten"}
+	return []string{"tools"}
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
@@ -42,6 +42,17 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "link", Type: common.Link},
 				},
 			},
+			{
+				Name:            "tools.help.choose.name",
+				Description:     "tools.help.choose.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "choose", Type: common.Flag},
+					{Name: "item a", Type: common.QuotedText},
+					{Name: "item b", Type: common.QuotedText},
+					{Name: "…", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -54,6 +65,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 	switch event.Fields()[0] {
 	case "shorten":
 		p.handleShorten(event)
+		return true
+	case "choose":
+		p.handleChoose(event)
 		return true
 	}
 
