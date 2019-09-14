@@ -158,9 +158,7 @@ func main() {
 	var storage *events.Storage
 	storageBucket, err := objectStorage.NewStorageBucket(context.Background(), config.GoogleCloudBucketName)
 	if err != nil {
-		logger.Fatal("unable to initialise object storage bucket",
-			zap.Error(err),
-		)
+		logger.Error("unable to initialise object storage bucket", zap.Error(err))
 	} else if storageBucket != nil && gormDB != nil && logger != nil {
 		storage = events.NewStorage(logger, gormDB, storageBucket)
 		if storage == nil {
