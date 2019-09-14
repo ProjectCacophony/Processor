@@ -33,6 +33,8 @@
 "customcommands.cant-edit" = "Looks like you don't have permission to edit this servers custom commands."
 "customcommands.cant-use" = "This server does not allow using {{- if .level}} user{{else}} the servers{{end}} custom commands."
 "customcommands.no-commands" = "Could not find any commands."
+"customcommands.alias-needs-content" = "An alias cannot be empty."
+"customcommands.empty" = "A custom commands needs to have content or an attachment."
 
 # command responses
 "customcommands.permission-toggle" = "I  have set `{{.who}}` to be `{{- if .canAdd}}{{else}}un{{end}}able` to add new commands."

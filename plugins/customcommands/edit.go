@@ -62,6 +62,11 @@ func (p *Plugin) addCommand(event *events.Event, ccType customCommandType) {
 
 	if ccType == customCommandTypeCommand {
 		cmdContent = strings.TrimPrefix(cmdContent, event.Prefix())
+
+		if cmdContent == "" {
+			event.Send(event.ChannelID, "customcommands.alias-needs-content")
+			return
+		}
 	}
 
 	err := createCustomCommand(event.DB(), CustomCommand{
@@ -74,6 +79,10 @@ func (p *Plugin) addCommand(event *events.Event, ccType customCommandType) {
 		Type:          ccType,
 	})
 	if err != nil {
+		if strings.Contains(err.Error(), noContent) {
+			event.Respond("customcommands.empty")
+			return
+		}
 		event.Except(err)
 		return
 	}
@@ -215,7 +224,7 @@ func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomC
 		originalCommand.File = nil
 	}
 
-	if newAttachement != nil {
+	if originalCommand.Type == customCommandTypeContent && newAttachement != nil {
 		msgs, messageErr := event.Send(event.ChannelID, "common.uploading-file")
 
 		newFile, err := event.AddAttachement(newAttachement)
@@ -229,6 +238,15 @@ func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomC
 			event.Discord().Client.ChannelMessageDelete(event.ChannelID, msgs[0].ID)
 		}
 		originalCommand.File = newFile
+	}
+
+	if originalCommand.Type == customCommandTypeCommand {
+		newContent = strings.TrimPrefix(newContent, event.Prefix())
+
+		if newContent == "" {
+			event.Send(event.ChannelID, "customcommands.alias-needs-content")
+			return
+		}
 	}
 
 	originalCommand.Content = newContent
