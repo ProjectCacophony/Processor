@@ -10,7 +10,7 @@ import (
 const starMessageEmoji = "quickaction_star"
 
 func (p *Plugin) starMessage(event *events.Event) {
-	message, err := getMessage(
+	message, err := discord.FindMessage(
 		event.State(),
 		event.Discord(),
 		event.MessageReactionAdd.ChannelID,

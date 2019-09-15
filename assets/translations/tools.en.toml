@@ -6,6 +6,8 @@
 "tools.help.choose.description" = "Makes the Bot choose from various options"
 "tools.help.say.name" = "Send a Message"
 "tools.help.say.description" = "Sends the given message as the bot in the given channel"
+"tools.help.edit.name" = "Edit a Message"
+"tools.help.edit.description" = "Edits the given message sent by the bot"
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"

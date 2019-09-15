@@ -43,7 +43,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "channel", Type: common.Channel},
 					{Name: "message content, or code", Type: common.Text},
 				},
-				PermissionsRequired: common.Permissions{permissions.DiscordManageChannels},
+				PermissionsRequired: common.Permissions{
+					permissions.DiscordManageChannels,
+					permissions.DiscordManageMessages,
+				},
+			},
+			{
+				Name:            "tools.help.edit.name",
+				Description:     "tools.help.edit.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "edit", Type: common.Flag},
+					{Name: "message link", Type: common.Link},
+					{Name: "message content, or code", Type: common.Text},
+				},
+				PermissionsRequired: common.Permissions{
+					permissions.DiscordManageChannels,
+					permissions.DiscordManageMessages,
+				},
 			},
 			{
 				Name:            "tools.help.choose.name",
@@ -84,7 +101,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 	case "say":
 		event.Require(func() {
 			p.handleSay(event)
-		}, permissions.DiscordManageChannels)
+		}, permissions.Or(permissions.DiscordManageChannels, permissions.DiscordManageMessages))
+		return true
+	case "edit":
+		event.Require(func() {
+			p.handleEdit(event)
+		}, permissions.DiscordManageChannels, permissions.DiscordManageMessages)
 		return true
 	}
 

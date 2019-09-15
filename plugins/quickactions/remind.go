@@ -284,7 +284,7 @@ func (p *Plugin) setupQuickactionRemind(
 }
 
 func (p *Plugin) handleQuickactionRemind(event *events.Event) {
-	message, err := getMessage(
+	message, err := discord.FindMessage(
 		event.State(),
 		event.Discord(),
 		event.QuickactionRemind.ChannelID,

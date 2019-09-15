@@ -3,17 +3,18 @@ package tools
 import (
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) handleSay(event *events.Event) {
+func (p *Plugin) handleEdit(event *events.Event) {
 	if len(event.Fields()) < 3 {
 		event.Respond("tools.say.too-few")
 		return
 	}
 
-	targetChannel, err := event.State().ChannelFromMention(event.GuildID, event.Fields()[1])
+	targetMessage, err := event.FindMessageLink(event.Fields()[1])
 	if err != nil {
 		event.Except(err)
 		return
@@ -25,7 +26,14 @@ func (p *Plugin) handleSay(event *events.Event) {
 
 	message := discord.MessageCodeToMessage(messageCode)
 
-	_, err = event.SendComplex(targetChannel.ID, message)
+	edit := &discordgo.MessageEdit{
+		Content: &message.Content,
+		Embed:   message.Embed,
+		ID:      targetMessage.ID,
+		Channel: targetMessage.ChannelID,
+	}
+
+	_, err = discord.EditComplexWithVars(event.Redis(), event.Discord(), event.Localizations(), edit, event.DM())
 	if err != nil {
 		event.Except(err)
 		return

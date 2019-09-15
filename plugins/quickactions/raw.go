@@ -9,7 +9,7 @@ import (
 const rawMessageEmoji = "quickaction_raw"
 
 func (p *Plugin) rawMessage(event *events.Event) {
-	message, err := getMessage(
+	message, err := discord.FindMessage(
 		event.State(),
 		event.Discord(),
 		event.MessageReactionAdd.ChannelID,
