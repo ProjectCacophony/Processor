@@ -10,6 +10,8 @@
 "tools.help.edit.description" = "Edits the given message sent by the bot"
 "tools.help.roll.name" = "Roll a number"
 "tools.help.roll.description" = "Chooses a number between 1 and the given number, including 1 and the given number."
+"tools.help.8ball.name" = "Magic 8-Ball"
+"tools.help.8ball.description" = "Ask the Magic 8-Ball."
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -38,3 +40,6 @@
 "I choose… :drum: **{{.pick}}**! :choices:",
 "Today I will say **{{.pick}}**! :detective:"
 ]
+
+# handle8ball
+"tools.8ball.result" = "{{.pick}} {{if eq .type 0}}:thumbsup:{{else if eq .type 1}}:thinking:{{else if eq .type 2}}:thumbsdown:{{end}}"

@@ -3,14 +3,9 @@ package tools
 import (
 	"math/rand"
 	"strconv"
-	"time"
 
 	"gitlab.com/Cacophony/go-kit/events"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 func (p *Plugin) handleRoll(event *events.Event) {
 	if len(event.Fields()) < 2 {

@@ -1,10 +1,17 @@
 package tools
 
 import (
+	"math/rand"
+	"time"
+
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 type Plugin struct {
 }
@@ -83,6 +90,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:            "tools.help.8ball.name",
+				Description:     "tools.help.8ball.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "8ball", Type: common.Flag},
+				},
+			},
+			{
 				Name:            "tools.help.shorten.name",
 				Description:     "tools.help.shorten.description",
 				SkipRootCommand: true,
@@ -109,6 +124,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	case "roll":
 		p.handleRoll(event)
+		return true
+	case "8ball":
+		p.handle8ball(event)
 		return true
 	case "say":
 		event.Require(func() {

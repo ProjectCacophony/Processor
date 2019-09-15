@@ -2,14 +2,9 @@ package tools
 
 import (
 	"math/rand"
-	"time"
 
 	"gitlab.com/Cacophony/go-kit/events"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 func (p *Plugin) handleChoose(event *events.Event) {
 	var items []string // nolint: prealloc
