@@ -4,6 +4,8 @@
 "tools.help.shorten.description" = "Will tell you a shortened version of the link"
 "tools.help.choose.name" = "Choose item"
 "tools.help.choose.description" = "Makes the Bot choose from various options"
+"tools.help.say.name" = "Send a Message"
+"tools.help.say.description" = "Sends the given message as the bot in the given channel"
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -20,3 +22,6 @@
 "Do you like **{{.pick}}**? :shh:",
 "I am obviously choosing **{{.pick}}**! :wink:"
 ]
+
+# handleSay
+"tools.say.too-few" = "Please tell me where to post the message, and the contnet of the message."

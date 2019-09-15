@@ -27,7 +27,7 @@ func (p *Plugin) rawMessage(event *events.Event) {
 		"quickactions.raw.content",
 		"emoji", event.MessageReactionAdd.Emoji.MessageFormat(),
 		"message", message,
-		"content", discord.EmbedCodeFromMessage(message),
+		"content", discord.MessageCodeFromMessage(message),
 	)
 	if err != nil {
 		event.ExceptSilent(err)

@@ -20,7 +20,7 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20190915081228-f477cdb1abf6
+	gitlab.com/Cacophony/go-kit v0.0.0-20190915082856-3da081953df3
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0
