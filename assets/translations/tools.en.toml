@@ -8,6 +8,8 @@
 "tools.help.say.description" = "Sends the given message as the bot in the given channel"
 "tools.help.edit.name" = "Edit a Message"
 "tools.help.edit.description" = "Edits the given message sent by the bot"
+"tools.help.roll.name" = "Roll a number"
+"tools.help.roll.description" = "Chooses a number between 1 and the given number, including 1 and the given number."
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -27,3 +29,12 @@
 
 # handleSay
 "tools.say.too-few" = "Please tell me where to post the message, and the contnet of the message."
+
+# handleRoll
+"tools.roll.too-few" = "Please tell me which number to roll."
+"tools.roll.not-positive" = "The given number has to be greater than zero."
+"tools.roll.result" = [
+"I am picking **{{.pick}}**! :seenoevil:",
+"I choose… :drum: **{{.pick}}**! :choices:",
+"Today I will say **{{.pick}}**! :detective:"
+]

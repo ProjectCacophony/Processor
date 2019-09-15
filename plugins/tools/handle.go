@@ -74,6 +74,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:            "tools.help.roll.name",
+				Description:     "tools.help.roll.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "roll", Type: common.Flag},
+					{Name: "maximum number", Type: common.Text},
+				},
+			},
+			{
 				Name:            "tools.help.shorten.name",
 				Description:     "tools.help.shorten.description",
 				SkipRootCommand: true,
@@ -97,6 +106,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	case "choose":
 		p.handleChoose(event)
+		return true
+	case "roll":
+		p.handleRoll(event)
 		return true
 	case "say":
 		event.Require(func() {
