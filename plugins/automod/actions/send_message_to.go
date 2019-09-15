@@ -3,7 +3,6 @@ package actions
 import (
 	"errors"
 
-	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/permissions"
 
@@ -70,9 +69,7 @@ func (t *SendMessageToItem) Do(env *models.Env) error {
 		session,
 		nil,
 		t.ChannelID,
-		&discordgo.MessageSend{
-			Content: t.Message,
-		},
+		discord.MessageCodeToMessage(t.Message),
 	)
 	if err != nil {
 		return err

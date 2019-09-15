@@ -96,11 +96,11 @@ Comparison Types: >, =, and < [comparison type; amount]"
 
 # Actions
 "automod.actions.apply_role" = "Applies the given role. [role]"
-"automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message]"
+"automod.actions.send_message" = "Sends the given message to all Channels in the Rule Context. [message content, or message code]"
 "automod.actions.incr_bucket" = "Increases a leaky bucket.\n\
 Stores eventual Messages, Users and Channels in the Rule Context.\n\
 Types: guild, channel, or user [tag; type; decay duration; amount]"
-"automod.actions.send_message_to" = "Sends the given message to the given channel. [message; channel]"
+"automod.actions.send_message_to" = "Sends the given message to the given channel. [message content, or message code; channel]"
 "automod.actions.delete_message" = "Deletes all Message found in the Rule Context."
 "automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
 "automod.actions.ban_user" = "Bans all Users found in the Rule Context."
