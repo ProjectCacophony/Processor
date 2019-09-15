@@ -12,6 +12,8 @@
 "tools.help.roll.description" = "Chooses a number between 1 and the given number, including 1 and the given number."
 "tools.help.8ball.name" = "Magic 8-Ball"
 "tools.help.8ball.description" = "Ask the Magic 8-Ball."
+"tools.help.dice.name" = "Cast dice"
+"tools.help.dice.description" = "Casts a given dice. Eg 1d6, or 1d%\\*10"
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -43,3 +45,12 @@
 
 # handle8ball
 "tools.8ball.result" = "{{.pick}} {{if eq .type 0}}:thumbsup:{{else if eq .type 1}}:thinking:{{else if eq .type 2}}:thumbsdown:{{end}}"
+
+# handleDice
+"tools.dice.too-few" = "**Please tell me a dice to cast.**\nFor example: `1d20`"
+"tools.dice.invalid" = "**Please tell me a dice to cast.**\nFor example: `1d20`"
+"tools.dice.division-by-zero" = "I cannot calculate division by zero! :scream:"
+"tools.dice.result" = [
+"I got… :game_die: **{{.result}}**!",
+"And… :game_die: **{{.result}}**!"
+]

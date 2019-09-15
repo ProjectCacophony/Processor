@@ -90,6 +90,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:            "tools.help.dice.name",
+				Description:     "tools.help.dice.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "dice", Type: common.Flag},
+					{Name: "dice to cast", Type: common.Text},
+				},
+			},
+			{
 				Name:            "tools.help.8ball.name",
 				Description:     "tools.help.8ball.description",
 				SkipRootCommand: true,
@@ -127,6 +136,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	case "8ball":
 		p.handle8ball(event)
+		return true
+	case "dice":
+		p.handleDice(event)
 		return true
 	case "say":
 		event.Require(func() {
