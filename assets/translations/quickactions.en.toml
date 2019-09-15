@@ -26,6 +26,6 @@ The minimum delay is five minutes\
 "quickactions.raw.content" = "\
 {{.emoji}} <{{MessageLink .message}}>\n\
 ```\n\
-{{.message.Content | replace \"```\" \"` ` `\"}}\n\
+{{.content | replace \"```\" \"` ` `\"}}\n\
 ```\
 "

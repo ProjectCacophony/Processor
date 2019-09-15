@@ -1,6 +1,7 @@
 package quickactions
 
 import (
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -26,6 +27,7 @@ func (p *Plugin) rawMessage(event *events.Event) {
 		"quickactions.raw.content",
 		"emoji", event.MessageReactionAdd.Emoji.MessageFormat(),
 		"message", message,
+		"content", discord.EmbedCodeFromMessage(message),
 	)
 	if err != nil {
 		event.ExceptSilent(err)
@@ -51,7 +53,4 @@ func (p *Plugin) rawMessage(event *events.Event) {
 			return
 		}
 	}
-
-	// TODO: add support for embeds?
-	// TODO: replace emoji (do not display IDs)?
 }
