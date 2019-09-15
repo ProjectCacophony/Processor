@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
 )
@@ -46,7 +47,8 @@ func (c *CustomCommand) run(event *events.Event) error {
 
 	switch c.Type {
 	case customCommandTypeContent:
-		_, err = event.Respond(c.getContent())
+		message := discord.MessageCodeToMessage(c.getContent())
+		_, err = event.RespondComplex(message)
 		return err
 	case customCommandTypeCommand:
 		event.MessageCreate.Content = event.Prefix() +
