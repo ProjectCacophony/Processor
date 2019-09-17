@@ -32,7 +32,7 @@
 ]
 
 # handleSay
-"tools.say.too-few" = "Please tell me where to post the message, and the contnet of the message."
+"tools.say.too-few" = "Please tell me where to post the message, and the content of the message."
 
 # handleRoll
 "tools.roll.too-few" = "Please tell me which number to roll."
