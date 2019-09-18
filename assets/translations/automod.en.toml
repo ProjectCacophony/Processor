@@ -57,6 +57,14 @@ You can create the first rule: `{{.prefix}}automod add […]` \
 {{range $item := .filters}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
 **Actions**\n\
 {{range $item := .actions}}`{{$item.Name}}`: {{$item.Description}}\n{{end}}\
+**Text replacements**\n\
+User: `{USER_USERNAME}`, `{USER_DISCRIMINATOR}`, `{USER_USERNAME_FULL}`, `{USER_MENTION}`, `{USER_AVATAR_URL}`, and `{USER_ID}`.\n\
+Channel: `{CHANNEL_NAME}`, and `{CHANNEL_ID}`.\n\
+Server: `{GUILD_NAME}`, `{GUILD_ICON_URL}`, and `{GUILD_ID}`.\n\
+Message: `{MESSAGE_CONTENT}`, `{MESSAGE_LINK}`, and `{MESSAGE_ID}`.\n\
+**Specials**\n\
+`stop` at the end of a rule, to not allow further processing of the message after the rule ran.\n\
+`silent` at the end of a rule, to not display executed rules in the automod log.\n\
 "
 
 # cmdLog
