@@ -55,13 +55,61 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 
 	for _, value := range env.Event.BucketUpdate.Values {
 		userIDs, channelIDs, GuildID, messages := extractBucketValues(value)
+
 		env.GuildID = GuildID
-		env.ChannelID = append(env.ChannelID, channelIDs...)
-		env.UserID = append(env.UserID, userIDs...)
-		env.Messages = append(env.Messages, messages...)
+
+		for _, userID := range userIDs {
+			if userID == "" {
+				continue
+			}
+
+			if !stringSliceContains(env.UserID, userID) {
+				env.UserID = append(env.UserID, userID)
+			}
+		}
+
+		for _, channelID := range channelIDs {
+			if channelID == "" {
+				continue
+			}
+
+			if !stringSliceContains(env.ChannelID, channelID) {
+				env.ChannelID = append(env.ChannelID, channelID)
+			}
+		}
+
+		for _, message := range messages {
+			if message.ID == "" || message.ChanneID == "" {
+				continue
+			}
+
+			if !messageSliceContains(env.Messages, message) {
+				env.Messages = append(env.Messages, message)
+			}
+		}
 	}
 
 	return true
+}
+
+func stringSliceContains(haystack []string, needle string) bool {
+	for _, item := range haystack {
+		if item == needle {
+			return true
+		}
+	}
+
+	return false
+}
+
+func messageSliceContains(haystack []*models.EnvMessage, needle *models.EnvMessage) bool {
+	for _, item := range haystack {
+		if item.ID == needle.ID && item.ChanneID == needle.ChanneID {
+			return true
+		}
+	}
+
+	return false
 }
 
 func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string, messages []*models.EnvMessage) {

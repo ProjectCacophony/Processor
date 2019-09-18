@@ -160,13 +160,35 @@ func randomLetters(n int) string {
 func bucketContent(env *models.Env) string {
 	// TODO: marshal bucket content in a sane way
 
-	content := env.GuildID + "|" +
-		strings.Join(env.ChannelID, ";") + "|" +
-		strings.Join(env.UserID, ";") + "|"
-	for _, message := range env.Messages {
-		content += message.ID + ":" + message.ChanneID + ";"
+	var userText, channelText, messageText string
+
+	for _, user := range env.UserID {
+		if strings.Contains(userText, user+";") {
+			continue
+		}
+
+		userText += user + ";"
 	}
-	content += "|"
-	content += randomLetters(10)
-	return content
+
+	for _, channel := range env.ChannelID {
+		if strings.Contains(channelText, channel+";") {
+			continue
+		}
+
+		channelText += channel + ";"
+	}
+
+	for _, message := range env.Messages {
+		if strings.Contains(messageText, message.ID+":"+message.ChanneID+";") {
+			continue
+		}
+
+		messageText += message.ID + ":" + message.ChanneID + ";"
+	}
+
+	return env.GuildID + "|" +
+		channelText + "|" +
+		userText + "|" +
+		messageText + "|" +
+		randomLetters(10)
 }
