@@ -31,7 +31,7 @@ func handle(
 	storage *events.Storage,
 	publisher *events.Publisher,
 ) func(event *events.Event) error {
-	l := logger.With(zap.String("service", "processor"))
+	l := logger.With(zap.String("service", "processorAAAA"))
 
 	return func(event *events.Event) error { // nolint: unparam
 		var err error
