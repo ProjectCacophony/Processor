@@ -12,6 +12,7 @@ var (
 		triggers.Message{},
 		triggers.BucketUpdated{},
 		triggers.Join{},
+		triggers.Leave{},
 	}
 
 	FiltersList = []interfaces.FilterInterface{
