@@ -15,6 +15,7 @@ type Rule struct {
 	Actions       []RuleAction
 	Stop          bool
 	Silent        bool
+	Managed       bool
 	Runs          int `gorm:"default:'0'"`
 }
 

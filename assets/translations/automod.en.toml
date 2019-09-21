@@ -31,17 +31,22 @@ The log will be posted in <#{{.logChannelID}}>.{{ end }}\
 "automod.add.confirm-update-duplicate" = "**There is already a rule with that name**\n\
 Do you want to update that rule?\n\
 Please react with ✅ if you do."
+"automod.add.managed-duplicate" = "**There is already a managed rule with that name**\n\
+Such rules can not be modified."
 
 # cmdRemove
 "automod.remove.too-few" = "Please tell me the name of the rule to remove."
 "automod.remove.success" = "I removed the rule `{{.rule.Name}}`."
 "automod.remove.not-found" = "I was not able to find a rule with that name."
+"automod.remove.managed" = "**Managed rules can not be deleted**\n\
+Please find out which integration created the rule, and delete it from there."
 
 # cmdStatus
 "automod.status.response" = "\
 {{if gt (len .rules) 0}} \
 {{range $rule := .rules}}\
-Added {{TimeFormat $rule.CreatedAt $.timezone}} `{{HumanizeNumber $rule.Runs}}` times triggered\
+Added {{TimeFormat $rule.CreatedAt $.timezone}} `{{HumanizeNumber $rule.Runs}}` times triggered\n\
+{{if $rule.Managed}}Managed rule, cannot be modified.\n{{end}}\
 ```\n{{$rule.RuleText}}\n```\n\n\
 {{end}}\
 {{else}} \
@@ -83,6 +88,7 @@ Restores Messages, Users, and Channels from the Bucket into the Rule Context. [t
 Adds the User to the Rule Context. []"
 "automod.triggers.when_leave" = "Triggers when a user leaves the server.\n\
 Adds the User to the Rule Context. []"
+
 # Filters
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
 "automod.filters.if_true" = "Always matches."

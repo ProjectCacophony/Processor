@@ -51,7 +51,8 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 					},
 				},
 			},
-			Silent: true,
+			Silent:  true,
+			Managed: true,
 		}
 
 		switch greeterType {
