@@ -1,0 +1,26 @@
+# help
+"greeter.help.description" = "Set up Join and Leave messages."
+"greeter.help.join.name" = "Join message"
+"greeter.help.join.description" = "Set up a message that will be sent when a User joins."
+"greeter.help.leave.name" = "Leave message"
+"greeter.help.leave.description" = "Set up a message that will be sent when a User leaves."
+"greeter.help.status.name" = "Current messages"
+"greeter.help.status.description" = "View currently set up Greeter messages."
+
+# handleAdd
+"greeter.add.success" = "I saved the {{.greeterType}} message for {{.channel.Mention}}!"
+"greeter.add.remove-success" = "I removed the {{.greeterType}} message from {{.channel.Mention}}!"
+
+# handleStatus
+"greeter.status.content" = "\
+{{if gt (len .entries) 0}}\
+{{range $entry := .entries}}\
+**{{$entry.Type}} message** in <#{{$entry.ChannelID}}> triggered `{{HumanizeNumber $entry.Rule.Runs}}` {{$entry.Rule.Runs | plural \"time\" \"times\"}}\n\
+```{{$entry.Message | replace \"```\" \"` ` `\"}}```\n\
+{{end}}\
+To remove a message, remove the content, for example `{{.prefix}}greeter join #{{.channel.Name}}`.\
+{{else}}\
+**No Greeter messages found!**\n\
+You can create one, for example `{{.prefix}}greeter join #{{.channel.Name}} \"Welcome **{USER_USERNAME}**!\"`\
+{{end}}\
+"

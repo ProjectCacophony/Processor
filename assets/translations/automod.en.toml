@@ -40,13 +40,15 @@ Please react with ✅ if you do."
 # cmdStatus
 "automod.status.response" = "\
 {{if gt (len .rules) 0}} \
-{{range $rule := .rules}}```\n{{$rule.RuleText}}\n```\n\
-Added {{TimeFormat $rule.CreatedAt $.timezone}} `{{HumanizeNumber $rule.Runs}}` times triggered{{end}} \
+{{range $rule := .rules}}\
+Added {{TimeFormat $rule.CreatedAt $.timezone}} `{{HumanizeNumber $rule.Runs}}` times triggered\
+```\n{{$rule.RuleText}}\n```\n\n\
+{{end}}\
 {{else}} \
 **Looks like there are no rules on this server so far.** :thinking:\n\
 You can create the first rule: `{{.prefix}}automod add […]` \
 {{end}}\
-{{ if .logChannelID }}\nThe log will be posted in <#{{.logChannelID}}>.{{ end }}\
+{{ if .logChannelID }}The log will be posted in <#{{.logChannelID}}>.{{ end }}\
 "
 
 # cmdElements
