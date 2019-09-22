@@ -10,6 +10,8 @@ type greeterType int
 const (
 	greeterTypeJoin greeterType = iota
 	greeterTypeLeave
+	greeterTypeBan
+	greeterTypeUnban
 )
 
 func (gt greeterType) String() string {
@@ -18,6 +20,10 @@ func (gt greeterType) String() string {
 		return "Join"
 	case greeterTypeLeave:
 		return "Leave"
+	case greeterTypeBan:
+		return "Ban"
+	case greeterTypeUnban:
+		return "Unban"
 	}
 
 	return "Unknown"

@@ -60,6 +60,10 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 			rule.TriggerName = "when_join"
 		case greeterTypeLeave:
 			rule.TriggerName = "when_leave"
+		case greeterTypeBan:
+			rule.TriggerName = "when_ban"
+		case greeterTypeUnban:
+			rule.TriggerName = "when_unban"
 		default:
 			event.Except(fmt.Errorf("unknown greeter type: %d", greeterType))
 			return

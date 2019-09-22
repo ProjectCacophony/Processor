@@ -55,6 +55,26 @@ func (p *Plugin) Help() *common.PluginHelp {
 				PermissionsRequired: common.Permissions{permissions.DiscordManageChannels},
 			},
 			{
+				Name:        "greeter.help.ban.name",
+				Description: "greeter.help.ban.description",
+				Params: []common.CommandParam{
+					{Name: "ban", Type: common.Flag},
+					{Name: "channel", Type: common.Channel},
+					{Name: "Message Code", Type: common.QuotedText, Optional: true},
+				},
+				PermissionsRequired: common.Permissions{permissions.DiscordManageChannels},
+			},
+			{
+				Name:        "greeter.help.unban.name",
+				Description: "greeter.help.unban.description",
+				Params: []common.CommandParam{
+					{Name: "unban", Type: common.Flag},
+					{Name: "channel", Type: common.Channel},
+					{Name: "Message Code", Type: common.QuotedText, Optional: true},
+				},
+				PermissionsRequired: common.Permissions{permissions.DiscordManageChannels},
+			},
+			{
 				Name:        "greeter.help.status.name",
 				Description: "greeter.help.status.description",
 			},
@@ -85,6 +105,18 @@ func (p *Plugin) Action(event *events.Event) bool {
 			case "leave":
 				event.Require(func() {
 					p.handleAdd(event, greeterTypeLeave)
+				}, permissions.DiscordManageChannels)
+				return
+
+			case "ban":
+				event.Require(func() {
+					p.handleAdd(event, greeterTypeBan)
+				}, permissions.DiscordManageChannels)
+				return
+
+			case "unban":
+				event.Require(func() {
+					p.handleAdd(event, greeterTypeUnban)
 				}, permissions.DiscordManageChannels)
 				return
 

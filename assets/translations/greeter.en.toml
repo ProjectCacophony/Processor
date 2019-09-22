@@ -4,6 +4,10 @@
 "greeter.help.join.description" = "Set up a message that will be sent when a User joins."
 "greeter.help.leave.name" = "Leave message"
 "greeter.help.leave.description" = "Set up a message that will be sent when a User leaves."
+"greeter.help.ban.name" = "Ban message"
+"greeter.help.ban.description" = "Set up a message that will be sent when a User got banned."
+"greeter.help.unban.name" = "Unban message"
+"greeter.help.unban.description" = "Set up a message that will be sent when a User got unbanned."
 "greeter.help.status.name" = "Current messages"
 "greeter.help.status.description" = "View currently set up Greeter messages."
 
