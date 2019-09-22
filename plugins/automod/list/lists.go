@@ -13,6 +13,8 @@ var (
 		triggers.BucketUpdated{},
 		triggers.Join{},
 		triggers.Leave{},
+		triggers.Ban{},
+		triggers.Unban{},
 	}
 
 	FiltersList = []interfaces.FilterInterface{
