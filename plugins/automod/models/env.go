@@ -1,6 +1,8 @@
 package models
 
 import (
+	"encoding/json"
+
 	"github.com/go-redis/redis"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/state"
@@ -21,6 +23,22 @@ type Env struct {
 	UserID    []string
 	Messages  []*EnvMessage
 	Tokens    map[string]string
+}
+
+func (e *Env) Marshal() ([]byte, error) {
+	env := Env{
+		Rule:      e.Rule,
+		GuildID:   e.GuildID,
+		ChannelID: e.ChannelID,
+		UserID:    e.UserID,
+		Messages:  e.Messages,
+	}
+
+	return json.Marshal(env)
+}
+
+func (e *Env) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, e)
 }
 
 type EnvMessage struct {

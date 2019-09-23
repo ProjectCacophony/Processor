@@ -58,6 +58,11 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 		return
 	}
 
+	if event.Type == events.CacophonyAutomodWait {
+		h.handleWaitEvent(event)
+		return true
+	}
+
 	h.rulesLock.RLock()
 	rules, ok := h.rules[event.GuildID]
 	h.rulesLock.RUnlock()
@@ -66,18 +71,12 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	}
 
 	var triggerMatched bool
-	var filtersMatched bool
 	for _, rule := range rules {
 		rule := rule
 
-		env := &models.Env{
-			Rule:    &rule,
-			Event:   event,
-			State:   h.state,
-			Redis:   h.redis,
-			Handler: h,
-			Tokens:  h.tokens,
-		}
+		env := &models.Env{}
+		h.addBaseToEnv(env, event)
+		env.Rule = &rule
 
 		triggerMatched = false
 
@@ -101,56 +100,12 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			continue
 		}
 
-		filtersMatched = true
-
-		for _, filter := range list.FiltersList {
-			for _, ruleFilter := range rule.Filters {
-				if filter.Name() != ruleFilter.Name {
-					continue
-				}
-
-				item, err := filter.NewItem(env, ruleFilter.Values)
-				if err != nil {
-					event.ExceptSilent(err)
-					return
-				}
-
-				if ruleFilter.Not {
-					if item.Match(env) {
-						filtersMatched = false
-					}
-				} else {
-					if !item.Match(env) {
-						filtersMatched = false
-					}
-				}
-			}
-		}
-
-		if !filtersMatched {
+		doProceed := h.executeFilters(env, &rule)
+		if !doProceed {
 			continue
 		}
 
-		var runError error
-
-		for _, action := range list.ActionsList {
-			for _, ruleAction := range rule.Actions {
-				if action.Name() != ruleAction.Name {
-					continue
-				}
-
-				item, err := action.NewItem(env, ruleAction.Values)
-				if err != nil {
-					event.ExceptSilent(err)
-					return
-				}
-
-				err = item.Do(env)
-				if err != nil {
-					runError = err
-				}
-			}
-		}
+		runError := h.executeActions(env, &rule)
 
 		err = h.logRun(env, rule, runError)
 		if err != nil &&
@@ -164,4 +119,89 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 	}
 
 	return
+}
+
+func (h *Handler) handleWaitEvent(event *events.Event) {
+	env := &models.Env{}
+	err := env.Unmarshal(event.AutomodWait.Payload)
+	if err != nil {
+		env.Event.ExceptSilent(err)
+		return
+	}
+	h.addBaseToEnv(env, event)
+
+	doProceed := h.executeFilters(env, env.Rule)
+	if !doProceed {
+		return
+	}
+
+	runError := h.executeActions(env, env.Rule)
+
+	err = h.logRun(env, *env.Rule, runError)
+	if err != nil &&
+		err != state.ErrBotForGuildStateNotFound {
+		event.ExceptSilent(err)
+	}
+}
+
+func (h *Handler) addBaseToEnv(env *models.Env, event *events.Event) {
+	env.Event = event
+	env.State = h.state
+	env.Redis = h.redis
+	env.Handler = h // TODO: remove this field
+	env.Tokens = h.tokens
+}
+
+func (h *Handler) executeFilters(env *models.Env, rule *models.Rule) bool {
+
+	for _, filter := range list.FiltersList {
+		for _, ruleFilter := range rule.Filters {
+			if filter.Name() != ruleFilter.Name {
+				continue
+			}
+
+			item, err := filter.NewItem(env, ruleFilter.Values)
+			if err != nil {
+				env.Event.ExceptSilent(err)
+				return false
+			}
+
+			if ruleFilter.Not {
+				if item.Match(env) {
+					return false
+				}
+			} else {
+				if !item.Match(env) {
+					return false
+				}
+			}
+		}
+	}
+
+	return true
+}
+
+func (h *Handler) executeActions(env *models.Env, rule *models.Rule) error {
+	var runError error
+
+	for _, action := range list.ActionsList {
+		for _, ruleAction := range rule.Actions {
+			if action.Name() != ruleAction.Name {
+				continue
+			}
+
+			item, err := action.NewItem(env, ruleAction.Values)
+			if err != nil {
+				env.Event.ExceptSilent(err)
+				return err
+			}
+
+			err = item.Do(env)
+			if err != nil {
+				runError = err
+			}
+		}
+	}
+
+	return runError
 }
