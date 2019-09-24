@@ -28,6 +28,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/Processor/plugins/prefix"
 	"gitlab.com/Cacophony/Processor/plugins/quickactions"
+	"gitlab.com/Cacophony/Processor/plugins/roles"
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 	"gitlab.com/Cacophony/Processor/plugins/serverlist"
 	"gitlab.com/Cacophony/Processor/plugins/stocks"
@@ -72,6 +73,7 @@ var (
 		&whitelist.Plugin{},
 		&gall.Plugin{},
 		&rss.Plugin{},
+		&roles.Plugin{},
 		&eventlog.Plugin{},
 		&instagram.Plugin{},
 		&serverlist.Plugin{},
