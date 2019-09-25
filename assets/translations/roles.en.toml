@@ -6,5 +6,5 @@
 
 # errors
 "roles.category.no-name" = "Role categories must have a name."
-"roles.category.limit-not-number" = "Role category must be a number."
+"roles.category.limit-not-number" = "Categories role limit must be a number."
 "roles.category.exists" = "This role category already exists."
