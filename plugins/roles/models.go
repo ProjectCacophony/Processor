@@ -1,6 +1,9 @@
 package roles
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
+)
 
 type Category struct {
 	gorm.Model
@@ -9,10 +12,13 @@ type Category struct {
 	GuildID   string
 	ChannelID string // the channel this Category will listen to for role assignments
 	Message   string
-	Pool      string
 	Roles     []Role
-	Limit     int
 	Enabled   bool
+
+	// if pool exists, the limit will be taken from the highest limit of all the
+	// categoriees with the same pool value
+	Pool  string
+	Limit int // 0 = no limit
 }
 
 type Role struct {
@@ -21,7 +27,7 @@ type Role struct {
 	Name      string
 	PrintName string
 	Enabled   bool
-	Aliases   []string
+	Aliases   pq.StringArray `gorm:"type:varchar[]"`
 	// Reactions []string
 }
 

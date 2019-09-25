@@ -19,6 +19,15 @@ func (p *Plugin) Names() []string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
+
+	err := p.db.AutoMigrate(
+		Category{},
+		Role{},
+	).Error
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -47,7 +56,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Category Name", Type: common.QuotedText},
 				{Name: "Category Description", Type: common.QuotedText},
 				{Name: "channel", Type: common.Channel},
-				{Name: "Limit Count/Pool", Type: common.QuotedText, Optional: true},
+				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
+				{Name: "Pool", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name: "Edit Role Category",
@@ -57,7 +67,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Category Name", Type: common.QuotedText},
 				{Name: "Category Description", Type: common.QuotedText},
 				{Name: "channel", Type: common.Channel},
-				{Name: "Limit Count/Pool", Type: common.QuotedText, Optional: true},
+				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
+				{Name: "Pool", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name: "Remove Role Category",
@@ -159,13 +170,22 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	// if len(event.Fields()) > 1 {
-	// 	switch event.Fields()[1] {
-	// 	case "enable":
-	// 		p.viewAllPermissions(event)
-	// 		return true
-	// 	}
-	// }
+	if len(event.Fields()) > 1 {
+		switch event.Fields()[1] {
+		case "add":
+			if len(event.Fields()) < 3 {
+				return false
+			}
+			switch event.Fields()[2] {
+			case "category":
+
+				p.createCategory(event)
+				return true
+			}
+
+		default:
+		}
+	}
 
 	return false
 }

@@ -1,1 +1,10 @@
 "roles.help.description" = "Set up many different roles and allow your users to add or remove them on their own."
+
+# message
+"roles.category.creation" = "Added the role category **{{ .category.Name }}**"
+
+
+# errors
+"roles.category.no-name" = "Role categories must have a name."
+"roles.category.limit-not-number" = "Role category must be a number."
+"roles.category.exists" = "This role category already exists."
