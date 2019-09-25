@@ -2,9 +2,10 @@
 
 # message
 "roles.category.creation" = "Added the role category **{{ .category.Name }}**"
-
+"roles.category.update" = "Updated category **{{ .category.Name }}**"
 
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."
 "roles.category.exists" = "This role category already exists."
+"roles.category.does-not-exist" = "Role category not found."
