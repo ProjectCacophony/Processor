@@ -65,6 +65,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "edit", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
+				{Name: "New Category Name", Type: common.QuotedText},
 				{Name: "Category Description", Type: common.QuotedText},
 				{Name: "channel", Type: common.Channel},
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
@@ -172,16 +173,45 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "info":
+			p.displayRoleInfo(event)
+			return true
 		case "add":
 			if len(event.Fields()) < 3 {
-				return false
+				return true
 			}
+
 			switch event.Fields()[2] {
 			case "category":
 
 				p.createCategory(event)
 				return true
 			}
+		case "edit", "update":
+			if len(event.Fields()) < 3 {
+				return true
+			}
+
+			switch event.Fields()[2] {
+			case "category":
+
+				p.updateCategory(event)
+				return true
+			}
+			return true
+
+		case "delete", "remove":
+			if len(event.Fields()) < 3 {
+				return true
+			}
+
+			switch event.Fields()[2] {
+			case "category":
+
+				p.deleteCategory(event)
+				return true
+			}
+			return true
 
 		default:
 		}

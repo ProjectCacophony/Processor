@@ -2,7 +2,6 @@ package roles
 
 import (
 	"strconv"
-	"strings"
 
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -164,13 +163,4 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 	event.Respond("roles.category.deleted",
 		"category", category,
 	)
-}
-
-func (p *Plugin) getCategoryByName(name string, guildId string) (*Category, error) {
-	var category Category
-	err := p.db.First(&category, "name = ? and guild_id = ?", name, guildId).Error
-	if err != nil && !strings.Contains(err.Error(), "record not found") {
-		return nil, err
-	}
-	return &category, nil
 }

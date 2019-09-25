@@ -10,3 +10,4 @@
 "roles.category.limit-not-number" = "Categories role limit must be a number."
 "roles.category.exists" = "This role category already exists."
 "roles.category.does-not-exist" = "Role category not found."
+"roles.category.no-categories" = "No roles categories found for this server."
