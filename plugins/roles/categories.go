@@ -136,6 +136,36 @@ func (p *Plugin) updateCategory(event *events.Event) {
 	)
 }
 
+func (p *Plugin) deleteCategory(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	category, err := p.getCategoryByName(event.Fields()[3], event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	if category.Name == "" {
+		event.Respond("roles.category.does-not-exist")
+		return
+	}
+
+	// TODO: check if this category has roles, if it does. confirm before fully deleting
+
+	err = p.db.Delete(category).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("roles.category.deleted",
+		"category", category,
+	)
+}
+
 func (p *Plugin) getCategoryByName(name string, guildId string) (*Category, error) {
 	var category Category
 	err := p.db.First(&category, "name = ? and guild_id = ?", name, guildId).Error

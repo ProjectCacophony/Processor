@@ -3,6 +3,7 @@
 # message
 "roles.category.creation" = "Added the role category **{{ .category.Name }}**"
 "roles.category.update" = "Updated category **{{ .category.Name }}**"
+"roles.category.deleted" = "Deleted category **{{ .category.Name }}**"
 
 # errors
 "roles.category.no-name" = "Role categories must have a name."
