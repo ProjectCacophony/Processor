@@ -159,32 +159,35 @@ func (p *Plugin) updateRole(event *events.Event) {
 	)
 }
 
-// func (p *Plugin) deleteCategory(event *events.Event) {
-// 	if len(event.Fields()) < 4 {
-// 		event.Respond("common.invalid-params")
-// 		return
-// 	}
+func (p *Plugin) deleteRole(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
 
-// 	category, err := p.getCategoryByName(event.Fields()[3], event.GuildID)
-// 	if err != nil {
-// 		event.Except(err)
-// 		return
-// 	}
+	serverRole, err := p.getServerRoleByNameOrID(event.Fields()[3], event.GuildID)
+	if err != nil {
+		event.Respond("roles.role.role-not-found-on-server")
+		return
+	}
 
-// 	if category.Name == "" {
-// 		event.Respond("roles.category.does-not-exist")
-// 		return
-// 	}
+	existingRole, err := p.getRoleByServerRoleID(serverRole.ID, event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+	if existingRole.ServerRoleID == "" {
+		event.Respond("roles.role.role-not-found")
+		return
+	}
 
-// 	// TODO: check if this category has roles, if it does. confirm before fully deleting
+	err = p.db.Delete(existingRole).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
 
-// 	err = p.db.Delete(category).Error
-// 	if err != nil {
-// 		event.Except(err)
-// 		return
-// 	}
-
-// 	event.Respond("roles.category.deleted",
-// 		"category", category,
-// 	)
-// }
+	event.Respond("roles.role.deleted",
+		"roleName", serverRole.Name,
+	)
+}

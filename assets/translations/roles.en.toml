@@ -7,6 +7,7 @@
 
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
 "roles.role.update" = "Updated role **{{ .roleName }}**"
+"roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role set"
 
 # errors
 "roles.category.no-name" = "Role categories must have a name."

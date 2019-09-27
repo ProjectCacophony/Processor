@@ -216,6 +216,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 				p.deleteCategory(event)
 				return true
+			case "role":
+				p.deleteRole(event)
+				return true
 			}
 			return true
 
