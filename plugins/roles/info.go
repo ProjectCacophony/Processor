@@ -19,23 +19,9 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 		return
 	}
 
-	poolLimits := getPoolLimitsFromCategories(categories)
-
-	// spew.Dump(poolLimits)
-
 	// spew.Dump(categories)
 
 	outputText := ""
-
-	poolText := ""
-	if len(poolLimits) > 0 {
-		poolText = "**Category Pool Limits:**\n"
-		for poolName, limit := range poolLimits {
-			poolText += fmt.Sprintf("%s: %d", poolName, limit)
-		}
-
-		outputText += poolText
-	}
 
 	categoriesText := "**Category Info:**\n"
 	for _, cat := range categories {
@@ -52,10 +38,8 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 		}
 
 		limitText := "No Limit"
-		if cat.Limit > 0 && cat.Pool == "" {
+		if cat.Limit > 0 {
 			limitText = fmt.Sprintf("Limit: %d", cat.Limit)
-		} else if cat.Pool != "" {
-			limitText = fmt.Sprintf("Pool: %s", cat.Pool)
 		}
 
 		categoryText := fmt.Sprintf("**%s** (%s, #%s, %s)\n\t%s\n\n",
@@ -65,9 +49,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			status,
 			"TODO: add category roles here...",
 		)
-
 		categoriesText += categoryText
-
 	}
 
 	outputText += "\n\n" + categoriesText

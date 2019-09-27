@@ -7,14 +7,13 @@ import (
 )
 
 func (p *Plugin) createCategory(event *events.Event) {
-	if len(event.Fields()) < 6 {
+	if len(event.Fields()) < 5 {
 		event.Respond("common.invalid-params")
 		return
 	}
 
 	name := event.Fields()[3]
-	message := event.Fields()[4]
-	inputChannel := event.Fields()[5]
+	inputChannel := event.Fields()[4]
 
 	if name == "" {
 		event.Respond("roles.category.no-name")
@@ -38,27 +37,20 @@ func (p *Plugin) createCategory(event *events.Event) {
 	}
 
 	limit := 0
-	if len(event.Fields()) >= 7 {
-		limit, err = strconv.Atoi(event.Fields()[6])
+	if len(event.Fields()) >= 6 {
+		limit, err = strconv.Atoi(event.Fields()[5])
 		if err != nil {
 			event.Respond("roles.category.limit-not-number")
 			return
 		}
 	}
 
-	pool := ""
-	if len(event.Fields()) >= 8 {
-		pool = event.Fields()[7]
-	}
-
 	category := &Category{
 		GuildID:   event.GuildID,
 		ChannelID: channel.ID,
 		Name:      name,
-		Message:   message,
 		Limit:     limit,
 		Enabled:   true,
-		Pool:      pool,
 	}
 
 	err = p.db.Save(category).Error
@@ -73,7 +65,7 @@ func (p *Plugin) createCategory(event *events.Event) {
 }
 
 func (p *Plugin) updateCategory(event *events.Event) {
-	if len(event.Fields()) < 7 {
+	if len(event.Fields()) < 6 {
 		event.Respond("common.invalid-params")
 		return
 	}
@@ -90,8 +82,7 @@ func (p *Plugin) updateCategory(event *events.Event) {
 	}
 
 	name := event.Fields()[4]
-	message := event.Fields()[5]
-	inputChannel := event.Fields()[6]
+	inputChannel := event.Fields()[5]
 
 	if name == "" {
 		event.Respond("roles.category.no-name")
@@ -105,23 +96,16 @@ func (p *Plugin) updateCategory(event *events.Event) {
 	}
 
 	limit := 0
-	if len(event.Fields()) >= 8 {
-		limit, err = strconv.Atoi(event.Fields()[7])
+	if len(event.Fields()) >= 7 {
+		limit, err = strconv.Atoi(event.Fields()[6])
 		if err != nil {
 			event.Respond("roles.category.limit-not-number")
 			return
 		}
 	}
 
-	pool := ""
-	if len(event.Fields()) >= 9 {
-		pool = event.Fields()[8]
-	}
-
 	existingCategory.ChannelID = channel.ID
 	existingCategory.Name = name
-	existingCategory.Message = message
-	existingCategory.Pool = pool
 	existingCategory.Limit = limit
 
 	err = p.db.Save(existingCategory).Error

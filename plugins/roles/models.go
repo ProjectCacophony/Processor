@@ -11,14 +11,9 @@ type Category struct {
 	Name      string
 	GuildID   string
 	ChannelID string // the channel this Category will listen to for role assignments
-	Message   string
 	Roles     []Role
 	Enabled   bool
-
-	// if pool exists, the limit will be taken from the highest limit of all the
-	// categoriees with the same pool value
-	Pool  string
-	Limit int // 0 = no limit
+	Limit     int // 0 = no limit
 }
 
 type Role struct {

@@ -54,10 +54,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "add", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
-				{Name: "Category Description", Type: common.QuotedText},
 				{Name: "channel", Type: common.Channel},
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
-				{Name: "Pool", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name: "Edit Role Category",
@@ -66,10 +64,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 				{Name: "New Category Name", Type: common.QuotedText},
-				{Name: "Category Description", Type: common.QuotedText},
 				{Name: "channel", Type: common.Channel},
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
-				{Name: "Pool", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name: "Remove Role Category",
