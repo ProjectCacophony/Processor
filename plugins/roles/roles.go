@@ -230,6 +230,14 @@ func (p *Plugin) validateRolePrintAndAliases(role *Role) (string, bool) {
 		return "", true
 	}
 
+	for _, value := range values {
+		for _, v := range values {
+			if v == value {
+				return v, false
+			}
+		}
+	}
+
 	roles, err := p.getAllRoles(role.GuildID)
 	if err != nil {
 		return "", false
