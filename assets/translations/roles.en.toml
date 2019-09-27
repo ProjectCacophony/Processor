@@ -15,6 +15,7 @@
 "roles.category.exists" = "This role category already exists."
 "roles.category.does-not-exist" = "Role category not found."
 "roles.category.no-categories" = "No roles categories found for this server."
+"roles.category.no-categories-or-roles" = "No roles or categories found for this server."
 
 "roles.role.role-not-found-on-server" = "Could not find a role on the server with that name or id."
 "roles.role.role-already-setup" = "This role has already been added to role setup."

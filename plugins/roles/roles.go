@@ -230,9 +230,9 @@ func (p *Plugin) validateRolePrintAndAliases(role *Role) (string, bool) {
 		return "", true
 	}
 
-	for _, value := range values {
-		for _, v := range values {
-			if v == value {
+	for index, value := range values {
+		for i, v := range values {
+			if index != i && v == value {
 				return v, false
 			}
 		}
