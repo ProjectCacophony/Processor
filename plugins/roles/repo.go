@@ -23,6 +23,17 @@ func (p *Plugin) getCategoryByName(name string, guildID string) (*Category, erro
 	return &category, nil
 }
 
+func (p *Plugin) getAllRoles(guildID string) ([]*Role, error) {
+	var roles []*Role
+	err := p.db.
+		Find(&roles, "guild_id = ?", guildID).
+		Error
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		return nil, err
+	}
+	return roles, nil
+}
+
 func (p *Plugin) getRoleByServerRoleID(serverRoleID string, guildID string) (*Role, error) {
 	var role Role
 	err := p.db.First(&role, "server_role_id = ? and guild_id = ?", serverRoleID, guildID).Error

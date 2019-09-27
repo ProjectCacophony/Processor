@@ -20,3 +20,4 @@
 "roles.role.role-already-setup" = "This role has already been added to role setup."
 "roles.role.role-not-found" = "Could not find role in the role setup."
 "roles.role.multiple-server-roles-with-name" = "Found multiple server roles with that name, use the id of the specific role you want."
+"roles.role.alias-already-exists" = "The print name or alias **{{ .aliasName }}** already exists for another role."

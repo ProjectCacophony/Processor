@@ -79,6 +79,11 @@ func (p *Plugin) createRole(event *events.Event) {
 		Enabled:      true,
 	}
 
+	if badAlias, ok := p.validateRolePrintAndAliases(role); !ok {
+		event.Respond("roles.role.alias-already-exists", "aliasName", badAlias)
+		return
+	}
+
 	err = p.db.Save(role).Error
 	if err != nil {
 		event.Except(err)
@@ -156,6 +161,11 @@ func (p *Plugin) updateRole(event *events.Event) {
 	existingRole.PrintName = printName
 	existingRole.Aliases = aliases
 
+	if badAlias, ok := p.validateRolePrintAndAliases(existingRole); !ok {
+		event.Respond("roles.role.alias-already-exists", "aliasName", badAlias)
+		return
+	}
+
 	err = p.db.Save(existingRole).Error
 	if err != nil {
 		event.Except(err)
@@ -202,4 +212,46 @@ func (p *Plugin) deleteRole(event *events.Event) {
 	event.Respond("roles.role.deleted",
 		"roleName", serverRole.Name,
 	)
+}
+
+func (p *Plugin) validateRolePrintAndAliases(role *Role) (string, bool) {
+	var values []string
+
+	if role.PrintName != "" {
+		values = append(values, role.PrintName)
+	}
+	for _, alias := range role.Aliases {
+		if alias != "" {
+			values = append(values, alias)
+		}
+	}
+
+	if len(values) == 0 {
+		return "", true
+	}
+
+	roles, err := p.getAllRoles(role.GuildID)
+	if err != nil {
+		return "", false
+	}
+
+	if len(roles) == 0 {
+		return "", true
+	}
+
+	for _, r := range roles {
+		for _, v := range values {
+			if v == r.PrintName {
+				return r.PrintName, false
+			}
+
+			for _, alias := range r.Aliases {
+				if v == alias {
+					return alias, false
+				}
+			}
+		}
+	}
+
+	return "", true
 }
