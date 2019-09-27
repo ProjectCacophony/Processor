@@ -102,7 +102,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "edit", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
 				{Name: "Role Name/ID", Type: common.QuotedText},
-				{Name: "New Role Name", Type: common.QuotedText},
 				{Name: "Print", Type: common.QuotedText, Optional: true},
 				{Name: "Alias, Alias...", Type: common.QuotedText, Optional: true},
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
@@ -200,6 +199,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 			case "category":
 
 				p.updateCategory(event)
+				return true
+			case "role":
+				p.updateRole(event)
 				return true
 			}
 			return true

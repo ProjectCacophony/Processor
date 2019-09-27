@@ -6,6 +6,7 @@
 "roles.category.deleted" = "Deleted category **{{ .category.Name }}**"
 
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
+"roles.role.update" = "Updated role **{{ .roleName }}**"
 
 # errors
 "roles.category.no-name" = "Role categories must have a name."
@@ -16,3 +17,4 @@
 
 "roles.role.role-not-found-on-server" = "Could not find a role on the server with that name or id."
 "roles.role.role-already-setup" = "This role has already been added to role setup."
+"roles.role.role-not-found" = "Could not find role in the role setup."

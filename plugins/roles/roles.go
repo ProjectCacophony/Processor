@@ -86,60 +86,78 @@ func (p *Plugin) createRole(event *events.Event) {
 	)
 }
 
-// func (p *Plugin) updateCategory(event *events.Event) {
-// 	if len(event.Fields()) < 6 {
-// 		event.Respond("common.invalid-params")
-// 		return
-// 	}
+func (p *Plugin) updateRole(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
 
-// 	currentName := event.Fields()[3]
-// 	existingCategory, err := p.getCategoryByName(currentName, event.GuildID)
-// 	if err != nil {
-// 		event.Except(err)
-// 		return
-// 	}
-// 	if existingCategory.Name == "" {
-// 		event.Respond("roles.category.does-not-exist")
-// 		return
-// 	}
+	roleID := event.Fields()[3]
+	if roleID == "" {
+		event.Respond("roles.role.no-name")
+		return
+	}
 
-// 	name := event.Fields()[4]
-// 	inputChannel := event.Fields()[5]
+	serverRole, err := p.getServerRoleByNameOrID(roleID, event.GuildID)
+	if err != nil {
+		event.Respond("roles.role.role-not-found-on-server")
+		return
+	}
+	roleName := serverRole.Name
 
-// 	if name == "" {
-// 		event.Respond("roles.category.no-name")
-// 		return
-// 	}
+	existingRole, err := p.getRoleByServerRoleID(serverRole.ID, event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+	if existingRole.ServerRoleID == "" {
+		event.Respond("roles.role.role-not-found")
+		return
+	}
 
-// 	channel, err := event.State().ChannelFromMention(event.GuildID, inputChannel)
-// 	if err != nil {
-// 		event.Except(err)
-// 		return
-// 	}
+	var printName string
+	if len(event.Fields()) >= 5 {
+		printName = event.Fields()[4]
+	}
 
-// 	limit := 0
-// 	if len(event.Fields()) >= 7 {
-// 		limit, err = strconv.Atoi(event.Fields()[6])
-// 		if err != nil {
-// 			event.Respond("roles.category.limit-not-number")
-// 			return
-// 		}
-// 	}
+	var aliases []string
+	if len(event.Fields()) >= 6 {
+		aliases = strings.Split(event.Fields()[5], ",")
+		for i, v := range aliases {
+			aliases[i] = strings.TrimSpace(v)
+		}
+	}
 
-// 	existingCategory.ChannelID = channel.ID
-// 	existingCategory.Name = name
-// 	existingCategory.Limit = limit
+	var categoryID uint
+	if len(event.Fields()) >= 7 {
 
-// 	err = p.db.Save(existingCategory).Error
-// 	if err != nil {
-// 		event.Except(err)
-// 		return
-// 	}
+		existingCategory, err := p.getCategoryByName(event.Fields()[6], event.GuildID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+		if existingCategory.Name != "" {
+			event.Respond("roles.category.does-not-exist")
+			return
+		}
 
-// 	event.Respond("roles.category.update",
-// 		"category", existingCategory,
-// 	)
-// }
+		categoryID = existingCategory.ID
+	}
+
+	existingRole.CategoryID = categoryID
+	existingRole.PrintName = printName
+	existingRole.Aliases = aliases
+
+	err = p.db.Save(existingRole).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("roles.role.update",
+		"roleName", roleName,
+	)
+}
 
 // func (p *Plugin) deleteCategory(event *events.Event) {
 // 	if len(event.Fields()) < 4 {
