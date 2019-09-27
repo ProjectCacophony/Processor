@@ -84,7 +84,7 @@ func entryDelete(
 	db *gorm.DB,
 	id uint,
 ) error {
-	if id <= 0 {
+	if id == 0 {
 		return errors.New("id cannot be empty")
 	}
 

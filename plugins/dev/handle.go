@@ -93,6 +93,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "permission", Type: common.Flag},
 					{Name: "permission code", Type: common.Text, Example: "2048: Send Messages"},
 					{Name: "user mention", Type: common.User, Optional: true},
+					{Name: "channel mention", Type: common.Channel, Optional: true},
 				},
 			},
 			{

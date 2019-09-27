@@ -22,7 +22,7 @@ func UpdateRule(
 	id uint,
 	rule *Rule,
 ) error {
-	if id <= 0 {
+	if id == 0 {
 		return errors.New("id cannot be empty")
 	}
 	if rule == nil {
@@ -36,7 +36,7 @@ func DeleteRule(
 	db *gorm.DB,
 	rule *Rule,
 ) error {
-	if rule == nil || rule.ID <= 0 {
+	if rule == nil || rule.ID == 0 {
 		return errors.New("rule cannot be empty")
 	}
 
