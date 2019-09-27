@@ -58,7 +58,7 @@ func (p *Plugin) createRole(event *events.Event) {
 			event.Except(err)
 			return
 		}
-		if existingCategory.Name != "" {
+		if existingCategory.Name == "" {
 			event.Respond("roles.category.does-not-exist")
 			return
 		}
