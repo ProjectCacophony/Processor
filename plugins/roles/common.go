@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	ServerRoleNotFound string = "roles.role.role-not-found-on-server"
+	ServerRoleNotFound          string = "roles.role.role-not-found-on-server"
+	MultipleServerRolesWithName string = "roles.role.multiple-server-roles-with-name"
 )
 
 func (p *Plugin) getServerRoleByNameOrID(input string, guildID string) (*discordgo.Role, error) {
@@ -16,11 +17,20 @@ func (p *Plugin) getServerRoleByNameOrID(input string, guildID string) (*discord
 		return nil, err
 	}
 
+	var roles []*discordgo.Role
 	for _, role := range guild.Roles {
 		if input == role.Name || input == role.ID {
-			return role, nil
+			roles = append(roles, role)
 		}
 	}
 
-	return nil, errors.New(ServerRoleNotFound)
+	if len(roles) == 0 {
+		return nil, errors.New(ServerRoleNotFound)
+	}
+
+	if len(roles) > 1 {
+		return nil, errors.New(MultipleServerRolesWithName)
+	}
+
+	return roles[0], nil
 }

@@ -21,7 +21,11 @@ func (p *Plugin) createRole(event *events.Event) {
 
 	serverRole, err := p.getServerRoleByNameOrID(serverRoleID, event.GuildID)
 	if err != nil {
-		event.Respond("roles.role.role-not-found-on-server")
+		if err.Error() == ServerRoleNotFound || err.Error() == MultipleServerRolesWithName {
+			event.Respond(err.Error())
+		} else {
+			event.Except(err)
+		}
 		return
 	}
 	serverRoleID = serverRole.ID
@@ -100,7 +104,11 @@ func (p *Plugin) updateRole(event *events.Event) {
 
 	serverRole, err := p.getServerRoleByNameOrID(roleID, event.GuildID)
 	if err != nil {
-		event.Respond("roles.role.role-not-found-on-server")
+		if err.Error() == ServerRoleNotFound || err.Error() == MultipleServerRolesWithName {
+			event.Respond(err.Error())
+		} else {
+			event.Except(err)
+		}
 		return
 	}
 	roleName := serverRole.Name
@@ -167,7 +175,11 @@ func (p *Plugin) deleteRole(event *events.Event) {
 
 	serverRole, err := p.getServerRoleByNameOrID(event.Fields()[3], event.GuildID)
 	if err != nil {
-		event.Respond("roles.role.role-not-found-on-server")
+		if err.Error() == ServerRoleNotFound || err.Error() == MultipleServerRolesWithName {
+			event.Respond(err.Error())
+		} else {
+			event.Except(err)
+		}
 		return
 	}
 
