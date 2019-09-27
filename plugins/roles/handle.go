@@ -4,12 +4,14 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
 type Plugin struct {
 	logger *zap.Logger
 	db     *gorm.DB
+	state  *state.State
 }
 
 func (p *Plugin) Names() []string {
@@ -19,6 +21,7 @@ func (p *Plugin) Names() []string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
+	p.state = params.State
 
 	err := p.db.AutoMigrate(
 		Category{},

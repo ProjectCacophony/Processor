@@ -19,31 +19,13 @@ func (p *Plugin) createRole(event *events.Event) {
 		return
 	}
 
-	guild, err := event.State().Guild(event.GuildID)
+	serverRole, err := p.getServerRoleByNameOrID(serverRoleID, event.GuildID)
 	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	// input role name can be the name or id of existing role
-	var roleExists bool
-	roleName := serverRoleID
-	for _, role := range guild.Roles {
-		if serverRoleID == role.Name {
-			serverRoleID = role.ID
-			roleExists = true
-			break
-		} else if serverRoleID == role.ID {
-			roleName = role.Name
-			roleExists = true
-			break
-		}
-	}
-
-	if !roleExists {
 		event.Respond("roles.role.role-not-found-on-server")
 		return
 	}
+	serverRoleID = serverRole.ID
+	roleName := serverRole.Name
 
 	existingRole, err := p.getRoleByServerRoleID(serverRoleID, event.GuildID)
 	if err != nil {
