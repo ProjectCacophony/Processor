@@ -4,7 +4,10 @@ import "strings"
 
 func (p *Plugin) getAllCategories(guildID string) ([]*Category, error) {
 	var categories []*Category
-	err := p.db.Find(&categories, "guild_id = ?", guildID).Error
+	err := p.db.
+		Preload("Roles").
+		Find(&categories, "guild_id = ?", guildID).
+		Error
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		return nil, err
 	}

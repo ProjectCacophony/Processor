@@ -138,7 +138,7 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 
 	// TODO: check if this category has roles, if it does. confirm before fully deleting
 
-	err = p.db.Delete(category).Error
+	err = p.db.Delete(category.Roles).Delete(category).Error
 	if err != nil {
 		event.Except(err)
 		return
