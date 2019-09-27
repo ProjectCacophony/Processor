@@ -19,10 +19,12 @@ type Category struct {
 type Role struct {
 	gorm.Model
 
-	Name      string
-	PrintName string
-	Enabled   bool
-	Aliases   pq.StringArray `gorm:"type:varchar[]"`
+	CategoryID   uint // roles aren't guarenteed to have a category
+	GuildID      string
+	ServerRoleID string
+	PrintName    string
+	Enabled      bool
+	Aliases      pq.StringArray `gorm:"type:varchar[]"`
 	// Reactions []string
 }
 

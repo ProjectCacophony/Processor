@@ -5,9 +5,14 @@
 "roles.category.update" = "Updated category **{{ .category.Name }}**"
 "roles.category.deleted" = "Deleted category **{{ .category.Name }}**"
 
+"roles.role.creation" = "Added the role  **{{ .roleName }}**"
+
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."
 "roles.category.exists" = "This role category already exists."
 "roles.category.does-not-exist" = "Role category not found."
 "roles.category.no-categories" = "No roles categories found for this server."
+
+"roles.role.role-not-found-on-server" = "Could not find a role on the server with that name or id."
+"roles.role.role-already-setup" = "This role has already been added to role setup."
