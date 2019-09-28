@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
+	"gitlab.com/Cacophony/Processor/plugins/greeter"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
 	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
@@ -86,6 +87,7 @@ var (
 		&weverse.Plugin{},
 		&tools.Plugin{},
 		&uploads.Plugin{},
+		&greeter.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

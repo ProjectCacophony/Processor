@@ -37,7 +37,7 @@ func (t *JoinItem) Match(env *models.Env) bool {
 		return false
 	}
 
-	if env.Event.GuildMemberAdd.User.Bot {
+	if env.Event.GuildMemberAdd.User.ID == env.Event.BotUserID {
 		return false
 	}
 

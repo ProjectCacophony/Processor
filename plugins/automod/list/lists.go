@@ -12,6 +12,9 @@ var (
 		triggers.Message{},
 		triggers.BucketUpdated{},
 		triggers.Join{},
+		triggers.Leave{},
+		triggers.Ban{},
+		triggers.Unban{},
 	}
 
 	FiltersList = []interfaces.FilterInterface{
@@ -27,6 +30,7 @@ var (
 		filters.RoleID{},
 		filters.UserID{},
 		filters.InvitesCount{},
+		filters.Wait{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{

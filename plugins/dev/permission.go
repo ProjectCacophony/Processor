@@ -24,16 +24,22 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 		return
 	}
 
+	channel, err := event.FindChannel()
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	has := permissions.NewDiscordPermission("", permissionID).Match(
 		p.state,
 		event.DB(),
 		userID,
-		event.ChannelID,
+		channel.ID,
 		event.DM(),
 	)
 
 	_, err = event.Respond("dev.permission",
-		"has", has, "permissionID", permissionID, "userID", userID)
+		"has", has, "permissionID", permissionID, "userID", userID, "channelID", channel.ID)
 	if err != nil {
 		event.Except(err)
 		return

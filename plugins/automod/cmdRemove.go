@@ -25,6 +25,11 @@ func (p *Plugin) cmdRemove(event *events.Event) {
 		return
 	}
 
+	if ruleToDelete.Managed {
+		event.Respond("automod.remove.managed")
+		return
+	}
+
 	err = p.db.Delete(&ruleToDelete).Error
 	if err != nil {
 		event.Except(err)

@@ -138,16 +138,21 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 		}
 	}
 
-	var existingRulesWithName int
+	var existingRulesWithName []models.Rule
 	err = p.db.Model(models.Rule{}).Where(models.Rule{
 		Name:    newRule.Name,
 		GuildID: event.GuildID,
-	}).Count(&existingRulesWithName).Error
+	}).Find(&existingRulesWithName).Error
 	if err != nil {
 		event.Except(err)
 		return
 	}
-	if existingRulesWithName > 0 {
+	if len(existingRulesWithName) > 0 {
+		if existingRulesWithName[0].Managed {
+			event.Respond("automod.add.managed-duplicate")
+			return
+		}
+
 		messages, err := event.Respond("automod.add.confirm-update-duplicate")
 		if err != nil {
 			event.Except(err)
