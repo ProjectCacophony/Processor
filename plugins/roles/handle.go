@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -181,6 +182,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 				return true
 			}
 
+			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
+				return true
+			}
+
 			switch event.Fields()[2] {
 			case "category":
 
@@ -192,6 +198,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}
 		case "edit", "update":
 			if len(event.Fields()) < 3 {
+				return true
+			}
+
+			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
 				return true
 			}
 
@@ -208,6 +219,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 		case "delete", "remove":
 			if len(event.Fields()) < 3 {
+				return true
+			}
+
+			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
 				return true
 			}
 
