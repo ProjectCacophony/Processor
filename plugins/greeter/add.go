@@ -3,7 +3,9 @@ package greeter
 import (
 	"fmt"
 
+	"gitlab.com/Cacophony/Processor/plugins/automod/actions"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -121,5 +123,14 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 		}
 	}
 
+	sampleMessageCode := actions.ReplaceText(&models.Env{
+		State:     event.State(),
+		GuildID:   event.GuildID,
+		ChannelID: []string{targetChannel.ID},
+		UserID:    []string{event.UserID},
+	}, message)
+	messageSend := discord.MessageCodeToMessage(sampleMessageCode)
+
 	event.Respond("greeter.add.success", "greeterType", greeterType, "channel", targetChannel)
+	event.RespondComplex(messageSend)
 }

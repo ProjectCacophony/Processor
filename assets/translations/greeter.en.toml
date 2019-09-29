@@ -12,7 +12,8 @@
 "greeter.help.status.description" = "View currently set up Greeter messages."
 
 # handleAdd
-"greeter.add.success" = "I saved the {{.greeterType}} message for {{.channel.Mention}}!"
+"greeter.add.success" = "**I saved the {{.greeterType}} message for {{.channel.Mention}}!**\n\
+It will look like this:"
 "greeter.add.remove-success" = "I removed the {{.greeterType}} message from {{.channel.Mention}}!"
 
 # handleStatus

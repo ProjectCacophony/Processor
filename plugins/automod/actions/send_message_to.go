@@ -69,7 +69,7 @@ func (t *SendMessageToItem) Do(env *models.Env) error {
 		session,
 		nil,
 		t.ChannelID,
-		discord.MessageCodeToMessage(replaceText(env, t.Message)),
+		discord.MessageCodeToMessage(ReplaceText(env, t.Message)),
 	)
 	if err != nil {
 		return err
