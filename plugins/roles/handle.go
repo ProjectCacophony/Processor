@@ -82,7 +82,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name:        "Enable/Disable Role Category",
 			Description: "Temporarily disable a role category.",
 			Params: []common.CommandParam{
-				{Name: "Enable/Disable", Type: common.Flag},
+				{Name: "enable/disable", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 			},
@@ -111,14 +111,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name: "Remove Role",
 			Params: []common.CommandParam{
 				{Name: "remove", Type: common.Flag},
-				{Name: "role", Type: common.Flag},
-				{Name: "Role Name", Type: common.QuotedText},
-			},
-		}, {
-			Name:        "Enable/Disable Role",
-			Description: "Temporarily disable a role.",
-			Params: []common.CommandParam{
-				{Name: "Enable/Disable", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
 				{Name: "Role Name", Type: common.QuotedText},
 			},
@@ -181,6 +173,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "enable", "disable":
+			p.toggleCategory(event)
+			return true
 		case "channel":
 			p.setRoleChannel(event)
 			return true

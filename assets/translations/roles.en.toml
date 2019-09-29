@@ -4,6 +4,7 @@
 "roles.category.creation" = "Added the role category **{{ .category.Name }}**"
 "roles.category.update" = "Updated category **{{ .category.Name }}**"
 "roles.category.deleted" = "Deleted category **{{ .category.Name }}**"
+"roles.category.toggle" = "The category **{{ .category.Name }}** is now **{{- if .toggle}}Enabled{{else}}Disabled{{end}}**"
 
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
 "roles.role.update" = "Updated role **{{ .roleName }}**"

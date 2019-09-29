@@ -154,3 +154,46 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 		"category", category,
 	)
 }
+
+func (p *Plugin) toggleCategory(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	toggle := true
+	switch event.Fields()[1] {
+	case "enable":
+		break
+	case "disable":
+		toggle = false
+		break
+	default:
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	category, err := p.getCategoryByName(event.Fields()[3], event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	if category.Name == "" {
+		event.Respond("roles.category.does-not-exist")
+		return
+	}
+
+	category.Enabled = toggle
+
+	err = p.db.Save(category).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("roles.category.toggle",
+		"category", category,
+		"toggle", toggle,
+	)
+}
