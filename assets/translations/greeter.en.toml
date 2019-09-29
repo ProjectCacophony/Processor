@@ -1,5 +1,11 @@
 # help
-"greeter.help.description" = "Set up Join and Leave messages."
+"greeter.help.description" = "\
+Set up Join and Leave messages.\n\
+You can use the following text replacements in your message:\n\
+User: `{USER_USERNAME}`, `{USER_DISCRIMINATOR}`, `{USER_USERNAME_FULL}`, `{USER_MENTION}`, `{USER_AVATAR_URL}`, and `{USER_ID}`.\n\
+Channel: `{CHANNEL_NAME}`, and `{CHANNEL_ID}`.\n\
+Server: `{GUILD_NAME}`, `{GUILD_ICON_URL}`, and `{GUILD_ID}`.\
+"
 "greeter.help.join.name" = "Join message"
 "greeter.help.join.description" = "Set up a message that will be sent when a User joins."
 "greeter.help.leave.name" = "Leave message"
