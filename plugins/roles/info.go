@@ -65,10 +65,12 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			status = "Disabled"
 		}
 
-		channelName := "*Unknown*"
-		channel, err := event.State().Channel(cat.ChannelID)
-		if err == nil {
-			channelName = channel.Name
+		channelText := ""
+		if cat.ChannelID != "" {
+			channel, err := event.State().Channel(cat.ChannelID)
+			if err == nil {
+				channelText = fmt.Sprintf("#%s,", channel.Name)
+			}
 		}
 
 		limitText := "No Limit"
@@ -76,7 +78,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			limitText = fmt.Sprintf("Limit: %d", cat.Limit)
 		}
 
-		roleText := "No Roles"
+		roleText := "\t*No Roles*"
 		if len(cat.Roles) > 0 {
 			roleText = ""
 
@@ -85,10 +87,10 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			}
 		}
 
-		categoryText := fmt.Sprintf("**%s** (%s, #%s, %s)\n%s\n",
+		categoryText := fmt.Sprintf("**%s** (%s, %s %s)\n%s\n",
 			cat.Name,
 			limitText,
-			channelName,
+			channelText,
 			status,
 			roleText,
 		)

@@ -58,7 +58,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "add", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
-				{Name: "channel", Type: common.Channel},
+				{Name: "channel", Type: common.Channel, Optional: true},
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
 			},
 		}, {
@@ -68,7 +68,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 				{Name: "New Category Name", Type: common.QuotedText},
-				{Name: "channel", Type: common.Channel},
+				{Name: "channel", Type: common.Channel, Optional: true},
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
 			},
 		}, {
@@ -163,7 +163,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Description: "Set the default channel users will go to to add and remove their roles.",
 			Params: []common.CommandParam{
 				{Name: "channel", Type: common.Flag},
-				{Name: "Channel", Type: common.Channel},
+				{Name: "channel", Type: common.Channel},
 			},
 		}},
 	}

@@ -7,13 +7,12 @@ import (
 )
 
 func (p *Plugin) createCategory(event *events.Event) {
-	if len(event.Fields()) < 5 {
+	if len(event.Fields()) < 4 {
 		event.Respond("common.invalid-params")
 		return
 	}
 
 	name := event.Fields()[3]
-	inputChannel := event.Fields()[4]
 
 	if name == "" {
 		event.Respond("roles.category.no-name")
@@ -30,10 +29,14 @@ func (p *Plugin) createCategory(event *events.Event) {
 		return
 	}
 
-	channel, err := event.State().ChannelFromMention(event.GuildID, inputChannel)
-	if err != nil {
-		event.Except(err)
-		return
+	var channelID string
+	if len(event.Fields()) >= 5 {
+		channel, err := event.State().ChannelFromMention(event.GuildID, event.Fields()[4])
+		if err != nil {
+			event.Except(err)
+			return
+		}
+		channelID = channel.ID
 	}
 
 	limit := 0
@@ -47,7 +50,7 @@ func (p *Plugin) createCategory(event *events.Event) {
 
 	category := &Category{
 		GuildID:   event.GuildID,
-		ChannelID: channel.ID,
+		ChannelID: channelID,
 		Name:      name,
 		Limit:     limit,
 		Enabled:   true,
@@ -65,7 +68,7 @@ func (p *Plugin) createCategory(event *events.Event) {
 }
 
 func (p *Plugin) updateCategory(event *events.Event) {
-	if len(event.Fields()) < 6 {
+	if len(event.Fields()) < 5 {
 		event.Respond("common.invalid-params")
 		return
 	}
@@ -82,17 +85,20 @@ func (p *Plugin) updateCategory(event *events.Event) {
 	}
 
 	name := event.Fields()[4]
-	inputChannel := event.Fields()[5]
 
 	if name == "" {
 		event.Respond("roles.category.no-name")
 		return
 	}
 
-	channel, err := event.State().ChannelFromMention(event.GuildID, inputChannel)
-	if err != nil {
-		event.Except(err)
-		return
+	var channelID string
+	if len(event.Fields()) >= 6 {
+		channel, err := event.State().ChannelFromMention(event.GuildID, event.Fields()[5])
+		if err != nil {
+			event.Except(err)
+			return
+		}
+		channelID = channel.ID
 	}
 
 	limit := 0
@@ -104,7 +110,7 @@ func (p *Plugin) updateCategory(event *events.Event) {
 		}
 	}
 
-	existingCategory.ChannelID = channel.ID
+	existingCategory.ChannelID = channelID
 	existingCategory.Name = name
 	existingCategory.Limit = limit
 
