@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/davecgh/go-spew/spew"
+	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -27,6 +28,17 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 	}
 
 	outputText := ""
+
+	channelID, err := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
+	if err == nil && channelID != "" {
+		channel, err := event.State().Channel(channelID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		outputText += fmt.Sprintf("**Role Channel:** %s", channel.Mention())
+	}
 
 	categoriesText := ""
 

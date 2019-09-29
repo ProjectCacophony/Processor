@@ -9,6 +9,8 @@
 "roles.role.update" = "Updated role **{{ .roleName }}**"
 "roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role setup."
 
+"roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
+
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."

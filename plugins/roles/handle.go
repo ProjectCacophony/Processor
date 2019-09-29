@@ -158,6 +158,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "auto", Type: common.Flag},
 				{Name: "list", Type: common.QuotedText},
 			},
+		}, {
+			Name:        "Set Role Channel",
+			Description: "Set the default channel users will go to to add and remove their roles.",
+			Params: []common.CommandParam{
+				{Name: "channel", Type: common.Flag},
+				{Name: "Channel", Type: common.Channel},
+			},
 		}},
 	}
 }
@@ -174,6 +181,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "channel":
+			p.setRoleChannel(event)
+			return true
 		case "info":
 			p.displayRoleInfo(event)
 			return true
