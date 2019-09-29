@@ -78,6 +78,11 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			limitText = fmt.Sprintf("Limit: %d", cat.Limit)
 		}
 
+		hiddenText := ""
+		if cat.Hidden {
+			hiddenText = ", Hidden"
+		}
+
 		roleText := "\t*No Roles*"
 		if len(cat.Roles) > 0 {
 			roleText = ""
@@ -87,11 +92,12 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			}
 		}
 
-		categoryText := fmt.Sprintf("**%s** (%s, %s %s)\n%s\n",
+		categoryText := fmt.Sprintf("**%s** (%s, %s %s%s)\n%s\n",
 			cat.Name,
 			limitText,
 			channelText,
 			status,
+			hiddenText,
 			roleText,
 		)
 		categoriesText += categoryText

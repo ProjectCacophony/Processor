@@ -13,6 +13,7 @@ type Category struct {
 	ChannelID string // the channel this Category will listen to for role assignments
 	Roles     []Role `gorm:"foreignkey:CategoryID"`
 	Enabled   bool
+	Hidden    bool
 	Limit     int // 0 = no limit
 }
 

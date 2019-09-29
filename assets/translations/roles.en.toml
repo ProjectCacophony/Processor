@@ -5,6 +5,7 @@
 "roles.category.update" = "Updated category **{{ .category.Name }}**"
 "roles.category.deleted" = "Deleted category **{{ .category.Name }}**"
 "roles.category.toggle" = "The category **{{ .category.Name }}** is now **{{- if .toggle}}Enabled{{else}}Disabled{{end}}**"
+"roles.category.toggle-visibility" = "The category **{{ .category.Name }}** will now **{{- if .toggle}}hide** from{{else}}show** on{{end}} the role setup message text."
 
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
 "roles.role.update" = "Updated role **{{ .roleName }}**"

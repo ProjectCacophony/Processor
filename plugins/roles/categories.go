@@ -197,3 +197,46 @@ func (p *Plugin) toggleCategory(event *events.Event) {
 		"toggle", toggle,
 	)
 }
+
+func (p *Plugin) toggleCategoryVisibility(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	toggle := false
+	switch event.Fields()[1] {
+	case "show":
+		break
+	case "hide":
+		toggle = true
+		break
+	default:
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	category, err := p.getCategoryByName(event.Fields()[3], event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	if category.Name == "" {
+		event.Respond("roles.category.does-not-exist")
+		return
+	}
+
+	category.Hidden = toggle
+
+	err = p.db.Save(category).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("roles.category.toggle-visibility",
+		"category", category,
+		"toggle", toggle,
+	)
+}

@@ -87,6 +87,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Category Name", Type: common.QuotedText},
 			},
 		}, {
+			Name:        "Show/Hide Role Category",
+			Description: "Toggle whether or not the category and its roles will show in the role channel text. Unlike enabling/disabling, roles from hidden categories can still be assigned.",
+			Params: []common.CommandParam{
+				{Name: "show/hide", Type: common.Flag},
+				{Name: "category", Type: common.Flag},
+				{Name: "Category Name", Type: common.QuotedText},
+			},
+		}, {
 			Name:        "Add Role",
 			Description: "Add a role to a given category that users will be able to assign to themselves.",
 			Params: []common.CommandParam{
@@ -173,6 +181,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "show", "hide":
+			p.toggleCategoryVisibility(event)
+			return true
 		case "enable", "disable":
 			p.toggleCategory(event)
 			return true
