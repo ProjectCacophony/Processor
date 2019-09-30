@@ -9,6 +9,7 @@ type FilterInterface interface {
 	Args() int
 	NewItem(*models.Env, []string) (FilterItemInterface, error)
 	Description() string
+	Deprecated() bool
 }
 
 type FilterItemInterface interface {

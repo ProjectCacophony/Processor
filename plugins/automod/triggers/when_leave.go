@@ -17,6 +17,10 @@ func (t Leave) Args() int {
 	return 0
 }
 
+func (t Leave) Deprecated() bool {
+	return false
+}
+
 func (t Leave) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	return &LeaveItem{}, nil
 }

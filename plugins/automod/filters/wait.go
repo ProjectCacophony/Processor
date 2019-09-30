@@ -21,6 +21,10 @@ func (f Wait) Args() int {
 	return 1
 }
 
+func (f Wait) Deprecated() bool {
+	return false
+}
+
 func (f Wait) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

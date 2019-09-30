@@ -17,6 +17,10 @@ func (f True) Args() int {
 	return 0
 }
 
+func (f True) Deprecated() bool {
+	return false
+}
+
 func (f True) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	return &TrueItem{}, nil
 }

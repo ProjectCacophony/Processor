@@ -20,6 +20,10 @@ func (t BucketUpdated) Args() int {
 	return 1
 }
 
+func (t BucketUpdated) Deprecated() bool {
+	return false
+}
+
 func (t BucketUpdated) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

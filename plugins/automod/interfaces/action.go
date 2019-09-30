@@ -7,6 +7,7 @@ type ActionInterface interface {
 	Args() int
 	NewItem(*models.Env, []string) (ActionItemInterface, error)
 	Description() string
+	Deprecated() bool
 }
 
 type ActionItemInterface interface {

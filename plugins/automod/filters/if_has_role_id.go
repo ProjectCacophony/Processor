@@ -20,6 +20,10 @@ func (f RoleID) Args() int {
 	return 1
 }
 
+func (f RoleID) Deprecated() bool {
+	return false
+}
+
 func (f RoleID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

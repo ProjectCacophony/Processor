@@ -22,6 +22,10 @@ func (f ChannelID) Args() int {
 	return 1
 }
 
+func (f ChannelID) Deprecated() bool {
+	return true
+}
+
 func (f ChannelID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

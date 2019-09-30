@@ -21,6 +21,10 @@ func (t ApplyRole) Args() int {
 	return 1
 }
 
+func (t ApplyRole) Deprecated() bool {
+	return false
+}
+
 func (t ApplyRole) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

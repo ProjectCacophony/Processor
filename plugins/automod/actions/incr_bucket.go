@@ -24,6 +24,10 @@ func (t IncrBucket) Args() int {
 	return 4
 }
 
+func (t IncrBucket) Deprecated() bool {
+	return false
+}
+
 func (t IncrBucket) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	if len(args) < 4 {
 		return nil, errors.New("too few arguments")

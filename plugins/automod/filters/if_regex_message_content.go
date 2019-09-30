@@ -21,6 +21,10 @@ func (f RegexMessageContent) Args() int {
 	return 1
 }
 
+func (f RegexMessageContent) Deprecated() bool {
+	return false
+}
+
 func (f RegexMessageContent) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

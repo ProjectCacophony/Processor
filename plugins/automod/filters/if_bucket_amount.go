@@ -20,6 +20,10 @@ func (f BucketAmount) Args() int {
 	return 2
 }
 
+func (f BucketAmount) Deprecated() bool {
+	return false
+}
+
 func (f BucketAmount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

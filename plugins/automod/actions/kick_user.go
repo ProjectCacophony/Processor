@@ -19,6 +19,10 @@ func (t KickUser) Args() int {
 	return 0
 }
 
+func (t KickUser) Deprecated() bool {
+	return false
+}
+
 func (t KickUser) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	return &KickUserItem{}, nil
 }

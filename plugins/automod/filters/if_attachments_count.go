@@ -20,6 +20,10 @@ func (f AttachmentsCount) Args() int {
 	return 2
 }
 
+func (f AttachmentsCount) Deprecated() bool {
+	return false
+}
+
 func (f AttachmentsCount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

@@ -19,6 +19,10 @@ func (t DeleteMessage) Args() int {
 	return 0
 }
 
+func (t DeleteMessage) Deprecated() bool {
+	return false
+}
+
 func (t DeleteMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	return &DeleteMessageItem{}, nil
 }

@@ -21,6 +21,10 @@ func (t SendMessage) Args() int {
 	return 1
 }
 
+func (t SendMessage) Deprecated() bool {
+	return false
+}
+
 func (t SendMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
