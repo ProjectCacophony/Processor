@@ -10,43 +10,52 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-// deprecated: use if_channel
-type ChannelID struct {
+type Channel struct {
 }
 
-func (f ChannelID) Name() string {
-	return "if_channel_id"
+func (f Channel) Name() string {
+	return "if_channel"
 }
 
-func (f ChannelID) Args() int {
+func (f Channel) Args() int {
 	return 1
 }
 
-func (f ChannelID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
+func (f Channel) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
 	}
 
-	channelIDs := strings.Split(args[0], ",")
+	channelMentions := strings.Split(args[0], ",")
+	channelIDs := make([]string, 0, len(channelMentions))
+
+	for _, channelMention := range channelMentions {
+		channel, err := env.State.ChannelFromMention(env.GuildID, channelMention)
+		if err != nil {
+			continue
+		}
+
+		channelIDs = append(channelIDs, channel.ID)
+	}
 
 	if len(channelIDs) == 0 {
 		return nil, errors.New("no Channel IDs defined")
 	}
 
-	return &ChannelIDItem{
+	return &ChannelItem{
 		channelIDs: channelIDs,
 	}, nil
 }
 
-func (f ChannelID) Description() string {
-	return "automod.filters.if_channel_id"
+func (f Channel) Description() string {
+	return "automod.filters.if_channel"
 }
 
-type ChannelIDItem struct {
+type ChannelItem struct {
 	channelIDs []string
 }
 
-func (f *ChannelIDItem) Match(env *models.Env) bool {
+func (f *ChannelItem) Match(env *models.Env) bool {
 	if env.Event == nil {
 		return false
 	}
@@ -64,16 +73,4 @@ func (f *ChannelIDItem) Match(env *models.Env) bool {
 	}
 
 	return true
-}
-
-func matchChannels(channels []string, channel string) bool {
-	for _, c := range channels {
-		if c != channel {
-			continue
-		}
-
-		return true
-	}
-
-	return false
 }

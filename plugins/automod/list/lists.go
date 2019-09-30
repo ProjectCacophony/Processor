@@ -26,6 +26,7 @@ var (
 		filters.MentionsCount{},
 		filters.EmojiCount{},
 		filters.ChannelID{},
+		filters.Channel{},
 		filters.AttachmentsCount{},
 		filters.RoleID{},
 		filters.UserID{},

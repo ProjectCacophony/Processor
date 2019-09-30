@@ -107,6 +107,7 @@ Comparison Types: >, =, and < [comparison type; amount]"
 "automod.filters.if_emoji_count" = "Matches if the number of Emoji used in the Message compares as specified with the given amount.\n\
 Comparison Types: >, =, and < [comparison type; amount]"
 "automod.filters.if_channel_id" = "Matches when the given Channel ID matches with the Messages Channel ID. [Channel ID(s), separated by commas, no spaces]"
+"automod.filters.if_channel" = "Matches when the given Channel matches with the Messages Channel. [Channel(s), separated by commas, no spaces]"
 "automod.filters.if_attachments_count" = "Matches if the number of Attachment attached to the Message compares as specified with the given amount.\n\
 Comparison Types: >, =, and < [comparison type; amount]"
 "automod.filters.if_has_role_id" = "Matches if the User has all of the given Role IDs. [Role ID(s), separated by commas, no spaces]"
