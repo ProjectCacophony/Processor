@@ -21,6 +21,10 @@ func (t SendMessage) Args() int {
 	return 1
 }
 
+func (t SendMessage) Deprecated() bool {
+	return false
+}
+
 func (t SendMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
@@ -69,7 +73,7 @@ func (t *SendMessageItem) Do(env *models.Env) error {
 			session,
 			nil,
 			channelID,
-			discord.MessageCodeToMessage(replaceText(env, t.Message)),
+			discord.MessageCodeToMessage(ReplaceText(env, t.Message)),
 		)
 		if err != nil {
 			return err

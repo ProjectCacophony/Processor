@@ -19,6 +19,10 @@ func (t BanUser) Args() int {
 	return 1
 }
 
+func (t BanUser) Deprecated() bool {
+	return false
+}
+
 func (t BanUser) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	return &BanUserItem{}, nil
 }

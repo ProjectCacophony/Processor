@@ -17,6 +17,10 @@ func (t Join) Args() int {
 	return 0
 }
 
+func (t Join) Deprecated() bool {
+	return false
+}
+
 func (t Join) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	return &JoinItem{}, nil
 }

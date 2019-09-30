@@ -41,13 +41,13 @@ func (p *Plugin) handleSearch(event *events.Event) {
 		}
 	}
 
-	var result []*discordgo.Member // nolint: prealloc
-
 	members, err := event.State().GuildMembers(targetGuild.ID)
 	if err != nil {
 		event.Except(err)
 		return
 	}
+
+	result := make([]*discordgo.Member, 0, searchLimit)
 
 	for _, memberID := range members {
 		member, err := event.State().Member(targetGuild.ID, memberID)

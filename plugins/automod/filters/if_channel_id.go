@@ -10,6 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
+// deprecated: use if_channel
 type ChannelID struct {
 }
 
@@ -19,6 +20,10 @@ func (f ChannelID) Name() string {
 
 func (f ChannelID) Args() int {
 	return 1
+}
+
+func (f ChannelID) Deprecated() bool {
+	return true
 }
 
 func (f ChannelID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {

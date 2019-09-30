@@ -23,6 +23,10 @@ func (f EmojiCount) Args() int {
 	return 2
 }
 
+func (f EmojiCount) Deprecated() bool {
+	return false
+}
+
 func (f EmojiCount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

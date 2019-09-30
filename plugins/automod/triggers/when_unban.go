@@ -17,6 +17,10 @@ func (t Unban) Args() int {
 	return 0
 }
 
+func (t Unban) Deprecated() bool {
+	return false
+}
+
 func (t Unban) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	return &UnbanItem{}, nil
 }

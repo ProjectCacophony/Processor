@@ -7,8 +7,9 @@ import (
 )
 
 func (p *Plugin) handleChoose(event *events.Event) {
-	var items []string // nolint: prealloc
-	for _, field := range event.Fields()[1:] {
+	parts := event.Fields()[1:]
+	items := make([]string, 0, len(parts))
+	for _, field := range parts {
 		if field == "|" {
 			continue
 		}

@@ -23,7 +23,7 @@ func automodReason(env *models.Env, action string) string {
 	return strings.Title(action) + " by " + botUserText + " Automod Rule: " + ruleNameText
 }
 
-func replaceText(env *models.Env, input string) string {
+func ReplaceText(env *models.Env, input string) string {
 	// prepare texts
 	var userUsername, userFullUsername, userID, userDiscriminator, userMention, userAvatarURL string
 

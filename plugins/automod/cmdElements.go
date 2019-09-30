@@ -32,26 +32,38 @@ func (d sortPrintValuesByName) Less(i, j int) bool {
 
 func (p *Plugin) cmdElements(event *events.Event) {
 
-	triggers := make([]printValues, len(list.TriggerList))
-	for i, item := range list.TriggerList {
-		triggers[i] = printValues{
+	triggers := make([]printValues, 0, len(list.TriggerList))
+	for _, item := range list.TriggerList {
+		if item.Deprecated() {
+			continue
+		}
+
+		triggers = append(triggers, printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		}
+		})
 	}
-	filters := make([]printValues, len(list.FiltersList))
-	for i, item := range list.FiltersList {
-		filters[i] = printValues{
+	filters := make([]printValues, 0, len(list.FiltersList))
+	for _, item := range list.FiltersList {
+		if item.Deprecated() {
+			continue
+		}
+
+		filters = append(filters, printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		}
+		})
 	}
-	actions := make([]printValues, len(list.ActionsList))
-	for i, item := range list.ActionsList {
-		actions[i] = printValues{
+	actions := make([]printValues, 0, len(list.ActionsList))
+	for _, item := range list.ActionsList {
+		if item.Deprecated() {
+			continue
+		}
+
+		actions = append(actions, printValues{
 			Name:        item.Name(),
 			Description: event.Translate(item.Description()),
-		}
+		})
 	}
 
 	sort.Sort(sortPrintValuesByName(triggers))

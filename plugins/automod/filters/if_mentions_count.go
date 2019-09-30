@@ -20,6 +20,10 @@ func (f MentionsCount) Args() int {
 	return 2
 }
 
+func (f MentionsCount) Deprecated() bool {
+	return false
+}
+
 func (f MentionsCount) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

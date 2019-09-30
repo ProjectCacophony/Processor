@@ -20,6 +20,10 @@ func (f AccountAge) Args() int {
 	return 2
 }
 
+func (f AccountAge) Deprecated() bool {
+	return false
+}
+
 func (f AccountAge) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")

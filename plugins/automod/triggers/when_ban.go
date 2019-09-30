@@ -17,6 +17,10 @@ func (t Ban) Args() int {
 	return 0
 }
 
+func (t Ban) Deprecated() bool {
+	return false
+}
+
 func (t Ban) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	return &BanItem{}, nil
 }

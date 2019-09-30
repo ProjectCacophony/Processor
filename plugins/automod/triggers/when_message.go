@@ -17,6 +17,10 @@ func (t Message) Args() int {
 	return 0
 }
 
+func (t Message) Deprecated() bool {
+	return false
+}
+
 func (t Message) NewItem(env *models.Env, args []string) (interfaces.TriggerItemInterface, error) {
 	return &MessageItem{}, nil
 }

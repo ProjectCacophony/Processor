@@ -9,6 +9,7 @@ type TriggerInterface interface {
 	Args() int
 	NewItem(*models.Env, []string) (TriggerItemInterface, error)
 	Description() string
+	Deprecated() bool
 }
 
 type TriggerItemInterface interface {

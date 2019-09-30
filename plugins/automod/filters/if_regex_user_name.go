@@ -19,6 +19,10 @@ func (f RegexUserName) Args() int {
 	return 1
 }
 
+func (f RegexUserName) Deprecated() bool {
+	return false
+}
+
 func (f RegexUserName) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
