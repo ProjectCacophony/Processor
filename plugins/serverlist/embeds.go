@@ -237,8 +237,7 @@ func (p *Plugin) getCategoryText(server *Server, categories []ServerCategory) st
 }
 
 func (p *Plugin) getChangeCategories(server *Server) []ServerCategory {
-	var result []ServerCategory // nolint: prealloc
-
+	result := make([]ServerCategory, 0, len(server.Change.Categories))
 	for _, categoryID := range server.Change.Categories {
 		category, err := categoryFind(p.db, "id = ?", categoryID)
 		if err != nil {
