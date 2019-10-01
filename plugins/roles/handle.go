@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
@@ -52,8 +53,9 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Names:       p.Names(),
 		Description: "roles.help.description",
 		Commands: []common.Command{{
-			Name:        "Add Role Category",
-			Description: "Add additional role categories for roles to be added too.",
+			Name:                "Add Role Category",
+			Description:         "Add additional role categories for roles to be added too.",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "add", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
@@ -62,7 +64,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
 			},
 		}, {
-			Name: "Edit Role Category",
+			Name:                "Edit Role Category",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
@@ -72,31 +75,35 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Limit Count", Type: common.QuotedText, Optional: true},
 			},
 		}, {
-			Name: "Remove Role Category",
+			Name:                "Remove Role Category",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "remove", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Enable/Disable Role Category",
-			Description: "Temporarily disable a role category.",
+			Name:                "Enable/Disable Role Category",
+			Description:         "Temporarily disable a role category.",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "enable/disable", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Show/Hide Role Category",
-			Description: "Toggle whether or not the category and its roles will show in the role channel text. Unlike enabling/disabling, roles from hidden categories can still be assigned.",
+			Name:                "Show/Hide Role Category",
+			Description:         "Toggle whether or not the category and its roles will show in the role channel text. Unlike enabling/disabling, roles from hidden categories can still be assigned.",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "show/hide", Type: common.Flag},
 				{Name: "category", Type: common.Flag},
 				{Name: "Category Name", Type: common.QuotedText},
 			},
 		}, {
-			Name:        "Add Role",
-			Description: "Add a role to a given category that users will be able to assign to themselves.",
+			Name:                "Add Role",
+			Description:         "Add a role to a given category that users will be able to assign to themselves.",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "add", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
@@ -106,7 +113,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
 			},
 		}, {
-			Name: "Edit Role",
+			Name:                "Edit Role",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "edit", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
@@ -116,7 +124,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
 			},
 		}, {
-			Name: "Remove Role",
+			Name:                "Remove Role",
+			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
 			Params: []common.CommandParam{
 				{Name: "remove", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
