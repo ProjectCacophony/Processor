@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"sort"
 
+	"github.com/go-chi/chi"
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/greeter"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
@@ -104,6 +105,7 @@ func StartPlugins(
 	state *state.State,
 	featureFlagger *featureflag.FeatureFlagger,
 	publisher *events.Publisher,
+	httpMux *chi.Mux,
 ) {
 
 	// load localizations
@@ -134,6 +136,7 @@ func StartPlugins(
 			PluginHelpList: pluginHelpList,
 			Localizations:  LocalizationsList,
 			Publisher:      publisher,
+			HttpMux:        httpMux,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",

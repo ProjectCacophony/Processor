@@ -1,6 +1,9 @@
 package help
 
 import (
+	"encoding/json"
+	"net/http"
+
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
@@ -18,6 +21,20 @@ func (p *Plugin) Names() []string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.pluginHelpList = params.PluginHelpList
+
+	params.HttpMux.Get(
+		"/plugins/help/commands",
+		func(w http.ResponseWriter, r *http.Request) {
+			resp, err := json.Marshal(p.pluginHelpList)
+			if err != nil {
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(resp)
+		},
+	)
 
 	return nil
 }

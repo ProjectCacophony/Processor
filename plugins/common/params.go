@@ -1,6 +1,7 @@
 package common
 
 import (
+	"github.com/go-chi/chi"
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -20,6 +21,7 @@ type StartParameters struct {
 	PluginHelpList []*PluginHelp
 	Localizations  []interfaces.Localization
 	Publisher      *events.Publisher
+	HttpMux        *chi.Mux
 }
 
 type StopParameters struct {
