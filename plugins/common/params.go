@@ -21,7 +21,7 @@ type StartParameters struct {
 	PluginHelpList []*PluginHelp
 	Localizations  []interfaces.Localization
 	Publisher      *events.Publisher
-	HttpMux        *chi.Mux
+	HTTPMux        *chi.Mux
 }
 
 type StopParameters struct {

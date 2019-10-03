@@ -136,7 +136,7 @@ func StartPlugins(
 			PluginHelpList: pluginHelpList,
 			Localizations:  LocalizationsList,
 			Publisher:      publisher,
-			HttpMux:        httpMux,
+			HTTPMux:        httpMux,
 		})
 		if err != nil {
 			logger.Error("failed to start plugin",

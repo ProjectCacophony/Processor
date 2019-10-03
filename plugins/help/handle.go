@@ -22,7 +22,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.pluginHelpList = params.PluginHelpList
 
-	params.HttpMux.Get(
+	params.HTTPMux.Get(
 		"/plugins/help/commands",
 		func(w http.ResponseWriter, r *http.Request) {
 			resp, err := json.Marshal(p.pluginHelpList)
