@@ -1,17 +1,16 @@
 package help
 
 import (
-	"encoding/json"
-	"net/http"
-
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"go.uber.org/zap"
 )
 
 type Plugin struct {
 	logger         *zap.Logger
 	pluginHelpList []*common.PluginHelp
+	localizations  []interfaces.Localization
 }
 
 func (p *Plugin) Names() []string {
@@ -21,19 +20,11 @@ func (p *Plugin) Names() []string {
 func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.pluginHelpList = params.PluginHelpList
+	p.localizations = params.Localizations
 
 	params.HTTPMux.Get(
 		"/plugins/help/commands",
-		func(w http.ResponseWriter, r *http.Request) {
-			resp, err := json.Marshal(p.pluginHelpList)
-			if err != nil {
-				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				return
-			}
-
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(resp)
-		},
+		p.endpointCommands(),
 	)
 
 	return nil
