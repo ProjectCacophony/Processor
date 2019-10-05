@@ -44,5 +44,6 @@ var (
 		actions.KickUser{},
 		actions.ResetBucket{},
 		actions.React{},
+		actions.Wait{},
 	}
 )

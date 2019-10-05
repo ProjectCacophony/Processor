@@ -130,6 +130,8 @@ Types: guild, channel, or user [tag; type; decay duration; amount]"
 "automod.actions.reset_bucket" = "Resets the amount of leaky bucket.\n\
 Types: guild, channel, or user [tag; type]"
 "automod.actions.react" = "Reacts with the given Emoji. [emoji…]"
+"automod.actions.wait" = "Pauses the execution of the rule for the given duration.\n\
+[duration]"
 
 # cmdHistory
 "automod.history.content" = "\
