@@ -34,7 +34,7 @@ func (t BanUser) Description() string {
 type BanUserItem struct {
 }
 
-func (t *BanUserItem) Do(env *models.Env) error {
+func (t *BanUserItem) Do(env *models.Env) (bool, error) {
 	doneUserIDs := make(map[string]interface{})
 
 	for _, userID := range env.UserID {
@@ -65,11 +65,11 @@ func (t *BanUserItem) Do(env *models.Env) error {
 			env.GuildID, userID, automodReason(env, "Banned"), 0,
 		)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		doneUserIDs[userID] = true
 	}
 
-	return nil
+	return false, nil
 }

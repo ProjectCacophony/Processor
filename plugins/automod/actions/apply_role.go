@@ -48,7 +48,7 @@ type ApplyRoleItem struct {
 	RoleID string
 }
 
-func (t *ApplyRoleItem) Do(env *models.Env) error {
+func (t *ApplyRoleItem) Do(env *models.Env) (bool, error) {
 	doneUserIDs := make(map[string]interface{})
 
 	for _, userID := range env.UserID {
@@ -76,11 +76,11 @@ func (t *ApplyRoleItem) Do(env *models.Env) error {
 
 		err = session.Client.GuildMemberRoleAdd(env.GuildID, userID, t.RoleID)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		doneUserIDs[userID] = true
 	}
 
-	return nil
+	return false, nil
 }

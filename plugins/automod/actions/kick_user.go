@@ -34,7 +34,7 @@ func (t KickUser) Description() string {
 type KickUserItem struct {
 }
 
-func (t *KickUserItem) Do(env *models.Env) error {
+func (t *KickUserItem) Do(env *models.Env) (bool, error) {
 	doneUserIDs := make(map[string]interface{})
 
 	for _, userID := range env.UserID {
@@ -65,11 +65,11 @@ func (t *KickUserItem) Do(env *models.Env) error {
 			env.GuildID, userID, automodReason(env, "Kicked"),
 		)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		doneUserIDs[userID] = true
 	}
 
-	return nil
+	return false, nil
 }

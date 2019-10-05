@@ -82,7 +82,7 @@ type IncrBucketItem struct {
 	Random    *rand.Rand
 }
 
-func (t *IncrBucketItem) Do(env *models.Env) error {
+func (t *IncrBucketItem) Do(env *models.Env) (bool, error) {
 	var keys []string
 	switch t.Type {
 	case events.GuildBucketType:
@@ -107,7 +107,7 @@ func (t *IncrBucketItem) Do(env *models.Env) error {
 		for i := 0; i < t.Amount; i++ {
 			bucketContentValue, err = bucketContent(env)
 			if err != nil {
-				return err
+				return false, err
 			}
 
 			valueList, _ := bucket.AddWithValue(
@@ -131,7 +131,7 @@ func (t *IncrBucketItem) Do(env *models.Env) error {
 
 		event, err := events.New(events.CacophonyBucketUpdate)
 		if err != nil {
-			return err
+			return false, err
 		}
 		event.BucketUpdate = &events.BucketUpdate{
 			Tag:       t.TagSuffix,
@@ -153,11 +153,11 @@ func (t *IncrBucketItem) Do(env *models.Env) error {
 					zap.Error(err),
 				)
 			}
-			return err
+			return false, err
 		}
 	}
 
-	return nil
+	return false, nil
 }
 
 func bucketTag(guildID, channelID, userID, tag string) string {

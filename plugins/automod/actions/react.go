@@ -56,7 +56,7 @@ type ReactItem struct {
 	Reactions []string
 }
 
-func (t *ReactItem) Do(env *models.Env) error {
+func (t *ReactItem) Do(env *models.Env) (bool, error) {
 	doneMessageIDs := make(map[string]interface{})
 
 	for _, message := range env.Messages {
@@ -91,11 +91,11 @@ func (t *ReactItem) Do(env *models.Env) error {
 			strings.Trim(t.Reactions[rand.Intn(len(t.Reactions))], "<>"),
 		)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		doneMessageIDs[message.ID] = true
 	}
 
-	return nil
+	return false, nil
 }

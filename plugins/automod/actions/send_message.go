@@ -43,7 +43,7 @@ type SendMessageItem struct {
 	Message string
 }
 
-func (t *SendMessageItem) Do(env *models.Env) error {
+func (t *SendMessageItem) Do(env *models.Env) (bool, error) {
 	doneChannelIDs := make(map[string]interface{})
 
 	for _, channelID := range env.ChannelID {
@@ -76,11 +76,11 @@ func (t *SendMessageItem) Do(env *models.Env) error {
 			discord.MessageCodeToMessage(ReplaceText(env, t.Message)),
 		)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		doneChannelIDs[channelID] = true
 	}
 
-	return nil
+	return false, nil
 }

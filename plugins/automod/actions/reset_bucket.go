@@ -58,7 +58,7 @@ type ResetBucketItem struct {
 	Type      events.BucketType
 }
 
-func (t *ResetBucketItem) Do(env *models.Env) error {
+func (t *ResetBucketItem) Do(env *models.Env) (bool, error) {
 	var keys []string
 	switch t.Type {
 	case events.GuildBucketType:
@@ -82,9 +82,9 @@ func (t *ResetBucketItem) Do(env *models.Env) error {
 			key,
 		)
 		if err != nil {
-			return err
+			return false, err
 		}
 	}
 
-	return nil
+	return false, nil
 }
