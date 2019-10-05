@@ -80,7 +80,7 @@ func (f *WaitItem) Match(env *models.Env) bool {
 	}
 
 	event.AutomodWait = &events.AutomodWait{
-		Payload: envData,
+		EnvData: envData,
 	}
 	event.GuildID = env.GuildID
 

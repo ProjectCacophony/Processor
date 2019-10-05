@@ -49,7 +49,7 @@ func (t *DeleteMessageItem) Do(env *models.Env) error {
 		}
 
 		botID, err := env.State.BotForChannel(
-			message.ChanneID,
+			message.ChannelID,
 			permissions.DiscordManageMessages,
 		)
 		if err != nil {
@@ -61,7 +61,7 @@ func (t *DeleteMessageItem) Do(env *models.Env) error {
 			continue
 		}
 
-		err = discord.Delete(nil, session, message.ChanneID, message.ID, false)
+		err = discord.Delete(nil, session, message.ChannelID, message.ID, false)
 		if err != nil {
 			return err
 		}

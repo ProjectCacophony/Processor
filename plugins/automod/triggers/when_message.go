@@ -49,8 +49,8 @@ func (t *MessageItem) Match(env *models.Env) bool {
 	env.UserID = append(env.UserID, env.Event.MessageCreate.Author.ID)
 	env.ChannelID = append(env.ChannelID, env.Event.MessageCreate.ChannelID)
 	env.Messages = append(env.Messages, &models.EnvMessage{
-		ID:       env.Event.MessageCreate.ID,
-		ChanneID: env.Event.MessageCreate.ChannelID,
+		ID:        env.Event.MessageCreate.ID,
+		ChannelID: env.Event.MessageCreate.ChannelID,
 	})
 
 	return true

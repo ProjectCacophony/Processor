@@ -57,12 +57,23 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 
 	env.GuildID = env.Event.BucketUpdate.GuildID
 
-	for _, value := range env.Event.BucketUpdate.Values {
-		userIDs, channelIDs, GuildID, messages := extractBucketValues(value)
+	var newEnv *models.Env
+	var parts []string
+	for _, envData := range env.Event.BucketUpdate.EnvDatas {
+		parts = strings.Split(string(envData), "|")
+		if len(parts) < 2 {
+			continue
+		}
+		envData = []byte(parts[1])
 
-		env.GuildID = GuildID
+		newEnv = &models.Env{}
+		err := newEnv.Unmarshal(envData)
+		if err != nil {
+			newEnv.Event.ExceptSilent(err)
+		}
 
-		for _, userID := range userIDs {
+		env.GuildID = newEnv.GuildID
+		for _, userID := range newEnv.UserID {
 			if userID == "" {
 				continue
 			}
@@ -72,7 +83,7 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 			}
 		}
 
-		for _, channelID := range channelIDs {
+		for _, channelID := range newEnv.ChannelID {
 			if channelID == "" {
 				continue
 			}
@@ -82,8 +93,8 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 			}
 		}
 
-		for _, message := range messages {
-			if message.ID == "" || message.ChanneID == "" {
+		for _, message := range newEnv.Messages {
+			if message.ID == "" || message.ChannelID == "" {
 				continue
 			}
 
@@ -91,6 +102,7 @@ func (t *BucketUpdatedItem) Match(env *models.Env) bool {
 				env.Messages = append(env.Messages, message)
 			}
 		}
+
 	}
 
 	return true
@@ -108,37 +120,10 @@ func stringSliceContains(haystack []string, needle string) bool {
 
 func messageSliceContains(haystack []*models.EnvMessage, needle *models.EnvMessage) bool {
 	for _, item := range haystack {
-		if item.ID == needle.ID && item.ChanneID == needle.ChanneID {
+		if item.ID == needle.ID && item.ChannelID == needle.ChannelID {
 			return true
 		}
 	}
 
 	return false
-}
-
-func extractBucketValues(value string) (userIDs, channelIDs []string, guildID string, messages []*models.EnvMessage) {
-	parts := strings.Split(value, "|")
-	if len(parts) < 4 {
-		return
-	}
-
-	guildID = parts[0]
-
-	channelIDs = strings.Split(parts[1], ";")
-
-	userIDs = strings.Split(parts[2], ";")
-
-	for _, messageData := range strings.Split(parts[3], ";") {
-		messageParts := strings.Split(messageData, ":")
-		if len(messageParts) < 2 {
-			continue
-		}
-
-		messages = append(messages, &models.EnvMessage{
-			ID:       messageParts[0],
-			ChanneID: messageParts[1],
-		})
-	}
-
-	return
 }

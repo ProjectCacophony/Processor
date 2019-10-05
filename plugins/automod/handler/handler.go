@@ -123,7 +123,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 
 func (h *Handler) handleWaitEvent(event *events.Event) {
 	env := &models.Env{}
-	err := env.Unmarshal(event.AutomodWait.Payload)
+	err := env.Unmarshal(event.AutomodWait.EnvData)
 	if err != nil {
 		env.Event.ExceptSilent(err)
 		return

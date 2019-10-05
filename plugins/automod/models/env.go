@@ -42,6 +42,6 @@ func (e *Env) Unmarshal(data []byte) error {
 }
 
 type EnvMessage struct {
-	ID       string
-	ChanneID string
+	ID        string
+	ChannelID string
 }
