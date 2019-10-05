@@ -1,6 +1,8 @@
 package greeter
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
@@ -31,12 +33,13 @@ func (gt greeterType) String() string {
 
 type Entry struct {
 	gorm.Model
-	GuildID   string
-	ChannelID string
-	Type      greeterType
-	Message   string
-	RuleID    uint
-	Rule      models.Rule
+	GuildID    string
+	ChannelID  string
+	Type       greeterType
+	Message    string
+	AutoDelete time.Duration
+	RuleID     uint
+	Rule       models.Rule
 }
 
 func (*Entry) TableName() string {
