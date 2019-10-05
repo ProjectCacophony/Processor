@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/go-redis/redis"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/state"
@@ -44,4 +45,21 @@ func (e *Env) Unmarshal(data []byte) error {
 type EnvMessage struct {
 	ID        string
 	ChannelID string
+	Bot       bool
+}
+
+func NewEnvMessage(message *discordgo.Message) *EnvMessage {
+	if message == nil {
+		return nil
+	}
+
+	e := &EnvMessage{
+		ID:        message.ID,
+		ChannelID: message.ChannelID,
+	}
+	if message.Author != nil {
+		e.Bot = message.Author.Bot
+	}
+
+	return e
 }

@@ -3,6 +3,7 @@ package actions
 import (
 	"errors"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/permissions"
 
@@ -46,6 +47,7 @@ type SendMessageItem struct {
 func (t *SendMessageItem) Do(env *models.Env) (bool, error) {
 	doneChannelIDs := make(map[string]interface{})
 
+	var messages []*discordgo.Message
 	for _, channelID := range env.ChannelID {
 		if doneChannelIDs[channelID] != nil {
 			continue
@@ -69,7 +71,7 @@ func (t *SendMessageItem) Do(env *models.Env) (bool, error) {
 			continue
 		}
 
-		_, err = discord.SendComplexWithVars(
+		messages, err = discord.SendComplexWithVars(
 			session,
 			nil,
 			channelID,
@@ -77,6 +79,9 @@ func (t *SendMessageItem) Do(env *models.Env) (bool, error) {
 		)
 		if err != nil {
 			return false, err
+		}
+		for _, message := range messages {
+			env.Messages = append(env.Messages, models.NewEnvMessage(message))
 		}
 
 		doneChannelIDs[channelID] = true

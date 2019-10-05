@@ -8,33 +8,33 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-type DeleteMessage struct {
+type DeleteBotMessage struct {
 }
 
-func (t DeleteMessage) Name() string {
-	return "delete_message"
+func (t DeleteBotMessage) Name() string {
+	return "delete_bot_message"
 }
 
-func (t DeleteMessage) Args() int {
+func (t DeleteBotMessage) Args() int {
 	return 0
 }
 
-func (t DeleteMessage) Deprecated() bool {
+func (t DeleteBotMessage) Deprecated() bool {
 	return false
 }
 
-func (t DeleteMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
-	return &DeleteMessageItem{}, nil
+func (t DeleteBotMessage) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
+	return &DeleteBotMessageItem{}, nil
 }
 
-func (t DeleteMessage) Description() string {
-	return "automod.actions.delete_message"
+func (t DeleteBotMessage) Description() string {
+	return "automod.actions.delete_bot_message"
 }
 
-type DeleteMessageItem struct {
+type DeleteBotMessageItem struct {
 }
 
-func (t *DeleteMessageItem) Do(env *models.Env) (bool, error) {
+func (t *DeleteBotMessageItem) Do(env *models.Env) (bool, error) {
 	// TODO: group messages by channel ID, use bulk delete endpoint
 
 	doneMessageIDs := make(map[string]interface{})
@@ -43,7 +43,7 @@ func (t *DeleteMessageItem) Do(env *models.Env) (bool, error) {
 		if message == nil {
 			continue
 		}
-		if message.Bot {
+		if !message.Bot {
 			continue
 		}
 

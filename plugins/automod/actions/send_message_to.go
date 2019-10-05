@@ -69,7 +69,7 @@ func (t *SendMessageToItem) Do(env *models.Env) (bool, error) {
 		return false, err
 	}
 
-	_, err = discord.SendComplexWithVars(
+	messages, err := discord.SendComplexWithVars(
 		session,
 		nil,
 		t.ChannelID,
@@ -77,6 +77,9 @@ func (t *SendMessageToItem) Do(env *models.Env) (bool, error) {
 	)
 	if err != nil {
 		return false, err
+	}
+	for _, message := range messages {
+		env.Messages = append(env.Messages, models.NewEnvMessage(message))
 	}
 
 	return false, nil

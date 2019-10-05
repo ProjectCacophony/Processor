@@ -45,5 +45,6 @@ var (
 		actions.ResetBucket{},
 		actions.React{},
 		actions.Wait{},
+		actions.DeleteBotMessage{},
 	}
 )
