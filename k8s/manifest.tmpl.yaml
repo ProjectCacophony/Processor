@@ -210,6 +210,20 @@ spec:
 
 
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: processor
+spec:
+  selector:
+    app: processor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+
+
+---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:

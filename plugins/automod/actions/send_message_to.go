@@ -50,10 +50,10 @@ type SendMessageToItem struct {
 	ChannelID string
 }
 
-func (t *SendMessageToItem) Do(env *models.Env) error {
+func (t *SendMessageToItem) Do(env *models.Env) (bool, error) {
 	_, err := env.State.Channel(t.ChannelID)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	botID, err := env.State.BotForChannel(
@@ -61,23 +61,26 @@ func (t *SendMessageToItem) Do(env *models.Env) error {
 		permissions.DiscordSendMessages,
 	)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	session, err := discord.NewSession(env.Tokens, botID)
 	if err != nil {
-		return err
+		return false, err
 	}
 
-	_, err = discord.SendComplexWithVars(
+	messages, err := discord.SendComplexWithVars(
 		session,
 		nil,
 		t.ChannelID,
 		discord.MessageCodeToMessage(ReplaceText(env, t.Message)),
 	)
 	if err != nil {
-		return err
+		return false, err
+	}
+	for _, message := range messages {
+		env.Messages = append(env.Messages, models.NewEnvMessage(message))
 	}
 
-	return nil
+	return false, nil
 }

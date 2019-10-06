@@ -19,7 +19,7 @@ Server: `{GUILD_NAME}`, `{GUILD_ICON_URL}`, and `{GUILD_ID}`.\
 
 # handleAdd
 "greeter.add.success" = "**I saved the {{.greeterType}} message for {{.channel.Mention}}!**\n\
-It will look like this:"
+{{if gt .autoDelete.Seconds 0.0 }}It will automatically delete after **{{.autoDelete}}** and it{{else}}It{{end}} will look like this:"
 "greeter.add.remove-success" = "I removed the {{.greeterType}} message from {{.channel.Mention}}!"
 
 # handleStatus
@@ -27,6 +27,7 @@ It will look like this:"
 {{if gt (len .entries) 0}}\
 {{range $entry := .entries}}\
 **{{$entry.Type}} message** in <#{{$entry.ChannelID}}> triggered `{{HumanizeNumber $entry.Rule.Runs}}` {{$entry.Rule.Runs | plural \"time\" \"times\"}}\n\
+{{if gt $entry.AutoDelete.Seconds 0.0 }}Automatically deleting after **{{$entry.AutoDelete}}**\n{{end}}\
 ```{{$entry.Message | replace \"```\" \"` ` `\"}}```\n\
 {{end}}\
 To remove a message, remove the content, for example `{{.prefix}}greeter join #{{.channel.Name}}`.\

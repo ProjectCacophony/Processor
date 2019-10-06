@@ -51,7 +51,7 @@ func (h *Handler) getLogChannelIDs() (map[string]string, error) {
 func (h *Handler) logRun(env *models.Env, rule models.Rule, runError error) error {
 	messageIDs := make([]string, len(env.Messages))
 	for i, message := range env.Messages {
-		messageIDs[i] = message.ChanneID + ":" + message.ID
+		messageIDs[i] = message.ChannelID + ":" + message.ID
 	}
 
 	entry := &models.LogEntry{

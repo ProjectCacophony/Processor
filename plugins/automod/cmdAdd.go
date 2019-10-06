@@ -106,10 +106,10 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 			})
 			break
 		}
-		if len(newRule.Actions) == 0 {
-			event.Respond("automod.add.invalid-action-name")
-			return
-		}
+	}
+	if len(newRule.Actions) == 0 {
+		event.Respond("automod.add.invalid-action-name")
+		return
 	}
 
 	for _, field := range fields {
@@ -237,42 +237,46 @@ func extractFilter(fieldsInput []string) (name string, args []string, not bool, 
 		fields = fields[1:]
 	}
 
-	for i, field := range fields {
-		for _, filter := range list.FiltersList {
-			if filter.Name() != field {
-				continue
-			}
+	if len(fields) < 1 {
+		return "", nil, false, fieldsInput
+	}
 
-			name = filter.Name()
-			if len(fields) > i+filter.Args() {
-				args = fields[i+1 : i+filter.Args()+1]
-			}
-			if len(fields) > i+filter.Args() {
-				fields = fields[i+filter.Args()+1:]
-			}
-			return
+	for _, filter := range list.FiltersList {
+		if filter.Name() != fields[0] {
+			continue
 		}
+
+		name = filter.Name()
+		if len(fields) > filter.Args() {
+			args = fields[1 : filter.Args()+1]
+		}
+		if len(fields) > filter.Args() {
+			fields = fields[filter.Args()+1:]
+		}
+		return
 	}
 
 	return "", nil, false, fieldsInput
 }
 
 func extractAction(fieldsInput []string) (name string, args []string, fields []string) {
-	for i, field := range fieldsInput {
-		for _, action := range list.ActionsList {
-			if action.Name() != field {
-				continue
-			}
+	if len(fieldsInput) < 1 {
+		return "", nil, fieldsInput
+	}
 
-			name = action.Name()
-			if len(fieldsInput) > i+action.Args() {
-				args = fieldsInput[i+1 : i+action.Args()+1]
-			}
-			if len(fieldsInput) > i+action.Args() {
-				fields = fieldsInput[i+action.Args()+1:]
-			}
-			return
+	for _, action := range list.ActionsList {
+		if action.Name() != fieldsInput[0] {
+			continue
 		}
+
+		name = action.Name()
+		if len(fieldsInput) > action.Args() {
+			args = fieldsInput[1 : action.Args()+1]
+		}
+		if len(fieldsInput) > action.Args() {
+			fields = fieldsInput[action.Args()+1:]
+		}
+		return
 	}
 
 	return "", nil, fieldsInput

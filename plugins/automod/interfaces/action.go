@@ -11,5 +11,5 @@ type ActionInterface interface {
 }
 
 type ActionItemInterface interface {
-	Do(env *models.Env) error
+	Do(env *models.Env) (stop bool, err error)
 }

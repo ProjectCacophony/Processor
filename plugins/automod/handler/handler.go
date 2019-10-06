@@ -105,12 +105,14 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 			continue
 		}
 
-		runError := h.executeActions(env, &rule)
+		log, runError := h.executeActions(env, &rule)
 
-		err = h.logRun(env, rule, runError)
-		if err != nil &&
-			err != state.ErrBotForGuildStateNotFound {
-			event.ExceptSilent(err)
+		if log {
+			err = h.logRun(env, rule, runError)
+			if err != nil &&
+				err != state.ErrBotForGuildStateNotFound {
+				event.ExceptSilent(err)
+			}
 		}
 
 		if rule.Stop {
@@ -123,7 +125,7 @@ func (h *Handler) Handle(event *events.Event) (process bool) {
 
 func (h *Handler) handleWaitEvent(event *events.Event) {
 	env := &models.Env{}
-	err := env.Unmarshal(event.AutomodWait.Payload)
+	err := env.Unmarshal(event.AutomodWait.EnvData)
 	if err != nil {
 		env.Event.ExceptSilent(err)
 		return
@@ -135,12 +137,14 @@ func (h *Handler) handleWaitEvent(event *events.Event) {
 		return
 	}
 
-	runError := h.executeActions(env, env.Rule)
+	log, runError := h.executeActions(env, env.Rule)
 
-	err = h.logRun(env, *env.Rule, runError)
-	if err != nil &&
-		err != state.ErrBotForGuildStateNotFound {
-		event.ExceptSilent(err)
+	if log {
+		err = h.logRun(env, *env.Rule, runError)
+		if err != nil &&
+			err != state.ErrBotForGuildStateNotFound {
+			event.ExceptSilent(err)
+		}
 	}
 }
 
@@ -181,11 +185,11 @@ func (h *Handler) executeFilters(env *models.Env, rule *models.Rule) bool {
 	return true
 }
 
-func (h *Handler) executeActions(env *models.Env, rule *models.Rule) error {
+func (h *Handler) executeActions(env *models.Env, rule *models.Rule) (bool, error) {
 	var runError error
 
-	for _, action := range list.ActionsList {
-		for _, ruleAction := range rule.Actions {
+	for _, ruleAction := range rule.Actions {
+		for _, action := range list.ActionsList {
 			if action.Name() != ruleAction.Name {
 				continue
 			}
@@ -193,15 +197,22 @@ func (h *Handler) executeActions(env *models.Env, rule *models.Rule) error {
 			item, err := action.NewItem(env, ruleAction.Values)
 			if err != nil {
 				env.Event.ExceptSilent(err)
-				return err
+				return true, err
 			}
 
-			err = item.Do(env)
+			stop, err := item.Do(env)
 			if err != nil {
 				runError = err
+			}
+			if stop {
+				// do not log waits without error, because they will be logged later
+				if action.Name() == "wait" && err == nil {
+					return false, runError
+				}
+				return true, runError
 			}
 		}
 	}
 
-	return runError
+	return true, runError
 }

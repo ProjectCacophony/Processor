@@ -1,16 +1,17 @@
 package actions
 
 import (
+	"context"
 	"errors"
 	"math/rand"
 	"strconv"
-	"strings"
 	"time"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/bucket"
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.uber.org/zap"
 )
 
 type IncrBucket struct {
@@ -81,7 +82,7 @@ type IncrBucketItem struct {
 	Random    *rand.Rand
 }
 
-func (t *IncrBucketItem) Do(env *models.Env) error {
+func (t *IncrBucketItem) Do(env *models.Env) (bool, error) {
 	var keys []string
 	switch t.Type {
 	case events.GuildBucketType:
@@ -96,20 +97,27 @@ func (t *IncrBucketItem) Do(env *models.Env) error {
 		}
 	}
 
-	var values []string
+	var err error
+	var bucketContentValue []byte
+	var values [][]byte
+	var recoverable bool
 
 	for _, key := range keys {
 
 		for i := 0; i < t.Amount; i++ {
+			bucketContentValue, err = bucketContent(env)
+			if err != nil {
+				return false, err
+			}
 
 			valueList, _ := bucket.AddWithValue(
 				env.Redis,
 				key,
-				bucketContent(env),
+				bucketContentValue,
 				t.Decay,
 			)
 
-			values = make([]string, len(valueList))
+			values = make([][]byte, len(valueList))
 
 			for i, value := range valueList {
 				stringValue, ok := value.Member.(string)
@@ -117,26 +125,39 @@ func (t *IncrBucketItem) Do(env *models.Env) error {
 					continue
 				}
 
-				values[i] = stringValue
+				values[i] = []byte(stringValue)
 			}
 		}
 
-		// TODO: publish event?
-		// TODO: async
-		env.Handler.Handle(&events.Event{
-			GuildID: env.GuildID,
-			Type:    events.CacophonyBucketUpdate,
-			BucketUpdate: &events.BucketUpdate{
-				Tag:       t.TagSuffix,
-				GuildID:   env.GuildID,
-				Values:    values,
-				Type:      t.Type,
-				KeySuffix: key,
-			},
-		})
+		event, err := events.New(events.CacophonyBucketUpdate)
+		if err != nil {
+			return false, err
+		}
+		event.BucketUpdate = &events.BucketUpdate{
+			Tag:       t.TagSuffix,
+			GuildID:   env.GuildID,
+			Type:      t.Type,
+			KeySuffix: key,
+			EnvDatas:  values,
+		}
+		event.GuildID = env.GuildID
+
+		err, recoverable = env.Event.Publisher().Publish(
+			context.TODO(),
+			event,
+		)
+		if err != nil {
+			if !recoverable {
+				event.Logger().Fatal(
+					"received unrecoverable error while publishing custom commands alias message",
+					zap.Error(err),
+				)
+			}
+			return false, err
+		}
 	}
 
-	return nil
+	return false, nil
 }
 
 func bucketTag(guildID, channelID, userID, tag string) string {
@@ -161,38 +182,11 @@ func randomLetters(n int) string {
 	return string(b)
 }
 
-func bucketContent(env *models.Env) string {
-	// TODO: marshal bucket content in a sane way
-
-	var userText, channelText, messageText string
-
-	for _, user := range env.UserID {
-		if strings.Contains(userText, user+";") {
-			continue
-		}
-
-		userText += user + ";"
+func bucketContent(env *models.Env) ([]byte, error) {
+	data, err := env.Marshal()
+	if err != nil {
+		return nil, err
 	}
 
-	for _, channel := range env.ChannelID {
-		if strings.Contains(channelText, channel+";") {
-			continue
-		}
-
-		channelText += channel + ";"
-	}
-
-	for _, message := range env.Messages {
-		if strings.Contains(messageText, message.ID+":"+message.ChanneID+";") {
-			continue
-		}
-
-		messageText += message.ID + ":" + message.ChanneID + ";"
-	}
-
-	return env.GuildID + "|" +
-		channelText + "|" +
-		userText + "|" +
-		messageText + "|" +
-		randomLetters(10)
+	return append([]byte(randomLetters(10)+"|"), data...), nil
 }

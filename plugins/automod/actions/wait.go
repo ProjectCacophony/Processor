@@ -1,31 +1,32 @@
-package filters
+package actions
 
 import (
 	"context"
 	"errors"
 	"time"
 
+	"gitlab.com/Cacophony/go-kit/events"
+
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-	"gitlab.com/Cacophony/go-kit/events"
 )
 
 type Wait struct {
 }
 
-func (f Wait) Name() string {
+func (t Wait) Name() string {
 	return "wait"
 }
 
-func (f Wait) Args() int {
+func (t Wait) Args() int {
 	return 1
 }
 
-func (f Wait) Deprecated() bool {
+func (t Wait) Deprecated() bool {
 	return false
 }
 
-func (f Wait) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
+func (t Wait) NewItem(env *models.Env, args []string) (interfaces.ActionItemInterface, error) {
 	if len(args) < 1 {
 		return nil, errors.New("too few arguments")
 	}
@@ -47,36 +48,35 @@ func (f Wait) NewItem(env *models.Env, args []string) (interfaces.FilterItemInte
 	}, nil
 }
 
-func (f Wait) Description() string {
-	return "automod.filters.wait"
+func (t Wait) Description() string {
+	return "automod.actions.wait"
 }
 
 type WaitItem struct {
 	Duration time.Duration
 }
 
-func (f *WaitItem) Match(env *models.Env) bool {
-	event, err := events.New(events.CacophonyAutomodWait)
-	if err != nil {
-		env.Event.ExceptSilent(err)
-		return false
-	}
-
-	var newFilters []models.RuleFilter
-	for i, filter := range env.Rule.Filters {
-		if filter.Name != (Wait{}).Name() {
+func (t *WaitItem) Do(env *models.Env) (bool, error) {
+	var newActions []models.RuleAction
+	for i, action := range env.Rule.Actions {
+		if action.Name != (Wait{}).Name() {
 			continue
 		}
 
-		newFilters = env.Rule.Filters[i+1:]
+		newActions = env.Rule.Actions[i+1:]
 		break
 	}
-	env.Rule.Filters = newFilters
+	env.Rule.Filters = nil
+	env.Rule.Actions = newActions
 
 	envData, err := env.Marshal()
 	if err != nil {
-		env.Event.ExceptSilent(err)
-		return false
+		return true, err
+	}
+
+	event, err := events.New(events.CacophonyAutomodWait)
+	if err != nil {
+		return true, err
 	}
 
 	event.AutomodWait = &events.AutomodWait{
@@ -87,13 +87,11 @@ func (f *WaitItem) Match(env *models.Env) bool {
 	err = env.Event.Publisher().PublishAt(
 		context.TODO(),
 		event,
-		time.Now().Add(f.Duration),
+		time.Now().Add(t.Duration),
 	)
 	if err != nil {
-		env.Event.ExceptSilent(err)
-		return false
+		return true, err
 	}
 
-	// to stop further execution we say the event did not match
-	return false
+	return true, nil
 }

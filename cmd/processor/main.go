@@ -212,6 +212,7 @@ func main() {
 		stateClient,
 		featureFlagger,
 		publisher,
+		httpRouter,
 	)
 
 	// start processor

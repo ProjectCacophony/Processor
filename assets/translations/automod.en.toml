@@ -124,12 +124,15 @@ Comparison Types: >, =, and < [comparison type; amount]"
 Stores eventual Messages, Users and Channels in the Rule Context.\n\
 Types: guild, channel, or user [tag; type; decay duration; amount]"
 "automod.actions.send_message_to" = "Sends the given message to the given channel. [message content, or message code; channel]"
-"automod.actions.delete_message" = "Deletes all Message found in the Rule Context."
+"automod.actions.delete_message" = "Deletes all User Messages found in the Rule Context."
+"automod.actions.delete_bot_message" = "Deletes all Bot Messages found in the Rule Context."
 "automod.actions.kick_user" = "Kicks all Users found in the Rule Context."
 "automod.actions.ban_user" = "Bans all Users found in the Rule Context."
 "automod.actions.reset_bucket" = "Resets the amount of leaky bucket.\n\
 Types: guild, channel, or user [tag; type]"
 "automod.actions.react" = "Reacts with the given Emoji. [emoji…]"
+"automod.actions.wait" = "Pauses the execution of the rule for the given duration.\n\
+[duration]"
 
 # cmdHistory
 "automod.history.content" = "\

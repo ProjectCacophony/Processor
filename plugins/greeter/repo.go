@@ -2,6 +2,7 @@ package greeter
 
 import (
 	"errors"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
@@ -13,6 +14,7 @@ func entryAdd(
 	channelID string,
 	greeterType greeterType,
 	message string,
+	autoDelete time.Duration,
 	rule *models.Rule,
 ) error {
 	if rule == nil || rule.ID == 0 {
@@ -20,11 +22,12 @@ func entryAdd(
 	}
 
 	return db.Create(&Entry{
-		GuildID:   guildID,
-		ChannelID: channelID,
-		Type:      greeterType,
-		Message:   message,
-		RuleID:    rule.ID,
+		GuildID:    guildID,
+		ChannelID:  channelID,
+		Type:       greeterType,
+		Message:    message,
+		AutoDelete: autoDelete,
+		RuleID:     rule.ID,
 	}).Error
 }
 
@@ -76,8 +79,12 @@ func entryUpdate(
 	db *gorm.DB,
 	id uint,
 	message string,
+	autoDelete time.Duration,
 ) error {
-	return db.Model(Entry{}).Where("id = ?", id).Update("message", message).Error
+	return db.Model(Entry{}).Where("id = ?", id).
+		Update("message", message).
+		Update("auto_delete", autoDelete).
+		Error
 }
 
 func entryDelete(

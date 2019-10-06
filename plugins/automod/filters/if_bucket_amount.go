@@ -69,11 +69,11 @@ func (f *BucketAmountItem) Match(env *models.Env) bool {
 
 	switch f.Comparison {
 	case AmountComparisonLT:
-		return len(env.Event.BucketUpdate.Values) < f.Amount
+		return len(env.Event.BucketUpdate.EnvDatas) < f.Amount
 	case AmountComparisonEQ:
-		return len(env.Event.BucketUpdate.Values) == f.Amount
+		return len(env.Event.BucketUpdate.EnvDatas) == f.Amount
 	case AmountComparisonGT:
-		return len(env.Event.BucketUpdate.Values) > f.Amount
+		return len(env.Event.BucketUpdate.EnvDatas) > f.Amount
 	}
 
 	return false

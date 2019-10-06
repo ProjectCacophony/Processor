@@ -73,11 +73,11 @@ func ReplaceText(env *models.Env, input string) string {
 	var messageID, messageContent, messageLink string
 
 	for _, item := range env.Messages {
-		message, err := discord.FindMessage(env.State, nil, item.ChanneID, item.ID)
+		message, err := discord.FindMessage(env.State, nil, item.ChannelID, item.ID)
 		if err != nil {
 			message = &discordgo.Message{
 				ID:        item.ID,
-				ChannelID: item.ChanneID,
+				ChannelID: item.ChannelID,
 				Content:   "N/A",
 			}
 		}

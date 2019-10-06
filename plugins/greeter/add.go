@@ -2,7 +2,9 @@ package greeter
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/Processor/plugins/automod/actions"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/discord"
@@ -25,12 +27,27 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 	if len(event.Fields()) >= 4 {
 		message = event.Fields()[3]
 	}
+	var autoDelete time.Duration
+	if len(event.Fields()) >= 5 {
+		duration, err := time.ParseDuration(event.Fields()[4])
+		if err == nil && duration > 1*time.Second && duration < 24*time.Hour {
+			autoDelete = duration
+		}
+	}
 
 	existingEntry, err := entryFind(event.DB(), event.GuildID, targetChannel.ID, greeterType)
 	if err != nil {
 		event.Except(err)
 		return
 	}
+
+	rule := newRule(
+		event,
+		greeterType,
+		targetChannel,
+		message,
+		autoDelete,
+	)
 
 	if existingEntry == nil ||
 		existingEntry.Rule.ID == 0 ||
@@ -39,22 +56,6 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 		if message == "" {
 			event.Respond("common.to-few-params")
 			return
-		}
-
-		rule := &models.Rule{
-			GuildID: event.GuildID,
-			Name:    fmt.Sprintf("Greeter: %s #%s", greeterType, targetChannel.Name),
-			Actions: []models.RuleAction{
-				{
-					Name: "send_message_to",
-					Values: []string{
-						message,
-						targetChannel.ID,
-					},
-				},
-			},
-			Silent:  true,
-			Managed: true,
 		}
 
 		switch greeterType {
@@ -83,6 +84,7 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 			targetChannel.ID,
 			greeterType,
 			message,
+			autoDelete,
 			rule,
 		)
 		if err != nil {
@@ -109,13 +111,13 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 			return
 		}
 
-		err = entryUpdate(event.DB(), existingEntry.ID, message)
+		err = entryUpdate(event.DB(), existingEntry.ID, message, autoDelete)
 		if err != nil {
 			event.Except(err)
 			return
 		}
 
-		existingEntry.Rule.Actions[0].Values[0] = message
+		existingEntry.Rule = *rule
 		err = models.UpdateRule(event.DB(), existingEntry.RuleID, &existingEntry.Rule)
 		if err != nil {
 			event.Except(err)
@@ -131,6 +133,50 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 	}, message)
 	messageSend := discord.MessageCodeToMessage(sampleMessageCode)
 
-	event.Respond("greeter.add.success", "greeterType", greeterType, "channel", targetChannel)
+	event.Respond(
+		"greeter.add.success",
+		"greeterType", greeterType, "channel", targetChannel, "autoDelete", autoDelete,
+	)
 	event.RespondComplex(messageSend)
+}
+
+func newRule(
+	event *events.Event,
+	greeterType greeterType,
+	targetChannel *discordgo.Channel,
+	message string,
+	autoDelete time.Duration,
+) *models.Rule {
+	rule := &models.Rule{
+		GuildID: event.GuildID,
+		Name:    fmt.Sprintf("Greeter: %s #%s", greeterType, targetChannel.Name),
+		Actions: []models.RuleAction{
+			{
+				Name: "send_message_to",
+				Values: []string{
+					message,
+					targetChannel.ID,
+				},
+			},
+		},
+		Silent:  true,
+		Managed: true,
+	}
+
+	if autoDelete.Seconds() > 0 {
+		rule.Actions = append(
+			rule.Actions,
+			models.RuleAction{
+				Name: "wait",
+				Values: []string{
+					autoDelete.String(),
+				},
+			},
+			models.RuleAction{
+				Name: "delete_bot_message",
+			},
+		)
+	}
+
+	return rule
 }
