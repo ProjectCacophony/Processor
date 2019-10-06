@@ -179,6 +179,23 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	switch event.Type {
+
+	case events.MessageCreateType:
+		return p.handleAsCommand(event)
+
+	case events.CacophonyQuestionnaireMatch:
+		switch event.QuestionnaireMatch.Key {
+		case confirmCategoryDeleteKey:
+			p.handleConfirmCategoryDelete(event)
+			return true
+		}
+	}
+
+	return false
+}
+
+func (p *Plugin) handleAsCommand(event *events.Event) bool {
 	if !event.Command() {
 		return false
 	}

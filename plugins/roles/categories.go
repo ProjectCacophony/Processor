@@ -1,8 +1,10 @@
 package roles
 
 import (
+	"encoding/json"
 	"strconv"
 
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -142,7 +144,49 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 		return
 	}
 
-	// TODO: check if this category has roles, if it does. confirm before fully deleting
+	if len(category.Roles) > 0 {
+		messages, err := event.Respond("roles.category.confirm-delete", "rolesCount", len(category.Roles))
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		categoryData, err := json.Marshal(&category)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		err = event.Questionnaire().Register(
+			confirmCategoryDeleteKey,
+			events.QuestionnaireFilter{
+				GuildID:   event.GuildID,
+				ChannelID: event.ChannelID,
+				UserID:    event.UserID,
+				Type:      events.MessageReactionAddType,
+			},
+			map[string]interface{}{
+				"messageID": messages[0].ID,
+				"category":  string(categoryData),
+			},
+		)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		err = discord.React(
+			event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "✅",
+		)
+		if err != nil {
+			return
+		}
+		discord.React(
+			event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "❌",
+		)
+
+		return
+	}
 
 	err = p.db.Delete(category.Roles).Delete(category).Error
 	if err != nil {

@@ -13,6 +13,10 @@
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
+"roles.category.confirm-delete" = "**Deleting this category will also delete {{ .rolesCount }} roles.**\n\
+Are you sure you want to delete this category?\n\
+Please react with ✅ if you do."
+
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."

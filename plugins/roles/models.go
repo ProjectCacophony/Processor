@@ -5,6 +5,10 @@ import (
 	"github.com/lib/pq"
 )
 
+const (
+	confirmCategoryDeleteKey = "cacophony:processor:role:questionnaire:delete-category"
+)
+
 type Category struct {
 	gorm.Model
 
