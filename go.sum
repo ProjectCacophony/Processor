@@ -251,6 +251,8 @@ github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhe
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
 gitlab.com/Cacophony/go-kit v0.0.0-20191005092110-092e1dae1053 h1:J3h+vVbI6C4hQErnE+M2LXQH/u+RkanauJBD6yivJEM=
 gitlab.com/Cacophony/go-kit v0.0.0-20191005092110-092e1dae1053/go.mod h1:qAoDgfnsnr6/KMKFaF8xEYPlYK0mhGliWrJ3Nit/xBk=
+gitlab.com/Cacophony/go-kit v0.0.0-20191006093023-ff815c17f656 h1:dUulS1Trz9LhdnxWbtiBkyOePmvtFrwsOGzP5BJJ438=
+gitlab.com/Cacophony/go-kit v0.0.0-20191006093023-ff815c17f656/go.mod h1:qAoDgfnsnr6/KMKFaF8xEYPlYK0mhGliWrJ3Nit/xBk=
 go.mongodb.org/mongo-driver v1.0.1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
