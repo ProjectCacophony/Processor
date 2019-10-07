@@ -45,7 +45,7 @@ ID: `#{{.user.ID}}`\
 "stats.user.embed.thumbnail.url" = "{{.user.AvatarURL \"256\"}}"
 "stats.user.embed.field.roles.name" = "{{if .member}}Roles{{end}}"
 "stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"
-"stats.user.embed.url" = "{{.user.AvatarURL \"256\"}}"
+"stats.user.embed.url" = "{{.user.AvatarURL \"2048\"}}"
 
 # handleServer
 "stats.server.not-found" = "Server not found"
