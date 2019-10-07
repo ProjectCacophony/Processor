@@ -84,6 +84,7 @@ func (p *Plugin) handleServer(event *events.Event) {
 			Image: &discordgo.MessageEmbedImage{
 				URL: "stats.server.embed.image.url",
 			},
+			URL: "stats.server.embed.url",
 			Fields: []*discordgo.MessageEmbedField{
 				{
 					Name:  "stats.server.embed.field.created-at.name",

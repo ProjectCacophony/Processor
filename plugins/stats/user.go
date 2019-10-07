@@ -86,6 +86,7 @@ func (p *Plugin) handleUser(event *events.Event) {
 			Thumbnail: &discordgo.MessageEmbedThumbnail{
 				URL: "stats.user.embed.thumbnail.url",
 			},
+			URL: "stats.user.embed.url",
 			Fields: []*discordgo.MessageEmbedField{
 				{
 					Name:  "stats.user.embed.field.created-at.name",
