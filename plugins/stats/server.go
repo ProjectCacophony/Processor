@@ -123,7 +123,7 @@ func (p *Plugin) handleServer(event *events.Event) {
 		"server", server,
 		"owner", owner,
 		"createdAt", createdAt,
-		"iconURL", discordgo.EndpointGuildIcon(server.ID, server.Icon)+"?size=2048",
+		"iconURL", server.IconURL()+"?size=2048",
 		"splashURL", discordgo.EndpointGuildSplash(server.ID, server.Splash)+"?size=2048",
 		"bannerURL", discordgo.EndpointGuildBanner(server.ID, server.Banner)+"?size=2048",
 		"emojiAnimated", emojiAnimated,

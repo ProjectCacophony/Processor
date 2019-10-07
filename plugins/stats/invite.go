@@ -95,9 +95,15 @@ func (p *Plugin) handleInvite(event *events.Event) {
 
 	var iconURL, splashURL, bannerURL string
 	if invite.Guild != nil {
-		iconURL = discordgo.EndpointGuildIcon(invite.Guild.ID, invite.Guild.Icon) + "?size=2048"
-		splashURL = discordgo.EndpointGuildSplash(invite.Guild.ID, invite.Guild.Splash) + "?size=2048"
-		bannerURL = discordgo.EndpointGuildBanner(invite.Guild.ID, invite.Guild.Banner) + "?size=2048"
+		if invite.Guild.Icon != "" {
+			iconURL = invite.Guild.IconURL() + "?size=2048"
+		}
+		if invite.Guild.Splash != "" {
+			splashURL = discordgo.EndpointGuildSplash(invite.Guild.ID, invite.Guild.Splash) + "?size=2048"
+		}
+		if invite.Guild.Banner != "" {
+			bannerURL = discordgo.EndpointGuildBanner(invite.Guild.ID, invite.Guild.Banner) + "?size=2048"
+		}
 	}
 
 	maxAge := (time.Duration(invite.MaxAge) * time.Second).Round(time.Second)
