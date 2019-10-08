@@ -114,13 +114,7 @@ func main() {
 	}
 
 	// init state
-	botIDs := make([]string, len(config.DiscordTokens))
-	var i int
-	for botID := range config.DiscordTokens {
-		botIDs[i] = botID
-		i++
-	}
-	stateClient := state.NewSate(redisClient, gormDB, botIDs)
+	stateClient := state.NewState(redisClient, gormDB)
 
 	// init feature flagger
 	featureFlagger, err := featureflag.New(&config.FeatureFlag)
