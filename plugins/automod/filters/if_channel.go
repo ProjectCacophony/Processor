@@ -43,7 +43,7 @@ func (f Channel) NewItem(env *models.Env, args []string) (interfaces.FilterItemI
 	}
 
 	if len(channelIDs) == 0 {
-		return nil, errors.New("no Channel IDs defined")
+		return nil, errors.New("no channels found")
 	}
 
 	return &ChannelItem{
@@ -69,7 +69,7 @@ func (f *ChannelItem) Match(env *models.Env) bool {
 	}
 
 	for _, envChannelID := range env.ChannelID {
-		if matchChannels(f.channelIDs, envChannelID) {
+		if sliceContains(f.channelIDs, envChannelID) {
 			continue
 		}
 

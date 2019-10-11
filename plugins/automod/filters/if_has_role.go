@@ -41,7 +41,7 @@ func (f Role) NewItem(env *models.Env, args []string) (interfaces.FilterItemInte
 	}
 
 	if len(roleIDs) == 0 {
-		return nil, errors.New("no Roles found")
+		return nil, errors.New("no roles found")
 	}
 
 	return &RoleItem{
@@ -69,7 +69,7 @@ func (f *RoleItem) Match(env *models.Env) bool {
 		}
 
 		for _, roleID := range f.RoleIDs {
-			if matchChannels(member.Roles, roleID) {
+			if sliceContains(member.Roles, roleID) {
 				continue
 			}
 

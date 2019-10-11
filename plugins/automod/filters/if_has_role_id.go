@@ -61,7 +61,7 @@ func (f *RoleIDItem) Match(env *models.Env) bool {
 		}
 
 		for _, roleID := range f.RoleIDs {
-			if matchChannels(member.Roles, roleID) {
+			if sliceContains(member.Roles, roleID) {
 				continue
 			}
 
