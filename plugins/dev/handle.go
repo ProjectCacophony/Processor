@@ -110,6 +110,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "questionnaire", Type: common.Flag},
 				},
 			},
+			{
+				Name: "Send DM",
+				Params: []common.CommandParam{
+					{Name: "dm", Type: common.Flag},
+					{Name: "message", Type: common.QuotedText},
+				},
+			},
 		},
 	}
 }
@@ -175,6 +182,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 	case "questionnaire":
 
 		p.handleDevQuestionnaire(event)
+		return
+	case "dm":
+
+		p.handleDM(event)
 		return
 	}
 
