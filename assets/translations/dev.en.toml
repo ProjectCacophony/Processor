@@ -14,6 +14,7 @@
 "dev.help.permission.description" = "Tests if an User has a permission\n<https://discordapi.com/permissions.html>"
 "dev.help.questionnaire.name" = "Start a Questionnaire"
 "dev.help.questionnaire.description" = "You will have to respond with a message"
+"dev.help.user-error.name" = "Trigger user error"
 
 # Action
 "dev.no-subcommand" = "Please specify a valid sub-command. :nayoung:"

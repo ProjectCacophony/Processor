@@ -87,6 +87,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name: "dev.help.user-error.name",
+				Params: []common.CommandParam{
+					{Name: "user-error", Type: common.Flag},
+					{Name: "error message", Type: common.Text, Optional: true},
+				},
+			},
+			{
 				Name:        "dev.help.permission.name",
 				Description: "dev.help.permission.description",
 				Params: []common.CommandParam{
@@ -155,7 +162,11 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 		return
 	case "error":
 
-		p.handleDevError(event)
+		p.handleDevError(event, false)
+		return
+	case "user-error":
+
+		p.handleDevError(event, true)
 		return
 	case "permission":
 
