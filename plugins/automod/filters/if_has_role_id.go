@@ -9,6 +9,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 )
 
+// deprecated: use if_role
 type RoleID struct {
 }
 
@@ -21,7 +22,7 @@ func (f RoleID) Args() int {
 }
 
 func (f RoleID) Deprecated() bool {
-	return false
+	return true
 }
 
 func (f RoleID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {

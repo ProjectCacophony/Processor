@@ -32,6 +32,7 @@ var (
 		filters.UserID{},
 		filters.InvitesCount{},
 		filters.Wait{},
+		filters.Role{},
 	}
 
 	ActionsList = []interfaces.ActionInterface{
