@@ -29,8 +29,10 @@ func (f User) NewItem(env *models.Env, args []string) (interfaces.FilterItemInte
 		return nil, errors.New("too few arguments")
 	}
 
-	var userIDs []string
-	for _, mention := range strings.Split(args[0], ",") {
+	userMentions := strings.Split(args[0], ",")
+	userIDs := make([]string, 0, len(userMentions))
+
+	for _, mention := range userMentions {
 		user, err := env.State.UserFromMention(mention)
 		if err != nil {
 			continue

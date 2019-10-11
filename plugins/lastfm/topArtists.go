@@ -21,7 +21,7 @@ func (p *Plugin) handleTopArtists(event *events.Event, lastfmClient *lastfm.Api,
 	// makeCollage, fields = isCollageRequest(fields)
 
 	// get lastFM username to look up
-	username, _ := extractUsername(event, p.db, fields, -1)
+	username := extractUsername(event, p.db, fields, -1)
 	if username == "" {
 		event.Respond("lastfm.no-user")
 		return

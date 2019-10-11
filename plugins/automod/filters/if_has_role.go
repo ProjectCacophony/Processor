@@ -29,9 +29,10 @@ func (f Role) NewItem(env *models.Env, args []string) (interfaces.FilterItemInte
 		return nil, errors.New("too few arguments")
 	}
 
-	var roleIDs []string
+	roleMentions := strings.Split(args[0], ",")
+	roleIDs := make([]string, 0, len(roleMentions))
 
-	for _, roleMention := range strings.Split(args[0], ",") {
+	for _, roleMention := range roleMentions {
 		role, err := env.State.RoleFromMention(env.GuildID, roleMention)
 		if err != nil {
 			continue

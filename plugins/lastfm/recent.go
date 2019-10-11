@@ -16,7 +16,7 @@ func (p *Plugin) handleRecent(event *events.Event, lastfmClient *lastfm.Api) {
 	fields := event.Fields()[2:]
 
 	// get lastFM username to look up
-	username, _ := extractUsername(event, p.db, fields, -1)
+	username := extractUsername(event, p.db, fields, -1)
 	if username == "" {
 		event.Respond("lastfm.no-user")
 		return
