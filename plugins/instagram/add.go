@@ -44,7 +44,8 @@ func (p *Plugin) add(event *events.Event) {
 
 	instagramUser, err := p.ginsta.UserByUsername(event.Context(), extractInstagramUsername(fields[0]))
 	if err != nil {
-		if strings.Contains(err.Error(), "unexpected status code: 404") {
+		if strings.Contains(err.Error(), "unexpected status code: 404") ||
+			strings.Contains(err.Error(), "unable to parse shared data") {
 			event.Respond("instagram.add.not-found")
 			return
 		}
