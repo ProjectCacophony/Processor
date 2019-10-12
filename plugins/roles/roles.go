@@ -149,12 +149,10 @@ func (p *Plugin) updateRole(event *events.Event) {
 			event.Except(err)
 			return
 		}
-		if existingCategory.Name == "" {
-			event.Respond("roles.category.does-not-exist")
-			return
+		if existingCategory.Name != "" {
+			categoryID = existingCategory.ID
 		}
 
-		categoryID = existingCategory.ID
 	}
 
 	existingRole.CategoryID = categoryID
