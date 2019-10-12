@@ -45,6 +45,7 @@ ID: `#{{.user.ID}}`\
 "stats.user.embed.thumbnail.url" = "{{.user.AvatarURL \"256\"}}"
 "stats.user.embed.field.roles.name" = "{{if .member}}Roles{{end}}"
 "stats.user.embed.field.roles.value" = "{{if .member}}{{range .roles}}<@&{{.ID}}> {{end}}{{end}}"
+"stats.user.embed.url" = "{{.user.AvatarURL \"2048\"}}"
 
 # handleServer
 "stats.server.not-found" = "Server not found"
@@ -98,6 +99,7 @@ Tier `\
 {{else if eq .server.PremiumTier 3}}Tier 3\
 {{else}}{{.server.PremiumTier}}{{end}}`\
 {{end}}"
+"stats.server.embed.url" = "{{if .server.Icon}}{{.iconURL}}{{end}}"
 
 # handleChannel
 "stats.channel.embed.title" = "{{if .channel.Name}}#{{.channel.Name}}{{else}}Unknown{{end}}"
@@ -128,7 +130,7 @@ Type: \
 
 # handleRole
 "stats.role.not-found" = "I was not able to find the given role"
-"stats.role.embed.title" = "@{{.role.Name}}"
+"stats.role.embed.title" = "@{{trimPrefix \"@\" .role.Name}}"
 "stats.role.embed.description" = "\
 ID: `#{{.role.ID}}`\n\
 {{if .role.Managed}}Managed\n{{end}}\
@@ -168,6 +170,7 @@ ID: `#{{.emoji.ID}}`\n\
 "stats.emoji.embed.field.roles.name" = "{{if .emoji.Roles}}Roles{{end}}"
 "stats.emoji.embed.field.roles.value" = "{{range $roleID := .emoji.Roles}}<@&{{$roleID}}>{{end}}"
 "stats.emoji.embed.thumbnail.url" = "{{if .emojiURL}}{{.emojiURL}}{{end}}"
+"stats.emoji.embed.url" = "{{if .emojiURL}}{{.emojiURL}}{{end}}"
 
 # handleInvite
 "stats.invite.not-found" = "I was not able to find the given Invite"

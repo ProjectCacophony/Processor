@@ -110,7 +110,7 @@ func ReplaceText(env *models.Env, input string) string {
 		guildName = guild.Name
 		guildID = guild.ID
 		if guild.Icon != "" {
-			guildIconURL = discordgo.EndpointGuildIcon(env.GuildID, guild.Icon) + "?size=2048"
+			guildIconURL = guild.IconURL() + "?size=2048"
 		}
 	}
 

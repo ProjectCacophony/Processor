@@ -60,7 +60,7 @@ func (f *ChannelIDItem) Match(env *models.Env) bool {
 	}
 
 	for _, envChannelID := range env.ChannelID {
-		if matchChannels(f.channelIDs, envChannelID) {
+		if sliceContains(f.channelIDs, envChannelID) {
 			continue
 		}
 
@@ -70,13 +70,11 @@ func (f *ChannelIDItem) Match(env *models.Env) bool {
 	return true
 }
 
-func matchChannels(channels []string, channel string) bool {
-	for _, c := range channels {
-		if c != channel {
-			continue
+func sliceContains(haystack []string, needle string) bool {
+	for _, item := range haystack {
+		if item == needle {
+			return true
 		}
-
-		return true
 	}
 
 	return false

@@ -9,7 +9,7 @@ require (
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
-	github.com/bwmarrin/discordgo v0.16.1-0.20190608205439-347a4f69b0b5
+	github.com/bwmarrin/discordgo v0.16.1-0.20191003153151-ae74315d3834
 	github.com/dustin/go-humanize v1.0.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-redis/redis v6.15.2+incompatible
@@ -21,7 +21,7 @@ require (
 	github.com/mmcdole/goxpp v0.0.0-20181012175147-0068e33feabf // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191006123026-c5107d78c6bb
+	gitlab.com/Cacophony/go-kit v0.0.0-20191011192237-cc541a4ecb60
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0

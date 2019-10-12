@@ -10,7 +10,7 @@ import (
 )
 
 func (p *Plugin) handleNowPlaying(event *events.Event, lastfmClient *lastfm.Api, offset int) {
-	lastfmUsername, _ := extractUsername(event, p.db, event.Fields(), offset)
+	lastfmUsername := extractUsername(event, p.db, event.Fields(), offset)
 	if lastfmUsername == "" {
 		event.Respond("lastfm.no-user")
 		return

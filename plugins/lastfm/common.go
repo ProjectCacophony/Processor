@@ -10,14 +10,14 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func extractUsername(event *events.Event, db *gorm.DB, args []string, pos int) (string, []string) {
+func extractUsername(event *events.Event, db *gorm.DB, args []string, pos int) string {
 	var username string
 	// try any mentions in the command
 	if len(event.MessageCreate.Mentions) > 0 {
 		username = getLastFmUsername(db, event.MessageCreate.Mentions[0].ID)
 
 		if username != "" {
-			return username, args
+			return username
 		}
 	}
 	// try field at pos
@@ -31,12 +31,12 @@ func extractUsername(event *events.Event, db *gorm.DB, args []string, pos int) (
 		username = args[pos]
 
 		if username != "" {
-			return username, append(args[:pos], args[pos+1:]...)
+			return username
 		}
 	}
 
 	username = getLastFmUsername(db, event.MessageCreate.Author.ID)
-	return username, args
+	return username
 }
 
 // getLastfmUserBaseEmbed gets a discordgo embed base for a last.fm user

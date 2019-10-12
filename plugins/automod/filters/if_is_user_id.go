@@ -9,6 +9,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 )
 
+// deprecated: use if_is_user
 type UserID struct {
 }
 
@@ -21,7 +22,7 @@ func (f UserID) Args() int {
 }
 
 func (f UserID) Deprecated() bool {
-	return false
+	return true
 }
 
 func (f UserID) NewItem(env *models.Env, args []string) (interfaces.FilterItemInterface, error) {
@@ -54,7 +55,7 @@ func (f *UserIDItem) Match(env *models.Env) bool {
 	}
 
 	for _, userID := range env.UserID {
-		if matchChannels(f.UserIDs, userID) {
+		if sliceContains(f.UserIDs, userID) {
 			continue
 		}
 

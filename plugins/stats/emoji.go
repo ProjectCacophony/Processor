@@ -76,6 +76,7 @@ func (p *Plugin) handleEmoji(event *events.Event) {
 				Thumbnail: &discordgo.MessageEmbedThumbnail{
 					URL: "stats.emoji.embed.thumbnail.url",
 				},
+				URL: "stats.emoji.embed.url",
 				Fields: []*discordgo.MessageEmbedField{
 					{
 						Name:  "stats.emoji.embed.field.created-at.name",
