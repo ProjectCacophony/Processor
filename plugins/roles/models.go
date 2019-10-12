@@ -3,6 +3,7 @@ package roles
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 const (
@@ -39,4 +40,17 @@ func (*Category) TableName() string {
 
 func (*Role) TableName() string {
 	return "roles"
+}
+
+func (r *Role) Name(state *state.State) string {
+	if r.PrintName != "" {
+		return r.PrintName
+	}
+
+	serverRole, err := state.Role(r.GuildID, r.ServerRoleID)
+	if err != nil {
+		return ""
+	}
+
+	return serverRole.Name
 }

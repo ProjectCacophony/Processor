@@ -132,6 +132,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Role Name", Type: common.QuotedText},
 			},
 		}, {
+			Name:        "Display Roles Message",
+			Description: "Displays a help message with the roles available for users to assign in the given channel.",
+			Params: []common.CommandParam{
+				{Name: "message", Type: common.Flag},
+				{Name: "channel", Type: common.Channel, Optional: true},
+			},
+		}, {
 			Name:        "Role Info",
 			Description: "view current role categories and roles confirgured on the server.",
 			Params: []common.CommandParam{
@@ -218,6 +225,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			return true
 		case "info":
 			p.displayRoleInfo(event)
+			return true
+		case "message":
+			p.displayRoleMessage(event)
 			return true
 		case "add":
 			if len(event.Fields()) < 3 {

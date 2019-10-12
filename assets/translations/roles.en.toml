@@ -17,6 +17,11 @@
 Are you sure you want to delete this category?\n\
 Please react with ✅ if you do."
 
+"roles.message" = "Use `+role` **to add** or `-role` **to remove** a role.\n\n\
+{{ if .uncategorizedRolesList }}\
+Roles: {{ .uncategorizedRolesList }}\
+{{ end }}\
+{{ .categoryList }}"
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."

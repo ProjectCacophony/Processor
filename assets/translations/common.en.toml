@@ -8,3 +8,4 @@
 "common.fileTooBig" = "The file is too big. Please try a smaller file."
 "common.couldNotExtractFilename" = "I could not extract the filename from the given file."
 "common.missing-role" = "You require the permission **{{ .roleName }}** to perform that action."
+"common.channel-not-found" = "Could not find the given channel on this server."
