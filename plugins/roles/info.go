@@ -3,7 +3,6 @@ package roles
 import (
 	"fmt"
 
-	"github.com/davecgh/go-spew/spew"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -58,7 +57,6 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 	}
 
 	for _, cat := range categories {
-		spew.Dump(cat)
 
 		status := "Enabled"
 		if !cat.Enabled {
