@@ -6,6 +6,8 @@
 "eventlog.help.enable.description" = "Future Events will be stored."
 "eventlog.help.disable.name" = "Disables the Eventlog"
 "eventlog.help.disable.description" = "Future Events will not be stored anymore."
+"eventlog.help.history.name" = "History for user"
+"eventlog.help.history.description" = "Shows eventlog history for a specific user."
 
 # handleEnable
 "eventlog.enable.already-enabled" = "Looks like the Eventlog is already enabled on this Server."
@@ -25,4 +27,14 @@ You can disable it using `{{.prefix}}eventlog disable`\
 **The Eventlog is currently disabled**\n\
 You can enable it using `{{.prefix}}eventlog enable`\
 {{ end }}\
+"
+
+# handleHistory
+"eventlog.history.content" = "\
+{{if le (len .items) 0}}No items found for {{.targetUser.String}}.{{else}}\
+{{range $item := .items}}\
+{{TimeFormatShort $item.CreatedAt $.timezone}}:\n\
+{{$item.Summary}}\n\
+{{end}}\
+{{end}}\
 "

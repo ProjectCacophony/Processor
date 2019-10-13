@@ -57,6 +57,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 				Description: "eventlog.help.status.description",
 			},
 			{
+				Name:        "eventlog.help.history.name",
+				Description: "eventlog.help.history.description",
+				Params: []common.CommandParam{
+					{Name: "history", Type: common.Flag},
+					{Name: "user or user id", Type: common.User},
+				},
+			},
+			{
 				Name:        "eventlog.help.enable.name",
 				Description: "eventlog.help.enable.description",
 				Params: []common.CommandParam{
@@ -98,7 +106,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleCommand(event)
 		},
 		permissions.DiscordManageServer,
-		permissions.Patron,
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),
@@ -116,13 +123,17 @@ func (p *Plugin) handleCommand(event *events.Event) {
 
 			event.Require(func() {
 				p.handleCmdEnable(event)
-			}, permissions.DiscordAdministrator)
+			}, permissions.DiscordAdministrator, permissions.Patron)
 			return
 		case "disable":
 
 			event.Require(func() {
 				p.handleCmdDisable(event)
-			}, permissions.DiscordAdministrator)
+			}, permissions.DiscordAdministrator, permissions.Patron)
+			return
+
+		case "history":
+			p.handleCmdHistory(event)
 			return
 		}
 	}

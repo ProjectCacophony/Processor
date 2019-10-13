@@ -2,6 +2,9 @@ package eventlog
 
 import (
 	"strings"
+
+	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 // Actions
@@ -41,7 +44,47 @@ func (t entityType) String(value string) string {
 	case EntityTypeGuild:
 		return "Server"
 	case EntityTypeChannel:
+		// TODO: look up parent
 		return "<#" + value + "> #" + value
+	case EntityTypeMessageCode:
+		return value
+	}
+
+	return titleify(string(t)) + ": #" + value
+}
+
+func (t entityType) StringWithoutMention(state *state.State, guildID, value string) string {
+	switch t {
+	case EntityTypeUser:
+		user, err := state.User(value)
+		if err != nil {
+			user = &discordgo.User{
+				ID:       value,
+				Username: "N/A",
+			}
+		}
+		return user.String() + " #" + value
+	case EntityTypeRole:
+		role, err := state.Role(guildID, value)
+		if err != nil {
+			role = &discordgo.Role{
+				ID:   value,
+				Name: "N/A",
+			}
+		}
+		return role.Name + " #" + value
+	case EntityTypeGuild:
+		return "Server"
+	case EntityTypeChannel:
+		channel, err := state.Channel(value)
+		if err != nil {
+			channel = &discordgo.Channel{
+				ID:   value,
+				Name: "N/A",
+			}
+		}
+		// TODO: look up parent
+		return channel.Name + " #" + value
 	case EntityTypeMessageCode:
 		return value
 	}

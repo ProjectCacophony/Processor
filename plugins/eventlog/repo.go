@@ -63,6 +63,17 @@ func GetItem(db *gorm.DB, id uint) (*Item, error) {
 	return &item, err
 }
 
+func FindManyItem(db *gorm.DB, limit int, where string, args ...interface{}) ([]Item, error) {
+	var items []Item
+	err := db.
+		Preload("Options").
+		Where(where, args...).
+		Limit(limit).
+		Order("created_at DESC").
+		Find(&items).Error
+	return items, err
+}
+
 func saveItemMessage(db *gorm.DB, id uint, messageID, channelID string) error {
 	return db.Model(&Item{}).Where("id = ?", id).Updates(Item{
 		LogMessage: ItemLogMessage{

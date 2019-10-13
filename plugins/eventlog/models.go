@@ -120,6 +120,52 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 	return embed
 }
 
+func (i *Item) Summary(state *state.State, highlightID string) string {
+	var summary string
+	summary += "**" + i.ActionType.String() + ":**"
+
+	if i.Reason != "" {
+		summary += " Reason: " + i.Reason
+	}
+
+	// TODO: add options to summary?
+
+	if i.AuthorID != "" {
+		author, err := state.User(i.AuthorID)
+		if err != nil {
+			author = &discordgo.User{
+				ID:       author.ID,
+				Username: "N/A",
+			}
+		}
+
+		summary += " "
+		if author.ID == highlightID {
+			summary += "**"
+		}
+		summary += "By " + author.String() + " #" + author.ID
+		if author.ID == highlightID {
+			summary += "**"
+		}
+	}
+
+	if i.TargetValue != "" {
+		summary += " "
+		if i.TargetValue == highlightID {
+			summary += "**"
+		}
+		summary += "On " + i.TargetType.StringWithoutMention(state, i.GuildID, i.TargetValue)
+		if i.TargetValue == highlightID {
+			summary += "**"
+		}
+	}
+
+	// TODO: message link?
+	summary += "\n_#" + i.UUID.String() + "_"
+
+	return summary
+}
+
 type ItemOption struct {
 	gorm.Model
 	ItemID uint `gorm:"NOT NULL"`
