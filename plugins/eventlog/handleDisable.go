@@ -25,6 +25,11 @@ func (p *Plugin) handleDisable(event *events.Event) {
 		event.Except(err)
 		return
 	}
+	err = config.GuildSetString(p.db, event.GuildID, eventlogChannelKey, "")
+	if err != nil {
+		event.Except(err)
+		return
+	}
 
 	_, err = event.Respond("eventlog.disable.success")
 	event.Except(err)

@@ -1,5 +1,5 @@
 # help info
-"eventlog.help.description" = "Enable chat logging to always store messages sent in your server, even if they are deleted in discord."
+"eventlog.help.description" = "Enable eventlog, which stores moderator actions."
 "eventlog.help.status.name" = "Display status"
 "eventlog.help.status.description" = "Shows the current Eventlog status"
 "eventlog.help.enable.name" = "Enables the Eventlog"
@@ -10,6 +10,7 @@
 # handleEnable
 "eventlog.enable.already-enabled" = "Looks like the Eventlog is already enabled on this Server."
 "eventlog.enable.success" = "**I enabled the Eventlog on this server!**\n\
+{{if .channel}}The log will be posted to {{.channel.Mention}}.\n{{end}}\
 Please be aware that it may take up to one minute until the change is active."
 
 # handleDisable

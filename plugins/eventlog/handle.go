@@ -47,7 +47,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Names:       p.Names(),
 		Description: "eventlog.help.description",
 		PermissionsRequired: []interfaces.Permission{
-			permissions.BotAdmin,
+			permissions.DiscordManageServer,
 			permissions.Patron,
 		},
 		Commands: []common.Command{
@@ -60,7 +60,9 @@ func (p *Plugin) Help() *common.PluginHelp {
 				Description: "eventlog.help.enable.description",
 				Params: []common.CommandParam{
 					{Name: "enable", Type: common.Flag},
+					{Name: "log channel", Type: common.Channel, Optional: true},
 				},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
 			},
 			{
 				Name:        "eventlog.help.disable.name",
@@ -68,6 +70,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				Params: []common.CommandParam{
 					{Name: "disable", Type: common.Flag},
 				},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordAdministrator},
 			},
 		},
 	}
@@ -82,18 +85,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
-	// has to be Server Admin, and Patron/Staff
 	event.Require(
 		func() {
 			p.handleCommand(event)
 		},
-		permissions.DiscordAdministrator,
-		permissions.BotAdmin,
-		// TODO
-		// permissions.Or(
-		// 	permissions.BotAdmin,
-		// 	permissions.Patron,
-		// ),
+		permissions.DiscordManageServer,
+		permissions.Patron,
 		permissions.Not(
 			permissions.DiscordChannelDM,
 		),
@@ -109,11 +106,15 @@ func (p *Plugin) handleCommand(event *events.Event) {
 
 		case "enable":
 
-			p.handleEnable(event)
+			event.Require(func() {
+				p.handleEnable(event)
+			}, permissions.DiscordAdministrator)
 			return
 		case "disable":
 
-			p.handleDisable(event)
+			event.Require(func() {
+				p.handleDisable(event)
+			}, permissions.DiscordAdministrator)
 			return
 		}
 	}

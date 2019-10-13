@@ -22,7 +22,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191013120306-acd409f05a31
+	gitlab.com/Cacophony/go-kit v0.0.0-20191013121156-0786f2cbb410
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0

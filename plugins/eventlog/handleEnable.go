@@ -15,17 +15,38 @@ func (p *Plugin) handleEnable(event *events.Event) {
 		return
 	}
 
-	if enabled {
-		event.Respond("eventlog.enable.already-enabled")
-		return
-	}
-
-	err = config.GuildSetBool(p.db, event.GuildID, eventlogEnableKey, true)
+	targetChannel, err := event.FindChannel()
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	_, err = event.Respond("eventlog.enable.success")
+	eventlogChannelID, err := config.GuildGetString(p.db, event.GuildID, eventlogChannelKey)
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		event.Except(err)
+		return
+	}
+
+	if enabled && eventlogChannelID == targetChannel.ID {
+		event.Respond("eventlog.enable.already-enabled")
+		return
+	}
+
+	if !enabled {
+		err = config.GuildSetBool(p.db, event.GuildID, eventlogEnableKey, true)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	}
+	if eventlogChannelID != targetChannel.ID {
+		err = config.GuildSetString(p.db, event.GuildID, eventlogChannelKey, targetChannel.ID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+	}
+
+	_, err = event.Respond("eventlog.enable.success", "channel", targetChannel)
 	event.Except(err)
 }

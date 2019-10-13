@@ -1,3 +1,6 @@
 package eventlog
 
-const eventlogEnableKey = "cacophony:chatlog:enabled"
+const (
+	eventlogEnableKey  = "cacophony:eventlog:enabled"
+	eventlogChannelKey = "cacophony:eventlog:channel"
+)
