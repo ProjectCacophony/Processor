@@ -8,7 +8,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) handleDisable(event *events.Event) {
+func (p *Plugin) handleCmdDisable(event *events.Event) {
 	enabled, err := config.GuildGetBool(p.db, event.GuildID, eventlogEnableKey)
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		event.Except(err)

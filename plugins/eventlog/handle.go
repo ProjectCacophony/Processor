@@ -83,6 +83,8 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
+	p.handleModEvent(event)
+
 	if !event.Command() {
 		return false
 	}
@@ -113,17 +115,17 @@ func (p *Plugin) handleCommand(event *events.Event) {
 		case "enable":
 
 			event.Require(func() {
-				p.handleEnable(event)
+				p.handleCmdEnable(event)
 			}, permissions.DiscordAdministrator)
 			return
 		case "disable":
 
 			event.Require(func() {
-				p.handleDisable(event)
+				p.handleCmdDisable(event)
 			}, permissions.DiscordAdministrator)
 			return
 		}
 	}
 
-	p.handleStatus(event)
+	p.handleCmdStatus(event)
 }

@@ -1,8 +1,6 @@
 package eventlog
 
 import (
-	"strings"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
@@ -18,46 +16,7 @@ var (
 
 type actionType string
 
-func (t actionType) String() string {
-	switch t {
-	case ActionTypeModDM:
-		return "Mod DM"
-	}
-
-	return titleify(string(t))
-}
-
-const (
-	ActionTypeModDM actionType = "cacophony_mod_dm"
-)
-
 type entityType string
-
-func (t entityType) String(value string) string {
-	switch t {
-	case EntityTypeUser:
-		return "<@" + value + "> #" + value
-	case EntityTypeRole:
-		return "<@&" + value + "> #" + value
-	case EntityTypeGuild:
-		return "Server"
-	case EntityTypeChannel:
-		return "<#" + value + "> #" + value
-	case EntityTypeMessageCode:
-		return value
-	}
-
-	return titleify(string(t)) + ": #" + value
-}
-
-const (
-	EntityTypeUser    entityType = "discord_user"
-	EntityTypeRole    entityType = "discord_role"
-	EntityTypeGuild   entityType = "discord_guild"
-	EntityTypeChannel entityType = "discord_channel"
-
-	EntityTypeMessageCode entityType = "cacophony_message_code"
-)
 
 type Item struct {
 	gorm.Model
@@ -94,7 +53,8 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: "Cacophony Eventlog #" + i.UUID.String(),
 		},
-		Fields: make([]*discordgo.MessageEmbedField, 0, 1),
+		Fields:    make([]*discordgo.MessageEmbedField, 0, 1),
+		Thumbnail: &discordgo.MessageEmbedThumbnail{},
 	}
 
 	if i.Reason != "" {
@@ -138,6 +98,19 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 
 	if i.TargetValue != "" {
 		embed.Description += "On " + i.TargetType.String(i.TargetValue)
+
+		switch i.TargetType {
+		case EntityTypeGuild:
+			guild, err := state.Guild(i.TargetValue)
+			if err == nil && guild.IconURL() != "" {
+				embed.Thumbnail.URL = guild.IconURL() + "?size=256"
+			}
+		case EntityTypeUser:
+			user, err := state.User(i.TargetValue)
+			if err == nil {
+				embed.Thumbnail.URL = user.AvatarURL("256")
+			}
+		}
 	}
 
 	if i.WaitingForAuditLogBackfill {
@@ -164,8 +137,4 @@ func (*ItemOption) TableName() string {
 type ItemLogMessage struct {
 	ChannelID string
 	MessageID string
-}
-
-func titleify(input string) string {
-	return strings.Title(strings.Replace(input, "_", " ", -1))
 }
