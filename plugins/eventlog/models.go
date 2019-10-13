@@ -1,9 +1,12 @@
 package eventlog
 
 import (
+	"strings"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/state"
 )
@@ -31,7 +34,7 @@ type Item struct {
 	TargetType  entityType
 	TargetValue string
 
-	Reason string
+	Reasons pq.StringArray `gorm:"Type:varchar[]"`
 
 	WaitingForAuditLogBackfill bool
 
@@ -57,10 +60,10 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		Thumbnail: &discordgo.MessageEmbedThumbnail{},
 	}
 
-	if i.Reason != "" {
+	if len(i.Reasons) > 0 {
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
 			Name:  "Reason",
-			Value: i.Reason,
+			Value: strings.Join(i.Reasons, ", "),
 		})
 	}
 
@@ -124,8 +127,8 @@ func (i *Item) Summary(state *state.State, highlightID string) string {
 	var summary string
 	summary += "**" + i.ActionType.String() + ":**"
 
-	if i.Reason != "" {
-		summary += " Reason: " + i.Reason
+	if len(i.Reasons) > 0 {
+		summary += " Reason: " + strings.Join(i.Reasons, ", ")
 	}
 
 	// TODO: add options to summary?
