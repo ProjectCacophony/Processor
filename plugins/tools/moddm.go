@@ -45,6 +45,8 @@ func (p *Plugin) handleModDM(event *events.Event) {
 		return
 	}
 
+	event.Respond("tools.help.moddm.success", "user", targetUser)
+
 	err = eventlog.CreateItem(event.DB(), event.Publisher(), &eventlog.Item{
 		GuildID:     targetGuild.ID,
 		ActionType:  eventlog.ActionTypeModDM,
