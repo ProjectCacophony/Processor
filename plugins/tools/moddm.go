@@ -46,11 +46,11 @@ func (p *Plugin) handleModDM(event *events.Event) {
 	}
 
 	err = eventlog.CreateItem(event.DB(), event.Publisher(), &eventlog.Item{
-		GuildID:    targetGuild.ID,
-		ActionType: eventlog.ActionTypeModDM,
-		AuthorID:   event.UserID,
-		TargetID:   targetUser.ID,
-		TargetType: eventlog.EntityTypeUser,
+		GuildID:     targetGuild.ID,
+		ActionType:  eventlog.ActionTypeModDM,
+		AuthorID:    event.UserID,
+		TargetValue: targetUser.ID,
+		TargetType:  eventlog.EntityTypeUser,
 		Options: []eventlog.ItemOption{
 			{
 				Key:      "message code",

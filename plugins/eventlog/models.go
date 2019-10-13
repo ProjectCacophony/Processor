@@ -19,7 +19,12 @@ var (
 type actionType string
 
 func (t actionType) String() string {
-	return strings.Title(strings.Replace(string(t), "_", " ", -1))
+	switch t {
+	case ActionTypeModDM:
+		return "Mod DM"
+	}
+
+	return titleify(string(t))
 }
 
 const (
@@ -28,8 +33,21 @@ const (
 
 type entityType string
 
-func (t entityType) String() string {
-	return strings.Title(strings.Replace(string(t), "_", " ", -1))
+func (t entityType) String(value string) string {
+	switch t {
+	case EntityTypeUser:
+		return "<@" + value + "> #" + value
+	case EntityTypeRole:
+		return "<@&" + value + "> #" + value
+	case EntityTypeGuild:
+		return "Server"
+	case EntityTypeChannel:
+		return "<#" + value + "> #" + value
+	case EntityTypeMessageCode:
+		return value
+	}
+
+	return titleify(string(t)) + ": #" + value
 }
 
 const (
@@ -51,8 +69,8 @@ type Item struct {
 
 	AuthorID string // Author UserID
 
-	TargetID   string
-	TargetType entityType
+	TargetType  entityType
+	TargetValue string
 
 	Reason string
 
@@ -89,16 +107,16 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 	for _, option := range i.Options {
 		var embedOptionValue string
 		if option.PreviousValue != "" {
-			embedOptionValue = option.PreviousValue + " ➡ "
+			embedOptionValue = option.Type.String(option.PreviousValue) + " ➡ "
 		}
 		if option.NewValue != "" {
-			embedOptionValue += option.NewValue
+			embedOptionValue += option.Type.String(option.NewValue)
 		} else {
 			embedOptionValue += "N/A"
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  option.Key + " (" + option.Type.String() + ")",
+			Name:  option.Key,
 			Value: embedOptionValue,
 		})
 	}
@@ -118,8 +136,8 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		}
 	}
 
-	if i.TargetID != "" {
-		embed.Description += "On " + i.TargetType.String() + " #" + i.TargetID
+	if i.TargetValue != "" {
+		embed.Description += "On " + i.TargetType.String(i.TargetValue)
 	}
 
 	if i.WaitingForAuditLogBackfill {
@@ -146,4 +164,8 @@ func (*ItemOption) TableName() string {
 type ItemLogMessage struct {
 	ChannelID string
 	MessageID string
+}
+
+func titleify(input string) string {
+	return strings.Title(strings.Replace(input, "_", " ", -1))
 }
