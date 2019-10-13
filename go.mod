@@ -11,9 +11,11 @@ require (
 	github.com/bsm/redis-lock v8.0.0+incompatible
 	github.com/bwmarrin/discordgo v0.16.1-0.20191003153151-ae74315d3834
 	github.com/dustin/go-humanize v1.0.0
+	github.com/getsentry/raven-go v0.2.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.8
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.1.1
@@ -22,7 +24,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191013121156-0786f2cbb410
+	gitlab.com/Cacophony/go-kit v0.0.0-20191013131652-f5618ea2587e
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0

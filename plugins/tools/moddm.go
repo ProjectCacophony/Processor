@@ -3,6 +3,7 @@ package tools
 import (
 	"strings"
 
+	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -36,10 +37,27 @@ func (p *Plugin) handleModDM(event *events.Event) {
 		return
 	}
 
-	message = event.Translate("tools.help.moddm.dm-prefix", "guild", targetGuild) + "\n" + message
+	fullMessage := event.Translate("tools.help.moddm.dm-prefix", "guild", targetGuild) + "\n" + message
 
-	_, err = event.SendComplexDM(targetUser.ID, discord.MessageCodeToMessage(message))
+	_, err = event.SendComplexDM(targetUser.ID, discord.MessageCodeToMessage(fullMessage))
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	err = eventlog.CreateItem(event.DB(), event.Publisher(), &eventlog.Item{
+		GuildID:    targetGuild.ID,
+		ActionType: eventlog.ActionTypeModDM,
+		AuthorID:   event.UserID,
+		TargetID:   targetUser.ID,
+		TargetType: eventlog.EntityTypeUser,
+		Options: []eventlog.ItemOption{
+			{
+				Key:      "message code",
+				NewValue: message,
+				Type:     eventlog.EntityTypeMessageCode,
+			},
+		},
+	})
 	event.Except(err)
-
-	// TODO: create a case for the eventlog
 }

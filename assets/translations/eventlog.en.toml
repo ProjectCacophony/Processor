@@ -10,13 +10,11 @@
 # handleEnable
 "eventlog.enable.already-enabled" = "Looks like the Eventlog is already enabled on this Server."
 "eventlog.enable.success" = "**I enabled the Eventlog on this server!**\n\
-{{if .channel}}The log will be posted to {{.channel.Mention}}.\n{{end}}\
-Please be aware that it may take up to one minute until the change is active."
+{{if .channel}}The log will be posted to {{.channel.Mention}}.\n{{end}}"
 
 # handleDisable
 "eventlog.disable.already-disabled" = "Looks like the Eventlog is not enabled on this Server."
-"eventlog.disable.success" = "**I disabled the Eventlog on this server!**\n\
-Please be aware that it may take up to one minute until the change is active."
+"eventlog.disable.success" = "**I disabled the Eventlog on this server!**"
 
 # handleStatus
 "eventlog.status.message" = "\

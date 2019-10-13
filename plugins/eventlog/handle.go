@@ -27,7 +27,8 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.state = params.State
 	p.db = params.DB
-	return nil
+
+	return p.db.AutoMigrate(&Item{}, &ItemOption{}).Error
 }
 
 func (p *Plugin) Stop(params common.StopParameters) error {
@@ -77,6 +78,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.CacophonyEventlogUpdate {
+		p.handleEventlogUpdate(event)
+		return true
+	}
+
 	if !event.Command() {
 		return false
 	}
