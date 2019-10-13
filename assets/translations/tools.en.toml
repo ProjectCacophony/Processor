@@ -54,3 +54,8 @@
 "I got… :game_die: **{{.result}}**!",
 "And… :game_die: **{{.result}}**!"
 ]
+
+# handleModDM
+"tools.help.moddm.name" = "Send a Moderator DM"
+"tools.help.moddm.description" = "Sends a Moderator DM to the given user. Your name will not be revealed, but the name of the server."
+"tools.help.moddm.dm-prefix" = "📬 A moderator from the server **{{.guild.Name}}** sent you a message:"

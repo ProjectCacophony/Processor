@@ -6,6 +6,7 @@ import (
 
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
@@ -115,6 +116,17 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "link", Type: common.Link},
 				},
 			},
+			{
+				Name:            "tools.help.moddm.name",
+				Description:     "tools.help.moddm.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "mod-dm", Type: common.Flag},
+					{Name: "User or User ID", Type: common.User},
+					{Name: "Message Code", Type: common.Text},
+				},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
+			},
 		},
 	}
 }
@@ -149,6 +161,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.Require(func() {
 			p.handleEdit(event)
 		}, permissions.DiscordManageChannels, permissions.DiscordManageMessages)
+		return true
+	case "mod-dm", "moddm", "modm":
+		event.Require(func() {
+			p.handleModDM(event)
+		}, permissions.DiscordManageServer)
 		return true
 	}
 
