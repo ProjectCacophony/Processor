@@ -1,8 +1,6 @@
 package roles
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 	"gitlab.com/Cacophony/go-kit/state"
@@ -59,17 +57,14 @@ func (r *Role) Name(state *state.State) string {
 
 // matches the input to see if its the server role name or the print name, or one of the aliases
 func (r *Role) Match(state *state.State, input string) bool {
-	fmt.Printf("\ninput string: %s", input)
 	if input == "" {
 		return false
 	}
 
-	fmt.Printf("\nprint name: %s", r.PrintName)
 	if r.PrintName == input {
 		return true
 	}
 
-	fmt.Printf("\naliases: %s", r.Aliases)
 	for _, alias := range r.Aliases {
 		if alias == input {
 			return true
@@ -81,7 +76,6 @@ func (r *Role) Match(state *state.State, input string) bool {
 		return false
 	}
 
-	fmt.Printf("\nserver role name: %s", serverRole.Name)
 	if serverRole.Name == input {
 		return true
 	}
