@@ -8,24 +8,13 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-func (p *Plugin) handleDisable(event *events.Event) {
+func (p *Plugin) handleCmdStatus(event *events.Event) {
 	enabled, err := config.GuildGetBool(p.db, event.GuildID, eventlogEnableKey)
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		event.Except(err)
 		return
 	}
 
-	if !enabled {
-		event.Respond("eventlog.disable.already-disabled")
-		return
-	}
-
-	err = config.GuildSetBool(p.db, event.GuildID, eventlogEnableKey, false)
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	_, err = event.Respond("eventlog.disable.success")
+	_, err = event.Respond("eventlog.status.message", "enabled", enabled)
 	event.Except(err)
 }

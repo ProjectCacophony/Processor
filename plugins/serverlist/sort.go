@@ -3,12 +3,14 @@ package serverlist
 import (
 	"regexp"
 	"strings"
+
+	"github.com/mozillazg/go-unidecode"
 )
 
 var regexpAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9]+")
 
 func getSortName(input string) string {
-	return strings.ToLower(regexpAlphanumeric.ReplaceAllString(input, ""))
+	return strings.ToLower(regexpAlphanumeric.ReplaceAllString(unidecode.Unidecode(input), ""))
 }
 
 type ServersSorter struct {
