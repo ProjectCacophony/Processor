@@ -15,7 +15,9 @@ const (
 
 func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
-	// TODO: for performance reasons the channel lookup needs to use redis
+	if event.MessageCreate == nil || len(event.MessageCreate.Content) < 2 {
+		return false
+	}
 
 	plusMinus := event.MessageCreate.Content[0:1]
 	roleInput := event.MessageCreate.Content[1:]
@@ -40,6 +42,37 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 			return false
 		}
 		for _, role := range uncategorizedRoles {
+			if role.Match(event.State(), roleInput) {
+
+				if plusMinus == PLUS {
+					err = p.assignRole(event, role.ServerRoleID)
+				} else {
+					err = p.removeRole(event, role.ServerRoleID)
+				}
+				if err != nil {
+					event.Except(err)
+					return true
+				}
+				return true
+			}
+		}
+	}
+
+	// TODO: for performance reasons the channel lookup needs to use redis
+
+	// get categories for default channel
+	categories, err := p.getCategoryByChannel(event.ChannelID)
+	if err != nil {
+		event.Except(err)
+		return false
+	}
+
+	if len(categories) == 0 {
+		return false
+	}
+
+	for _, category := range categories {
+		for _, role := range category.Roles {
 			if role.Match(event.State(), roleInput) {
 
 				if plusMinus == PLUS {
