@@ -9,7 +9,10 @@
 
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
 "roles.role.update" = "Updated role **{{ .roleName }}**"
-"roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role setup."
+"roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role setup"
+"roles.role.assigned" = "{{ .userMention }} I've assigned you the role {{ .serverRoleName }} :thumbsup:"
+"roles.role.removed-role" = "{{ .userMention }} I've removed your role {{ .serverRoleName }} :thumbsup:"
+
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
@@ -22,6 +25,8 @@ Please react with ✅ if you do."
 Roles: {{ .uncategorizedRolesList }}\
 {{ end }}\
 {{ .categoryList }}"
+
+
 # errors
 "roles.category.no-name" = "Role categories must have a name."
 "roles.category.limit-not-number" = "Categories role limit must be a number."
@@ -35,3 +40,5 @@ Roles: {{ .uncategorizedRolesList }}\
 "roles.role.role-not-found" = "Could not find role in the role setup."
 "roles.role.multiple-server-roles-with-name" = "Found multiple server roles with that name, use the id of the specific role you want."
 "roles.role.alias-already-exists" = "The print name or alias **{{ .aliasName }}** already exists for another role."
+"roles.role.already-assigned" = "{{ .userMention }} Looks like you already have this role :thinking:"
+"roles.role.not-assigned" = "{{ .userMention }} Doesn't seem like you have this role :thinking:"

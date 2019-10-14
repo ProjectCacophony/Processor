@@ -204,7 +204,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 func (p *Plugin) handleAsCommand(event *events.Event) bool {
 	if !event.Command() {
-		return false
+		return p.handleUserRoleRequest(event)
 	}
 
 	if event.Fields()[0] != "roles" &&
@@ -289,7 +289,6 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 				return true
 			}
 			return true
-
 		default:
 		}
 	}
