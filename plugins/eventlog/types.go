@@ -33,6 +33,8 @@ const (
 	EntityTypeChannel entityType = "discord_channel"
 
 	EntityTypeMessageCode entityType = "cacophony_message_code"
+
+	EntityTypeText entityType = "text"
 )
 
 func (t entityType) String(value string) string {
@@ -48,6 +50,8 @@ func (t entityType) String(value string) string {
 		return "<#" + value + "> #" + value
 	case EntityTypeMessageCode:
 		return value
+	case EntityTypeText:
+		return titleify(value)
 	}
 
 	return titleify(string(t)) + ": #" + value

@@ -79,7 +79,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  option.Key,
+			Name:  titleify(option.Key),
 			Value: embedOptionValue,
 		})
 	}

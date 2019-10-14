@@ -3,6 +3,7 @@ package eventlog
 import (
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -27,13 +28,23 @@ func (p *Plugin) handleEventlogUpdate(event *events.Event) {
 	}
 	event.BotUserID = botID
 
+	embed := item.Embed(event.State())
+
 	if item.LogMessage.MessageID != "" && item.LogMessage.ChannelID != "" {
-		p.logger.Error("updating eventlog messages not supported")
-		// TODO: update existing message
+		_, err = discord.EditComplexWithVars(
+			event.Redis(),
+			event.Discord(),
+			event.Localizations(),
+			&discordgo.MessageEdit{
+				Embed:   embed,
+				ID:      item.LogMessage.MessageID,
+				Channel: item.LogMessage.ChannelID,
+			},
+			false,
+		)
+		event.ExceptSilent(err)
 		return
 	}
-
-	embed := item.Embed(event.State())
 
 	messages, err := event.SendComplex(
 		channelID,
