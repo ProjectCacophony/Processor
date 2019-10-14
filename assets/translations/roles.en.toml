@@ -10,8 +10,8 @@
 "roles.role.creation" = "Added the role  **{{ .roleName }}**"
 "roles.role.update" = "Updated role **{{ .roleName }}**"
 "roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role setup"
-"roles.role.assigned" = "{{ .userMention }} I've assigned you the role {{ .serverRoleName }} :thumbsup:"
-"roles.role.removed-role" = "{{ .userMention }} I've removed your role {{ .serverRoleName }} :thumbsup:"
+"roles.role.assigned" = "{{ .userMention }} I've assigned you the role **{{ .serverRoleName }}** :thumbsup:"
+"roles.role.removed-role" = "{{ .userMention }} I've removed your role **{{ .serverRoleName }}** :thumbsup:"
 
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
@@ -42,3 +42,4 @@ Roles: {{ .uncategorizedRolesList }}\
 "roles.role.alias-already-exists" = "The print name or alias **{{ .aliasName }}** already exists for another role."
 "roles.role.already-assigned" = "{{ .userMention }} Looks like you already have this role :thinking:"
 "roles.role.not-assigned" = "{{ .userMention }} Doesn't seem like you have this role :thinking:"
+"roles.role.at-category-limit" = "{{ .userMention }} You are already at the role limit for that roles category :stop:"

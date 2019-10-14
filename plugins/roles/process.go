@@ -1,9 +1,9 @@
 package roles
 
 import (
-	"fmt"
+	"strings"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -19,21 +19,18 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
-	plusMinus := event.MessageCreate.Content[0:1]
-	roleInput := event.MessageCreate.Content[1:]
-
-	if plusMinus != PLUS && plusMinus != MINUS {
-		return false
-	}
-
-	defaultChannelID, err := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
-	if err != nil {
-		event.Except(err)
-		return false
-	}
+	// explicitly not checking error here
+	defaultChannelID, _ := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
 
 	// check if default server role channel first
-	if event.ChannelID == defaultChannelID {
+	if defaultChannelID != "" && event.ChannelID == defaultChannelID {
+
+		plusMinus := event.MessageCreate.Content[0:1]
+		roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
+
+		if plusMinus != PLUS && plusMinus != MINUS {
+			return false
+		}
 
 		go p.deleteWithDelay(event, event.MessageID)
 
@@ -62,22 +59,54 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
 	// TODO: for performance reasons the channel lookup needs to use redis
 
-	// get categories for default channel
+	// get categories setup for the given channel
 	categories, err := p.getCategoryByChannel(event.ChannelID)
 	if err != nil {
 		event.Except(err)
 		return false
 	}
-
 	if len(categories) == 0 {
 		return false
 	}
+	go p.deleteWithDelay(event, event.MessageID)
 
+	plusMinus := event.MessageCreate.Content[0:1]
+	roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
+
+	if plusMinus != PLUS && plusMinus != MINUS {
+		return false
+	}
+
+	var member *discordgo.Member
 	for _, category := range categories {
+
+		if !category.Enabled {
+			continue
+		}
+
 		for _, role := range category.Roles {
 			if role.Match(event.State(), roleInput) {
 
+				if member == nil {
+					member, err = event.State().Member(event.GuildID, event.UserID)
+					if err != nil {
+						event.Except(err)
+						return false
+					}
+				}
+
 				if plusMinus == PLUS {
+
+					if p.isOverRoleLimit(member, category) {
+						msgs, err := event.Respond("roles.role.at-category-limit", "userMention", member.Mention())
+						if err != nil {
+							return false
+						}
+
+						go p.deleteWithDelay(event, msgs[0].ID)
+						return true
+					}
+
 					err = p.assignRole(event, role.ServerRoleID)
 				} else {
 					err = p.removeRole(event, role.ServerRoleID)
@@ -94,8 +123,32 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 	return false
 }
 
+func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) bool {
+	if category.Limit == 0 {
+		return false
+	}
+
+	if len(member.Roles) < category.Limit {
+		return false
+	}
+
+	var hasRoleCount int
+	for _, role := range category.Roles {
+		for _, userRoleID := range member.Roles {
+			if role.ServerRoleID == userRoleID {
+				hasRoleCount++
+			}
+		}
+	}
+
+	if hasRoleCount >= category.Limit {
+		return true
+	}
+
+	return false
+}
+
 func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
-	fmt.Println("assign")
 
 	// check if user already has role
 	member, err := event.State().Member(event.GuildID, event.UserID)

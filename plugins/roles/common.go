@@ -13,7 +13,7 @@ const (
 	ServerRoleNotFound          string = "roles.role.role-not-found-on-server"
 	MultipleServerRolesWithName string = "roles.role.multiple-server-roles-with-name"
 
-	DELETE_DELAY time.Duration = 5
+	DELETE_DELAY time.Duration = 3
 )
 
 func (p *Plugin) getServerRoleByNameOrID(input string, guildID string) (*discordgo.Role, error) {
