@@ -32,8 +32,10 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
-	// check default server role channel first
+	// check if default server role channel first
 	if event.ChannelID == defaultChannelID {
+
+		go p.deleteWithDelay(event, event.MessageID)
 
 		// check if user is adding uncategorized role
 		uncategorizedRoles, err := p.getUncategorizedRoles(event.GuildID)
@@ -119,25 +121,22 @@ func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
 		return err
 	}
 
-	_, err = event.Respond("roles.role.assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+	msgs, err := event.Respond("roles.role.assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
 	if err != nil {
 		return err
 	}
+	go p.deleteWithDelay(event, msgs[0].ID)
 
 	return nil
 }
 
 func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 
-	fmt.Println("remove")
-
 	// confirm the user has the role
 	member, err := event.State().Member(event.GuildID, event.UserID)
 	if err != nil {
 		return err
 	}
-	fmt.Println(serverRoleID)
-	spew.Dump(member.Roles)
 	var hasRole bool
 	for _, userRole := range member.Roles {
 		if userRole == serverRoleID {
@@ -163,10 +162,12 @@ func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 		return err
 	}
 
-	_, err = event.Respond("roles.role.removed-role", "userMention", member.Mention(), "serverRoleName", role.Name)
+	msgs, err := event.Respond("roles.role.removed-role", "userMention", member.Mention(), "serverRoleName", role.Name)
 	if err != nil {
 		return err
 	}
+
+	go p.deleteWithDelay(event, msgs[0].ID)
 
 	return nil
 }
