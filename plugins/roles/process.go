@@ -15,7 +15,7 @@ const (
 
 func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
-	if event.MessageCreate == nil || len(event.MessageCreate.Content) < 2 {
+	if event.MessageCreate == nil {
 		return false
 	}
 
@@ -24,15 +24,17 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
 	// check if default server role channel first
 	if defaultChannelID != "" && event.ChannelID == defaultChannelID {
+		go p.deleteWithDelay(event, event.MessageID)
 
+		if len(event.MessageCreate.Content) < 2 {
+			return false
+		}
 		plusMinus := event.MessageCreate.Content[0:1]
 		roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
 
 		if plusMinus != PLUS && plusMinus != MINUS {
 			return false
 		}
-
-		go p.deleteWithDelay(event, event.MessageID)
 
 		// check if user is adding uncategorized role
 		uncategorizedRoles, err := p.getUncategorizedRoles(event.GuildID)
@@ -70,6 +72,9 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 	}
 	go p.deleteWithDelay(event, event.MessageID)
 
+	if len(event.MessageCreate.Content) < 2 {
+		return false
+	}
 	plusMinus := event.MessageCreate.Content[0:1]
 	roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
 
