@@ -11,6 +11,15 @@ import (
 )
 
 func (p *Plugin) handleReactionAdd(event *events.Event) bool {
+	user, err := event.State().User(event.UserID)
+	if err != nil {
+		event.ExceptSilent(err)
+		return false
+	}
+	if user.Bot {
+		return false
+	}
+
 	switch event.MessageReactionAdd.Emoji.Name {
 	case reactionEditReason:
 		item, err := FindItem(event.DB(),
@@ -18,7 +27,7 @@ func (p *Plugin) handleReactionAdd(event *events.Event) bool {
 			event.MessageReactionAdd.ChannelID, event.MessageReactionAdd.MessageID,
 		)
 		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-			event.Except(err)
+			event.ExceptSilent(err)
 			return false
 		}
 		if item == nil {
