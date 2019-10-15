@@ -1,12 +1,9 @@
 package eventlog
 
 import (
-	"strings"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
-	"github.com/lib/pq"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/state"
 )
@@ -34,8 +31,6 @@ type Item struct {
 	TargetType  entityType
 	TargetValue string
 
-	Reasons pq.StringArray `gorm:"Type:varchar[]"`
-
 	WaitingForAuditLogBackfill bool
 
 	Options []ItemOption
@@ -60,17 +55,25 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		Thumbnail: &discordgo.MessageEmbedThumbnail{},
 	}
 
-	if len(i.Reasons) > 0 {
-		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  "Reason",
-			Value: strings.Join(i.Reasons, ", "),
-		})
-	}
-
+	var optionAuthor *discordgo.User
+	var embedOptionName, embedOptionValue string
 	for _, option := range i.Options {
-		var embedOptionValue string
+		optionAuthor = nil
+		if option.AuthorID != "" {
+			optionAuthor, _ = state.User(option.AuthorID)
+		}
+
+		embedOptionName = ""
+		embedOptionValue = ""
+
+		embedOptionName += titleify(option.Key)
+
+		if optionAuthor != nil && !optionAuthor.Bot {
+			embedOptionName += " By " + optionAuthor.String() + " #" + optionAuthor.ID
+		}
+
 		if option.PreviousValue != "" {
-			embedOptionValue = option.Type.String(option.PreviousValue) + " ➡ "
+			embedOptionValue += option.Type.String(option.PreviousValue) + " ➡ "
 		}
 		if option.NewValue != "" {
 			embedOptionValue += option.Type.String(option.NewValue)
@@ -79,7 +82,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-			Name:  titleify(option.Key),
+			Name:  embedOptionName,
 			Value: embedOptionValue,
 		})
 	}
@@ -127,10 +130,6 @@ func (i *Item) Summary(state *state.State, highlightID string) string {
 	var summary string
 	summary += "**" + i.ActionType.String() + ":**"
 
-	if len(i.Reasons) > 0 {
-		summary += " Reason: " + strings.Join(i.Reasons, ", ")
-	}
-
 	// TODO: add options to summary?
 
 	if i.AuthorID != "" {
@@ -173,6 +172,7 @@ type ItemOption struct {
 	gorm.Model
 	ItemID uint `gorm:"NOT NULL"`
 
+	AuthorID      string
 	Key           string `gorm:"NOT NULL"`
 	PreviousValue string
 	NewValue      string
