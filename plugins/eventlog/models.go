@@ -1,6 +1,8 @@
 package eventlog
 
 import (
+	"sort"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
@@ -54,6 +56,11 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		Fields:    make([]*discordgo.MessageEmbedField, 0, 1),
 		Thumbnail: &discordgo.MessageEmbedThumbnail{},
 	}
+
+	// sort items by name
+	sort.Slice(i.Options, func(j, k int) bool {
+		return i.Options[j].Key < i.Options[k].Key
+	})
 
 	var optionAuthor *discordgo.User
 	var embedOptionName, embedOptionValue string
