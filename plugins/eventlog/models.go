@@ -172,8 +172,8 @@ type ItemOption struct {
 	gorm.Model
 	ItemID uint `gorm:"NOT NULL"`
 
-	AuthorID      string
-	Key           string `gorm:"NOT NULL"`
+	AuthorID      string `gorm:"unique_index:idx_authorid_key"`
+	Key           string `gorm:"NOT NULL;unique_index:idx_authorid_key"`
 	PreviousValue string
 	NewValue      string
 	Type          entityType
