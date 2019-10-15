@@ -70,7 +70,7 @@ func CreateOptionForItem(db *gorm.DB, publisher *events.Publisher, id uint, guil
 	event.GuildID = guildID
 
 	err = db.
-		Set("gorm:insert_option", "ON CONFLICT (\"author_id\", \"key\") DO UPDATE SET \"updated_at\" = EXCLUDED.updated_at, \"previous_value\" = EXCLUDED.previous_value, \"new_value\" = EXCLUDED.new_value, \"type\" = EXCLUDED.type").
+		Set("gorm:insert_option", "ON CONFLICT (\"item_id\", \"author_id\", \"key\") DO UPDATE SET \"updated_at\" = EXCLUDED.updated_at, \"previous_value\" = EXCLUDED.previous_value, \"new_value\" = EXCLUDED.new_value, \"type\" = EXCLUDED.type").
 		Create(&option).Error
 	if err != nil {
 		return err

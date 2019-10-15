@@ -177,10 +177,10 @@ func (i *Item) Summary(state *state.State, highlightID string) string {
 
 type ItemOption struct {
 	gorm.Model
-	ItemID uint `gorm:"NOT NULL"`
+	ItemID uint `gorm:"NOT NULL;unique_index:idx_itemid_authorid_key"`
 
-	AuthorID      string `gorm:"unique_index:idx_authorid_key"`
-	Key           string `gorm:"NOT NULL;unique_index:idx_authorid_key"`
+	AuthorID      string `gorm:"unique_index:idx_itemid_authorid_key"`
+	Key           string `gorm:"NOT NULL;unique_index:idx_itemid_authorid_key"`
 	PreviousValue string
 	NewValue      string
 	Type          entityType
