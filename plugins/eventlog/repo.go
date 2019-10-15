@@ -43,7 +43,44 @@ func CreateItem(db *gorm.DB, publisher *events.Publisher, item *Item) error {
 	if err != nil && !recoverable {
 		raven.CaptureError(err, nil)
 		zap.L().Fatal(
-			"received unrecoverable error while publishing \"sudo as\" message",
+			"received unrecoverable error while publishing \"create item\" message",
+			zap.Error(err),
+		)
+	}
+	return err
+}
+
+func CreateOptionForItem(db *gorm.DB, publisher *events.Publisher, id uint, guildID string, option *ItemOption) error {
+	if id == 0 {
+		return errors.New("id cannot be empty")
+	}
+	if option == nil {
+		return errors.New("option cannot be empty")
+	}
+
+	// prepare event
+	event, err := events.New(events.CacophonyEventlogUpdate)
+	if err != nil {
+		return err
+	}
+	event.EventlogUpdate = &events.EventlogUpdate{
+		ItemID:  id,
+		GuildID: guildID,
+	}
+	event.GuildID = guildID
+
+	err = db.
+		Set("gorm:insert_option", "ON CONFLICT (\"item_id\", \"author_id\", \"key\") DO UPDATE SET \"updated_at\" = EXCLUDED.updated_at, \"previous_value\" = EXCLUDED.previous_value, \"new_value\" = EXCLUDED.new_value, \"type\" = EXCLUDED.type").
+		Create(&option).Error
+	if err != nil {
+		return err
+	}
+
+	err, recoverable := publisher.Publish(context.Background(), event)
+	if err != nil && !recoverable {
+		raven.CaptureError(err, nil)
+		zap.L().Fatal(
+			"received unrecoverable error while publishing \"create option for item\" message",
 			zap.Error(err),
 		)
 	}
@@ -59,6 +96,15 @@ func GetItem(db *gorm.DB, id uint) (*Item, error) {
 	err := db.
 		Preload("Options").
 		Where("id = ?", id).
+		First(&item).Error
+	return &item, err
+}
+
+func FindItem(db *gorm.DB, where string, args ...interface{}) (*Item, error) {
+	var item Item
+	err := db.
+		Preload("Options").
+		Where(where, args...).
 		First(&item).Error
 	return &item, err
 }
