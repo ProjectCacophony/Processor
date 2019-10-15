@@ -21,7 +21,7 @@ func (p *Plugin) handleEventlogUpdate(event *events.Event) {
 		return
 	}
 
-	botID, err := event.State().BotForChannel(channelID, permissions.DiscordSendMessages, permissions.DiscordEmbedLinks)
+	botID, err := event.State().BotForChannel(channelID, permissions.DiscordSendMessages, permissions.DiscordEmbedLinks, permissions.DiscordAddReactions)
 	if err != nil {
 		event.ExceptSilent(err)
 		return
@@ -60,4 +60,6 @@ func (p *Plugin) handleEventlogUpdate(event *events.Event) {
 		event.ExceptSilent(err)
 		return
 	}
+
+	discord.React(event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, reactionEditReason)
 }

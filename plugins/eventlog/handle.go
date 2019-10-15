@@ -86,9 +86,24 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-	if event.Type == events.CacophonyEventlogUpdate {
+	switch event.Type {
+	case events.CacophonyEventlogUpdate:
 		p.handleEventlogUpdate(event)
 		return true
+	case events.MessageReactionAddType:
+		event.Require(func() {
+			p.handleReactionAdd(event)
+		},
+			permissions.DiscordManageServer,
+			permissions.Not(
+				permissions.DiscordChannelDM,
+			),
+		)
+	case events.CacophonyQuestionnaireMatch:
+		if event.QuestionnaireMatch.Key == questionnaireEditReasonKey {
+			p.handleQuestionnaireEditReason(event)
+			return true
+		}
 	}
 
 	p.handleModEvent(event)

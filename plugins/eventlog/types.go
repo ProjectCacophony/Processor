@@ -51,7 +51,7 @@ func (t entityType) String(value string) string {
 	case EntityTypeMessageCode:
 		return value
 	case EntityTypeText:
-		return titleify(value)
+		return value
 	}
 
 	return titleify(string(t)) + ": #" + value

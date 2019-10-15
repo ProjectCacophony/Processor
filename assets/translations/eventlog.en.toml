@@ -38,3 +38,7 @@ You can enable it using `{{.prefix}}eventlog enable`\
 {{end}}\
 {{end}}\
 "
+# handleReactionEditReason
+"eventlog.edit-reason.ask" = "\
+**<@{{.userID}}> please tell me the reason for `#{{.item.UUID}}`.**\n\
+Or say `cancel` to stop the operation."
