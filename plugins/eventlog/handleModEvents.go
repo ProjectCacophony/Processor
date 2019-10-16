@@ -48,6 +48,15 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 			Options:                    optionsForChannel(event.ChannelCreate.Channel),
 		}
+	case events.GuildRoleCreateType:
+		item = &Item{
+			GuildID:                    event.GuildRoleCreate.GuildID,
+			ActionType:                 ActionTypeRoleCreate,
+			TargetType:                 EntityTypeRole,
+			TargetValue:                event.GuildRoleCreate.Role.ID,
+			WaitingForAuditLogBackfill: true,
+			Options:                    optionsForRole(event.GuildRoleCreate.Role),
+		}
 	}
 
 	if item != nil {

@@ -80,3 +80,55 @@ func optionsForChannel(channel *discordgo.Channel) []ItemOption {
 
 	return options
 }
+
+func optionsForRole(role *discordgo.Role) []ItemOption {
+	var options []ItemOption
+	if role == nil {
+		return options
+	}
+
+	if role.Name != "" {
+		options = append(options, ItemOption{
+			Key:      "name",
+			NewValue: role.Name,
+			Type:     EntityTypeText,
+		})
+	}
+	if role.Managed {
+		options = append(options, ItemOption{
+			Key:      "managed",
+			NewValue: strconv.FormatBool(role.Managed),
+			Type:     EntityTypeBool,
+		})
+	}
+	if role.Mentionable {
+		options = append(options, ItemOption{
+			Key:      "mentionable",
+			NewValue: strconv.FormatBool(role.Mentionable),
+			Type:     EntityTypeBool,
+		})
+	}
+	if role.Hoist {
+		options = append(options, ItemOption{
+			Key:      "hoist",
+			NewValue: strconv.FormatBool(role.Hoist),
+			Type:     EntityTypeBool,
+		})
+	}
+	if role.Color > 0 {
+		options = append(options, ItemOption{
+			Key:      "color",
+			NewValue: strconv.Itoa(role.Color),
+			Type:     EntityTypeColor,
+		})
+	}
+	if role.Permissions > 0 {
+		options = append(options, ItemOption{
+			Key:      "permission",
+			NewValue: strconv.Itoa(role.Permissions),
+			Type:     EntityTypePermission,
+		})
+	}
+
+	return options
+}

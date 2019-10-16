@@ -8,6 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/dustin/go-humanize"
 	"github.com/pkg/errors"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/state"
 )
 
@@ -19,6 +20,7 @@ const (
 	ActionTypeDiscordJoin   actionType = "discord_join"
 	ActionTypeDiscordLeave  actionType = "discord_leave"
 	ActionTypeChannelCreate actionType = "discord_channel_create"
+	ActionTypeRoleCreate    actionType = "discord_role_create"
 )
 
 func (t actionType) String() string {
@@ -52,13 +54,14 @@ func (t actionType) Revertable() bool {
 
 // Entities
 const (
-	EntityTypeUser    entityType = "discord_user"
-	EntityTypeRole    entityType = "discord_role"
-	EntityTypeGuild   entityType = "discord_guild"
-	EntityTypeChannel entityType = "discord_channel"
-
-	EntityTypeChannelType          entityType = "discord_channel_type"          // TODO: implement formatting
-	EntityTypePermissionOverwrites entityType = "discord_permission_overwrites" // TODO: implement formatting
+	EntityTypeUser                 entityType = "discord_user"
+	EntityTypeRole                 entityType = "discord_role"
+	EntityTypeGuild                entityType = "discord_guild"
+	EntityTypeChannel              entityType = "discord_channel"
+	EntityTypePermission           entityType = "discord_permission"
+	EntityTypeColor                entityType = "discord_color"
+	EntityTypeChannelType          entityType = "discord_channel_type"
+	EntityTypePermissionOverwrites entityType = "discord_permission_overwrites"
 
 	EntityTypeMessageCode entityType = "cacophony_message_code"
 
@@ -137,6 +140,14 @@ func (t entityType) String(value string) string {
 			text += "; "
 		}
 		return strings.Trim(text, "; ")
+	case EntityTypeColor:
+		parsed, _ := strconv.Atoi(value)
+
+		return "#" + discord.ColorCodeToHex(parsed)
+	case EntityTypePermission:
+		parsed, _ := strconv.Atoi(value)
+
+		return permissionsText(parsed)
 	}
 
 	return titleify(string(t)) + ": #" + value
