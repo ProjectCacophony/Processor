@@ -62,4 +62,8 @@ func (p *Plugin) handleEventlogUpdate(event *events.Event) {
 	}
 
 	discord.React(event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, reactionEditReason)
+
+	if item.ActionType.Revertable() {
+		discord.React(event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, reactionRevert)
+	}
 }

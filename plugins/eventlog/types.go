@@ -35,6 +35,16 @@ func (t actionType) Destructive() bool {
 	return false
 }
 
+func (t actionType) Revertable() bool {
+	switch t {
+	case ActionTypeDiscordBan,
+		ActionTypeDiscordUnban:
+		return true
+	}
+
+	return false
+}
+
 // Entities
 const (
 	EntityTypeUser    entityType = "discord_user"

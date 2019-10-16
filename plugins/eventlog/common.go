@@ -7,4 +7,5 @@ const (
 	questionnaireEditReasonKey = "cacophony:processor:eventlog:edit-reason"
 
 	reactionEditReason = "📝"
+	reactionRevert     = "↩"
 )

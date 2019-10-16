@@ -34,6 +34,7 @@ type Item struct {
 	TargetValue string
 
 	WaitingForAuditLogBackfill bool
+	Reverted                   bool
 
 	Options []ItemOption
 
@@ -75,7 +76,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 
 		embedOptionName += titleify(option.Key)
 
-		if optionAuthor != nil && !optionAuthor.Bot {
+		if optionAuthor != nil && !optionAuthor.Bot && optionAuthor.ID != option.NewValue {
 			embedOptionName += " By " + optionAuthor.String() + " #" + optionAuthor.ID
 		}
 
