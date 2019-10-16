@@ -13,7 +13,7 @@ import (
 var (
 	discordColourGreen  = discord.HexToColorCode("#73d016")
 	discordColourOrange = discord.HexToColorCode("#ffb80a")
-	discordColourRed    = discord.HexToColorCode("#b22222") // nolint: deadcode, unused, varcheck // TODO: use it for destructive actions
+	discordColourRed    = discord.HexToColorCode("#b22222")
 )
 
 type actionType string
@@ -124,6 +124,10 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 				embed.Thumbnail.URL = user.AvatarURL("256")
 			}
 		}
+	}
+
+	if i.ActionType.Destructive() {
+		embed.Color = discordColourRed
 	}
 
 	if i.WaitingForAuditLogBackfill {

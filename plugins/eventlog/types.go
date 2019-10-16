@@ -25,6 +25,16 @@ func (t actionType) String() string {
 	return titleify(string(t))
 }
 
+func (t actionType) Destructive() bool {
+	switch t {
+	case ActionTypeDiscordBan,
+		ActionTypeDiscordLeave:
+		return true
+	}
+
+	return false
+}
+
 // Entities
 const (
 	EntityTypeUser    entityType = "discord_user"

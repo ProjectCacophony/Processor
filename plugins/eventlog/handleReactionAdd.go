@@ -126,12 +126,10 @@ func (p *Plugin) handleQuestionnaireEditReason(event *events.Event) {
 		return
 	}
 
-	if event.MessageCreate.Content == "" {
-		return
-	}
-
-	if strings.ToLower(event.MessageCreate.Content) == "cancel" {
+	if event.MessageCreate.Content == "" ||
+		strings.ToLower(event.MessageCreate.Content) == "cancel" {
 		cleanup()
+		return
 	}
 
 	err := CreateOptionForItem(event.DB(), event.Publisher(), uint(itemID), event.GuildID, &ItemOption{
