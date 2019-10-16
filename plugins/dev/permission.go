@@ -13,9 +13,10 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 		return
 	}
 
-	userID := event.UserID
-	if len(event.MessageCreate.Mentions) > 0 {
-		userID = event.MessageCreate.Mentions[0].ID
+	user, err := event.FindMember()
+	if err != nil {
+		event.Except(err)
+		return
 	}
 
 	permissionID, err := strconv.Atoi(event.Fields()[2])
@@ -33,13 +34,13 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 	has := permissions.NewDiscordPermission("", permissionID).Match(
 		p.state,
 		event.DB(),
-		userID,
+		user.ID,
 		channel.ID,
 		event.DM(),
 	)
 
 	_, err = event.Respond("dev.permission",
-		"has", has, "permissionID", permissionID, "userID", userID, "channelID", channel.ID)
+		"has", has, "permissionID", permissionID, "userID", user.ID, "channelID", channel.ID)
 	if err != nil {
 		event.Except(err)
 		return
