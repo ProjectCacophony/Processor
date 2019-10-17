@@ -19,22 +19,40 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
+	// check if the message was sent in a role channel
+	inRoleChannel := false
+	channels := p.getCachedRoleChannels(event.GuildID)
+	if channels != nil && len(channels) > 0 {
+		for _, channel := range channels {
+			if channel == event.ChannelID {
+				inRoleChannel = true
+				break
+			}
+		}
+	}
+	if !inRoleChannel {
+		return false
+	}
+
+	// remove users message
+	go p.deleteWithDelay(event, event.MessageID)
+
+	// check plus or minus
+	if len(event.MessageCreate.Content) < 2 {
+		return false
+	}
+	plusMinus := event.MessageCreate.Content[0:1]
+	roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
+
+	if plusMinus != PLUS && plusMinus != MINUS {
+		return false
+	}
+
 	// explicitly not checking error here
 	defaultChannelID, _ := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
 
 	// check if default server role channel first
 	if defaultChannelID != "" && event.ChannelID == defaultChannelID {
-		go p.deleteWithDelay(event, event.MessageID)
-
-		if len(event.MessageCreate.Content) < 2 {
-			return false
-		}
-		plusMinus := event.MessageCreate.Content[0:1]
-		roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
-
-		if plusMinus != PLUS && plusMinus != MINUS {
-			return false
-		}
 
 		// check if user is adding uncategorized role
 		uncategorizedRoles, err := p.getUncategorizedRoles(event.GuildID)
@@ -59,8 +77,6 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		}
 	}
 
-	// TODO: for performance reasons the channel lookup needs to use redis
-
 	// get categories setup for the given channel
 	categories, err := p.getCategoryByChannel(event.ChannelID)
 	if err != nil {
@@ -68,17 +84,6 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 	if len(categories) == 0 {
-		return false
-	}
-	go p.deleteWithDelay(event, event.MessageID)
-
-	if len(event.MessageCreate.Content) < 2 {
-		return false
-	}
-	plusMinus := event.MessageCreate.Content[0:1]
-	roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
-
-	if plusMinus != PLUS && plusMinus != MINUS {
 		return false
 	}
 

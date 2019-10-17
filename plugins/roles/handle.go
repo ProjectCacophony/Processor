@@ -1,6 +1,8 @@
 package roles
 
 import (
+	"sync"
+
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -14,6 +16,9 @@ type Plugin struct {
 	logger *zap.Logger
 	db     *gorm.DB
 	state  *state.State
+
+	guildRoleChannels     map[string][]string
+	guildRoleChannelsLock sync.RWMutex
 }
 
 func (p *Plugin) Names() []string {
@@ -32,6 +37,8 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	if err != nil {
 		return err
 	}
+
+	p.startRoleChannelCacheLoop()
 
 	return nil
 }
