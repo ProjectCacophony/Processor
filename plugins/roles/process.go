@@ -15,7 +15,7 @@ const (
 
 func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
-	if event.MessageCreate == nil {
+	if event.MessageCreate == nil || event.MessageCreate.Author == nil || event.MessageCreate.Author.Bot {
 		return false
 	}
 
