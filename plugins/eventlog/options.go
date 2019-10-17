@@ -3,6 +3,7 @@ package eventlog
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -316,6 +317,66 @@ func optionsForGuild(old, new *discordgo.Guild) []ItemOption {
 			Type:          EntityTypeImageURL,
 		})
 	}
+
+	return options
+}
+
+func optionsForMember(old, new *discordgo.Member) []ItemOption {
+	var options []ItemOption
+	if old == nil || new == nil {
+		return options
+	}
+
+	if old.Nick != new.Nick {
+		options = append(options, ItemOption{
+			Key:           "nick",
+			PreviousValue: old.Nick,
+			NewValue:      new.Nick,
+			Type:          EntityTypeText,
+		})
+	}
+	// TODO: not sent in diff
+	// if old.Deaf != new.Deaf {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "deaf",
+	// 		PreviousValue: strconv.FormatBool(old.Deaf),
+	// 		NewValue:      strconv.FormatBool(new.Deaf),
+	// 		Type:          EntityTypeBool,
+	// 	})
+	// }
+	// if old.Mute != new.Mute {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "mute",
+	// 		PreviousValue: strconv.FormatBool(old.Mute),
+	// 		NewValue:      strconv.FormatBool(new.Mute),
+	// 		Type:          EntityTypeBool,
+	// 	})
+	// }
+	if !stringSliceMatches(old.Roles, new.Roles) {
+		options = append(options, ItemOption{
+			Key:           "roles",
+			PreviousValue: strings.Join(old.Roles, ","),
+			NewValue:      strings.Join(new.Roles, ","),
+			Type:          EntityTypeRole,
+		})
+	}
+	// TODO: not sent in diff
+	// if old.User.Username != new.User.Username {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "username",
+	// 		PreviousValue: old.User.Username,
+	// 		NewValue:      new.User.Username,
+	// 		Type:          EntityTypeText,
+	// 	})
+	// }
+	// if old.User.Discriminator != new.User.Discriminator {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "discriminator",
+	// 		PreviousValue: old.User.Discriminator,
+	// 		NewValue:      new.User.Discriminator,
+	// 		Type:          EntityTypeText,
+	// 	})
+	// }
 
 	return options
 }

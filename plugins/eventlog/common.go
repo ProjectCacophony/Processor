@@ -113,3 +113,27 @@ func permissionsText(permissions int) string {
 
 	return strings.TrimRight(result, ", ")
 }
+
+func stringSliceMatches(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	for _, itemA := range a {
+		if !stringSliceContains(itemA, b) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func stringSliceContains(a string, b []string) bool {
+	for _, item := range b {
+		if item == a {
+			return true
+		}
+	}
+
+	return false
+}

@@ -22,6 +22,7 @@ const (
 	ActionTypeChannelCreate actionType = "discord_channel_create"
 	ActionTypeRoleCreate    actionType = "discord_role_create"
 	ActionTypeGuildUpdate   actionType = "discord_guild_update"
+	ActionTypeMemberUpdate  actionType = "discord_member_update"
 )
 
 func (t actionType) String() string {
@@ -81,7 +82,12 @@ func (t entityType) String(value string) string {
 	case EntityTypeUser:
 		return "<@" + value + "> #" + value
 	case EntityTypeRole:
-		return "<@&" + value + "> #" + value
+		values := strings.Split(value, ",")
+		var result string
+		for _, item := range values {
+			result += "<@&" + item + "> #" + item
+		}
+		return strings.Trim(result, ", ")
 	case EntityTypeGuild:
 		return "Server"
 	case EntityTypeChannel:
@@ -208,14 +214,19 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 		}
 		return user.String() + " #" + value
 	case EntityTypeRole:
-		role, err := state.Role(guildID, value)
-		if err != nil {
-			role = &discordgo.Role{
-				ID:   value,
-				Name: "N/A",
+		values := strings.Split(value, ",")
+		var result string
+		for _, item := range values {
+			role, err := state.Role(guildID, item)
+			if err != nil {
+				role = &discordgo.Role{
+					ID:   value,
+					Name: "N/A",
+				}
 			}
+			result += role.Name + " #" + value
 		}
-		return role.Name + " #" + value
+		return strings.Trim(result, ", ")
 	case EntityTypeGuild:
 		return "Server"
 	case EntityTypeChannel:
@@ -232,7 +243,7 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 		return value
 	}
 
-	return titleify(string(t)) + ": #" + value
+	return t.String(value)
 }
 
 func titleify(input string) string {

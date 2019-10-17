@@ -86,7 +86,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		if option.NewValue != "" {
 			embedOptionValue += option.Type.String(option.NewValue)
 		} else {
-			embedOptionValue += "N/A"
+			embedOptionValue += "_/_"
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
