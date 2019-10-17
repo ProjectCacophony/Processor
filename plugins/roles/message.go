@@ -6,6 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -76,6 +77,7 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 		categoryList += fmt.Sprintf("\n\n**%s**%s\nRoles: %s", category.Name, limitText, strings.Join(roleNames, ", "))
 	}
 
+	discord.Delete(event.Redis(), event.Discord(), event.ChannelID, event.MessageID, event.DM())
 	_, err = event.Respond("roles.message",
 		"uncategorizedRolesList", strings.Join(roleNames, ", "),
 		"categoryList", categoryList,
