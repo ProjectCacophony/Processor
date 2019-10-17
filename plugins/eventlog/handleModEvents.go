@@ -46,7 +46,7 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			TargetType:                 EntityTypeChannel,
 			TargetValue:                event.ChannelCreate.ID,
 			WaitingForAuditLogBackfill: true,
-			Options:                    optionsForChannel(event.ChannelCreate.Channel),
+			Options:                    optionsForChannel(nil, event.ChannelCreate.Channel),
 		}
 	case events.GuildRoleCreateType:
 		item = &Item{
@@ -55,7 +55,7 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			TargetType:                 EntityTypeRole,
 			TargetValue:                event.GuildRoleCreate.Role.ID,
 			WaitingForAuditLogBackfill: true,
-			Options:                    optionsForRole(event.GuildRoleCreate.Role),
+			Options:                    optionsForRole(nil, event.GuildRoleCreate.Role),
 		}
 	case events.CacophonyDiffGuild:
 		options := optionsForGuild(event.DiffGuild.Old, event.DiffGuild.New)

@@ -8,127 +8,220 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func optionsForChannel(channel *discordgo.Channel) []ItemOption {
+func optionsForChannel(old, new *discordgo.Channel) []ItemOption {
 	var options []ItemOption
-	if channel == nil {
-		return options
-	}
 
-	if channel.Name != "" {
-		options = append(options, ItemOption{
-			Key:      "name",
-			NewValue: channel.Name,
-			Type:     EntityTypeText,
-		})
+	if (old != nil && old.Name != "") || (old != nil && new != nil && old.Name != new.Name) || (old == nil && new != nil && new.Name != "") {
+		option := ItemOption{
+			Key:  "name",
+			Type: EntityTypeText,
+		}
+		if old != nil {
+			option.PreviousValue = old.Name
+		}
+		if new != nil {
+			option.NewValue = new.Name
+		}
+		options = append(options, option)
 	}
-	if channel.Topic != "" {
-		options = append(options, ItemOption{
-			Key:      "topic",
-			NewValue: channel.Topic,
-			Type:     EntityTypeText,
-		})
+	if (old != nil && old.Topic != "") || (old != nil && new != nil && old.Topic != new.Topic) || (old == nil && new != nil && new.Topic != "") {
+		option := ItemOption{
+			Key:  "topic",
+			Type: EntityTypeText,
+		}
+		if old != nil {
+			option.PreviousValue = old.Topic
+		}
+		if new != nil {
+			option.NewValue = new.Topic
+		}
+		options = append(options, option)
 	}
-	options = append(options, ItemOption{
-		Key:      "type",
-		NewValue: strconv.Itoa(int(channel.Type)),
-		Type:     EntityTypeChannelType,
-	})
-	if channel.NSFW {
-		options = append(options, ItemOption{
-			Key:      "nsfw",
-			NewValue: strconv.FormatBool(channel.NSFW),
-			Type:     EntityTypeBool,
-		})
+	if (old != nil && new == nil) || (old != nil && new != nil && old.Type != new.Type) || (old == nil && new != nil) {
+		option := ItemOption{
+			Key:  "type",
+			Type: EntityTypeChannelType,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(int(old.Type))
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(int(new.Type))
+		}
+		options = append(options, option)
 	}
-	if channel.Bitrate > 0 {
-		options = append(options, ItemOption{
-			Key:      "bitrate",
-			NewValue: strconv.Itoa(channel.Bitrate),
-			Type:     EntityTypeNumber,
-		})
+	if (old != nil && old.NSFW) || (old != nil && new != nil && old.NSFW != new.NSFW) || (old == nil && new != nil && new.NSFW) {
+		option := ItemOption{
+			Key:  "nsfw",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.NSFW)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.NSFW)
+		}
+		options = append(options, option)
 	}
-	if len(channel.PermissionOverwrites) > 0 {
-		permissionOverwrites, err := json.Marshal(channel.PermissionOverwrites)
-		if err == nil {
-			options = append(options, ItemOption{
-				Key:      "permissions",
-				NewValue: string(permissionOverwrites),
-				Type:     EntityTypePermissionOverwrites,
-			})
+	if (old != nil && old.Bitrate > 0) || (old != nil && new != nil && old.Bitrate != new.Bitrate) || (old == nil && new != nil && new.Bitrate > 0) {
+		option := ItemOption{
+			Key:  "bitrate",
+			Type: EntityTypeNumber,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.Bitrate)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.Bitrate)
+		}
+		options = append(options, option)
+	}
+	if (old != nil && len(old.PermissionOverwrites) > 0) || (old != nil && new != nil && len(old.PermissionOverwrites) != len(new.PermissionOverwrites)) || (old == nil && new != nil && len(new.PermissionOverwrites) > 0) {
+		var oldPermissionOverwrites, newPermissionOverwrites []byte
+		if old != nil {
+			oldPermissionOverwrites, _ = json.Marshal(old.PermissionOverwrites)
+		}
+		if new != nil {
+			newPermissionOverwrites, _ = json.Marshal(new.PermissionOverwrites)
+		}
+		if len(oldPermissionOverwrites) > 0 || len(newPermissionOverwrites) > 0 {
+			option := ItemOption{
+				Key:  "permissions",
+				Type: EntityTypePermissionOverwrites,
+			}
+			if old != nil {
+				option.PreviousValue = string(oldPermissionOverwrites)
+			}
+			if new != nil {
+				option.NewValue = string(newPermissionOverwrites)
+			}
+			options = append(options, option)
 		}
 	}
-	if channel.UserLimit > 0 {
-		options = append(options, ItemOption{
-			Key:      "user_limit",
-			NewValue: strconv.Itoa(channel.UserLimit),
-			Type:     EntityTypeNumber,
-		})
+	if (old != nil && old.UserLimit > 0) || (old != nil && new != nil && old.UserLimit != new.UserLimit) || (old == nil && new != nil && new.UserLimit > 0) {
+		option := ItemOption{
+			Key:  "user_limit",
+			Type: EntityTypeNumber,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.UserLimit)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.UserLimit)
+		}
+		options = append(options, option)
 	}
-	if channel.ParentID != "" {
-		options = append(options, ItemOption{
-			Key:      "parent",
-			NewValue: channel.ParentID,
-			Type:     EntityTypeChannel,
-		})
+	if (old != nil && old.ParentID != "") || (old != nil && new != nil && old.ParentID != new.ParentID) || (old == nil && new != nil && new.ParentID != "") {
+		option := ItemOption{
+			Key:  "parent",
+			Type: EntityTypeChannel,
+		}
+		if old != nil {
+			option.PreviousValue = old.ParentID
+		}
+		if new != nil {
+			option.NewValue = new.ParentID
+		}
+		options = append(options, option)
 	}
-	if channel.RateLimitPerUser > 0 {
-		options = append(options, ItemOption{
-			Key:      "parent",
-			NewValue: strconv.Itoa(channel.RateLimitPerUser),
-			Type:     EntityTypeNumber,
-		})
+	if (old != nil && old.RateLimitPerUser > 0) || (old != nil && new != nil && old.RateLimitPerUser != new.RateLimitPerUser) || (old == nil && new != nil && new.RateLimitPerUser > 0) {
+		option := ItemOption{
+			Key:  "parent",
+			Type: EntityTypeNumber,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.RateLimitPerUser)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.RateLimitPerUser)
+		}
+		options = append(options, option)
 	}
 
 	return options
 }
 
-func optionsForRole(role *discordgo.Role) []ItemOption {
+func optionsForRole(old, new *discordgo.Role) []ItemOption {
 	var options []ItemOption
-	if role == nil {
-		return options
-	}
 
-	if role.Name != "" {
-		options = append(options, ItemOption{
-			Key:      "name",
-			NewValue: role.Name,
-			Type:     EntityTypeText,
-		})
+	if (old != nil && old.Name != "") || (old != nil && new != nil && old.Name != new.Name) || (old == nil && new != nil && new.Name != "") {
+		option := ItemOption{
+			Key:  "name",
+			Type: EntityTypeText,
+		}
+		if old != nil {
+			option.PreviousValue = old.Name
+		}
+		if new != nil {
+			option.NewValue = new.Name
+		}
+		options = append(options, option)
 	}
-	if role.Managed {
-		options = append(options, ItemOption{
-			Key:      "managed",
-			NewValue: strconv.FormatBool(role.Managed),
-			Type:     EntityTypeBool,
-		})
+	if (old != nil && old.Managed) || (old != nil && new != nil && old.Managed != new.Managed) || (old == nil && new != nil && new.Managed) {
+		option := ItemOption{
+			Key:  "managed",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Managed)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Managed)
+		}
+		options = append(options, option)
 	}
-	if role.Mentionable {
-		options = append(options, ItemOption{
-			Key:      "mentionable",
-			NewValue: strconv.FormatBool(role.Mentionable),
-			Type:     EntityTypeBool,
-		})
+	if (old != nil && old.Mentionable) || (old != nil && new != nil && old.Mentionable != new.Mentionable) || (old == nil && new != nil && new.Mentionable) {
+		option := ItemOption{
+			Key:  "mentionable",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Mentionable)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Mentionable)
+		}
+		options = append(options, option)
 	}
-	if role.Hoist {
-		options = append(options, ItemOption{
-			Key:      "hoist",
-			NewValue: strconv.FormatBool(role.Hoist),
-			Type:     EntityTypeBool,
-		})
+	if (old != nil && old.Hoist) || (old != nil && new != nil && old.Hoist != new.Hoist) || (old == nil && new != nil && new.Hoist) {
+		option := ItemOption{
+			Key:  "hoist",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Hoist)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Hoist)
+		}
+		options = append(options, option)
 	}
-	if role.Color > 0 {
-		options = append(options, ItemOption{
-			Key:      "color",
-			NewValue: strconv.Itoa(role.Color),
-			Type:     EntityTypeColor,
-		})
+	if (old != nil && old.Color > 0) || (old != nil && new != nil && old.Color != new.Color) || (old == nil && new != nil && new.Color > 0) {
+		option := ItemOption{
+			Key:           "color",
+			PreviousValue: strconv.Itoa(old.Color),
+			Type:          EntityTypeColor,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.Color)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.Color)
+		}
+		options = append(options, option)
 	}
-	if role.Permissions > 0 {
-		options = append(options, ItemOption{
-			Key:      "permission",
-			NewValue: strconv.Itoa(role.Permissions),
-			Type:     EntityTypePermission,
-		})
+	if (old != nil && old.Permissions > 0) || (old != nil && new != nil && old.Permissions != new.Permissions) || (old == nil && new != nil && new.Permissions > 0) {
+		option := ItemOption{
+			Key:  "permission",
+			Type: EntityTypePermission,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.Permissions)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.Permissions)
+		}
+		options = append(options, option)
 	}
 
 	return options
