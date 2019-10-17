@@ -22,32 +22,12 @@ func CreateItem(db *gorm.DB, publisher *events.Publisher, item *Item) error {
 	// decorate item
 	item.UUID = uuid.New()
 
-	// prepare event
-	event, err := events.New(events.CacophonyEventlogUpdate)
-	if err != nil {
-		return err
-	}
-	event.EventlogUpdate = &events.EventlogUpdate{
-		GuildID: item.GuildID,
-	}
-	event.GuildID = item.GuildID
-
-	err = db.Create(&item).Error
+	err := db.Create(&item).Error
 	if err != nil {
 		return err
 	}
 
-	event.EventlogUpdate.ItemID = item.ID
-
-	err, recoverable := publisher.Publish(context.Background(), event)
-	if err != nil && !recoverable {
-		raven.CaptureError(err, nil)
-		zap.L().Fatal(
-			"received unrecoverable error while publishing \"create item\" message",
-			zap.Error(err),
-		)
-	}
-	return err
+	return publishUpdateEvent(publisher, item.GuildID, item.ID)
 }
 
 func CreateOptionForItem(db *gorm.DB, publisher *events.Publisher, id uint, guildID string, option *ItemOption) error {
@@ -57,34 +37,16 @@ func CreateOptionForItem(db *gorm.DB, publisher *events.Publisher, id uint, guil
 	if option == nil {
 		return errors.New("option cannot be empty")
 	}
+	option.ItemID = id
 
-	// prepare event
-	event, err := events.New(events.CacophonyEventlogUpdate)
-	if err != nil {
-		return err
-	}
-	event.EventlogUpdate = &events.EventlogUpdate{
-		ItemID:  id,
-		GuildID: guildID,
-	}
-	event.GuildID = guildID
-
-	err = db.
+	err := db.
 		Set("gorm:insert_option", "ON CONFLICT (\"item_id\", \"author_id\", \"key\") DO UPDATE SET \"updated_at\" = EXCLUDED.updated_at, \"previous_value\" = EXCLUDED.previous_value, \"new_value\" = EXCLUDED.new_value, \"type\" = EXCLUDED.type").
 		Create(&option).Error
 	if err != nil {
 		return err
 	}
 
-	err, recoverable := publisher.Publish(context.Background(), event)
-	if err != nil && !recoverable {
-		raven.CaptureError(err, nil)
-		zap.L().Fatal(
-			"received unrecoverable error while publishing \"create option for item\" message",
-			zap.Error(err),
-		)
-	}
-	return err
+	return publishUpdateEvent(publisher, guildID, id)
 }
 
 func GetItem(db *gorm.DB, id uint) (*Item, error) {
@@ -121,10 +83,56 @@ func FindManyItem(db *gorm.DB, limit int, where string, args ...interface{}) ([]
 }
 
 func saveItemMessage(db *gorm.DB, id uint, messageID, channelID string) error {
+	if id == 0 {
+		return errors.New("id cannot be empty")
+	}
+
 	return db.Model(&Item{}).Where("id = ?", id).Updates(Item{
 		LogMessage: ItemLogMessage{
 			MessageID: messageID,
 			ChannelID: channelID,
 		},
 	}).Error
+}
+
+func markItemAsReverted(db *gorm.DB, publisher *events.Publisher, guildID string, id uint) error {
+	if id == 0 {
+		return errors.New("id cannot be empty")
+	}
+
+	err := db.Model(&Item{}).Where("id = ?", id).Updates(Item{
+		Reverted: true,
+	}).Error
+	if err != nil {
+		return err
+	}
+
+	return publishUpdateEvent(publisher, guildID, id)
+}
+
+func publishUpdateEvent(publisher *events.Publisher, guildID string, itemID uint) error {
+	if publisher == nil {
+		return nil
+	}
+
+	// prepare event
+	event, err := events.New(events.CacophonyEventlogUpdate)
+	if err != nil {
+		return err
+	}
+	event.EventlogUpdate = &events.EventlogUpdate{
+		GuildID: guildID,
+		ItemID:  itemID,
+	}
+	event.GuildID = guildID
+
+	err, recoverable := publisher.Publish(context.Background(), event)
+	if err != nil && !recoverable {
+		raven.CaptureError(err, nil)
+		zap.L().Fatal(
+			"received unrecoverable error while publishing \"create item\" message",
+			zap.Error(err),
+		)
+	}
+	return err
 }

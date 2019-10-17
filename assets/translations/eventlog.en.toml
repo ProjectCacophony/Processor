@@ -42,3 +42,6 @@ You can enable it using `{{.prefix}}eventlog enable`\
 "eventlog.edit-reason.ask" = "\
 **<@{{.userID}}> please tell me the reason for `#{{.item.UUID}}`.**\n\
 Or say `cancel` to stop the operation."
+
+# Revert
+"eventlog.revert.reason" = "{{.user.String}} #{{.user.ID}} reverting Eventlog #{{.item.UUID}}"

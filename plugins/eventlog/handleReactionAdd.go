@@ -20,9 +20,11 @@ func (p *Plugin) handleReactionAdd(event *events.Event) bool {
 		return false
 	}
 
+	var item *Item
 	switch event.MessageReactionAdd.Emoji.Name {
-	case reactionEditReason:
-		item, err := FindItem(event.DB(),
+	case reactionEditReason,
+		reactionRevert:
+		item, err = FindItem(event.DB(),
 			"log_message_channel_id = ? AND log_message_message_id = ?",
 			event.MessageReactionAdd.ChannelID, event.MessageReactionAdd.MessageID,
 		)
@@ -30,11 +32,20 @@ func (p *Plugin) handleReactionAdd(event *events.Event) bool {
 			event.ExceptSilent(err)
 			return false
 		}
-		if item == nil {
-			return false
-		}
+	default:
+		return false
+	}
 
+	if item == nil {
+		return false
+	}
+
+	switch event.MessageReactionAdd.Emoji.Name {
+	case reactionEditReason:
 		p.handleReactionEditReason(event, item)
+		return true
+	case reactionRevert:
+		p.handleReactionRevert(event, item)
 		return true
 	}
 
@@ -42,6 +53,28 @@ func (p *Plugin) handleReactionAdd(event *events.Event) bool {
 }
 
 func (p *Plugin) handleReactionEditReason(event *events.Event, item *Item) {
+	defer func() {
+		// remove reaction if possible
+		if permissions.DiscordManageMessages.Match(
+			event.State(),
+			p.db,
+			event.BotUserID,
+			event.MessageReactionAdd.ChannelID,
+			false,
+		) {
+			err := event.Discord().Client.MessageReactionRemove(
+				event.MessageReactionAdd.ChannelID,
+				event.MessageReactionAdd.MessageID,
+				event.MessageReactionAdd.Emoji.APIName(),
+				event.MessageReactionAdd.UserID,
+			)
+			if err != nil {
+				event.ExceptSilent(err)
+				return
+			}
+		}
+	}()
+
 	messages, err := event.Send(
 		event.ChannelID,
 		"eventlog.edit-reason.ask",
@@ -75,26 +108,6 @@ func (p *Plugin) handleReactionEditReason(event *events.Event, item *Item) {
 	if err != nil {
 		event.ExceptSilent(err)
 	}
-
-	// remove reaction if possible
-	if permissions.DiscordManageMessages.Match(
-		event.State(),
-		p.db,
-		event.BotUserID,
-		event.MessageReactionAdd.ChannelID,
-		false,
-	) {
-		err = event.Discord().Client.MessageReactionRemove(
-			event.MessageReactionAdd.ChannelID,
-			event.MessageReactionAdd.MessageID,
-			event.MessageReactionAdd.Emoji.APIName(),
-			event.MessageReactionAdd.UserID,
-		)
-		if err != nil {
-			event.ExceptSilent(err)
-			return
-		}
-	}
 }
 
 func (p *Plugin) handleQuestionnaireEditReason(event *events.Event) {
@@ -126,16 +139,13 @@ func (p *Plugin) handleQuestionnaireEditReason(event *events.Event) {
 		return
 	}
 
-	if event.MessageCreate.Content == "" {
+	if event.MessageCreate.Content == "" ||
+		strings.ToLower(event.MessageCreate.Content) == "cancel" {
+		cleanup()
 		return
 	}
 
-	if strings.ToLower(event.MessageCreate.Content) == "cancel" {
-		cleanup()
-	}
-
 	err := CreateOptionForItem(event.DB(), event.Publisher(), uint(itemID), event.GuildID, &ItemOption{
-		ItemID:   uint(itemID),
 		AuthorID: event.UserID,
 		Key:      "reason",
 		NewValue: event.MessageCreate.Content,
@@ -151,4 +161,45 @@ func (p *Plugin) handleQuestionnaireEditReason(event *events.Event) {
 
 		cleanup()
 	}()
+}
+
+func (p *Plugin) handleReactionRevert(event *events.Event, item *Item) {
+	defer func() {
+		// remove reaction if possible
+		if permissions.DiscordManageMessages.Match(
+			event.State(),
+			p.db,
+			event.BotUserID,
+			event.MessageReactionAdd.ChannelID,
+			false,
+		) {
+			err := event.Discord().Client.MessageReactionRemove(
+				event.MessageReactionAdd.ChannelID,
+				event.MessageReactionAdd.MessageID,
+				event.MessageReactionAdd.Emoji.APIName(),
+				event.MessageReactionAdd.UserID,
+			)
+			if err != nil {
+				event.ExceptSilent(err)
+				return
+			}
+		}
+	}()
+
+	if !item.ActionType.Revertable() {
+		return
+	}
+
+	err := item.Revert(event)
+	if err != nil {
+		event.ExceptSilent(err)
+		return
+	}
+
+	event.Discord().Client.MessageReactionRemove(
+		event.MessageReactionAdd.ChannelID,
+		event.MessageReactionAdd.MessageID,
+		event.MessageReactionAdd.Emoji.APIName(),
+		event.BotUserID,
+	)
 }

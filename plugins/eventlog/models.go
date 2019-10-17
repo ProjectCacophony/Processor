@@ -13,7 +13,7 @@ import (
 var (
 	discordColourGreen  = discord.HexToColorCode("#73d016")
 	discordColourOrange = discord.HexToColorCode("#ffb80a")
-	discordColourRed    = discord.HexToColorCode("#b22222") // nolint: deadcode, unused, varcheck // TODO: use it for destructive actions
+	discordColourRed    = discord.HexToColorCode("#b22222")
 )
 
 type actionType string
@@ -34,6 +34,7 @@ type Item struct {
 	TargetValue string
 
 	WaitingForAuditLogBackfill bool
+	Reverted                   bool
 
 	Options []ItemOption
 
@@ -75,7 +76,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 
 		embedOptionName += titleify(option.Key)
 
-		if optionAuthor != nil && !optionAuthor.Bot {
+		if optionAuthor != nil && !optionAuthor.Bot && optionAuthor.ID != option.NewValue {
 			embedOptionName += " By " + optionAuthor.String() + " #" + optionAuthor.ID
 		}
 
@@ -124,6 +125,10 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 				embed.Thumbnail.URL = user.AvatarURL("256")
 			}
 		}
+	}
+
+	if i.ActionType.Destructive() {
+		embed.Color = discordColourRed
 	}
 
 	if i.WaitingForAuditLogBackfill {
