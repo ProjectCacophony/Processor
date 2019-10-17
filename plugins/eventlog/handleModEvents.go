@@ -57,6 +57,20 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 			Options:                    optionsForRole(event.GuildRoleCreate.Role),
 		}
+	case events.CacophonyDiffGuild:
+		options := optionsForGuild(event.DiffGuild.Old, event.DiffGuild.New)
+		if len(options) <= 0 {
+			return
+		}
+
+		item = &Item{
+			GuildID:                    event.GuildID,
+			ActionType:                 ActionTypeGuildUpdate,
+			TargetType:                 EntityTypeGuild,
+			TargetValue:                event.GuildID,
+			WaitingForAuditLogBackfill: true,
+			Options:                    options,
+		}
 	}
 
 	if item != nil {

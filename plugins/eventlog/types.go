@@ -21,6 +21,7 @@ const (
 	ActionTypeDiscordLeave  actionType = "discord_leave"
 	ActionTypeChannelCreate actionType = "discord_channel_create"
 	ActionTypeRoleCreate    actionType = "discord_role_create"
+	ActionTypeGuildUpdate   actionType = "discord_guild_update"
 )
 
 func (t actionType) String() string {
@@ -54,15 +55,20 @@ func (t actionType) Revertable() bool {
 
 // Entities
 const (
-	EntityTypeUser                 entityType = "discord_user"
-	EntityTypeRole                 entityType = "discord_role"
-	EntityTypeGuild                entityType = "discord_guild"
-	EntityTypeChannel              entityType = "discord_channel"
-	EntityTypePermission           entityType = "discord_permission"
-	EntityTypeColor                entityType = "discord_color"
-	EntityTypeChannelType          entityType = "discord_channel_type"
-	EntityTypePermissionOverwrites entityType = "discord_permission_overwrites"
+	EntityTypeUser                      entityType = "discord_user"
+	EntityTypeRole                      entityType = "discord_role"
+	EntityTypeGuild                     entityType = "discord_guild"
+	EntityTypeChannel                   entityType = "discord_channel"
+	EntityTypePermission                entityType = "discord_permission"
+	EntityTypeColor                     entityType = "discord_color"
+	EntityTypeChannelType               entityType = "discord_channel_type"
+	EntityTypePermissionOverwrites      entityType = "discord_permission_overwrites"
+	EntityTypeDiscordInvite             entityType = "discord_invite"
+	EntityTypeGuildVerificationLevel    entityType = "discord_guild_verification_level"
+	EntityTypeGuildExplicitContentLevel entityType = "discord_guild_explicit_content_level"
+	EntityTypeGuildMfaLevel             entityType = "discord_guild_mfa_level"
 
+	EntityTypeImageURL    entityType = "cacophony_image_url" // TODO: cache?
 	EntityTypeMessageCode entityType = "cacophony_message_code"
 
 	EntityTypeText   entityType = "text"
@@ -148,6 +154,43 @@ func (t entityType) String(value string) string {
 		parsed, _ := strconv.Atoi(value)
 
 		return permissionsText(parsed)
+	case EntityTypeDiscordInvite:
+		return "discord.gg/" + value
+	case EntityTypeImageURL:
+		return value
+	case EntityTypeGuildVerificationLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.VerificationLevel(parsed) {
+		case discordgo.VerificationLevelNone:
+			return "None"
+		case discordgo.VerificationLevelLow:
+			return "Low"
+		case discordgo.VerificationLevelMedium:
+			return "Medium"
+		case discordgo.VerificationLevelHigh:
+			return "High"
+		}
+	case EntityTypeGuildExplicitContentLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.ExplicitContentFilterLevel(parsed) {
+		case discordgo.ExplicitContentFilterDisabled:
+			return "Disabled"
+		case discordgo.ExplicitContentFilterMembersWithoutRoles:
+			return "Members without roles"
+		case discordgo.ExplicitContentFilterAllMembers:
+			return "All member"
+		}
+	case EntityTypeGuildMfaLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.MfaLevel(parsed) {
+		case discordgo.MfaLevelNone:
+			return "None"
+		case discordgo.MfaLevelElevated:
+			return "Elevated"
+		}
 	}
 
 	return titleify(string(t)) + ": #" + value

@@ -132,3 +132,190 @@ func optionsForRole(role *discordgo.Role) []ItemOption {
 
 	return options
 }
+
+func optionsForGuild(old, new *discordgo.Guild) []ItemOption {
+	var options []ItemOption
+	if old == nil || new == nil {
+		return options
+	}
+
+	if old.Name != new.Name {
+		options = append(options, ItemOption{
+			Key:           "name",
+			PreviousValue: old.Name,
+			NewValue:      new.Name,
+			Type:          EntityTypeText,
+		})
+	}
+	if old.Icon != new.Icon {
+		var oldIcon, newIcon string
+		if old.Icon != "" {
+			oldIcon = old.IconURL()
+		}
+		if new.Icon != "" {
+			newIcon = new.IconURL()
+		}
+		options = append(options, ItemOption{
+			Key:           "icon",
+			PreviousValue: oldIcon,
+			NewValue:      newIcon,
+			Type:          EntityTypeImageURL,
+		})
+	}
+	if old.Region != new.Region {
+		options = append(options, ItemOption{
+			Key:           "region",
+			PreviousValue: old.Region,
+			NewValue:      new.Region,
+			Type:          EntityTypeText,
+		})
+	}
+	if old.AfkChannelID != new.AfkChannelID {
+		options = append(options, ItemOption{
+			Key:           "afk_channel",
+			PreviousValue: old.AfkChannelID,
+			NewValue:      new.AfkChannelID,
+			Type:          EntityTypeChannel,
+		})
+	}
+	// TODO: not sent with normal state data?
+	// if old.EmbedChannelID != new.EmbedChannelID {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "embed_channel",
+	// 		PreviousValue: old.EmbedChannelID,
+	// 		NewValue:      new.EmbedChannelID,
+	// 		Type:          EntityTypeChannel,
+	// 	})
+	// }
+	if old.OwnerID != new.OwnerID {
+		options = append(options, ItemOption{
+			Key:           "owner",
+			PreviousValue: old.OwnerID,
+			NewValue:      new.OwnerID,
+			Type:          EntityTypeUser,
+		})
+	}
+	if old.Splash != new.Splash {
+		var oldSplash, newSplash string
+		if old.Splash != "" {
+			oldSplash = discordgo.EndpointGuildSplash(old.ID, old.Splash)
+		}
+		if new.Splash != "" {
+			newSplash = discordgo.EndpointGuildSplash(new.ID, new.Splash)
+		}
+		options = append(options, ItemOption{
+			Key:           "splash",
+			PreviousValue: oldSplash,
+			NewValue:      newSplash,
+			Type:          EntityTypeImageURL,
+		})
+	}
+	if old.AfkTimeout != new.AfkTimeout {
+		options = append(options, ItemOption{
+			Key:           "afk_timeout",
+			PreviousValue: strconv.Itoa(old.AfkTimeout),
+			NewValue:      strconv.Itoa(new.AfkTimeout),
+			Type:          EntityTypeNumber, // TODO: duration type? seconds or what unit?
+		})
+	}
+	if old.VerificationLevel != new.VerificationLevel {
+		options = append(options, ItemOption{
+			Key:           "verification_level",
+			PreviousValue: strconv.Itoa(int(old.VerificationLevel)),
+			NewValue:      strconv.Itoa(int(new.VerificationLevel)),
+			Type:          EntityTypeGuildVerificationLevel,
+		})
+	}
+	// TODO: not sent with normal state data?
+	// if old.EmbedEnabled != new.EmbedEnabled {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "embed_enabled",
+	// 		PreviousValue: strconv.FormatBool(old.EmbedEnabled),
+	// 		NewValue:      strconv.FormatBool(new.EmbedEnabled),
+	// 		Type:          EntityTypeBool,
+	// 	})
+	// }
+	if old.DefaultMessageNotifications != new.DefaultMessageNotifications {
+		options = append(options, ItemOption{
+			Key:           "default_message_notifications",
+			PreviousValue: strconv.Itoa(old.DefaultMessageNotifications),
+			NewValue:      strconv.Itoa(new.DefaultMessageNotifications),
+			Type:          EntityTypeNumber,
+		})
+	}
+	if old.ExplicitContentFilter != new.ExplicitContentFilter {
+		options = append(options, ItemOption{
+			Key:           "explicit_content_filter",
+			PreviousValue: strconv.Itoa(int(old.ExplicitContentFilter)),
+			NewValue:      strconv.Itoa(int(new.ExplicitContentFilter)),
+			Type:          EntityTypeGuildExplicitContentLevel,
+		})
+	}
+	if old.MfaLevel != new.MfaLevel {
+		options = append(options, ItemOption{
+			Key:           "mfa_level",
+			PreviousValue: strconv.Itoa(int(old.MfaLevel)),
+			NewValue:      strconv.Itoa(int(new.MfaLevel)),
+			Type:          EntityTypeGuildMfaLevel,
+		})
+	}
+	// TODO: not sent with normal state data?
+	// if old.WidgetEnabled != new.WidgetEnabled {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "widget_enabled",
+	// 		PreviousValue: strconv.FormatBool(old.WidgetEnabled),
+	// 		NewValue:      strconv.FormatBool(new.WidgetEnabled),
+	// 		Type:          EntityTypeBool,
+	// 	})
+	// }
+	// TODO: not sent with normal state data?
+	// if old.WidgetChannelID != new.WidgetChannelID {
+	// 	options = append(options, ItemOption{
+	// 		Key:           "widget_channel_id",
+	// 		PreviousValue: old.WidgetChannelID,
+	// 		NewValue:      new.WidgetChannelID,
+	// 		Type:          EntityTypeChannel,
+	// 	})
+	// }
+	if old.SystemChannelID != new.SystemChannelID {
+		options = append(options, ItemOption{
+			Key:           "system_channel_id",
+			PreviousValue: old.SystemChannelID,
+			NewValue:      new.SystemChannelID,
+			Type:          EntityTypeChannel,
+		})
+	}
+	if old.VanityURLCode != new.VanityURLCode {
+		options = append(options, ItemOption{
+			Key:           "vanity_url_code",
+			PreviousValue: old.VanityURLCode,
+			NewValue:      new.VanityURLCode,
+			Type:          EntityTypeDiscordInvite,
+		})
+	}
+	if old.Description != new.Description {
+		options = append(options, ItemOption{
+			Key:           "description",
+			PreviousValue: old.Description,
+			NewValue:      new.Description,
+			Type:          EntityTypeText,
+		})
+	}
+	if old.Banner != new.Banner {
+		var oldBanner, newBanner string
+		if old.Banner != "" {
+			oldBanner = discordgo.EndpointGuildBanner(old.ID, old.Banner)
+		}
+		if new.Banner != "" {
+			newBanner = discordgo.EndpointGuildBanner(new.ID, new.Banner)
+		}
+		options = append(options, ItemOption{
+			Key:           "banner",
+			PreviousValue: oldBanner,
+			NewValue:      newBanner,
+			Type:          EntityTypeImageURL,
+		})
+	}
+
+	return options
+}
