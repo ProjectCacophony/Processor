@@ -27,15 +27,15 @@ services:
       - "6379:6379"
 
   # The Gateway Receives Discord Events and sends them to the AMQP Broker
-  # gateway:
-  #   image: registry.gitlab.com/cacophony/gateway:latest
-  #   environment:
-  #     PORT: "8000"
-  #     ENVIRONMENT: "development"
-  #     AMQP_DSN: "amqp://guest:guest@rabbitmq:5672/"
-  #     REDIS_ADDRESS: "redis:6379"
-  #   env_file:
-  #     - env.list # should contain DISCORD_TOKEN=<your Discord Token>
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
+  gateway:
+    image: registry.gitlab.com/cacophony/gateway:latest
+    environment:
+      PORT: "8000"
+      ENVIRONMENT: "development"
+      AMQP_DSN: "amqp://guest:guest@rabbitmq:5672/"
+      REDIS_ADDRESS: "redis:6379"
+    env_file:
+      - env.list # should contain DISCORD_TOKEN=<your Discord Token>
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
