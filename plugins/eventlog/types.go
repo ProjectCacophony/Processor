@@ -25,6 +25,8 @@ const (
 	ActionTypeMemberUpdate  actionType = "discord_member_update"
 	ActionTypeChannelUpdate actionType = "discord_channel_update"
 	ActionTypeChannelDelete actionType = "discord_channel_delete"
+	ActionTypeRoleUpdate    actionType = "discord_role_update"
+	ActionTypeRoleDelete    actionType = "discord_role_delete"
 )
 
 func (t actionType) String() string {

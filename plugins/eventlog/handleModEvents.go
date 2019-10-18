@@ -105,6 +105,27 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 		if event.DiffChannel.New == nil {
 			item.ActionType = ActionTypeChannelDelete
 		}
+	case events.CacophonyDiffRole:
+		options := optionsForRole(event.DiffRole.Old, event.DiffRole.New)
+		if event.DiffRole.New == nil {
+			options = optionsForRole(nil, event.DiffRole.Old)
+		}
+		if len(options) <= 0 {
+			return
+		}
+
+		item = &Item{
+			GuildID:                    event.GuildID,
+			ActionType:                 ActionTypeRoleUpdate,
+			TargetType:                 EntityTypeRole,
+			TargetValue:                event.DiffRole.Old.ID,
+			WaitingForAuditLogBackfill: true,
+			Options:                    options,
+		}
+		if event.DiffRole.New == nil {
+			item.ActionType = ActionTypeRoleDelete
+		}
+
 	}
 
 	if item != nil {
