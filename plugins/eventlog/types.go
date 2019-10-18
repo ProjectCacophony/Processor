@@ -27,6 +27,9 @@ const (
 	ActionTypeChannelDelete actionType = "discord_channel_delete"
 	ActionTypeRoleUpdate    actionType = "discord_role_update"
 	ActionTypeRoleDelete    actionType = "discord_role_delete"
+	ActionTypeEmojiCreate   actionType = "discord_emoji_create"
+	ActionTypeEmojiUpdate   actionType = "discord_emoji_update"
+	ActionTypeEmojiDelete   actionType = "discord_emoji_delete"
 )
 
 func (t actionType) String() string {
@@ -64,6 +67,7 @@ const (
 	EntityTypeRole                      entityType = "discord_role"
 	EntityTypeGuild                     entityType = "discord_guild"
 	EntityTypeChannel                   entityType = "discord_channel"
+	EntityTypeEmoji                     entityType = "discord_emoji" // TODO: implement formatting
 	EntityTypePermission                entityType = "discord_permission"
 	EntityTypeColor                     entityType = "discord_color"
 	EntityTypeChannelType               entityType = "discord_channel_type"

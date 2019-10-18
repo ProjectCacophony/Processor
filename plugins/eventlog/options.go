@@ -444,6 +444,50 @@ func optionsForMember(old, new *discordgo.Member) []ItemOption {
 	return filterEqualOptions(options)
 }
 
+func optionsForEmoji(old, new *discordgo.Emoji) []ItemOption {
+	var options []ItemOption
+
+	option := ItemOption{
+		Key:  "name",
+		Type: EntityTypeText,
+	}
+	if old != nil {
+		option.PreviousValue = old.Name
+	}
+	if new != nil {
+		option.NewValue = new.Name
+	}
+	options = append(options, option)
+
+	option = ItemOption{
+		Key:  "roles",
+		Type: EntityTypeRole,
+	}
+	if old != nil {
+		option.PreviousValue = strings.Join(old.Roles, ",")
+	}
+	if new != nil {
+		option.NewValue = strings.Join(new.Roles, ",")
+	}
+	options = append(options, option)
+
+	if (old != nil && old.Managed) || (new != nil && new.Managed) {
+		option = ItemOption{
+			Key:  "managed",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Managed)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Managed)
+		}
+		options = append(options, option)
+	}
+
+	return filterEqualOptions(options)
+}
+
 func filterEqualOptions(input []ItemOption) []ItemOption {
 	result := make([]ItemOption, 0, len(input))
 	for _, item := range input {
