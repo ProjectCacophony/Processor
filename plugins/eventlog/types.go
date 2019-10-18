@@ -67,7 +67,7 @@ const (
 	EntityTypeRole                      entityType = "discord_role"
 	EntityTypeGuild                     entityType = "discord_guild"
 	EntityTypeChannel                   entityType = "discord_channel"
-	EntityTypeEmoji                     entityType = "discord_emoji" // TODO: implement formatting
+	EntityTypeEmoji                     entityType = "discord_emoji"
 	EntityTypePermission                entityType = "discord_permission"
 	EntityTypeColor                     entityType = "discord_color"
 	EntityTypeChannelType               entityType = "discord_channel_type"
@@ -85,7 +85,7 @@ const (
 	EntityTypeBool   entityType = "bool"
 )
 
-func (t entityType) String(value string) string {
+func (t entityType) String(state *state.State, guildID, value string) string {
 	switch t {
 	case EntityTypeUser:
 		return "<@" + value + "> #" + value
@@ -99,8 +99,14 @@ func (t entityType) String(value string) string {
 	case EntityTypeGuild:
 		return "Server"
 	case EntityTypeChannel:
-		// TODO: look up parent
-		return "<#" + value + "> #" + value
+		text := "<#" + value + "> #" + value
+
+		targetChannel, err := state.Channel(value)
+		if err == nil && targetChannel.ParentID != "" {
+			text = "<#" + targetChannel.ParentID + "> #" + targetChannel.ParentID + " / " + text
+		}
+
+		return text
 	case EntityTypeMessageCode:
 		return value
 	case EntityTypeText:
@@ -205,6 +211,16 @@ func (t entityType) String(value string) string {
 		case discordgo.MfaLevelElevated:
 			return "Elevated"
 		}
+	case EntityTypeEmoji:
+		guild, err := state.Guild(guildID)
+		if err == nil {
+			emoji := emojiSliceFindEmoji(value, guild.Emojis)
+			if emoji != nil {
+				return emoji.MessageFormat()
+			}
+		}
+
+		return "Emoji #" + value
 	}
 
 	return titleify(string(t)) + ": #" + value
@@ -235,8 +251,6 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 			result += role.Name + " #" + value
 		}
 		return strings.Trim(result, ", ")
-	case EntityTypeGuild:
-		return "Server"
 	case EntityTypeChannel:
 		channel, err := state.Channel(value)
 		if err != nil {
@@ -247,11 +261,9 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 		}
 		// TODO: look up parent
 		return channel.Name + " #" + value
-	case EntityTypeMessageCode:
-		return value
 	}
 
-	return t.String(value)
+	return t.String(state, guildID, value)
 }
 
 func titleify(input string) string {

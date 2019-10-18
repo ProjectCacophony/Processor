@@ -159,6 +159,7 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 				Options:                    optionsForEmoji(nil, emoji),
 			})
 		}
+
 	}
 
 	for _, item := range items {
