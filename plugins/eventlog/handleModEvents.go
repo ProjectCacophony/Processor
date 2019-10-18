@@ -85,6 +85,26 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 			Options:                    options,
 		}
+	case events.CacophonyDiffChannel:
+		options := optionsForChannel(event.DiffChannel.Old, event.DiffChannel.New)
+		if event.DiffChannel.New == nil {
+			options = optionsForChannel(nil, event.DiffChannel.Old)
+		}
+		if len(options) <= 0 {
+			return
+		}
+
+		item = &Item{
+			GuildID:                    event.GuildID,
+			ActionType:                 ActionTypeChannelUpdate,
+			TargetType:                 EntityTypeChannel,
+			TargetValue:                event.DiffChannel.Old.ID,
+			WaitingForAuditLogBackfill: true,
+			Options:                    options,
+		}
+		if event.DiffChannel.New == nil {
+			item.ActionType = ActionTypeChannelDelete
+		}
 	}
 
 	if item != nil {
