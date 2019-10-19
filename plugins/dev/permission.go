@@ -25,7 +25,7 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 		return
 	}
 
-	channel, err := event.FindChannel()
+	channel, err := event.FindAnyChannel()
 	if err != nil {
 		event.Except(err)
 		return
