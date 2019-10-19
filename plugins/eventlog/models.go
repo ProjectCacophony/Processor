@@ -81,12 +81,12 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 		}
 
 		if option.PreviousValue != "" {
-			embedOptionValue += option.Type.String(option.PreviousValue) + " ➡ "
+			embedOptionValue += option.Type.String(state, i.GuildID, option.PreviousValue) + " ➡ "
 		}
 		if option.NewValue != "" {
-			embedOptionValue += option.Type.String(option.NewValue)
+			embedOptionValue += option.Type.String(state, i.GuildID, option.NewValue)
 		} else {
-			embedOptionValue += "N/A"
+			embedOptionValue += "_/_"
 		}
 
 		embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
@@ -111,7 +111,7 @@ func (i *Item) Embed(state *state.State) *discordgo.MessageEmbed {
 	}
 
 	if i.TargetValue != "" {
-		embed.Description += "On " + i.TargetType.String(i.TargetValue)
+		embed.Description += "On " + i.TargetType.String(state, i.GuildID, i.TargetValue)
 
 		switch i.TargetType {
 		case EntityTypeGuild:

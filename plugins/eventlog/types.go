@@ -21,6 +21,15 @@ const (
 	ActionTypeDiscordLeave  actionType = "discord_leave"
 	ActionTypeChannelCreate actionType = "discord_channel_create"
 	ActionTypeRoleCreate    actionType = "discord_role_create"
+	ActionTypeGuildUpdate   actionType = "discord_guild_update"
+	ActionTypeMemberUpdate  actionType = "discord_member_update"
+	ActionTypeChannelUpdate actionType = "discord_channel_update"
+	ActionTypeChannelDelete actionType = "discord_channel_delete"
+	ActionTypeRoleUpdate    actionType = "discord_role_update"
+	ActionTypeRoleDelete    actionType = "discord_role_delete"
+	ActionTypeEmojiCreate   actionType = "discord_emoji_create"
+	ActionTypeEmojiUpdate   actionType = "discord_emoji_update"
+	ActionTypeEmojiDelete   actionType = "discord_emoji_delete"
 )
 
 func (t actionType) String() string {
@@ -54,15 +63,21 @@ func (t actionType) Revertable() bool {
 
 // Entities
 const (
-	EntityTypeUser                 entityType = "discord_user"
-	EntityTypeRole                 entityType = "discord_role"
-	EntityTypeGuild                entityType = "discord_guild"
-	EntityTypeChannel              entityType = "discord_channel"
-	EntityTypePermission           entityType = "discord_permission"
-	EntityTypeColor                entityType = "discord_color"
-	EntityTypeChannelType          entityType = "discord_channel_type"
-	EntityTypePermissionOverwrites entityType = "discord_permission_overwrites"
+	EntityTypeUser                      entityType = "discord_user"
+	EntityTypeRole                      entityType = "discord_role"
+	EntityTypeGuild                     entityType = "discord_guild"
+	EntityTypeChannel                   entityType = "discord_channel"
+	EntityTypeEmoji                     entityType = "discord_emoji"
+	EntityTypePermission                entityType = "discord_permission"
+	EntityTypeColor                     entityType = "discord_color"
+	EntityTypeChannelType               entityType = "discord_channel_type"
+	EntityTypePermissionOverwrites      entityType = "discord_permission_overwrites"
+	EntityTypeDiscordInvite             entityType = "discord_invite"
+	EntityTypeGuildVerificationLevel    entityType = "discord_guild_verification_level"
+	EntityTypeGuildExplicitContentLevel entityType = "discord_guild_explicit_content_level"
+	EntityTypeGuildMfaLevel             entityType = "discord_guild_mfa_level"
 
+	EntityTypeImageURL    entityType = "cacophony_image_url" // TODO: cache?
 	EntityTypeMessageCode entityType = "cacophony_message_code"
 
 	EntityTypeText   entityType = "text"
@@ -70,17 +85,28 @@ const (
 	EntityTypeBool   entityType = "bool"
 )
 
-func (t entityType) String(value string) string {
+func (t entityType) String(state *state.State, guildID, value string) string {
 	switch t {
 	case EntityTypeUser:
 		return "<@" + value + "> #" + value
 	case EntityTypeRole:
-		return "<@&" + value + "> #" + value
+		values := strings.Split(value, ",")
+		var result string
+		for _, item := range values {
+			result += "<@&" + item + "> #" + item
+		}
+		return strings.Trim(result, ", ")
 	case EntityTypeGuild:
 		return "Server"
 	case EntityTypeChannel:
-		// TODO: look up parent
-		return "<#" + value + "> #" + value
+		text := "<#" + value + "> #" + value
+
+		targetChannel, err := state.Channel(value)
+		if err == nil && targetChannel.ParentID != "" {
+			text = "<#" + targetChannel.ParentID + "> #" + targetChannel.ParentID + " / " + text
+		}
+
+		return text
 	case EntityTypeMessageCode:
 		return value
 	case EntityTypeText:
@@ -148,6 +174,53 @@ func (t entityType) String(value string) string {
 		parsed, _ := strconv.Atoi(value)
 
 		return permissionsText(parsed)
+	case EntityTypeDiscordInvite:
+		return "discord.gg/" + value
+	case EntityTypeImageURL:
+		return value
+	case EntityTypeGuildVerificationLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.VerificationLevel(parsed) {
+		case discordgo.VerificationLevelNone:
+			return "None"
+		case discordgo.VerificationLevelLow:
+			return "Low"
+		case discordgo.VerificationLevelMedium:
+			return "Medium"
+		case discordgo.VerificationLevelHigh:
+			return "High"
+		}
+	case EntityTypeGuildExplicitContentLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.ExplicitContentFilterLevel(parsed) {
+		case discordgo.ExplicitContentFilterDisabled:
+			return "Disabled"
+		case discordgo.ExplicitContentFilterMembersWithoutRoles:
+			return "Members without roles"
+		case discordgo.ExplicitContentFilterAllMembers:
+			return "All member"
+		}
+	case EntityTypeGuildMfaLevel:
+		parsed, _ := strconv.Atoi(value)
+
+		switch discordgo.MfaLevel(parsed) {
+		case discordgo.MfaLevelNone:
+			return "None"
+		case discordgo.MfaLevelElevated:
+			return "Elevated"
+		}
+	case EntityTypeEmoji:
+		guild, err := state.Guild(guildID)
+		if err == nil {
+			emoji := emojiSliceFindEmoji(value, guild.Emojis)
+			if emoji != nil {
+				return emoji.MessageFormat()
+			}
+		}
+
+		return "Emoji #" + value
 	}
 
 	return titleify(string(t)) + ": #" + value
@@ -165,16 +238,19 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 		}
 		return user.String() + " #" + value
 	case EntityTypeRole:
-		role, err := state.Role(guildID, value)
-		if err != nil {
-			role = &discordgo.Role{
-				ID:   value,
-				Name: "N/A",
+		values := strings.Split(value, ",")
+		var result string
+		for _, item := range values {
+			role, err := state.Role(guildID, item)
+			if err != nil {
+				role = &discordgo.Role{
+					ID:   value,
+					Name: "N/A",
+				}
 			}
+			result += role.Name + " #" + value
 		}
-		return role.Name + " #" + value
-	case EntityTypeGuild:
-		return "Server"
+		return strings.Trim(result, ", ")
 	case EntityTypeChannel:
 		channel, err := state.Channel(value)
 		if err != nil {
@@ -185,11 +261,9 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 		}
 		// TODO: look up parent
 		return channel.Name + " #" + value
-	case EntityTypeMessageCode:
-		return value
 	}
 
-	return titleify(string(t)) + ": #" + value
+	return t.String(state, guildID, value)
 }
 
 func titleify(input string) string {
