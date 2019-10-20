@@ -90,6 +90,12 @@ func (p *Plugin) handleDevState(event *events.Event) {
 		return
 	}
 
+	guildInvites, err := event.State().GuildInvites(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: "State :spy:",
@@ -143,6 +149,11 @@ func (p *Plugin) handleDevState(event *events.Event) {
 				{
 					Name:   "Guild Webhooks",
 					Value:  fmt.Sprintf("**%d**", len(guildWebhooks)),
+					Inline: true,
+				},
+				{
+					Name:   "Guild Invites",
+					Value:  fmt.Sprintf("**%d**", len(guildInvites)),
 					Inline: true,
 				},
 			},
