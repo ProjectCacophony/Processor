@@ -179,7 +179,7 @@ func (t entityType) String(state *state.State, guildID, value string) string {
 
 		return permissionsText(parsed)
 	case EntityTypeDiscordInvite:
-		return "discord.gg/" + value
+		return "https://discord.gg/" + value
 	case EntityTypeImageURL:
 		return value
 	case EntityTypeGuildVerificationLevel:

@@ -25,11 +25,30 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 		})
 	case events.GuildMemberAddType:
+		var options []ItemOption
+		if event.GuildMemberAddExtra != nil && event.GuildMemberAddExtra.UsedInvite != nil {
+			if event.GuildMemberAddExtra.UsedInvite.Code != "" {
+				options = append(options, ItemOption{
+					Key:      "used_invite",
+					NewValue: event.GuildMemberAddExtra.UsedInvite.Code,
+					Type:     EntityTypeDiscordInvite,
+				})
+			}
+			if event.GuildMemberAddExtra.UsedInvite.Inviter != nil &&
+				event.GuildMemberAddExtra.UsedInvite.Inviter.ID != "" {
+				options = append(options, ItemOption{
+					Key:      "used_invite_author",
+					NewValue: event.GuildMemberAddExtra.UsedInvite.Inviter.ID,
+					Type:     EntityTypeUser,
+				})
+			}
+		}
 		items = append(items, &Item{
 			GuildID:     event.GuildMemberAdd.GuildID,
 			ActionType:  ActionTypeDiscordJoin,
 			TargetType:  EntityTypeUser,
 			TargetValue: event.GuildMemberAdd.User.ID,
+			Options:     options,
 		})
 	case events.GuildMemberRemoveType:
 		items = append(items, &Item{
