@@ -30,6 +30,9 @@ const (
 	ActionTypeEmojiCreate   actionType = "discord_emoji_create"
 	ActionTypeEmojiUpdate   actionType = "discord_emoji_update"
 	ActionTypeEmojiDelete   actionType = "discord_emoji_delete"
+	ActionTypeWebhookCreate actionType = "discord_webhook_create"
+	ActionTypeWebhookUpdate actionType = "discord_webhook_update"
+	ActionTypeWebhookDelete actionType = "discord_webhook_delete"
 )
 
 func (t actionType) String() string {
@@ -68,6 +71,7 @@ const (
 	EntityTypeGuild                     entityType = "discord_guild"
 	EntityTypeChannel                   entityType = "discord_channel"
 	EntityTypeEmoji                     entityType = "discord_emoji"
+	EntityTypeWebhook                   entityType = "discord_webhook"
 	EntityTypePermission                entityType = "discord_permission"
 	EntityTypeColor                     entityType = "discord_color"
 	EntityTypeChannelType               entityType = "discord_channel_type"
@@ -221,6 +225,13 @@ func (t entityType) String(state *state.State, guildID, value string) string {
 		}
 
 		return "Emoji #" + value
+	case EntityTypeWebhook:
+		webhook, err := state.Webhook(value)
+		if err == nil {
+			return "Webhook " + webhook.Name + " <#" + webhook.ChannelID + "> #" + webhook.ID
+		}
+
+		return "Webhook #" + value
 	}
 
 	return titleify(string(t)) + ": #" + value

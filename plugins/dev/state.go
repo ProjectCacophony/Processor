@@ -78,6 +78,18 @@ func (p *Plugin) handleDevState(event *events.Event) {
 
 	isBotAdmin := event.Has(permissions.BotAdmin)
 
+	guildBans, err := event.State().GuildBans(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	guildWebhooks, err := event.State().GuildWebhooks(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Embed: &discordgo.MessageEmbed{
 			Title: "State :spy:",
@@ -121,6 +133,16 @@ func (p *Plugin) handleDevState(event *events.Event) {
 				{
 					Name:   "Bot Admin",
 					Value:  fmt.Sprintf("%t", isBotAdmin),
+					Inline: true,
+				},
+				{
+					Name:   "Guild Bans",
+					Value:  fmt.Sprintf("**%d**", len(guildBans)),
+					Inline: true,
+				},
+				{
+					Name:   "Guild Webhooks",
+					Value:  fmt.Sprintf("**%d**", len(guildWebhooks)),
 					Inline: true,
 				},
 			},

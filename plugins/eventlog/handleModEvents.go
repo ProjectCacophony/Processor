@@ -159,6 +159,38 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 				Options:                    optionsForEmoji(nil, emoji),
 			})
 		}
+	case events.CacophonyDiffWebhooks:
+		new, updated, deleted := compareWebhooksDiff(event.DiffWebhooks)
+		for _, webhook := range new {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookCreate,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook.ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(nil, webhook),
+			})
+		}
+		for _, webhook := range updated {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookUpdate,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook[1].ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(webhook[0], webhook[1]),
+			})
+		}
+		for _, webhook := range deleted {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookDelete,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook.ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(nil, webhook),
+			})
+		}
 
 	}
 

@@ -56,3 +56,55 @@ func emojiEqual(a, b *discordgo.Emoji) bool {
 
 	return true
 }
+
+func compareWebhooksDiff(diff *events.DiffWebhooks) (new []*discordgo.Webhook, updated [][]*discordgo.Webhook, deleted []*discordgo.Webhook) {
+	for _, oldWebhok := range diff.Old {
+		newWebhook := webhookSliceFindWebhook(oldWebhok.ID, diff.New)
+		if newWebhook != nil {
+			if !webhookEqual(oldWebhok, newWebhook) {
+				updated = append(updated, []*discordgo.Webhook{oldWebhok, newWebhook})
+			}
+			continue
+		}
+
+		deleted = append(deleted, oldWebhok)
+	}
+
+	for _, newWebhook := range diff.New {
+		if webhookSliceFindWebhook(newWebhook.ID, diff.Old) == nil {
+			new = append(new, newWebhook)
+		}
+	}
+
+	return new, updated, deleted
+}
+
+func webhookSliceFindWebhook(id string, list []*discordgo.Webhook) *discordgo.Webhook {
+	for _, item := range list {
+		if item.ID == id {
+			return item
+		}
+	}
+
+	return nil
+}
+
+func webhookEqual(a, b *discordgo.Webhook) bool {
+	if a.ID != b.ID {
+		return false
+	}
+
+	if a.ChannelID != b.ChannelID {
+		return false
+	}
+
+	if a.Name != b.Name {
+		return false
+	}
+
+	if a.Avatar != b.Avatar {
+		return false
+	}
+
+	return true
+}

@@ -488,6 +488,48 @@ func optionsForEmoji(old, new *discordgo.Emoji) []ItemOption {
 	return filterEqualOptions(options)
 }
 
+func optionsForWebhook(old, new *discordgo.Webhook) []ItemOption {
+	var options []ItemOption
+
+	option := ItemOption{
+		Key:  "channel",
+		Type: EntityTypeChannel,
+	}
+	if old != nil {
+		option.PreviousValue = old.ChannelID
+	}
+	if new != nil {
+		option.NewValue = new.ChannelID
+	}
+	options = append(options, option)
+
+	option = ItemOption{
+		Key:  "name",
+		Type: EntityTypeText,
+	}
+	if old != nil {
+		option.PreviousValue = old.Name
+	}
+	if new != nil {
+		option.NewValue = new.Name
+	}
+	options = append(options, option)
+
+	option = ItemOption{
+		Key:  "avatar",
+		Type: EntityTypeImageURL,
+	}
+	if old != nil && old.Avatar != "" {
+		option.PreviousValue = discordgo.EndpointUserAvatar(old.ID, old.Avatar)
+	}
+	if new != nil && new.Avatar != "" {
+		option.NewValue = discordgo.EndpointUserAvatar(new.ID, new.Avatar)
+	}
+	options = append(options, option)
+
+	return filterEqualOptions(options)
+}
+
 func filterEqualOptions(input []ItemOption) []ItemOption {
 	result := make([]ItemOption, 0, len(input))
 	for _, item := range input {
