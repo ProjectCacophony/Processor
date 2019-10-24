@@ -59,7 +59,8 @@ func (t actionType) Revertable() bool {
 	case ActionTypeDiscordBan,
 		ActionTypeDiscordUnban,
 		ActionTypeGuildUpdate,
-		ActionTypeChannelUpdate:
+		ActionTypeChannelUpdate,
+		ActionTypeChannelDelete:
 		return true
 	}
 

@@ -83,7 +83,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "verification_level":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing verification_level")
 				}
 
 				level := discordgo.VerificationLevel(value)
@@ -92,7 +92,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "default_message_notifications":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing default_message_notifications")
 				}
 
 				guildParams.DefaultMessageNotifications = value
@@ -103,7 +103,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "afk_timeout":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing afk_timeout")
 				}
 
 				guildParams.AfkTimeout = value
@@ -147,7 +147,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "bitrate":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing bitrate")
 				}
 
 				channelParams.Bitrate = value
@@ -155,7 +155,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "user_limit":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing user_limit")
 				}
 
 				channelParams.UserLimit = value
@@ -163,7 +163,7 @@ func (i *Item) Revert(event *events.Event) error {
 			case "rate_limit_per_user":
 				value, err := strconv.Atoi(option.PreviousValue)
 				if err != nil {
-					return err
+					return errors.Wrap(err, "failure parsing rate_limit_per_user")
 				}
 
 				channelParams.RateLimitPerUser = value
@@ -197,7 +197,83 @@ func (i *Item) Revert(event *events.Event) error {
 		if err != nil {
 			return err
 		}
+	case ActionTypeChannelDelete:
+		if !permissions.DiscordManageChannels.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
 
+		var channelParams discordgo.GuildChannelCreateData
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				channelParams.Name = option.NewValue
+				edited = true
+			case "topic":
+				channelParams.Topic = option.NewValue
+				edited = true
+			case "type":
+				value, err := strconv.Atoi(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing type")
+				}
+
+				channelParams.Type = discordgo.ChannelType(value)
+				edited = true
+			case "bitrate":
+				value, err := strconv.Atoi(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing bitrate")
+				}
+
+				channelParams.Bitrate = value
+				edited = true
+			case "user_limit":
+				value, err := strconv.Atoi(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing user_limit")
+				}
+
+				channelParams.UserLimit = value
+				edited = true
+			case "permissions":
+				var permissions []*discordgo.PermissionOverwrite
+				err := json.Unmarshal([]byte(option.NewValue), &permissions)
+				if err != nil {
+					return errors.Wrap(err, "unable to parse permission overwrites")
+				}
+
+				channelParams.PermissionOverwrites = permissions
+				edited = true
+			case "parent":
+				channelParams.ParentID = option.NewValue
+				edited = true
+			case "nsfw":
+				value, err := strconv.ParseBool(option.NewValue)
+				if err != nil {
+					return err
+				}
+
+				channelParams.NSFW = value
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildChannelCreateComplex(i.GuildID, channelParams)
+		if err != nil {
+			return err
+		}
 	default:
 		return events.NewUserError("action not revertable")
 	}
