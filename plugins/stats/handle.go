@@ -156,6 +156,25 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "Server ID", Type: common.Text},
 				},
 			},
+			{
+				Name:            "stats.help.avatar",
+				Description:     "stats.help.avatar.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "avatar", Type: common.Flag},
+					{Name: "User", Type: common.User, Optional: true},
+				},
+			},
+			{
+				Name:            "stats.help.size-avatar",
+				Description:     "stats.help.size-avatar.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "avatar", Type: common.Flag},
+					{Name: "size", Type: common.Flag},
+					{Name: "User", Type: common.User, Optional: true},
+				},
+			},
 		},
 	}
 }
@@ -171,6 +190,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleFind(event, event.Fields()[0])
 			return true
 		}
+	}
+
+	if event.Fields()[0] == "avatar" || event.Fields()[0] == "av" {
+		p.handleAvatar(event)
+		return true
 	}
 
 	if event.Fields()[0] != "stats" ||

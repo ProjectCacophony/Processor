@@ -1,4 +1,4 @@
-package avatar
+package stats
 
 import (
 	"github.com/bwmarrin/discordgo"
@@ -17,7 +17,7 @@ var (
 	}
 )
 
-func (p *Plugin) displayUserAvatar(event *events.Event) {
+func (p *Plugin) handleAvatar(event *events.Event) {
 
 	var user *discordgo.User
 	var err error
@@ -39,7 +39,7 @@ func (p *Plugin) displayUserAvatar(event *events.Event) {
 		}
 
 		if !validSize && user == nil {
-			event.Respond("avatar.invalid-size")
+			event.Respond("stats.avatar.invalid-size")
 			return
 		}
 	}
@@ -52,7 +52,7 @@ func (p *Plugin) displayUserAvatar(event *events.Event) {
 		}
 
 		if user == nil {
-			event.Respond("avatar.no-user")
+			event.Respond("stats.avatar.no-user")
 			return
 		}
 	}
