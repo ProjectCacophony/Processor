@@ -1,10 +1,12 @@
 package eventlog
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -117,6 +119,81 @@ func (i *Item) Revert(event *events.Event) error {
 		}
 
 		_, err = event.Discord().Client.GuildEdit(i.GuildID, guildParams)
+		if err != nil {
+			return err
+		}
+	case ActionTypeChannelUpdate:
+		if !permissions.DiscordManageChannels.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		var channelParams discordgo.ChannelEdit
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				channelParams.Name = option.PreviousValue
+				edited = true
+			case "topic":
+				channelParams.Topic = option.PreviousValue
+				edited = true
+			case "bitrate":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				channelParams.Bitrate = value
+				edited = true
+			case "user_limit":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				channelParams.UserLimit = value
+				edited = true
+			case "rate_limit_per_user":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				channelParams.RateLimitPerUser = value
+				edited = true
+			case "parent":
+				channelParams.ParentID = option.PreviousValue
+				edited = true
+			case "permissions":
+				var permissions []*discordgo.PermissionOverwrite
+				err := json.Unmarshal([]byte(option.PreviousValue), &permissions)
+				if err != nil {
+					return errors.Wrap(err, "unable to parse permission overwrites")
+				}
+
+				channelParams.PermissionOverwrites = permissions
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		targetChannel, err := event.State().Channel(i.TargetValue)
+		if err != nil {
+			return err
+		}
+		channelParams.Position = targetChannel.Position // prevent resetting position
+
+		_, err = event.Discord().Client.ChannelEditComplex(i.TargetValue, &channelParams)
 		if err != nil {
 			return err
 		}
