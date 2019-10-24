@@ -1,0 +1,10 @@
+"avatar.help.description" = "Display the discord avatar for yourself or another user."
+
+"avatar.help.avatar" = "Display User Avatar"
+"avatar.help.avatar.description" = "Display the avatar for yourself or another user if specified."
+
+"avatar.help.size-avatar" = "Display Avatar at Size"
+"avatar.help.size-avatar.description" = "Display a user avatar at a specified size. \n\t\tSize options: 1024, 512, 256, 128, 64, 32, 16"
+
+"avatar.invalid-size" = "Invalid avatar size given, please use one of the following: 1024, 512, 256, 128, 64, 32, 16."
+"avatar.no-user" = "Unable to find user to get avatar from."

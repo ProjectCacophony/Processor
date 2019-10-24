@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	"github.com/go-chi/chi"
+	"gitlab.com/Cacophony/Processor/plugins/avatar"
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/greeter"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
@@ -62,6 +63,7 @@ type Plugin interface {
 
 var (
 	PluginList = []Plugin{
+		&avatar.Plugin{},
 		&weather.Plugin{},
 		&trello.Plugin{},
 		&admin.Plugin{},
