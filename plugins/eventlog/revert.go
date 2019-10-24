@@ -1,9 +1,10 @@
 package eventlog
 
 import (
-	"errors"
 	"fmt"
+	"strconv"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
@@ -25,7 +26,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.ChannelID,
 			false,
 		) {
-			return errors.New("insufficient permissions")
+			return events.NewUserError("I have insufficient permissions")
 		}
 
 		if i.TargetType != EntityTypeUser {
@@ -44,7 +45,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.ChannelID,
 			false,
 		) {
-			return errors.New("insufficient permissions")
+			return events.NewUserError("I have insufficient permissions")
 		}
 
 		if i.TargetType != EntityTypeUser {
@@ -55,8 +56,73 @@ func (i *Item) Revert(event *events.Event) error {
 		if err != nil {
 			return err
 		}
+	case ActionTypeGuildUpdate:
+		if !permissions.DiscordManageServer.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		var guildParams discordgo.GuildParams
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				guildParams.Name = option.PreviousValue
+				edited = true
+			case "region":
+				guildParams.Region = option.PreviousValue
+				edited = true
+			case "verification_level":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				level := discordgo.VerificationLevel(value)
+				guildParams.VerificationLevel = &level
+				edited = true
+			case "default_message_notifications":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				guildParams.DefaultMessageNotifications = value
+				edited = true
+			case "afk_channel":
+				guildParams.AfkChannelID = option.PreviousValue
+				edited = true
+			case "afk_timeout":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				guildParams.AfkTimeout = value
+				edited = true
+			}
+		}
+
+		// TODO: revert icon
+		// TODO: revert splash
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildEdit(i.GuildID, guildParams)
+		if err != nil {
+			return err
+		}
+
 	default:
-		return errors.New("action not revertable")
+		return events.NewUserError("action not revertable")
 	}
 
 	err = markItemAsReverted(event.DB(), nil, event.GuildID, i.ID)

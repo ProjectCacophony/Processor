@@ -57,7 +57,8 @@ func (t actionType) Destructive() bool {
 func (t actionType) Revertable() bool {
 	switch t {
 	case ActionTypeDiscordBan,
-		ActionTypeDiscordUnban:
+		ActionTypeDiscordUnban,
+		ActionTypeGuildUpdate:
 		return true
 	}
 
