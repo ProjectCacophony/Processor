@@ -4,7 +4,7 @@ require (
 	github.com/Jeffail/gabs v1.4.0
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
-	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
+	github.com/Seklfreak/ginside v0.0.0-20191024170614-28a1a8d723ad
 	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc

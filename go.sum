@@ -40,8 +40,8 @@ github.com/PuerkitoBio/goquery v1.5.0 h1:uGvmFXOA73IKluu/F84Xd1tt/z07GYm8X49XKHP
 github.com/PuerkitoBio/goquery v1.5.0/go.mod h1:qD2PgZ9lccMbQlc7eEOjaeRlFQON7xY8kdmcsrnKqMg=
 github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586 h1:/CeD/ANJZ1YWvrnpTf5hCYRxCnb3tlkIc6JAd3R5aEo=
 github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586/go.mod h1:wwBflTGJswLXVWg6kBM5vvno3yBNRytF2VeDSUb+Xl0=
-github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb h1:10eDd8gJhc0Hi0Av6JTxsR5j6AFGw1uIHPpLDt1T6ug=
-github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
+github.com/Seklfreak/ginside v0.0.0-20191024170614-28a1a8d723ad h1:l3wkhbs5RDStyzxcnZh/ke69svSWcZSzJ1hNyV8kowI=
+github.com/Seklfreak/ginside v0.0.0-20191024170614-28a1a8d723ad/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
 github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89 h1:lIq8Pd6oREFNu8c+gWRxJaqPe1T+IK2FAdxZiX9u/cA=
 github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
