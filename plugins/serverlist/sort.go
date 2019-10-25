@@ -7,10 +7,18 @@ import (
 	"github.com/mozillazg/go-unidecode"
 )
 
-var regexpAlphanumeric = regexp.MustCompile("[^a-zA-Z0-9]+")
+var (
+	regexpKoreanChineseJapanese = regexp.MustCompile("[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\u3131-\uD79D]+")
+	regexpAlphanumeric          = regexp.MustCompile("[^a-zA-Z0-9]+")
+)
 
 func getSortName(input string) string {
-	return strings.ToLower(regexpAlphanumeric.ReplaceAllString(unidecode.Unidecode(input), ""))
+	return strings.ToLower(
+		regexpAlphanumeric.ReplaceAllString(
+			unidecode.Unidecode(
+				regexpKoreanChineseJapanese.ReplaceAllString(input, ""),
+			), "",
+		))
 }
 
 type ServersSorter struct {
