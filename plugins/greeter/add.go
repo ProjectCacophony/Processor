@@ -41,13 +41,17 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 		return
 	}
 
-	rule := newRule(
+	rule, err := newRule(
 		event,
 		greeterType,
 		targetChannel,
 		message,
 		autoDelete,
 	)
+	if err != nil {
+		event.Except(events.AsUserError(err))
+		return
+	}
 
 	if existingEntry == nil ||
 		existingEntry.Rule.ID == 0 ||
@@ -55,20 +59,6 @@ func (p *Plugin) handleAdd(event *events.Event, greeterType greeterType) {
 		len(existingEntry.Rule.Actions[0].Values) < 1 {
 		if message == "" {
 			event.Respond("common.to-few-params")
-			return
-		}
-
-		switch greeterType {
-		case greeterTypeJoin:
-			rule.TriggerName = "when_join"
-		case greeterTypeLeave:
-			rule.TriggerName = "when_leave"
-		case greeterTypeBan:
-			rule.TriggerName = "when_ban"
-		case greeterTypeUnban:
-			rule.TriggerName = "when_unban"
-		default:
-			event.Except(fmt.Errorf("unknown greeter type: %d", greeterType))
 			return
 		}
 
@@ -146,7 +136,7 @@ func newRule(
 	targetChannel *discordgo.Channel,
 	message string,
 	autoDelete time.Duration,
-) *models.Rule {
+) (*models.Rule, error) {
 	rule := &models.Rule{
 		GuildID: event.GuildID,
 		Name:    fmt.Sprintf("Greeter: %s #%s", greeterType, targetChannel.Name),
@@ -161,6 +151,19 @@ func newRule(
 		},
 		Silent:  true,
 		Managed: true,
+	}
+
+	switch greeterType {
+	case greeterTypeJoin:
+		rule.TriggerName = "when_join"
+	case greeterTypeLeave:
+		rule.TriggerName = "when_leave"
+	case greeterTypeBan:
+		rule.TriggerName = "when_ban"
+	case greeterTypeUnban:
+		rule.TriggerName = "when_unban"
+	default:
+		return nil, fmt.Errorf("unknown greeter type: %d", greeterType)
 	}
 
 	if autoDelete.Seconds() > 0 {
@@ -178,5 +181,5 @@ func newRule(
 		)
 	}
 
-	return rule
+	return rule, nil
 }

@@ -26,6 +26,14 @@
 "stats.help.search-server.description" = "Searches for a member on a specific server using the given Regular Expression\nDetails: <https://golang.org/pkg/regexp/>"
 "stats.help.invite.name" = "Invite Stats"
 "stats.help.invite.description" = "Show information about a specific Invite"
+"stats.help.avatar" = "Display User Avatar"
+"stats.help.avatar.description" = "Display the avatar for yourself or another user if specified."
+"stats.help.size-avatar" = "Display Avatar at Size"
+"stats.help.size-avatar.description" = "Display a user avatar at a specified size. \n\t\tSize options: 1024, 512, 256, 128, 64, 32, 16"
+
+# handleAvatar
+"stats.avatar.invalid-size" = "Invalid avatar size given, please use one of the following: 1024, 512, 256, 128, 64, 32, 16."
+"stats.avatar.no-user" = "Unable to find user to get avatar from."
 
 # handleUser
 "stats.user.embed.title" = "{{.user}}{{if .member}}{{if .member.Nick}}: {{.member.Nick}}{{end}}{{end}}"

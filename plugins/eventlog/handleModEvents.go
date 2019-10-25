@@ -25,11 +25,30 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 		})
 	case events.GuildMemberAddType:
+		var options []ItemOption
+		if event.GuildMemberAddExtra != nil && event.GuildMemberAddExtra.UsedInvite != nil {
+			if event.GuildMemberAddExtra.UsedInvite.Code != "" {
+				options = append(options, ItemOption{
+					Key:      "used_invite",
+					NewValue: event.GuildMemberAddExtra.UsedInvite.Code,
+					Type:     EntityTypeDiscordInvite,
+				})
+			}
+			if event.GuildMemberAddExtra.UsedInvite.Inviter != nil &&
+				event.GuildMemberAddExtra.UsedInvite.Inviter.ID != "" {
+				options = append(options, ItemOption{
+					Key:      "used_invite_author",
+					NewValue: event.GuildMemberAddExtra.UsedInvite.Inviter.ID,
+					Type:     EntityTypeUser,
+				})
+			}
+		}
 		items = append(items, &Item{
 			GuildID:     event.GuildMemberAdd.GuildID,
 			ActionType:  ActionTypeDiscordJoin,
 			TargetType:  EntityTypeUser,
 			TargetValue: event.GuildMemberAdd.User.ID,
+			Options:     options,
 		})
 	case events.GuildMemberRemoveType:
 		items = append(items, &Item{
@@ -157,6 +176,38 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 				TargetValue:                emoji.ID,
 				WaitingForAuditLogBackfill: true,
 				Options:                    optionsForEmoji(nil, emoji),
+			})
+		}
+	case events.CacophonyDiffWebhooks:
+		new, updated, deleted := compareWebhooksDiff(event.DiffWebhooks)
+		for _, webhook := range new {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookCreate,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook.ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(nil, webhook),
+			})
+		}
+		for _, webhook := range updated {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookUpdate,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook[1].ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(webhook[0], webhook[1]),
+			})
+		}
+		for _, webhook := range deleted {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeWebhookDelete,
+				TargetType:                 EntityTypeWebhook,
+				TargetValue:                webhook.ID,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForWebhook(nil, webhook),
 			})
 		}
 

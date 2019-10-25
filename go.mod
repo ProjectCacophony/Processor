@@ -4,7 +4,7 @@ require (
 	github.com/Jeffail/gabs v1.4.0
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
-	github.com/Seklfreak/ginside v0.0.0-20190516063456-b84c0470abfb
+	github.com/Seklfreak/ginside v0.0.0-20191024170614-28a1a8d723ad
 	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
@@ -25,7 +25,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191016183726-bf65f805fc0a
+	gitlab.com/Cacophony/go-kit v0.0.0-20191020203330-d152b0b3e62f
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0
