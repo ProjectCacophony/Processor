@@ -9,3 +9,9 @@
 "help.details.alt-names" = "{{(len .names) | plural \"Alternative name\" \"Alternative names\"}} \
 {{range $name := .names}} `{{$name}}`{{end}}\n\
 "
+
+# searchCommands
+"help.search.too-few" = "Please tell me what I should search for!"
+"help.search.result" = "Found **{{len .commands}}** {{len .commands | plural \"result\" \"results\"}} for `{{Escape .search}}`{{if gt (len .commands) 0}}:{{else}} :weary:{{end}}\n\
+{{range $command := .commands}}{{$command.Text}}\n{{end}}\
+"

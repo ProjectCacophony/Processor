@@ -1,6 +1,8 @@
 package help
 
 import (
+	"strings"
+
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -46,18 +48,28 @@ func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
 		Names:       p.Names(),
 		Description: "help.help.description",
-		Commands: []common.Command{{
-			Name: "List All Modules",
-			Params: []common.CommandParam{
-				{Name: "public", Type: common.Flag, Optional: true},
+		Commands: []common.Command{
+			{
+				Name: "List All Modules",
+				Params: []common.CommandParam{
+					{Name: "public", Type: common.Flag, Optional: true},
+				},
 			},
-		}, {
-			Name: "List Module Commands",
-			Params: []common.CommandParam{
-				{Name: "module name", Type: common.Text},
-				{Name: "public", Type: common.Flag, Optional: true},
+			{
+				Name: "List Module Commands",
+				Params: []common.CommandParam{
+					{Name: "module name", Type: common.Text},
+					{Name: "public", Type: common.Flag, Optional: true},
+				},
 			},
-		}},
+			{
+				Name: "Search Model Commands",
+				Params: []common.CommandParam{
+					{Name: "search", Type: common.Flag},
+					{Name: "text…", Type: common.Text},
+				},
+			},
+		},
 	}
 }
 
@@ -68,6 +80,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 
 	if len(event.Fields()) < 1 || event.Fields()[0] != "help" {
 		return false
+	}
+
+	if len(event.Fields()) >= 2 && strings.EqualFold(event.Fields()[1], "search") {
+		p.searchCommands(event)
+		return true
 	}
 
 	var displayInChannel bool

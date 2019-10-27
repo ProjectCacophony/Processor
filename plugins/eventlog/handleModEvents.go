@@ -59,6 +59,10 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			WaitingForAuditLogBackfill: true,
 		})
 	case events.ChannelCreateType:
+		if event.ChannelCreate.GuildID == "" {
+			return
+		}
+
 		items = append(items, &Item{
 			GuildID:                    event.ChannelCreate.GuildID,
 			ActionType:                 ActionTypeChannelCreate,
@@ -216,7 +220,7 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 	for _, item := range items {
 		err := CreateItem(event.DB(), event.Publisher(), item)
 		if err != nil {
-			event.ExceptSilent(err)
+			event.ExceptSilent(err, "action_type", string(item.ActionType))
 		}
 	}
 }

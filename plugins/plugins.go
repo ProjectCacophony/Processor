@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/greeter"
+	"gitlab.com/Cacophony/Processor/plugins/rpg"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
 	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
@@ -89,6 +90,7 @@ var (
 		&tools.Plugin{},
 		&uploads.Plugin{},
 		&greeter.Plugin{},
+		&rpg.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
