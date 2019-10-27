@@ -1,8 +1,6 @@
 package tools
 
 import (
-	"strings"
-
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -26,12 +24,7 @@ func (p *Plugin) handleModDM(event *events.Event) {
 		return
 	}
 
-	message := event.MessageCreate.Content
-	for _, field := range []string{event.Prefix(), event.OriginalCommand(), event.Fields()[1]} {
-		message = strings.Replace(message, field, "", 1)
-	}
-	message = strings.Trim(strings.TrimSpace(message), "\"")
-
+	message := event.FieldsVariadic(2)
 	if message == "" {
 		event.Except(events.NewUserError("common.to-few-params"))
 		return
