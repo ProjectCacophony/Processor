@@ -33,6 +33,9 @@ const (
 	ActionTypeWebhookCreate actionType = "discord_webhook_create"
 	ActionTypeWebhookUpdate actionType = "discord_webhook_update"
 	ActionTypeWebhookDelete actionType = "discord_webhook_delete"
+	ActionTypeInviteCreate  actionType = "discord_invite_create"
+	ActionTypeInviteUpdate  actionType = "discord_invite_update"
+	ActionTypeInviteDelete  actionType = "discord_invite_delete"
 )
 
 func (t actionType) String() string {
@@ -87,9 +90,10 @@ const (
 	EntityTypeImageURL    entityType = "cacophony_image_url" // TODO: cache?
 	EntityTypeMessageCode entityType = "cacophony_message_code"
 
-	EntityTypeText   entityType = "text"
-	EntityTypeNumber entityType = "number"
-	EntityTypeBool   entityType = "bool"
+	EntityTypeText    entityType = "text"
+	EntityTypeNumber  entityType = "number"
+	EntityTypeBool    entityType = "bool"
+	EntityTypeSeconds entityType = "seconds" // TODO
 )
 
 func (t entityType) String(state *state.State, guildID, value string) string {
