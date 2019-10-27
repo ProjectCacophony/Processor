@@ -30,7 +30,7 @@ func (p *Plugin) handleModDM(event *events.Event) {
 	for _, field := range []string{event.Prefix(), event.OriginalCommand(), event.Fields()[1]} {
 		message = strings.Replace(message, field, "", 1)
 	}
-	message = strings.TrimSpace(message)
+	message = strings.Trim(strings.TrimSpace(message), "\"")
 
 	if message == "" {
 		event.Except(events.NewUserError("common.to-few-params"))
