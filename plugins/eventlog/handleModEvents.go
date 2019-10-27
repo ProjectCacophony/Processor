@@ -24,9 +24,9 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			TargetValue:                event.GuildBanRemove.User.ID,
 			WaitingForAuditLogBackfill: true,
 		})
-	case events.GuildMemberAddType:
+	case events.CacophonyGuildMemberAddExtra:
 		var options []ItemOption
-		if event.GuildMemberAddExtra != nil && event.GuildMemberAddExtra.UsedInvite != nil {
+		if event.GuildMemberAddExtra.UsedInvite != nil {
 			if event.GuildMemberAddExtra.UsedInvite.Code != "" {
 				options = append(options, ItemOption{
 					Key:      "used_invite",
@@ -44,10 +44,10 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			}
 		}
 		items = append(items, &Item{
-			GuildID:     event.GuildMemberAdd.GuildID,
+			GuildID:     event.GuildMemberAddExtra.GuildID,
 			ActionType:  ActionTypeDiscordJoin,
 			TargetType:  EntityTypeUser,
-			TargetValue: event.GuildMemberAdd.User.ID,
+			TargetValue: event.GuildMemberAddExtra.User.ID,
 			Options:     options,
 		})
 	case events.GuildMemberRemoveType:
