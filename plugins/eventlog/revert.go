@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
@@ -404,6 +405,46 @@ func (i *Item) Revert(event *events.Event) error {
 		}
 
 		_, err = event.Discord().Client.GuildRoleEdit(i.GuildID, newRole.ID, roleName, roleColour, roleHoist, rolePermissions, roleMention)
+		if err != nil {
+			return err
+		}
+	case ActionTypeEmojiUpdate:
+		if !permissions.DiscordManageEmojis.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		previousEmoji, err := event.State().Emoji(i.GuildID, i.TargetValue)
+		if err != nil {
+			return err
+		}
+
+		emojiName := previousEmoji.Name
+		emojiRoles := previousEmoji.Roles
+
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				emojiName = option.PreviousValue
+				edited = true
+			case "roles":
+				emojiRoles = strings.Split(option.PreviousValue, ",")
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildEmojiEdit(i.GuildID, i.TargetValue, emojiName, emojiRoles)
 		if err != nil {
 			return err
 		}

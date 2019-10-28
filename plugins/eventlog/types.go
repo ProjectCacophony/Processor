@@ -65,7 +65,8 @@ func (t actionType) Revertable() bool {
 		ActionTypeChannelUpdate,
 		ActionTypeChannelDelete,
 		ActionTypeRoleUpdate,
-		ActionTypeRoleDelete:
+		ActionTypeRoleDelete,
+		ActionTypeEmojiUpdate:
 		return true
 	}
 
