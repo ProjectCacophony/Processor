@@ -274,6 +274,78 @@ func (i *Item) Revert(event *events.Event) error {
 		if err != nil {
 			return err
 		}
+	case ActionTypeRoleUpdate:
+		if !permissions.DiscordManageRoles.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		currentRole, err := event.State().Role(i.GuildID, i.TargetValue)
+		if err != nil {
+			return err
+		}
+
+		roleName := currentRole.Name
+		roleColour := currentRole.Color
+		rolePermissions := currentRole.Permissions
+		roleHoist := currentRole.Hoist
+		roleMention := currentRole.Mentionable
+
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				roleName = option.PreviousValue
+				edited = true
+			case "color":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing color")
+				}
+
+				roleColour = value
+				edited = true
+			case "permission":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing permission")
+				}
+
+				rolePermissions = value
+				edited = true
+			case "hoist":
+				value, err := strconv.ParseBool(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing hoist")
+				}
+
+				roleHoist = value
+				edited = true
+			case "mentionable":
+				value, err := strconv.ParseBool(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing mentionable")
+				}
+
+				roleMention = value
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildRoleEdit(i.GuildID, i.TargetValue, roleName, roleColour, roleHoist, rolePermissions, roleMention)
+		if err != nil {
+			return err
+		}
 	default:
 		return events.NewUserError("action not revertable")
 	}
