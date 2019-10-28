@@ -192,7 +192,8 @@ func (p *Plugin) handleReactionRevert(event *events.Event, item *Item) {
 
 	err := item.Revert(event)
 	if err != nil {
-		event.Except(err)
+		event.Send(event.ChannelID, "eventlog.revert.error", "userID", event.UserID, "item", item, "error", err)
+		event.ExceptSilent(err)
 		return
 	}
 

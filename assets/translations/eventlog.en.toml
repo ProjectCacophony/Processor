@@ -45,3 +45,6 @@ Or say `cancel` to stop the operation."
 
 # Revert
 "eventlog.revert.reason" = "{{.user.String}} #{{.user.ID}} reverting Eventlog #{{.item.UUID}}"
+"eventlog.revert.error" = "<@{{.userID}}> **Cannot revert Eventlog #{{.item.UUID}}**\n\
+**Error:** {{.error}}\
+"

@@ -13,6 +13,10 @@ import (
 )
 
 func (i *Item) Revert(event *events.Event) error {
+	if i.Reverted {
+		return events.NewUserError("item has already been reverted!")
+	}
+
 	revertingUser, err := event.State().User(event.UserID)
 	if err != nil {
 		return err
