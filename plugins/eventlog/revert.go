@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/pkg/errors"
@@ -12,6 +13,10 @@ import (
 )
 
 func (i *Item) Revert(event *events.Event) error {
+	if i.Reverted {
+		return events.NewUserError("item has already been reverted!")
+	}
+
 	revertingUser, err := event.State().User(event.UserID)
 	if err != nil {
 		return err
@@ -271,6 +276,179 @@ func (i *Item) Revert(event *events.Event) error {
 		}
 
 		_, err = event.Discord().Client.GuildChannelCreateComplex(i.GuildID, channelParams)
+		if err != nil {
+			return err
+		}
+	case ActionTypeRoleUpdate:
+		if !permissions.DiscordManageRoles.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		currentRole, err := event.State().Role(i.GuildID, i.TargetValue)
+		if err != nil {
+			return err
+		}
+
+		roleName := currentRole.Name
+		roleColour := currentRole.Color
+		rolePermissions := currentRole.Permissions
+		roleHoist := currentRole.Hoist
+		roleMention := currentRole.Mentionable
+
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				roleName = option.PreviousValue
+				edited = true
+			case "color":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing color")
+				}
+
+				roleColour = value
+				edited = true
+			case "permission":
+				value, err := strconv.Atoi(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing permission")
+				}
+
+				rolePermissions = value
+				edited = true
+			case "hoist":
+				value, err := strconv.ParseBool(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing hoist")
+				}
+
+				roleHoist = value
+				edited = true
+			case "mentionable":
+				value, err := strconv.ParseBool(option.PreviousValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing mentionable")
+				}
+
+				roleMention = value
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildRoleEdit(i.GuildID, i.TargetValue, roleName, roleColour, roleHoist, rolePermissions, roleMention)
+		if err != nil {
+			return err
+		}
+	case ActionTypeRoleDelete:
+		if !permissions.DiscordManageRoles.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		newRole, err := event.Discord().Client.GuildRoleCreate(i.GuildID)
+		if err != nil {
+			return err
+		}
+
+		roleName := newRole.Name
+		roleColour := newRole.Color
+		rolePermissions := newRole.Permissions
+		roleHoist := newRole.Hoist
+		roleMention := newRole.Mentionable
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				roleName = option.NewValue
+			case "color":
+				value, err := strconv.Atoi(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing color")
+				}
+
+				roleColour = value
+			case "permission":
+				value, err := strconv.Atoi(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing permission")
+				}
+
+				rolePermissions = value
+			case "hoist":
+				value, err := strconv.ParseBool(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing hoist")
+				}
+
+				roleHoist = value
+			case "mentionable":
+				value, err := strconv.ParseBool(option.NewValue)
+				if err != nil {
+					return errors.Wrap(err, "failure parsing mentionable")
+				}
+
+				roleMention = value
+			}
+		}
+
+		_, err = event.Discord().Client.GuildRoleEdit(i.GuildID, newRole.ID, roleName, roleColour, roleHoist, rolePermissions, roleMention)
+		if err != nil {
+			return err
+		}
+	case ActionTypeEmojiUpdate:
+		if !permissions.DiscordManageEmojis.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		previousEmoji, err := event.State().Emoji(i.GuildID, i.TargetValue)
+		if err != nil {
+			return err
+		}
+
+		emojiName := previousEmoji.Name
+		emojiRoles := previousEmoji.Roles
+
+		var edited bool
+
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				emojiName = option.PreviousValue
+				edited = true
+			case "roles":
+				emojiRoles = strings.Split(option.PreviousValue, ",")
+				edited = true
+			}
+		}
+
+		if !edited {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildEmojiEdit(i.GuildID, i.TargetValue, emojiName, emojiRoles)
 		if err != nil {
 			return err
 		}

@@ -530,6 +530,84 @@ func optionsForWebhook(old, new *discordgo.Webhook) []ItemOption {
 	return filterEqualOptions(options)
 }
 
+func optionsForInvite(old, new *discordgo.Invite) []ItemOption {
+	var options []ItemOption
+
+	var option ItemOption
+
+	if (old != nil && old.MaxAge > 0) || (new != nil && new.MaxAge > 0) {
+		option = ItemOption{
+			Key:  "max_age",
+			Type: EntityTypeSeconds,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.MaxAge)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.MaxAge)
+		}
+		options = append(options, option)
+	}
+
+	if (old != nil && old.MaxUses > 0) || (new != nil && new.MaxUses > 0) {
+		option = ItemOption{
+			Key:  "max_uses",
+			Type: EntityTypeNumber,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.Itoa(old.MaxUses)
+		}
+		if new != nil {
+			option.NewValue = strconv.Itoa(new.MaxUses)
+		}
+		options = append(options, option)
+	}
+
+	if (old != nil && old.Revoked) || (new != nil && new.Revoked) {
+		option = ItemOption{
+			Key:  "revoked",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Revoked)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Revoked)
+		}
+		options = append(options, option)
+	}
+
+	if (old != nil && old.Temporary) || (new != nil && new.Temporary) {
+		option = ItemOption{
+			Key:  "temporary",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Temporary)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Temporary)
+		}
+		options = append(options, option)
+	}
+
+	if (old != nil && old.Unique) || (new != nil && new.Unique) {
+		option = ItemOption{
+			Key:  "unique",
+			Type: EntityTypeBool,
+		}
+		if old != nil {
+			option.PreviousValue = strconv.FormatBool(old.Unique)
+		}
+		if new != nil {
+			option.NewValue = strconv.FormatBool(new.Unique)
+		}
+		options = append(options, option)
+	}
+
+	return filterEqualOptions(options)
+}
+
 func filterEqualOptions(input []ItemOption) []ItemOption {
 	result := make([]ItemOption, 0, len(input))
 	for _, item := range input {

@@ -1,6 +1,7 @@
 package eventlog
 
 import (
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -24,9 +25,9 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			TargetValue:                event.GuildBanRemove.User.ID,
 			WaitingForAuditLogBackfill: true,
 		})
-	case events.GuildMemberAddType:
+	case events.CacophonyGuildMemberAddExtra:
 		var options []ItemOption
-		if event.GuildMemberAddExtra != nil && event.GuildMemberAddExtra.UsedInvite != nil {
+		if event.GuildMemberAddExtra.UsedInvite != nil {
 			if event.GuildMemberAddExtra.UsedInvite.Code != "" {
 				options = append(options, ItemOption{
 					Key:      "used_invite",
@@ -44,10 +45,10 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			}
 		}
 		items = append(items, &Item{
-			GuildID:     event.GuildMemberAdd.GuildID,
+			GuildID:     event.GuildMemberAddExtra.GuildID,
 			ActionType:  ActionTypeDiscordJoin,
 			TargetType:  EntityTypeUser,
-			TargetValue: event.GuildMemberAdd.User.ID,
+			TargetValue: event.GuildMemberAddExtra.User.ID,
 			Options:     options,
 		})
 	case events.GuildMemberRemoveType:
@@ -214,7 +215,49 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 				Options:                    optionsForWebhook(nil, webhook),
 			})
 		}
+	case events.CacophonyDiffInvites:
+		var inviterID string
 
+		new, updated, deleted := compareInvitesDiff(event.DiffInvites)
+		for _, invite := range new {
+			inviterID = ""
+			if invite.Inviter != nil {
+				inviterID = invite.Inviter.ID
+			}
+			at, _ := invite.CreatedAt.Parse()
+
+			items = append(items, &Item{
+				Model: gorm.Model{
+					CreatedAt: at,
+				},
+				GuildID:     event.GuildID,
+				ActionType:  ActionTypeInviteCreate,
+				TargetType:  EntityTypeDiscordInvite,
+				TargetValue: invite.Code,
+				AuthorID:    inviterID,
+				Options:     optionsForInvite(nil, invite),
+			})
+		}
+		for _, invite := range updated {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeInviteUpdate,
+				TargetType:                 EntityTypeDiscordInvite,
+				TargetValue:                invite[1].Code,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForInvite(invite[0], invite[1]),
+			})
+		}
+		for _, invite := range deleted {
+			items = append(items, &Item{
+				GuildID:                    event.GuildID,
+				ActionType:                 ActionTypeInviteDelete,
+				TargetType:                 EntityTypeDiscordInvite,
+				TargetValue:                invite.Code,
+				WaitingForAuditLogBackfill: true,
+				Options:                    optionsForInvite(nil, invite),
+			})
+		}
 	}
 
 	for _, item := range items {

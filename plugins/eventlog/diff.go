@@ -108,3 +108,47 @@ func webhookEqual(a, b *discordgo.Webhook) bool {
 
 	return true
 }
+
+func compareInvitesDiff(diff *events.DiffInvites) (new []*discordgo.Invite, updated [][]*discordgo.Invite, deleted []*discordgo.Invite) {
+	for _, oldInvite := range diff.Old {
+		newInvite := inviteSliceFindInvite(oldInvite.Code, diff.New)
+		if newInvite != nil {
+			if !inviteEqual(oldInvite, newInvite) {
+				updated = append(updated, []*discordgo.Invite{oldInvite, newInvite})
+			}
+			continue
+		}
+
+		deleted = append(deleted, oldInvite)
+	}
+
+	for _, newInvite := range diff.New {
+		if inviteSliceFindInvite(newInvite.Code, diff.Old) == nil {
+			new = append(new, newInvite)
+		}
+	}
+
+	return new, updated, deleted
+}
+
+func inviteSliceFindInvite(code string, list []*discordgo.Invite) *discordgo.Invite {
+	for _, invite := range list {
+		if invite.Code == code {
+			return invite
+		}
+	}
+
+	return nil
+}
+
+func inviteEqual(a, b *discordgo.Invite) bool {
+	if a.Code != b.Code {
+		return false
+	}
+
+	if a.Revoked != b.Revoked {
+		return false
+	}
+
+	return true
+}
