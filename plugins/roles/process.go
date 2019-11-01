@@ -42,95 +42,175 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 	plusMinus := event.MessageCreate.Content[0:1]
-	roleInput := strings.TrimSpace(event.MessageCreate.Content[1:])
-
 	if plusMinus != PLUS && plusMinus != MINUS {
 		return false
 	}
 
-	// explicitly not checking error here
-	defaultChannelID, _ := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
-
-	// check if default server role channel first
-	if defaultChannelID != "" && event.ChannelID == defaultChannelID {
-
-		// check if user is adding uncategorized role
-		uncategorizedRoles, err := p.getUncategorizedRoles(event.GuildID)
-		if err != nil {
-			event.Except(err)
-			return false
-		}
-		for _, role := range uncategorizedRoles {
-			if role.Match(event.State(), roleInput) {
-
-				if plusMinus == PLUS {
-					err = p.assignRole(event, role.ServerRoleID)
-				} else {
-					err = p.removeRole(event, role.ServerRoleID)
-				}
-				if err != nil {
-					event.Except(err)
-					return true
-				}
-				return true
-			}
-		}
+	// get all the roles setup for the channel or categories using the channel
+	uncategorizedRoles, err := p.getUncategorizedRoles(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return false
 	}
-
-	// get categories setup for the given channel
 	categories, err := p.getCategoryByChannel(event.ChannelID)
 	if err != nil {
 		event.Except(err)
 		return false
 	}
-	if len(categories) == 0 {
-		return false
+
+	allRoles := make([]*Role, 0)
+	for _, role := range uncategorizedRoles {
+		allRoles = append(allRoles, role)
+	}
+	for _, category := range categories {
+		for _, role := range category.Roles {
+			allRoles = append(allRoles, &role)
+		}
 	}
 
-	var member *discordgo.Member
-	for _, category := range categories {
+	requests, err := p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles)
+	if err != nil {
+		event.Except(err)
+		return true
+	}
 
-		if !category.Enabled {
+	// explicitly not checking error here
+	defaultChannelID, _ := config.GuildGetString(event.DB(), event.GuildID, guildRoleChannelKey)
+
+	for role, plusMinus := range requests {
+
+		// check if default server role channel first
+		if defaultChannelID != "" && event.ChannelID == defaultChannelID {
+
+			for _, urole := range uncategorizedRoles {
+				if urole.ServerRoleID == role.ServerRoleID {
+
+					if string(plusMinus) == PLUS {
+						err = p.assignRole(event, role.ServerRoleID)
+					} else {
+						err = p.removeRole(event, role.ServerRoleID)
+					}
+					if err != nil {
+						event.Except(err)
+						break
+					}
+					break
+				}
+			}
+		}
+
+		if len(categories) == 0 {
 			continue
 		}
 
-		for _, role := range category.Roles {
-			if role.Match(event.State(), roleInput) {
+		var member *discordgo.Member
+		for _, category := range categories {
 
-				if member == nil {
-					member, err = event.State().Member(event.GuildID, event.UserID)
-					if err != nil {
-						event.Except(err)
-						return false
-					}
-				}
+			if !category.Enabled {
+				continue
+			}
 
-				if plusMinus == PLUS {
+			for _, crole := range category.Roles {
+				if crole.ServerRoleID == role.ServerRoleID {
 
-					if p.isOverRoleLimit(member, category) {
-						msgs, err := event.Respond("roles.role.at-category-limit", "userMention", member.Mention())
+					if member == nil {
+						member, err = event.State().Member(event.GuildID, event.UserID)
 						if err != nil {
+							event.Except(err)
 							return false
 						}
-
-						go p.deleteWithDelay(event, msgs[0].ID)
-						return true
 					}
 
-					err = p.assignRole(event, role.ServerRoleID)
-				} else {
-					err = p.removeRole(event, role.ServerRoleID)
+					if string(plusMinus) == PLUS {
+
+						if p.isOverRoleLimit(member, category) {
+							msgs, err := event.Respond("roles.role.at-category-limit", "userMention", member.Mention())
+							if err != nil {
+								return false
+							}
+
+							go p.deleteWithDelay(event, msgs[0].ID)
+							return true
+						}
+
+						err = p.assignRole(event, role.ServerRoleID)
+					} else {
+						err = p.removeRole(event, role.ServerRoleID)
+					}
+					if err != nil {
+						event.Except(err)
+						break
+					}
+					break
 				}
-				if err != nil {
-					event.Except(err)
-					return true
-				}
-				return true
 			}
 		}
 	}
 
 	return false
+}
+
+func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, roles []*Role) (map[*Role]rune, error) {
+	requestsMap := make(map[*Role]rune)
+	ignoreChars := 0
+	skipSpace := false
+
+	for i, str := range userMsg {
+		// might be spaces between the +/- and the previous assigned role name, need
+		// to skip spaces before we start counting characters
+		if skipSpace {
+			if str != ' ' {
+				skipSpace = false
+			} else {
+				continue
+			}
+		}
+
+		// if a role was found, skip the amount of characters that match the role name length
+		if ignoreChars != 0 {
+			ignoreChars--
+			continue
+		}
+
+		if str == '+' || str == '-' {
+			remainingMsg := strings.TrimSpace(userMsg[i+1:])
+			foundRole := false
+		RoleLoop:
+			for _, role := range roles {
+				roleName := role.Name(p.state)
+				if len(roleName) != 0 && strings.HasPrefix(remainingMsg, roleName) {
+					ignoreChars = len(roleName)
+					requestsMap[role] = str
+					foundRole = true
+					skipSpace = true
+					break RoleLoop
+				}
+
+				for _, alias := range role.Aliases {
+					if len(alias) != 0 && strings.HasPrefix(remainingMsg, alias) {
+						ignoreChars = len(alias)
+						requestsMap[role] = str
+						foundRole = true
+						skipSpace = true
+						break RoleLoop
+					}
+				}
+			}
+
+			if !foundRole {
+				member, err := p.state.Member(event.GuildID, event.UserID)
+				if err != nil {
+					return nil, err
+				}
+				unfoundRole := strings.Split(remainingMsg, " ")[0]
+				return nil, events.NewUserError(
+					event.Translate("roles.role.rolename-not-found", "userMention", member.Mention(), "roleName", unfoundRole),
+				)
+			}
+		}
+	}
+
+	return requestsMap, nil
 }
 
 func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) bool {
@@ -165,21 +245,24 @@ func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
 	if err != nil {
 		return err
 	}
+
+	role, err := event.State().Role(event.GuildID, serverRoleID)
+	if err != nil {
+		return err
+	}
+
 	for _, userRole := range member.Roles {
 		if userRole == serverRoleID {
-			return events.NewUserError(
-				event.Translate("roles.role.already-assigned", "userMention", member.Mention()),
-			)
+			msgs, err := event.Respond("roles.role.already-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+			if len(msgs) > 0 {
+				go p.deleteWithDelay(event, msgs[0].ID)
+			}
+			return err
 		}
 	}
 
 	// Assign role
 	err = event.Discord().Client.GuildMemberRoleAdd(event.GuildID, event.UserID, serverRoleID)
-	if err != nil {
-		return err
-	}
-
-	role, err := event.State().Role(event.GuildID, serverRoleID)
 	if err != nil {
 		return err
 	}
@@ -208,19 +291,21 @@ func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 		}
 	}
 
-	if !hasRole {
-		return events.NewUserError(
-			event.Translate("roles.role.not-assigned", "userMention", member.Mention()),
-		)
-	}
-
-	// Remove role
-	err = event.Discord().Client.GuildMemberRoleRemove(event.GuildID, event.UserID, serverRoleID)
+	role, err := event.State().Role(event.GuildID, serverRoleID)
 	if err != nil {
 		return err
 	}
 
-	role, err := event.State().Role(event.GuildID, serverRoleID)
+	if !hasRole {
+		msgs, err := event.Respond("roles.role.not-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+		if len(msgs) > 0 {
+			go p.deleteWithDelay(event, msgs[0].ID)
+		}
+		return err
+	}
+
+	// Remove role
+	err = event.Discord().Client.GuildMemberRoleRemove(event.GuildID, event.UserID, serverRoleID)
 	if err != nil {
 		return err
 	}
