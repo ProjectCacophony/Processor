@@ -9,11 +9,13 @@
 "tools.help.edit.name" = "Edit a Message"
 "tools.help.edit.description" = "Edits the given message sent by the bot"
 "tools.help.roll.name" = "Roll a number"
-"tools.help.roll.description" = "Chooses a number between 1 and the given number, including 1 and the given number."
+"tools.help.roll.description" = "Chooses a number between 1 and the given number, including 1 and the given number"
 "tools.help.8ball.name" = "Magic 8-Ball"
 "tools.help.8ball.description" = "Ask the Magic 8-Ball."
 "tools.help.dice.name" = "Cast dice"
 "tools.help.dice.description" = "Casts a given dice. Eg 1d6, or 1d%\\*10"
+"tools.help.download-emoji.name" = "Download Emoji"
+"tools.help.download-emoji.description" = "Sends you a zip with all emoji of the current server"
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -60,3 +62,9 @@
 "tools.help.moddm.description" = "Sends a Moderator DM to the given user. Your name will not be revealed, but the name of the server."
 "tools.help.moddm.dm-prefix" = "📬 A moderator from the server **{{.guild.Name}}** sent you a message:"
 "tools.help.moddm.success" = "I sent the message to {{.user.String}}."
+
+# handleDownloadEmoji
+"tools.download-emoji.none-emoji" = "No emoji to export found."
+"tools.download-emoji.preparing" = "Your emoji zip is being prepared… :loading:"
+"tools.download-emoji.success" = "<@{{.userID}}> **Here you go!** All emoji of this server in one zip."
+"tools.download-emoji.no-attach-files-permission" = "Please give me the permission to attach files in this channel!"
