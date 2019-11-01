@@ -27,10 +27,15 @@ func (p *Plugin) getCategoryByName(name string, guildID string) (*Category, erro
 }
 
 func (p *Plugin) getCategoryByChannel(channelID string) ([]*Category, error) {
+	channel, err := p.state.Channel(channelID)
+	if err != nil {
+		return nil, err
+	}
+
 	var categories []*Category
-	err := p.db.
+	err = p.db.
 		Preload("Roles").
-		Find(&categories, "channel_id = ?", channelID).
+		Find(&categories, "channel_id = ? or ((channel_id is null or channel_id = '') and guild_id = ?)", channelID, channel.GuildID).
 		Error
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
 		return nil, err
