@@ -176,7 +176,7 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleModDM(event)
 		}, permissions.DiscordManageServer)
 		return true
-	case "emoji-download", "download-emoji":
+	case "emoji-download", "download-emoji", "emojis-download", "download-emojis":
 		event.Require(func() {
 			p.handleDownloadEmoji(event)
 		}, permissions.DiscordManageServer, permissions.DiscordManageEmojis, permissions.Not(permissions.DiscordChannelDM))
