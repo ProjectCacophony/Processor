@@ -20,6 +20,10 @@
 Are you sure you want to delete this category?\n\
 Please react with ✅ if you do."
 
+"roles.roles.ask-role-create" = "**Role not found on server.**\n\
+To add this role to the bots role configuration it must be on the server first, would you like to make this role on the server?\n\
+Please react with ✅ if you do."
+
 "roles.message" = "Use `+role` **to add** or `-role` **to remove** a role.\n\n\
 {{ if .uncategorizedRolesList }}\
 Roles: {{ .uncategorizedRolesList }}\

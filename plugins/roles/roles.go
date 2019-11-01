@@ -1,9 +1,12 @@
 package roles
 
 import (
+	"encoding/json"
 	"strings"
 
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 func (p *Plugin) createRole(event *events.Event) {
@@ -18,18 +21,6 @@ func (p *Plugin) createRole(event *events.Event) {
 		event.Respond("roles.role.no-name")
 		return
 	}
-
-	serverRole, err := p.getServerRoleByNameOrID(serverRoleID, event.GuildID)
-	if err != nil {
-		if err.Error() == ServerRoleNotFound || err.Error() == MultipleServerRolesWithName {
-			event.Respond(err.Error())
-		} else {
-			event.Except(err)
-		}
-		return
-	}
-	serverRoleID = serverRole.ID
-	roleName := serverRole.Name
 
 	existingRole, err := p.getRoleByServerRoleID(serverRoleID, event.GuildID)
 	if err != nil {
@@ -71,7 +62,7 @@ func (p *Plugin) createRole(event *events.Event) {
 	}
 
 	role := &Role{
-		ServerRoleID: serverRoleID,
+		ServerRoleID: "",
 		CategoryID:   categoryID,
 		PrintName:    printName,
 		Aliases:      aliases,
@@ -84,6 +75,71 @@ func (p *Plugin) createRole(event *events.Event) {
 		return
 	}
 
+	serverRole, err := p.getServerRoleByNameOrID(serverRoleID, event.GuildID)
+	if err != nil {
+
+		if err.Error() == ServerRoleNotFound {
+			if permissions.DiscordManageRoles.Match(
+				event.State(),
+				event.DB(),
+				event.BotUserID,
+				event.ChannelID,
+				false,
+			) {
+				messages, err := event.Respond("roles.roles.ask-role-create")
+				if err != nil {
+					event.Except(err)
+					return
+				}
+
+				roleData, err := json.Marshal(&role)
+				if err != nil {
+					event.Except(err)
+					return
+				}
+
+				err = event.Questionnaire().Register(
+					confirmCreateRoleKey,
+					events.QuestionnaireFilter{
+						GuildID:   event.GuildID,
+						ChannelID: event.ChannelID,
+						UserID:    event.UserID,
+						Type:      events.MessageReactionAddType,
+					},
+					map[string]interface{}{
+						"messageID": messages[0].ID,
+						"role":      string(roleData),
+						"roleName":  serverRoleID,
+					},
+				)
+				if err != nil {
+					event.Except(err)
+					return
+				}
+
+				err = discord.React(
+					event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "✅",
+				)
+				if err != nil {
+					return
+				}
+				discord.React(
+					event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "❌",
+				)
+
+				return
+			} else {
+				event.Respond(err.Error())
+			}
+		} else if err.Error() == MultipleServerRolesWithName {
+			event.Respond(err.Error())
+		} else {
+			event.Except(err)
+		}
+		return
+	}
+	role.ServerRoleID = serverRole.ID
+
 	err = p.db.Save(role).Error
 	if err != nil {
 		event.Except(err)
@@ -91,7 +147,7 @@ func (p *Plugin) createRole(event *events.Event) {
 	}
 
 	event.Respond("roles.role.creation",
-		"roleName", roleName,
+		"roleName", serverRole.Name,
 	)
 }
 

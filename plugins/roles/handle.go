@@ -203,6 +203,9 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case confirmCategoryDeleteKey:
 			p.handleConfirmCategoryDelete(event)
 			return true
+		case confirmCreateRoleKey:
+			p.handleConfirmCreateRole(event)
+			return true
 		}
 	}
 

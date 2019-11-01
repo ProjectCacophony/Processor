@@ -8,6 +8,7 @@ import (
 
 const (
 	confirmCategoryDeleteKey = "cacophony:processor:role:questionnaire:delete-category"
+	confirmCreateRoleKey     = "cacophony:processor:role:questionnaire:create-role"
 )
 
 type Category struct {

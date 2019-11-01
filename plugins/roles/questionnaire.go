@@ -74,3 +74,84 @@ func (p *Plugin) handleConfirmCategoryDelete(event *events.Event) {
 	err := event.Questionnaire().Redo(event)
 	event.Except(err)
 }
+
+func (p *Plugin) handleConfirmCreateRole(event *events.Event) {
+
+	switch event.MessageReactionAdd.Emoji.APIName() {
+	case "✅":
+		messageID, ok := event.QuestionnaireMatch.Payload["messageID"].(string)
+		if !ok || messageID == "" {
+			event.Except(errors.New("invalid payload, messageID is empty"))
+			return
+		}
+
+		roleName, ok := event.QuestionnaireMatch.Payload["roleName"].(string)
+		if !ok || roleName == "" {
+			event.Except(errors.New("invalid payload, roleName is empty"))
+			return
+		}
+
+		roleData, ok := event.QuestionnaireMatch.Payload["role"].(string)
+		if !ok {
+			event.Except(errors.New("invalid payload, role is empty"))
+			return
+		}
+
+		var role Role
+		err := json.Unmarshal([]byte(roleData), &role)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		newServerrole, err := event.Discord().Client.GuildRoleCreate(event.GuildID)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		newServerrole, err = event.Discord().Client.GuildRoleEdit(event.GuildID, newServerrole.ID, roleName, 0, false, 0, false)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		role.ServerRoleID = newServerrole.ID
+
+		err = p.db.Save(&role).Error
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		discord.Delete(
+			event.Redis(), event.Discord(), event.MessageReactionAdd.ChannelID, messageID, false,
+		)
+
+		_, err = event.Send(event.ChannelID, "roles.role.creation",
+			"roleName", newServerrole.Name,
+		)
+		if err != nil {
+			event.Except(err)
+			return
+		}
+
+		return
+
+	case "❌":
+		messageID, ok := event.QuestionnaireMatch.Payload["messageID"].(string)
+		if !ok || messageID == "" {
+			event.Except(errors.New("invalid payload, messageID is empty"))
+			return
+		}
+
+		discord.Delete(
+			event.Redis(), event.Discord(), event.MessageReactionAdd.ChannelID, messageID, false,
+		)
+		return
+
+	}
+
+	err := event.Questionnaire().Redo(event)
+	event.Except(err)
+}
