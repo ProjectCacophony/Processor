@@ -39,3 +39,6 @@
 
 # handleDevPermission
 "dev.permission" = "<@{{.userID}}> does{{if not .has}} **not**{{end}} have permission {{.permissionID}} in <#{{.channelID}}>."
+
+# handleConfig
+"dev.config.content" = "Value\n```\n\"{{.value}}\"\n```"
