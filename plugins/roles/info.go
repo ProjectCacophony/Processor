@@ -37,6 +37,8 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 		}
 
 		outputText += fmt.Sprintf("**Role Channel:** %s", channel.Mention())
+	} else {
+		outputText += fmt.Sprintf("**No Role Channel Set**")
 	}
 
 	categoriesText := ""
