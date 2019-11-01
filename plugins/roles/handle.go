@@ -219,6 +219,11 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		return false
 	}
 
+	if len(event.Fields()) == 1 && (event.Fields()[0] == "roles" || event.Fields()[0] == "role") {
+		p.displayRoleInfo(event)
+		return true
+	}
+
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
 		case "show", "hide":
