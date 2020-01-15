@@ -29,21 +29,9 @@ func (p *Plugin) getListMessages(
 		return messages, nil
 	}
 
-	messages, err = session.Client.ChannelMessages( // TODO: query more messages, if required
-		channelID,
-		100,
-		"",
-		"",
-		"",
-	)
+	messages, err = allChannelMessages(session, channelID)
 	if err != nil {
 		return nil, err
-	}
-
-	// reverse messages
-	for i := len(messages)/2 - 1; i >= 0; i-- {
-		opp := len(messages) - 1 - i
-		messages[i], messages[opp] = messages[opp], messages[i]
 	}
 
 	err = p.setListMessages(channelID, messages)
@@ -96,4 +84,38 @@ func (p *Plugin) setChannelServersToPost(
 
 	err = p.redis.Set(channelServersToPost(botID), data, 24*time.Hour*7).Err()
 	return err
+}
+
+func allChannelMessages(discord *discord.Session, channelID string) ([]*discordgo.Message, error) {
+	var messages, partialMessages []*discordgo.Message
+	var err error
+
+	var prevBeforeID string
+	for {
+		partialMessages, err = discord.Client.ChannelMessages(
+			channelID,
+			100,
+			prevBeforeID,
+			"",
+			"",
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		messages = append(messages, partialMessages...)
+
+		if len(partialMessages) <= 0 {
+			break
+		}
+
+		prevBeforeID = partialMessages[len(partialMessages)-1].ID
+	}
+
+	for i := len(messages)/2 - 1; i >= 0; i-- {
+		opp := len(messages) - 1 - i
+		messages[i], messages[opp] = messages[opp], messages[i]
+	}
+
+	return messages, nil
 }
