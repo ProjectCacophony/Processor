@@ -252,7 +252,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to update list message %s: %w", message.ID, err)
 			}
 		}
 	}
@@ -266,7 +266,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to delete list message %s: %w", message.ID, err)
 			}
 		}
 	}
