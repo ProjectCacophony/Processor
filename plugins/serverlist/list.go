@@ -5,8 +5,9 @@ import (
 	"sort"
 	"strings"
 
+	"errors"
+
 	"github.com/bwmarrin/discordgo"
-	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -241,7 +242,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				content,
 			)
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to post list message Channel #%s: %w", channelToPost.ChannelID, err)
 			}
 		} else if message.Content != content {
 			messages, err = p.updateListMessage(
@@ -252,7 +253,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return fmt.Errorf("unable to update list message %s: %w", message.ID, err)
+				return fmt.Errorf("unable to update list message Channel #%s Message #%s: %w", channelToPost.ChannelID, message.ID, err)
 			}
 		}
 	}
@@ -266,7 +267,11 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return fmt.Errorf("unable to delete list message %s: %w", message.ID, err)
+				var discordError *discordgo.RESTError
+				if errors.As(err, &discordError) && discordError.Message != nil && discordError.Message.Code == discordgo.ErrCodeUnknownMessage {
+					continue
+				}
+				return fmt.Errorf("unable to delete list message Channel #%s Message #%s: %w", channelToPost.ChannelID, message.ID, err)
 			}
 		}
 	}
