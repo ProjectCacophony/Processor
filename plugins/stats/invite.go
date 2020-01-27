@@ -12,7 +12,7 @@ import (
 )
 
 func findInvite(event *events.Event) (*discordgo.Invite, error) {
-	for _, field := range event.Fields() {
+	for _, field := range event.Fields()[2:] {
 		inviteCode := regexp.DiscordInviteRegexp.FindStringSubmatch(field)
 		if len(inviteCode) < 7 {
 			if regexp.DiscordInviteCodeRegexp.MatchString(field) {
