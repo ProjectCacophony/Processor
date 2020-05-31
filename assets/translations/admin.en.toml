@@ -4,6 +4,8 @@
 "admin.help.storage.toggle.user.description" = "Enable/Disable a users ability to use commands that upload files."
 "admin.help.as.name" = "Impersonate an User"
 "admin.help.as.description" = "Executes a command as a different user."
+"admin.help.in.name" = "Run command in channel"
+"admin.help.in.description" = "Executes a command in a specific channel."
 "admin.help.do.name" = "Run command as super user"
 "admin.help.do.description" = "Allows circumventing permission checks."
 "admin.help.intercept.name" = "Intercept a channel"
@@ -17,12 +19,17 @@
 "admin.as.progress" = ":warning: Performing as **{{.user.String | Escape}}**:\n\
 ```\n{{.content | replace \"```\" \"` ` `\"}}\n```"
 
+# handleIn
+"admin.in.not-current" = "Sorry, you can not run a command in the channel you are currently in."
+"admin.in.progress" = ":warning: **{{.user.String | Escape}} is running a command remotely**:\n\
+```\n{{.content | replace \"```\" \"` ` `\"}}\n```"
+
 # handleDo
 "admin.do.progress" = ":warning: Performing as **super user**:\n\
 ```\n{{.content | replace \"```\" \"` ` `\"}}\n```"
 
 # handleIntercept
-"admin.intercept.start-local" = ":warning: I am going to copy all Caco Bot messages from **{{.fromGuild.Name}}** (#{{.fromGuild.ID}}) / **#{{.fromChannel.Name}}** (#{{.fromChannel.ID}}) to this channel for five minutes."
+"admin.intercept.start-local" = ":warning: I am going to copy all Caco Bot messages from **{{.fromGuild.Name}}** (#{{.fromGuild.ID}}) / **#{{.fromChannel.Name}}** (#{{.fromChannel.ID}}) to this channel for five minutes until {{TimeFormatShort .till .timezone}}."
 "admin.intercept.start-remote" = ":warning: **A Bot Admin is intercepting this channel.**\nAll Bot messages from this bot in this channel in the next five minutes will be visible for Bot Admins. Messages from users or other bots will not be visible for Bot Admins!"
 "admin.intercept.copy-from-disclaimer" = "Message copied from **{{.fromGuild.Name}}** (#{{.fromGuild.ID}}) / **#{{.fromChannel.Name}}** (#{{.fromChannel.ID}}) \
 {{if .messageCreate.Attachments}}({{len .messageCreate.Attachments}} Attachments){{end}}\n\

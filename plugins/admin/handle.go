@@ -64,6 +64,16 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
+				Name:        "admin.help.in.name",
+				Description: "admin.help.in.description",
+				Params: []common.CommandParam{
+					{Name: "in", Type: common.Flag},
+					{Name: "user", Type: common.Channel},
+					{Name: "command", Type: common.Text},
+					{Name: "…", Type: common.Text},
+				},
+			},
+			{
 				Name:        "admin.help.do.name",
 				Description: "admin.help.do.description",
 				Params: []common.CommandParam{
@@ -134,6 +144,16 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 
 		event.Require(func() {
 			p.handleAs(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "in":
+		if len(event.Fields()) < 4 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleIn(event)
 		}, permissions.Not(permissions.DiscordChannelDM))
 		return
 

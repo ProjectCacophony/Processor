@@ -18,12 +18,12 @@ type interceptionDetails struct {
 	ToChannelID string
 }
 
-func interceptionMapAdd(botUserID, fromChannelID, toChannelID string) {
+func interceptionMapAdd(botUserID, fromChannelID, toChannelID string, till time.Time) {
 	interceptionMapLock.Lock()
 	defer interceptionMapLock.Unlock()
 
 	interceptionMap[botUserID+"-"+fromChannelID] = &interceptionDetails{
-		Expire:      time.Now().Add(5 * time.Minute),
+		Expire:      till,
 		ToChannelID: toChannelID,
 	}
 }
@@ -70,12 +70,14 @@ func (p *Plugin) handleIntercept(event *events.Event) {
 		return
 	}
 
-	interceptionMapAdd(botForChannel, fromChannel.ID, event.ChannelID)
+	till := time.Now().Add(5 * time.Minute)
+	interceptionMapAdd(botForChannel, fromChannel.ID, event.ChannelID, till)
 
 	event.Respond(
 		"admin.intercept.start-local",
 		"fromChannel", fromChannel,
 		"fromGuild", fromGuild,
+		"till", till,
 	)
 	event.Send(
 		fromChannel.ID,
