@@ -21,13 +21,13 @@ func (p *Plugin) handleAs(event *events.Event) {
 		return
 	}
 	// can not impersonate bot admins
-	if permissions.BotAdmin.Match(event.State(), event.DB(), asUser.ID, event.ChannelID, event.DM()) {
+	if permissions.BotAdmin.Match(event.State(), event.DB(), asUser.ID, event.ChannelID, event.DM(), false) {
 		event.Respond("admin.as.not-as-botadmin")
 		return
 	}
 
 	newContent := event.MessageCreate.Content
-	for _, field := range append(event.Fields()[1:3], event.Prefix()+event.OriginalCommand()) {
+	for _, field := range append([]string{event.Prefix() + event.OriginalCommand()}, event.Fields()[1:3]...) {
 		newContent = strings.Replace(newContent, field, "", 1)
 	}
 	newContent = strings.TrimSpace(newContent)

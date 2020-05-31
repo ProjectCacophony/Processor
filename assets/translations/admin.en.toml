@@ -4,11 +4,17 @@
 "admin.help.storage.toggle.user.description" = "Enable/Disable a users ability to use commands that upload files."
 "admin.help.as.name" = "Impersonate an User"
 "admin.help.as.description" = "Executes a command as a different user."
+"admin.help.do.name" = "Run command as super user"
+"admin.help.do.description" = "Allows circumventing permission checks."
 
 "admin.storage.toggle" = "{{if .enable}}Enabled{{else}}Disabled{{end}} `{{.permission}}` for the user `{{.username}}`."
 
 # handleAs
 "admin.as.not-yourself" = "Sorry, you can not impersonate yourself! :thinking:"
 "admin.as.not-as-botadmin" = "Sorry, you can not impersonate Bot Admins! :spy:"
-"admin.as.progress" = "Performing as **{{.user.String | Escape}}**:\n\
+"admin.as.progress" = ":warning: Performing as **{{.user.String | Escape}}**:\n\
+```\n{{.content | replace \"```\" \"` ` `\"}}\n```"
+
+# handleDo
+"admin.do.progress" = ":warning: Performing as **super user**:\n\
 ```\n{{.content | replace \"```\" \"` ` `\"}}\n```"

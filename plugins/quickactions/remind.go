@@ -116,6 +116,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 				params.BotUserID,
 				params.ChannelID,
 				false,
+				false,
 			) {
 				event.Discord().Client.ChannelMessageDelete(
 					event.ChannelID,
@@ -143,6 +144,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 				p.db,
 				params.BotUserID,
 				params.ChannelID,
+				false,
 				false,
 			) {
 				event.Discord().Client.MessageReactionRemove(
@@ -177,6 +179,7 @@ func (p *Plugin) handleRemindQuestionnaire(event *events.Event) {
 			p.db,
 			params.BotUserID,
 			params.ChannelID,
+			false,
 			false,
 		) {
 			event.Discord().Client.ChannelMessageDelete(
@@ -262,6 +265,7 @@ func (p *Plugin) setupQuickactionRemind(
 			p.db,
 			params.BotUserID,
 			params.ChannelID,
+			false,
 			false,
 		) {
 			session.Client.MessageReactionRemove(

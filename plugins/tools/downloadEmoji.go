@@ -23,7 +23,7 @@ type enhancedEmoji struct {
 var alphanumericRegex = regexp.MustCompile("[^a-zA-Z0-9]+")
 
 func (p *Plugin) handleDownloadEmoji(event *events.Event) {
-	if !permissions.DiscordAttachFiles.Match(event.State(), event.DB(), event.BotUserID, event.ChannelID, false) {
+	if !permissions.DiscordAttachFiles.Match(event.State(), event.DB(), event.BotUserID, event.ChannelID, false, false) {
 		event.Respond("tools.download-emoji.no-attach-files-permission")
 		return
 	}

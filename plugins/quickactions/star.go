@@ -77,6 +77,7 @@ func (p *Plugin) starMessage(event *events.Event) {
 		event.BotUserID,
 		event.MessageReactionAdd.ChannelID,
 		false,
+		false,
 	) {
 		err = event.Discord().Client.MessageReactionRemove(
 			event.MessageReactionAdd.ChannelID,

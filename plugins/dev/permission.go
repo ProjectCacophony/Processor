@@ -46,6 +46,7 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 		user.ID,
 		channel.ID,
 		event.DM(),
+		event.SuperUser,
 	)
 
 	_, err = event.Respond("dev.permission",

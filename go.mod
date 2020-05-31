@@ -25,7 +25,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191101211226-adde65ae71b8
+	gitlab.com/Cacophony/go-kit v0.0.0-20200531083931-56d393924cd7
 	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff

@@ -63,6 +63,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "…", Type: common.Text},
 				},
 			},
+			{
+				Name:        "admin.help.do.name",
+				Description: "admin.help.do.description",
+				Params: []common.CommandParam{
+					{Name: "do", Type: common.Flag},
+					{Name: "command", Type: common.Text},
+					{Name: "…", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -108,6 +117,16 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 
 		event.Require(func() {
 			p.handleAs(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "do":
+		if len(event.Fields()) < 3 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleDo(event)
 		}, permissions.Not(permissions.DiscordChannelDM))
 		return
 	}
