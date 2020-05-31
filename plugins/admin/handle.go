@@ -72,11 +72,28 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "…", Type: common.Text},
 				},
 			},
+			{
+				Name:        "admin.help.intercept.name",
+				Description: "admin.help.intercept.description",
+				Params: []common.CommandParam{
+					{Name: "intercept", Type: common.Flag},
+					{Name: "channel", Type: common.Channel},
+				},
+			},
 		},
 	}
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.MessageCreateType &&
+		event.MessageCreate.Author != nil &&
+		event.MessageCreate.Author.Bot {
+		interceptionToChannelID := interceptionMapRead(event.MessageCreate.Author.ID, event.MessageCreate.ChannelID)
+		if interceptionToChannelID != "" {
+			p.copyMessageCreate(event, interceptionToChannelID)
+		}
+	}
+
 	if !event.Command() || event.Fields()[0] != "sudo" {
 		return false
 	}
@@ -111,7 +128,7 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 		return
 
 	case "as":
-		if len(event.Fields()) < 3 {
+		if len(event.Fields()) < 4 {
 			return
 		}
 
@@ -127,6 +144,16 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 
 		event.Require(func() {
 			p.handleDo(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "intercept":
+		if len(event.Fields()) < 3 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleIntercept(event)
 		}, permissions.Not(permissions.DiscordChannelDM))
 		return
 	}
