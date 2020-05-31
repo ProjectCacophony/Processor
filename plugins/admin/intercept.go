@@ -52,7 +52,7 @@ func interceptionMapRead(botUserID, fromChannelID string) string {
 }
 
 func (p *Plugin) handleIntercept(event *events.Event) {
-	fromChannel, err := p.state.ChannelFromMention(event.GuildID, event.Fields()[2])
+	fromChannel, err := p.state.ChannelFromMentionTypesEverywhere(event.Fields()[2], discordgo.ChannelTypeGuildText)
 	if err != nil {
 		event.Except(err)
 		return

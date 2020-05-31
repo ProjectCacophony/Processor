@@ -3,22 +3,17 @@ package admin
 import (
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
 )
 
 func (p *Plugin) handleIn(event *events.Event) {
-	inChannel, err := p.state.ChannelFromMention(event.GuildID, event.Fields()[2])
+	inChannel, err := p.state.ChannelFromMentionTypesEverywhere(event.Fields()[2], discordgo.ChannelTypeGuildText)
 	if err != nil {
 		event.Except(err)
 		return
 	}
-
-	// inGuild, err := event.State().Guild(inChannel.GuildID)
-	// if err != nil {
-	// 	event.ExceptSilent(err)
-	// 	return
-	// }
 
 	// can not run in current channel
 	if inChannel.ID == event.ChannelID {
