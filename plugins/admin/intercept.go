@@ -8,6 +8,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
+// TODO: needs to be done via redis
 var (
 	interceptionMap     = map[string]*interceptionDetails{}
 	interceptionMapLock sync.RWMutex
@@ -64,7 +65,7 @@ func (p *Plugin) handleIntercept(event *events.Event) {
 		return
 	}
 
-	fromGuild, err := event.State().Guild(event.MessageCreate.GuildID)
+	fromGuild, err := event.State().Guild(fromChannel.GuildID)
 	if err != nil {
 		event.ExceptSilent(err)
 		return
