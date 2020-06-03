@@ -18,7 +18,7 @@ func (p *Plugin) createRole(event *events.Event) {
 	serverRoleID := event.Fields()[3]
 
 	if serverRoleID == "" {
-		event.Respond("roles.role.no-name")
+		event.Respond("roles.role.role-not-found-on-server")
 		return
 	}
 
@@ -160,7 +160,7 @@ func (p *Plugin) updateRole(event *events.Event) {
 
 	roleID := event.Fields()[3]
 	if roleID == "" {
-		event.Respond("roles.role.no-name")
+		event.Respond("roles.role.role-not-found-on-server")
 		return
 	}
 
