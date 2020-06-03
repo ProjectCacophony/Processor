@@ -63,11 +63,47 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "…", Type: common.Text},
 				},
 			},
+			{
+				Name:        "admin.help.in.name",
+				Description: "admin.help.in.description",
+				Params: []common.CommandParam{
+					{Name: "in", Type: common.Flag},
+					{Name: "user", Type: common.Channel},
+					{Name: "command", Type: common.Text},
+					{Name: "…", Type: common.Text},
+				},
+			},
+			{
+				Name:        "admin.help.do.name",
+				Description: "admin.help.do.description",
+				Params: []common.CommandParam{
+					{Name: "do", Type: common.Flag},
+					{Name: "command", Type: common.Text},
+					{Name: "…", Type: common.Text},
+				},
+			},
+			{
+				Name:        "admin.help.intercept.name",
+				Description: "admin.help.intercept.description",
+				Params: []common.CommandParam{
+					{Name: "intercept", Type: common.Flag},
+					{Name: "channel", Type: common.Channel},
+				},
+			},
 		},
 	}
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
+	if event.Type == events.MessageCreateType &&
+		event.MessageCreate.Author != nil &&
+		event.MessageCreate.Author.Bot {
+		interceptionToChannelID := interceptionMapRead(event.MessageCreate.Author.ID, event.MessageCreate.ChannelID)
+		if interceptionToChannelID != "" {
+			p.copyMessageCreate(event, interceptionToChannelID)
+		}
+	}
+
 	if !event.Command() || event.Fields()[0] != "sudo" {
 		return false
 	}
@@ -102,12 +138,42 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 		return
 
 	case "as":
-		if len(event.Fields()) < 3 {
+		if len(event.Fields()) < 4 {
 			return
 		}
 
 		event.Require(func() {
 			p.handleAs(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "in":
+		if len(event.Fields()) < 4 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleIn(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "do":
+		if len(event.Fields()) < 3 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleDo(event)
+		}, permissions.Not(permissions.DiscordChannelDM))
+		return
+
+	case "intercept":
+		if len(event.Fields()) < 3 {
+			return
+		}
+
+		event.Require(func() {
+			p.handleIntercept(event)
 		}, permissions.Not(permissions.DiscordChannelDM))
 		return
 	}

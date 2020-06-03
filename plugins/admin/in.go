@@ -3,26 +3,21 @@ package admin
 import (
 	"strings"
 
+	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
-	"gitlab.com/Cacophony/go-kit/permissions"
 	"go.uber.org/zap"
 )
 
-func (p *Plugin) handleAs(event *events.Event) {
-	asUser, err := p.state.UserFromMention(event.Fields()[2])
+func (p *Plugin) handleIn(event *events.Event) {
+	inChannel, err := p.state.ChannelFromMentionTypesEverywhere(event.Fields()[2], discordgo.ChannelTypeGuildText)
 	if err != nil {
 		event.Except(err)
 		return
 	}
 
-	// can not impersonate yourself
-	if asUser.ID == event.UserID {
-		event.Respond("admin.as.not-yourself")
-		return
-	}
-	// can not impersonate bot admins
-	if permissions.BotAdmin.Match(event.State(), event.DB(), asUser.ID, event.ChannelID, event.DM(), false) {
-		event.Respond("admin.as.not-as-botadmin")
+	// can not run in current channel
+	if inChannel.ID == event.ChannelID {
+		event.Respond("admin.in.not-current")
 		return
 	}
 
@@ -32,17 +27,21 @@ func (p *Plugin) handleAs(event *events.Event) {
 	}
 	newContent = strings.TrimSpace(newContent)
 
-	p.logger.Info("impersonating user",
+	p.logger.Info("running command in channel remotely",
 		zap.String("user_id", event.UserID),
-		zap.String("as_user_id", asUser.ID),
+		zap.String("in_channel_id", inChannel.ID),
 		zap.String("content", newContent),
 	)
 
-	event.Respond("admin.as.progress", "content", newContent, "user", asUser)
+	event.Send(
+		inChannel.ID,
+		"admin.in.progress",
+		"content", newContent,
+		"user", event.MessageCreate.Author,
+	)
 
 	// fake the author of event, and update the content
-	event.UserID = asUser.ID
-	event.MessageCreate.Author = asUser
+	event.MessageCreate.ChannelID = inChannel.ID
 	event.MessageCreate.Content = newContent
 	err, recoverable := p.publisher.Publish(event.Context(), event)
 	if err != nil {

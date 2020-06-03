@@ -4,19 +4,19 @@ require (
 	github.com/Jeffail/gabs v1.4.0
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
-	github.com/Seklfreak/ginside v0.0.0-20191024170614-28a1a8d723ad
+	github.com/Seklfreak/ginside v0.0.0-20191026115949-9c193065876c
 	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
-	github.com/bwmarrin/discordgo v0.16.1-0.20191003153151-ae74315d3834
-	github.com/davecgh/go-spew v1.1.1
+	github.com/bwmarrin/discordgo v0.20.2
 	github.com/dustin/go-humanize v1.0.0
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.1.1
+	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/jinzhu/gorm v1.9.8
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.1.1
@@ -25,9 +25,11 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20191027201257-c0e30e3ac9d3
+	gitlab.com/Cacophony/go-kit v0.0.0-20200531083931-56d393924cd7
 	go.uber.org/zap v1.10.0
+	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
+	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
 	mvdan.cc/xurls/v2 v2.0.0
 )
 

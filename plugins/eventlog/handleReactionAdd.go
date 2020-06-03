@@ -61,6 +61,7 @@ func (p *Plugin) handleReactionEditReason(event *events.Event, item *Item) {
 			event.BotUserID,
 			event.MessageReactionAdd.ChannelID,
 			false,
+			false,
 		) {
 			err := event.Discord().Client.MessageReactionRemove(
 				event.MessageReactionAdd.ChannelID,
@@ -119,6 +120,7 @@ func (p *Plugin) handleQuestionnaireEditReason(event *events.Event) {
 			event.BotUserID,
 			event.ChannelID,
 			false,
+			false,
 		) {
 			event.Discord().Client.ChannelMessageDelete(
 				event.ChannelID,
@@ -171,6 +173,7 @@ func (p *Plugin) handleReactionRevert(event *events.Event, item *Item) {
 			p.db,
 			event.BotUserID,
 			event.MessageReactionAdd.ChannelID,
+			false,
 			false,
 		) {
 			err := event.Discord().Client.MessageReactionRemove(

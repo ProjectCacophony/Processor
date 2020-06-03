@@ -58,6 +58,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return false
 	}
 
+	if event.Fields()[0] != "patreon" {
+		return false
+	}
+
 	if len(event.Fields()) >= 2 &&
 		event.Fields()[1] == "status" {
 		p.handleStatus(event)

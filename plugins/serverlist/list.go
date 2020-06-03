@@ -1,12 +1,12 @@
 package serverlist
 
 import (
+	"errors"
 	"fmt"
 	"sort"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -36,7 +36,7 @@ func (p *Plugin) clearListCache(botID string) error {
 
 	session, err := discord.NewSession(p.tokens, botID)
 	if err != nil {
-		return errors.Wrap(err, "failure creating Discord Session for Bot")
+		return fmt.Errorf("failure creating Discord Session for Bot: %w", err)
 	}
 
 	for _, item := range allList {
@@ -86,12 +86,12 @@ func (p *Plugin) clearListCache(botID string) error {
 func (p *Plugin) refreshList(botID string) error {
 	allList, err := p.getList(botID)
 	if err != nil {
-		return errors.Wrap(err, "failure getting current list")
+		return fmt.Errorf("failure getting current list: %w", err)
 	}
 
 	session, err := discord.NewSession(p.tokens, botID)
 	if err != nil {
-		return errors.Wrap(err, "failure creating Discord Session for Bot")
+		return fmt.Errorf("failure creating Discord Session for Bot: %w", err)
 	}
 
 	var serversToPost []*ChannelServersToPost
@@ -104,7 +104,7 @@ func (p *Plugin) refreshList(botID string) error {
 
 				categoryChannel, err := p.state.Channel(category.Category.ChannelID)
 				if err != nil {
-					return errors.Wrap(err, "failure getting category channel from state")
+					return fmt.Errorf("failure getting category channel from state: %w", err)
 				}
 
 				switch categoryChannel.Type {
@@ -128,7 +128,7 @@ func (p *Plugin) refreshList(botID string) error {
 						name,
 					)
 					if err != nil {
-						return errors.Wrap(err, "failure resolving channel for category channel")
+						return fmt.Errorf("failure resolving channel for category channel: %w", err)
 					}
 
 					serversToPost = p.addToServersToPost(
@@ -146,7 +146,7 @@ func (p *Plugin) refreshList(botID string) error {
 	for _, channelToPost := range serversToPost {
 		err = p.postChannel(session, channelToPost)
 		if err != nil {
-			return errors.Wrap(err, "failure posting channel")
+			return fmt.Errorf("failure posting channel: %w", err)
 		}
 	}
 
@@ -166,15 +166,17 @@ func (p *Plugin) refreshList(botID string) error {
 						errD.Message.Message == "404: Not Found") {
 					continue
 				}
-				return errors.Wrap(err, "failure clearing channel list")
+				return fmt.Errorf("failure clearing channel list: %w", err)
 			}
 		}
 	}
 
-	return errors.Wrap(
-		p.setChannelServersToPost(botID, serversToPost),
-		"failure updating servers cache",
-	)
+	err = p.setChannelServersToPost(botID, serversToPost)
+	if err != nil {
+		return fmt.Errorf("failure updating servers cache: %w", err)
+	}
+
+	return nil
 }
 
 type ChannelServersToPost struct {
@@ -241,7 +243,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				content,
 			)
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to post list message Channel #%s: %w", channelToPost.ChannelID, err)
 			}
 		} else if message.Content != content {
 			messages, err = p.updateListMessage(
@@ -252,7 +254,7 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return err
+				return fmt.Errorf("unable to update list message Channel #%s Message #%s: %w", channelToPost.ChannelID, message.ID, err)
 			}
 		}
 	}
@@ -266,7 +268,11 @@ func (p *Plugin) postChannel(session *discord.Session, channelToPost *ChannelSer
 				message.ID,
 			)
 			if err != nil {
-				return err
+				var discordError *discordgo.RESTError
+				if errors.As(err, &discordError) && discordError.Message != nil && discordError.Message.Code == discordgo.ErrCodeUnknownMessage {
+					continue
+				}
+				return fmt.Errorf("unable to delete list message Channel #%s Message #%s: %w", channelToPost.ChannelID, message.ID, err)
 			}
 		}
 	}

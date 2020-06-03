@@ -32,6 +32,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.BotUserID,
 			event.ChannelID,
 			false,
+			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
 		}
@@ -51,6 +52,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.BotUserID,
 			event.ChannelID,
 			false,
+			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
 		}
@@ -69,6 +71,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.DB(),
 			event.BotUserID,
 			event.ChannelID,
+			false,
 			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
@@ -133,6 +136,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.DB(),
 			event.BotUserID,
 			event.ChannelID,
+			false,
 			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
@@ -208,6 +212,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.DB(),
 			event.BotUserID,
 			event.ChannelID,
+			false,
 			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
@@ -286,6 +291,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.BotUserID,
 			event.ChannelID,
 			false,
+			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
 		}
@@ -358,6 +364,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.BotUserID,
 			event.ChannelID,
 			false,
+			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")
 		}
@@ -418,6 +425,7 @@ func (i *Item) Revert(event *events.Event) error {
 			event.DB(),
 			event.BotUserID,
 			event.ChannelID,
+			false,
 			false,
 		) {
 			return events.NewUserError("I have insufficient permissions")

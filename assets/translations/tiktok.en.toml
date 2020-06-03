@@ -1,0 +1,48 @@
+# help info
+"tiktok.help.description" = "Have the bot watch a certain TikTok account and have it post updates in a given channel."
+"tiktok.help.list.name" = "List TikTok Feeds"
+"tiktok.help.list.description" = "Displays all TikTok Feeds set up on this Server, or in your DMs."
+"tiktok.help.add.name" = "Add an TikTok Feed"
+"tiktok.help.add.description" = "Adds a given TikTok Account to the current channel, or a specific channel if given."
+"tiktok.help.remove.name" = "Remove an TikTok Feed"
+"tiktok.help.remove.description" = "Removes a given TikTok Account from the feeds."
+
+# common
+"tiktok.common.not-found" = "**I could not find the TikTok account**\n\
+Please tell me the username of the TikTok feed you want to modify."
+
+"tiktok.add.success" = "\
+{{- if not .dm }}\
+**I added the TikTok Feed for <https://www.tiktok.com/@{{.tiktokUsername}}> to {{.channel.Mention}}.**\n\
+{{ else }}\
+**I will DM you the TikTok feed for <https://www.tiktok.com/@{{.tiktokUsername}}>!**\n\
+{{ end }}\
+"
+"tiktok.add.too-few" = "Please tell me the Username of the TikTok Account to add."
+"tiktok.add.duplicate" = "Looks like this TikTok Feed is already set up in this channel."
+"tiktok.add.not-found" = "Please make sure the TikTok Username you are telling me is correct."
+"tiktok.add.too-many" = "Looks like you have reached the limit of how many TikTok Feeds you can add."
+
+"tiktok.status.message" = "\
+{{if gt (len .entries) 0}}\
+**TikTok Feeds set up**\n\
+{{range $entry := .entries}}\
+**<https://www.tiktok.com/@{{$entry.TikTokUsername}}>**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
+`{{HumanizeNumber $entry.Posts}}` posts so far, \
+{{if not $entry.DisablePostFeed }}\
+last check {{TimeFormatShort $entry.LastCheck $.timezone}} \
+{{if eq $entry.CheckStatus \"success\"}}✅{{else if eq $entry.CheckStatus \"error\"}}⚠{{else}}⌛{{end}}\
+{{if $entry.CheckMessage}}: `{{$entry.CheckMessage}}`{{end}} \
+{{end}}\
+\n\
+{{end}}\
+So far **{{len .entries}}/{{if gt .limit -1}}{{.limit}}{{else}}∞{{end}}** TikTok Feeds set up.\n\
+{{else}}\
+**Looks like there are no TikTok Feeds set up on here yet.**\n\
+You can add one: `{{.prefix}}tiktok add <TikTok Username>`\
+{{end}}\
+"
+
+"tiktok.remove.message" = "I removed the TikTok Feed **<https://www.tiktok.com/@{{.entry.TikTokUsername}}>**{{ if not .entry.DM }} from <#{{.entry.ChannelOrUserID}}>{{ end }}."
+"tiktok.remove.not-found" = "I was not able to find this TikTok Feed."

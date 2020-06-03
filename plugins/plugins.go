@@ -9,6 +9,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/greeter"
 	"gitlab.com/Cacophony/Processor/plugins/rpg"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
+	"gitlab.com/Cacophony/Processor/plugins/tiktok"
 	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
 	"gitlab.com/Cacophony/Processor/plugins/weather"
@@ -91,6 +92,7 @@ var (
 		&uploads.Plugin{},
 		&greeter.Plugin{},
 		&rpg.Plugin{},
+		&tiktok.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

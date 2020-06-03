@@ -127,6 +127,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
 			},
+			{
+				Name:            "tools.help.download-emoji.name",
+				Description:     "tools.help.download-emoji.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "download-emoji", Type: common.Flag},
+				},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer, permissions.DiscordManageEmojis},
+			},
 		},
 	}
 }
@@ -167,6 +176,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 			p.handleModDM(event)
 		}, permissions.DiscordManageServer)
 		return true
+	case "emoji-download", "download-emoji", "emojis-download", "download-emojis":
+		event.Require(func() {
+			p.handleDownloadEmoji(event)
+		}, permissions.DiscordManageServer, permissions.DiscordManageEmojis, permissions.Not(permissions.DiscordChannelDM))
 	}
 
 	return false

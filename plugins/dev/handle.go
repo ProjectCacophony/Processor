@@ -117,6 +117,14 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "message", Type: common.QuotedText},
 				},
 			},
+			{
+				Name: "Check config value",
+				Params: []common.CommandParam{
+					{Name: "config", Type: common.Flag},
+					{Name: "user|guild", Type: common.Flag},
+					{Name: "config key", Type: common.Text},
+				},
+			},
 		},
 	}
 }
@@ -186,6 +194,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 	case "dm":
 
 		p.handleDM(event)
+		return
+	case "config":
+
+		p.handleConfig(event)
 		return
 	}
 
