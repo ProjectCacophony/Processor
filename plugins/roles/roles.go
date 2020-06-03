@@ -85,6 +85,7 @@ func (p *Plugin) createRole(event *events.Event) {
 				event.BotUserID,
 				event.ChannelID,
 				false,
+				false,
 			) {
 				messages, err := event.Respond("roles.roles.ask-role-create")
 				if err != nil {
