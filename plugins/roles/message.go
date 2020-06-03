@@ -78,7 +78,7 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 	}
 
 	discord.Delete(event.Redis(), event.Discord(), event.ChannelID, event.MessageID, event.DM())
-	_, err = event.Respond("roles.message",
+	_, err = event.Send(targetChannel.ID, "roles.message",
 		"uncategorizedRolesList", strings.Join(roleNames, ", "),
 		"categoryList", categoryList,
 	)
