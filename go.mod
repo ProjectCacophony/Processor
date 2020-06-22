@@ -16,7 +16,6 @@ require (
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.1.1
-	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/gorm v1.9.8
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.1.1
@@ -27,9 +26,7 @@ require (
 	github.com/shawntoffel/darksky v1.3.1
 	gitlab.com/Cacophony/go-kit v0.0.0-20200622095810-abfc217281ff
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9 // indirect
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
-	golang.org/x/sys v0.0.0-20200620081246-981b61492c35 // indirect
 	mvdan.cc/xurls/v2 v2.0.0
 )
 
