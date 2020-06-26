@@ -23,6 +23,23 @@ type Category struct {
 	Limit     int // 0 = no limit
 }
 
+func (*Category) TableName() string {
+	return "role_categories"
+}
+
+type AutoRole struct {
+	gorm.Model
+
+	Name         string
+	GuildID      string
+	ServerRoleID string
+	Enabled      bool
+}
+
+func (*AutoRole) TableName() string {
+	return "autoroles"
+}
+
 type Role struct {
 	gorm.Model
 
@@ -33,10 +50,6 @@ type Role struct {
 	Enabled      bool
 	Aliases      pq.StringArray `gorm:"type:varchar[]"`
 	// Reactions []string
-}
-
-func (*Category) TableName() string {
-	return "role_categories"
 }
 
 func (*Role) TableName() string {

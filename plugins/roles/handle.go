@@ -152,11 +152,18 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "info", Type: common.Flag},
 			},
 		}, {
+			Name:        "List Auto role",
+			Description: "Lists our the currently set auto roles.",
+			Params: []common.CommandParam{
+				{Name: "auto", Type: common.Flag},
+				{Name: "list", Type: common.Flag, Optional: true},
+			},
+		}, {
 			Name:        "Add Auto role",
 			Description: "Set a role or roles to automatically be assigned to users who join the server.",
 			Params: []common.CommandParam{
 				{Name: "auto", Type: common.Flag},
-				{Name: "add", Type: common.QuotedText},
+				{Name: "add", Type: common.Flag},
 				{Name: "Role Name", Type: common.QuotedText},
 				{Name: "Delay in minutes/hours/days", Type: common.QuotedText, Optional: true},
 			},
@@ -164,22 +171,15 @@ func (p *Plugin) Help() *common.PluginHelp {
 			Name: "Remove Auto role",
 			Params: []common.CommandParam{
 				{Name: "auto", Type: common.Flag},
-				{Name: "remove", Type: common.QuotedText},
+				{Name: "remove", Type: common.Flag},
 				{Name: "Role Name", Type: common.QuotedText},
-			},
-		}, {
-			Name:        "List Auto role",
-			Description: "Lists our the currently set auto roles.",
-			Params: []common.CommandParam{
-				{Name: "auto", Type: common.Flag},
-				{Name: "list", Type: common.QuotedText},
 			},
 		}, {
 			Name:        "Auto Role Apply",
 			Description: "Applies auto roles to users. Will only apply to users who meet time requirements a delay exists on the auto role.",
 			Params: []common.CommandParam{
 				{Name: "auto", Type: common.Flag},
-				{Name: "list", Type: common.QuotedText},
+				{Name: "apply", Type: common.Flag},
 			},
 		}, {
 			Name:        "Set Role Channel",
@@ -243,6 +243,23 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			return true
 		case "message":
 			p.displayRoleMessage(event)
+			return true
+		case "auto":
+			if len(event.Fields()) < 3 {
+				return true
+			}
+
+			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
+				return true
+			}
+
+			switch event.Fields()[2] {
+			case "add":
+				p.createAutoRole(event)
+				return true
+			}
+
 			return true
 		case "add":
 			if len(event.Fields()) < 3 {
