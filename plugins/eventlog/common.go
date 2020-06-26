@@ -59,8 +59,8 @@ func permissionsText(permissions int) string {
 	if permissions&discordgo.PermissionManageWebhooks == discordgo.PermissionManageWebhooks {
 		result += "Manage Webhooks, "
 	}
-	if permissions&discordgo.PermissionReadMessages == discordgo.PermissionReadMessages {
-		result += "View Channels, "
+	if permissions&discordgo.PermissionViewChannel == discordgo.PermissionViewChannel {
+		result += "View Channel, "
 	}
 	if permissions&discordgo.PermissionSendMessages == discordgo.PermissionSendMessages {
 		result += "Send Messages, "

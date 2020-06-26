@@ -9,14 +9,13 @@ require (
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
-	github.com/bwmarrin/discordgo v0.20.2
+	github.com/bwmarrin/discordgo v0.20.3-0.20200617034334-9b1ba78bc6f4
 	github.com/dustin/go-humanize v1.0.0
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/google/uuid v1.1.1
-	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/jinzhu/gorm v1.9.8
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.1.1
@@ -25,11 +24,9 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20200531083931-56d393924cd7
+	gitlab.com/Cacophony/go-kit v0.0.0-20200622095810-abfc217281ff
 	go.uber.org/zap v1.10.0
-	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
-	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
 	mvdan.cc/xurls/v2 v2.0.0
 )
 

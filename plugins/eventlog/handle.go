@@ -49,7 +49,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Description: "eventlog.help.description",
 		PermissionsRequired: []interfaces.Permission{
 			permissions.DiscordManageServer,
-			permissions.Patron,
+			// permissions.Patron,
 		},
 		Commands: []common.Command{
 			{
@@ -138,13 +138,13 @@ func (p *Plugin) handleCommand(event *events.Event) {
 
 			event.Require(func() {
 				p.handleCmdEnable(event)
-			}, permissions.DiscordAdministrator, permissions.Patron)
+			}, permissions.DiscordAdministrator) // , permissions.Patron)
 			return
 		case "disable":
 
 			event.Require(func() {
 				p.handleCmdDisable(event)
-			}, permissions.DiscordAdministrator, permissions.Patron)
+			}, permissions.DiscordAdministrator) // , permissions.Patron)
 			return
 
 		case "history":

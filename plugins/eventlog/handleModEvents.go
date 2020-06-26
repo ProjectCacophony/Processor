@@ -25,32 +25,39 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			TargetValue:                event.GuildBanRemove.User.ID,
 			WaitingForAuditLogBackfill: true,
 		})
-	case events.CacophonyGuildMemberAddExtra:
-		var options []ItemOption
-		if event.GuildMemberAddExtra.UsedInvite != nil {
-			if event.GuildMemberAddExtra.UsedInvite.Code != "" {
-				options = append(options, ItemOption{
-					Key:      "used_invite",
-					NewValue: event.GuildMemberAddExtra.UsedInvite.Code,
-					Type:     EntityTypeDiscordInvite,
-				})
-			}
-			if event.GuildMemberAddExtra.UsedInvite.Inviter != nil &&
-				event.GuildMemberAddExtra.UsedInvite.Inviter.ID != "" {
-				options = append(options, ItemOption{
-					Key:      "used_invite_author",
-					NewValue: event.GuildMemberAddExtra.UsedInvite.Inviter.ID,
-					Type:     EntityTypeUser,
-				})
-			}
-		}
+	case events.GuildMemberAddType:
 		items = append(items, &Item{
-			GuildID:     event.GuildMemberAddExtra.GuildID,
+			GuildID:     event.GuildMemberAdd.GuildID,
 			ActionType:  ActionTypeDiscordJoin,
 			TargetType:  EntityTypeUser,
-			TargetValue: event.GuildMemberAddExtra.User.ID,
-			Options:     options,
+			TargetValue: event.GuildMemberAdd.User.ID,
 		})
+	// case events.CacophonyGuildMemberAddExtra:
+	// 	var options []ItemOption
+	// 	if event.GuildMemberAddExtra.UsedInvite != nil {
+	// 		if event.GuildMemberAddExtra.UsedInvite.Code != "" {
+	// 			options = append(options, ItemOption{
+	// 				Key:      "used_invite",
+	// 				NewValue: event.GuildMemberAddExtra.UsedInvite.Code,
+	// 				Type:     EntityTypeDiscordInvite,
+	// 			})
+	// 		}
+	// 		if event.GuildMemberAddExtra.UsedInvite.Inviter != nil &&
+	// 			event.GuildMemberAddExtra.UsedInvite.Inviter.ID != "" {
+	// 			options = append(options, ItemOption{
+	// 				Key:      "used_invite_author",
+	// 				NewValue: event.GuildMemberAddExtra.UsedInvite.Inviter.ID,
+	// 				Type:     EntityTypeUser,
+	// 			})
+	// 		}
+	// 	}
+	// 	items = append(items, &Item{
+	// 		GuildID:     event.GuildMemberAddExtra.GuildID,
+	// 		ActionType:  ActionTypeDiscordJoin,
+	// 		TargetType:  EntityTypeUser,
+	// 		TargetValue: event.GuildMemberAddExtra.User.ID,
+	// 		Options:     options,
+	// 	})
 	case events.GuildMemberRemoveType:
 		items = append(items, &Item{
 			GuildID:                    event.GuildMemberRemove.GuildID,

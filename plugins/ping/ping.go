@@ -22,7 +22,8 @@ func (p *Plugin) handlePing(event *events.Event) {
 
 	var proxyDuration time.Duration
 	// only test proxy ping if a proxy is configured
-	if discordgo.EndpointDiscord != "https://discordapp.com/" {
+	if discordgo.EndpointDiscord != "https://discordapp.com/" &&
+		discordgo.EndpointDiscord != "https://discord.com/" {
 		beforeProxy := time.Now()
 		proxyResp, err := event.HTTPClient().Get(discordgo.EndpointDiscord + "status")
 		proxyDuration = time.Since(beforeProxy).Round(time.Millisecond)
