@@ -6,7 +6,7 @@ import (
 
 var (
 	usernameLinkRegex = regexp.MustCompile(".*tiktok.com/@([^/]+).*")
-	usernameRegex     = regexp.MustCompile(`^[a-zA-Z0-9-_]+$`)
+	usernameRegex     = regexp.MustCompile(`^[a-zA-Z0-9-_.]+$`)
 )
 
 func extractTikTokUsername(input string) string {
