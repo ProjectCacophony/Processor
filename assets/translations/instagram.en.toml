@@ -21,9 +21,9 @@ Please tell me the username of the instagram feed you want to modify."
 
 "instagram.add.success" = "\
 {{- if not .dm }}\
-**I added the Instagram Feed for <https://instagram.com/{{.instagramUser.Username}}> to {{.channel.Mention}}.**\n\
+**I added the Instagram Feed for <https://instagram.com/{{.instagramUsername}}> to {{.channel.Mention}}.**\n\
 {{ else }}\
-**I will DM you the Instagram feed for <https://instagram.com/{{.instagramUser.Username}}>!**\n\
+**I will DM you the Instagram feed for <https://instagram.com/{{.instagramUsername}}>!**\n\
 {{ end }}\
 "
 "instagram.add.too-few" = "Please tell me the Username of the Instagram Account to add."
