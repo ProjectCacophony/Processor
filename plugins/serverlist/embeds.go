@@ -168,7 +168,7 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 			},
 			{
 				Name:   "📖 Description",
-				Value:  server.Description + descriptionChange,
+				Value:  description,
 				Inline: false,
 			},
 			{
