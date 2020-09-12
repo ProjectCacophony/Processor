@@ -5,7 +5,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
 	github.com/Seklfreak/ginside v0.0.0-20191026115949-9c193065876c
-	github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
@@ -24,7 +23,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20200718143853-61a861ff0f37
+	gitlab.com/Cacophony/go-kit v0.0.0-20200912155554-84a18aa58c12
 	go.uber.org/zap v1.10.0
 	golang.org/x/image v0.0.0-20190523035834-f03afa92d3ff
 	mvdan.cc/xurls/v2 v2.0.0
