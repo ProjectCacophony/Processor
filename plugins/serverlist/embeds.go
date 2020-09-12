@@ -122,7 +122,7 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 		categoryChange += p.getCategoryText(server, p.getChangeCategories(server))
 	}
 
-	description := server.Description + descriptionChange
+	description := strings.TrimSpace(server.Description + descriptionChange)
 	if description == "" {
 		description = "/"
 	}
