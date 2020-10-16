@@ -42,8 +42,6 @@ github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586 h1:/CeD/ANJZ1YWv
 github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586/go.mod h1:wwBflTGJswLXVWg6kBM5vvno3yBNRytF2VeDSUb+Xl0=
 github.com/Seklfreak/ginside v0.0.0-20191026115949-9c193065876c h1:m8ZSWTxmtadGMgTq114AeKEbw62FKLahGGcXcaGPZ28=
 github.com/Seklfreak/ginside v0.0.0-20191026115949-9c193065876c/go.mod h1:8qsq6mWde1YA5QOHDTDwue0MRjTw57fOug7qqMJpHhA=
-github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89 h1:lIq8Pd6oREFNu8c+gWRxJaqPe1T+IK2FAdxZiX9u/cA=
-github.com/Seklfreak/ginsta v0.0.0-20190823171228-1f3ad349be89/go.mod h1:GoCB9oHpK16TDfdPo30avi4drFNgwCr91+9WE05/8pI=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942 h1:Oipx9nr3T43fd0zgtj/DXrh6lbNEx+pClJwGNpks46g=
 github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942/go.mod h1:XdwC3B7PxCkYCXs4AzYEtvQxjsi93vc/kSV09u+AFWw=
 github.com/Seklfreak/polr-go v0.0.0-20190324143256-a87fed130937 h1:i7uyK5VEr5L/ZJEL4Bn8ff0dk+a5z0g9zJjSYxGyf0c=
@@ -253,8 +251,8 @@ github.com/uber/jaeger-client-go v2.15.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v1.5.0/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
-gitlab.com/Cacophony/go-kit v0.0.0-20200622095810-abfc217281ff h1:LXQf0lAlw857oVW+K8CblIKIy3f5t8gQkF2ThkBa95g=
-gitlab.com/Cacophony/go-kit v0.0.0-20200622095810-abfc217281ff/go.mod h1:rHDboFzgoAfrQbJQLDjCUzWfdI5TmQmXuiLxVZIyYds=
+gitlab.com/Cacophony/go-kit v0.0.0-20200912155554-84a18aa58c12 h1:SvkjUT4+2TS7b8PzP2sZo+ENRy2vH65sl78erVX2RtU=
+gitlab.com/Cacophony/go-kit v0.0.0-20200912155554-84a18aa58c12/go.mod h1:rHDboFzgoAfrQbJQLDjCUzWfdI5TmQmXuiLxVZIyYds=
 go.mongodb.org/mongo-driver v1.0.1/go.mod h1:u7ryQJ+DOzQmeO7zB6MHyr8jkEQvC8vH7qLUO4lqsUM=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=

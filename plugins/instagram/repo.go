@@ -12,19 +12,17 @@ func entryAdd(
 	channelOrUserID string,
 	guildID string,
 	instagramUsername string,
-	instagramAccountID string,
 	botID string,
 	dm bool,
 ) error {
 	return db.Create(&Entry{
-		Model:              gorm.Model{},
-		GuildID:            guildID,
-		ChannelOrUserID:    channelOrUserID,
-		DM:                 dm,
-		AddedBy:            userID,
-		BotID:              botID,
-		InstagramUsername:  instagramUsername,
-		InstagramAccountID: instagramAccountID,
+		Model:             gorm.Model{},
+		GuildID:           guildID,
+		ChannelOrUserID:   channelOrUserID,
+		DM:                dm,
+		AddedBy:           userID,
+		BotID:             botID,
+		InstagramUsername: instagramUsername,
 
 		DisableStoryFeed: true,
 	}).Error

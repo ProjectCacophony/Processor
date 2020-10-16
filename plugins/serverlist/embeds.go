@@ -121,6 +121,12 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 		categoryChange = "\n➡\n"
 		categoryChange += p.getCategoryText(server, p.getChangeCategories(server))
 	}
+
+	description := strings.TrimSpace(server.Description + descriptionChange)
+	if description == "" {
+		description = "/"
+	}
+
 	embed := &discordgo.MessageEmbed{
 		Title:       "⌛ Serverlist Queue: " + titleText,
 		Description: "serverlist.queue.embed.description",
@@ -162,7 +168,7 @@ func (p *Plugin) getQueueMessageEmbed(session *discord.Session, server *Server, 
 			},
 			{
 				Name:   "📖 Description",
-				Value:  server.Description + descriptionChange,
+				Value:  description,
 				Inline: false,
 			},
 			{

@@ -1,11 +1,8 @@
 package instagram
 
 import (
-	"net/http"
 	"strings"
-	"time"
 
-	"github.com/Seklfreak/ginsta"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/go-kit/interfaces"
 
@@ -23,7 +20,6 @@ type Plugin struct {
 	logger *zap.Logger
 	state  *state.State
 	db     *gorm.DB
-	ginsta *ginsta.Ginsta
 }
 
 func (p *Plugin) Names() []string {
@@ -44,12 +40,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.state = params.State
 	p.logger = params.Logger
 	p.db = params.DB
-	p.ginsta = ginsta.NewGinsta(
-		&http.Client{
-			Timeout: time.Second * 30,
-		},
-		config.InstagramSessionIDs,
-	)
 
 	return params.DB.AutoMigrate(Entry{}).Error
 }

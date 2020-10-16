@@ -42,22 +42,13 @@ func (p *Plugin) add(event *events.Event) {
 		return
 	}
 
-	instagramUser, err := p.ginsta.UserByUsername(event.Context(), extractInstagramUsername(fields[0]))
-	if err != nil {
-		if strings.Contains(err.Error(), "unexpected status code: 404") ||
-			strings.Contains(err.Error(), "unable to parse shared data") {
-			event.Respond("instagram.add.not-found")
-			return
-		}
-		event.Except(err)
-		return
-	}
+	instagramUsername := extractInstagramUsername(fields[0])
 
 	for _, entry := range entries {
 		if entry.ChannelOrUserID != channel.ID {
 			continue
 		}
-		if !strings.EqualFold(entry.InstagramAccountID, instagramUser.ID) {
+		if !strings.EqualFold(entry.InstagramUsername, instagramUsername) {
 			continue
 		}
 
@@ -70,8 +61,7 @@ func (p *Plugin) add(event *events.Event) {
 		event.UserID,
 		channel.ID,
 		event.GuildID,
-		instagramUser.Username,
-		instagramUser.ID,
+		instagramUsername,
 		event.BotUserID,
 		event.DM(),
 	)
@@ -81,7 +71,7 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	_, err = event.Respond("instagram.add.success",
-		"instagramUser", instagramUser,
+		"instagramUsername", instagramUsername,
 		"channel", channel,
 		"dm", event.DM(),
 	)
