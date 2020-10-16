@@ -33,6 +33,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	err := p.db.AutoMigrate(
 		Category{},
 		Role{},
+		AutoRole{},
 	).Error
 	if err != nil {
 		return err

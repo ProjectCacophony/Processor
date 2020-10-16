@@ -3,6 +3,7 @@ package roles
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/state"
 )
 
@@ -30,14 +31,14 @@ func (*Category) TableName() string {
 type AutoRole struct {
 	gorm.Model
 
-	Name         string
 	GuildID      string
 	ServerRoleID string
-	Enabled      bool
+	RuleID       uint
+	Rule         models.Rule
 }
 
 func (*AutoRole) TableName() string {
-	return "autoroles"
+	return "auto_role"
 }
 
 type Role struct {
