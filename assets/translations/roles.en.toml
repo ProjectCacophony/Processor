@@ -13,6 +13,7 @@
 "roles.role.assigned" = "{{ .userMention }} I've assigned you the role **{{ .serverRoleName }}** :thumbsup:"
 "roles.role.removed-role" = "{{ .userMention }} I've removed your role **{{ .serverRoleName }}** :thumbsup:"
 
+"roles.autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
