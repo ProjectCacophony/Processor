@@ -117,14 +117,42 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 		return
 	}
 
-	var memberCount int
 	for _, aRole := range autoRoles {
+
+		var delay time.Duration
+		for _, action := range aRole.Rule.Actions {
+			if action.Name == (filters.Wait{}).Name() {
+				delay, err = time.ParseDuration(action.Values[0])
+				if err != nil {
+					event.Except(err)
+					return
+				}
+			}
+		}
 
 		for _, userID := range userIDs {
 			member, err := event.State().Member(event.GuildID, userID)
 			if err != nil {
 				continue
 			}
+			
+			// check if user has been in the server for less time than the delay
+			if delay > 0 {
+				mem, err := event.State().Member(event.GuildID, userID)
+				if err != nil {
+					continue
+				}
+
+				join, err := mem.JoinedAt.Parse()
+				if err != nil {
+					continue
+				}
+
+				if time.Since(join) < delay {
+					continue
+				}
+			}
+			
 			
 			hasRole := false
 			for _, userRoleID := range member.Roles {
@@ -133,20 +161,15 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 					break
 				}
 			}
-
+			
 			if !hasRole {
-				err = event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
-				if err == nil {
-					memberCount++
-				}
+				event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
 			}
 		}
 
 	}
 
-	event.Respond("roles.autorole.applied",
-		"memeberCount", memberCount,
-	)
+	event.Respond("roles.autorole.applied")
 }
 
 func (p *Plugin) listAutoRoles(event *events.Event)  {

@@ -15,7 +15,7 @@
 
 "roles.autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
 "roles.autorole.deleted" = "Deleted auto role setup for **{{ .roleName }}**"
-"roles.autorole.applied" = "Applied auto roles for to {{ .memeberCount }} users"
+"roles.autorole.applied" = "Applied auto roles"
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
