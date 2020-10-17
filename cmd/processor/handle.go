@@ -106,7 +106,6 @@ func handle(
 		ctx = event.Context()
 		for _, plugin := range plugins.PluginList {
 			pluginContext, span := global.Tracer("cacophony.dev/processor").Start(ctx, "Plugin."+plugin.Names()[0])
-			defer span.End()
 			event.WithContext(pluginContext)
 
 			if !event.IsEnabled(featureFlagPluginKey(plugin.Names()[0]), true) {
@@ -115,6 +114,7 @@ func handle(
 					zap.String("user_id", event.UserID),
 					zap.String("event_id", event.ID),
 				)
+				span.End()
 				continue
 			}
 
@@ -128,16 +128,21 @@ func handle(
 				go func(pl plugins.Plugin) {
 					defer wg.Done()
 
+					// TODO: figure out span, linked span?
+
 					executePlugin(l, pl, event)
 				}(plugin)
+				span.End()
 				continue
 			}
 
 			// else, wait for result, exit if handled
 			handled = executePlugin(l, plugin, event)
 			if handled {
+				span.End()
 				return nil
 			}
+			span.End()
 		}
 
 		wg.Wait()
