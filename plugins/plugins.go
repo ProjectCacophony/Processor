@@ -12,6 +12,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/tiktok"
 	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/uploads"
+	"gitlab.com/Cacophony/Processor/plugins/vlive"
 	"gitlab.com/Cacophony/Processor/plugins/weather"
 	"gitlab.com/Cacophony/Processor/plugins/weverse"
 	"gitlab.com/Cacophony/go-kit/localization"
@@ -93,6 +94,7 @@ var (
 		&greeter.Plugin{},
 		&rpg.Plugin{},
 		&tiktok.Plugin{},
+		&vlive.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

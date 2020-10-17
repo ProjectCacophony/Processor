@@ -1,0 +1,43 @@
+# add
+"vlive.add.too-few" = "Please tell me the link of the VLive Channel to add."
+"vlive.add.duplicate" = "Looks like this VLive Channel Feed is already set up in this channel."
+"vlive.add.success" = "\
+{{- if not .dm }}\
+**I added the VLive Channel Feed for <https://channels.vlive.tv/{{.id}}> to {{.channel.Mention}}.**\n\
+{{ else }}\
+**I will DM you the VLive Channel feed for <https://channels.vlive.tv/{{.id}}>!**\n\
+{{ end }}\
+"
+
+# remove
+"vlive.common.not-found" = "**I could not find this VLive Channel Feed**\n\
+Please tell me the link of the VLive Channel feed you want to modify."
+"vlive.remove.not-found" = "I was not able to find this VLive Channel Feed."
+"vlive.remove.message" = "I removed the VLive Channel Feed **<https://channels.vlive.com/{{.entry.VLiveChannelID}}>**{{ if not .entry.DM }} from <#{{.entry.ChannelOrUserID}}>{{ end }}."
+
+# status
+"vlive.status.message" = "\
+{{if gt (len .entries) 0}}\
+**VLive Channel Feeds set up**\n\
+{{range $entry := .entries}}\
+**<https://channels.vlive.com/{{$entry.VLiveChannelID}}>**{{ if not $entry.DM }} in <#{{$entry.ChannelOrUserID}}>{{ end }}\n\
+added{{ if not $entry.DM }} by `{{Escape $entry.By.String}}`{{ end }} at {{TimeFormat $entry.CreatedAt $.timezone}}, \
+`{{HumanizeNumber $entry.Posts}}` posts so far, \
+\n\
+{{end}}\
+So far **{{len .entries}}** VLive Channel Feeds set up.\n\
+{{else}}\
+**Looks like there are no VLive Channel Feeds set up on here yet.**\n\
+You can add one: `{{.prefix}}vlive add <VLive Channel Link>`\
+{{end}}\
+\
+"
+
+# help info
+"vlive.help.description" = "Have the bot watch a certain VLive Channel and have it post updates in a given channel."
+"vlive.help.list.name" = "VLive Channel Feeds"
+"vlive.help.list.description" = "Displays all VLive Channel Feeds set up on this Server, or in your DMs."
+"vlive.help.add.name" = "Add an VLive Channel Feed"
+"vlive.help.add.description" = "Adds a given VLive Channel to the current channel, or a specific channel if given."
+"vlive.help.remove.name" = "Remove an VLive Channel Feed"
+"vlive.help.remove.description" = "Removes a given VLive Channel from the feeds."

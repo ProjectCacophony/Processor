@@ -12,8 +12,11 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/paginator"
+	"go.opentelemetry.io/otel/api/global"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/go-redis/redis"
+	"github.com/honeycombio/opentelemetry-exporter-go/honeycomb"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/kelseyhightower/envconfig"
@@ -57,6 +60,33 @@ func main() {
 	)
 	if err != nil {
 		panic(errors.Wrap(err, "unable to initialise logger"))
+	}
+
+	// init tracing
+	if config.HoneycombAPIKey != "" {
+		honeycombExporter, err := honeycomb.NewExporter(
+			honeycomb.Config{
+				APIKey: config.HoneycombAPIKey,
+			},
+			honeycomb.TargetingDataset(config.ClusterEnvironment),
+			honeycomb.WithServiceName(ServiceName),
+			// honeycomb.WithDebugEnabled(),
+		)
+		if err != nil {
+			logger.Fatal("failure initialising honeycomb exporter", zap.Error(err))
+		}
+		defer func() {
+			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			honeycombExporter.Shutdown(ctx)
+		}()
+
+		provider := sdktrace.NewTracerProvider(
+			sdktrace.WithConfig(sdktrace.Config{
+				DefaultSampler: sdktrace.AlwaysSample(),
+			}),
+			sdktrace.WithSyncer(honeycombExporter),
+		)
+		global.SetTracerProvider(provider)
 	}
 
 	// init raven
