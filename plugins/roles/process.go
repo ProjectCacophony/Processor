@@ -1,10 +1,13 @@
 package roles
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/discord/emoji"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -13,24 +16,67 @@ const (
 	MINUS = "-"
 )
 
-func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
+func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 
-	if event.MessageCreate == nil || event.MessageCreate.Author == nil || event.MessageCreate.Author.Bot {
+	if event.BotUserID == event.MessageReactionAdd.UserID ||
+		event.MessageReactionAdd == nil ||
+		event.MessageReactionAdd.Emoji.Name == "" ||
+		!p.isInRoleChannel(event) {
 		return false
 	}
 
-	// check if the message was sent in a role channel
-	inRoleChannel := false
-	channels := p.getCachedRoleChannels(event.GuildID)
-	if len(channels) > 0 {
-		for _, channel := range channels {
-			if channel == event.ChannelID {
-				inRoleChannel = true
-				break
-			}
+	allRoles, err := p.getAllRoles(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return true
+	}
+
+	snowflake := fmt.Sprintf(":%s:%s", event.MessageReactionAdd.Emoji.Name, event.MessageReactionAdd.Emoji.ID)
+	var selectedRole *Role
+	for _, role := range allRoles {
+		if role.Emoji == "" {
+			continue
+		}
+
+		fmt.Printf("%s - %s\n\n", snowflake, emoji.GetWithout(role.Emoji))
+		if snowflake == emoji.GetWithout(role.Emoji) {
+			fmt.Println("FOUND\n\n\n")
+			selectedRole = role
 		}
 	}
-	if !inRoleChannel {
+
+	if selectedRole.Name(event.State()) == "" {
+		return true
+	}
+
+	hasRole, err := p.userHasRole(event, selectedRole.ServerRoleID)
+	if err != nil {
+		event.Except(err)
+		return true
+	}
+
+	if hasRole {
+		p.removeRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
+	} else {
+		p.assignRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
+	}
+
+	discord.RemoveReact(
+		event.Redis(),
+		event.Discord(),
+		event.MessageReactionAdd.ChannelID,
+		event.MessageReactionAdd.MessageID,
+		event.UserID,
+		false,
+		snowflake,
+	)
+
+	return true
+}
+
+func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
+
+	if event.MessageCreate == nil || event.MessageCreate.Author == nil || event.MessageCreate.Author.Bot || !p.isInRoleChannel(event) {
 		return false
 	}
 
@@ -85,9 +131,9 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 				if urole.ServerRoleID == role.ServerRoleID {
 
 					if string(plusMinus) == PLUS {
-						err = p.assignRole(event, role.ServerRoleID)
+						err = p.assignRole(event, event.ChannelID, role.ServerRoleID)
 					} else {
-						err = p.removeRole(event, role.ServerRoleID)
+						err = p.removeRole(event, event.ChannelID, role.ServerRoleID)
 					}
 					if err != nil {
 						event.Except(err)
@@ -132,9 +178,9 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 							return true
 						}
 
-						err = p.assignRole(event, role.ServerRoleID)
+						err = p.assignRole(event, event.ChannelID, role.ServerRoleID)
 					} else {
-						err = p.removeRole(event, role.ServerRoleID)
+						err = p.removeRole(event, event.ChannelID, role.ServerRoleID)
 					}
 					if err != nil {
 						event.Except(err)
@@ -233,7 +279,7 @@ func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) b
 	return hasRoleCount >= category.Limit
 }
 
-func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
+func (p *Plugin) assignRole(event *events.Event, channelID string, serverRoleID string) error {
 
 	// check if user already has role
 	member, err := event.State().Member(event.GuildID, event.UserID)
@@ -248,7 +294,7 @@ func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
 
 	for _, userRole := range member.Roles {
 		if userRole == serverRoleID {
-			msgs, err := event.Respond("roles.role.already-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+			msgs, err := event.Send(channelID, "roles.role.already-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
 			if len(msgs) > 0 {
 				go p.deleteWithDelay(event, msgs[0].ID)
 			}
@@ -262,7 +308,7 @@ func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
 		return err
 	}
 
-	msgs, err := event.Respond("roles.role.assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+	msgs, err := event.Send(channelID, "roles.role.assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
 	if err != nil {
 		return err
 	}
@@ -271,7 +317,7 @@ func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {
 	return nil
 }
 
-func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
+func (p *Plugin) removeRole(event *events.Event, channelID string, serverRoleID string) error {
 
 	// confirm the user has the role
 	member, err := event.State().Member(event.GuildID, event.UserID)
@@ -292,7 +338,7 @@ func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 	}
 
 	if !hasRole {
-		msgs, err := event.Respond("roles.role.not-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
+		msgs, err := event.Send(channelID, "roles.role.not-assigned", "userMention", member.Mention(), "serverRoleName", role.Name)
 		if len(msgs) > 0 {
 			go p.deleteWithDelay(event, msgs[0].ID)
 		}
@@ -305,7 +351,7 @@ func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 		return err
 	}
 
-	msgs, err := event.Respond("roles.role.removed-role", "userMention", member.Mention(), "serverRoleName", role.Name)
+	msgs, err := event.Send(channelID, "roles.role.removed-role", "userMention", member.Mention(), "serverRoleName", role.Name)
 	if err != nil {
 		return err
 	}
@@ -313,4 +359,36 @@ func (p *Plugin) removeRole(event *events.Event, serverRoleID string) error {
 	go p.deleteWithDelay(event, msgs[0].ID)
 
 	return nil
+}
+
+func (p *Plugin) userHasRole(event *events.Event, serverRoleID string) (bool, error) {
+
+	// confirm the user has the role
+	member, err := event.State().Member(event.GuildID, event.UserID)
+	if err != nil {
+		return false, err
+	}
+
+	for _, userRole := range member.Roles {
+		if userRole == serverRoleID {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func (p *Plugin) isInRoleChannel(event *events.Event) bool {
+	// check if the message was sent in a role channel
+	inRoleChannel := false
+	channels := p.getCachedRoleChannels(event.GuildID)
+	if len(channels) > 0 {
+		for _, channel := range channels {
+			if channel == event.ChannelID {
+				inRoleChannel = true
+				break
+			}
+		}
+	}
+	return inRoleChannel
 }

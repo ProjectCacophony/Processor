@@ -116,7 +116,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "add", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
 				{Name: "Role Name/ID", Type: common.QuotedText},
-				{Name: "Print", Type: common.QuotedText, Optional: true},
+				{Name: "Print Name", Type: common.QuotedText, Optional: true},
 				{Name: "Alias, Alias...", Type: common.QuotedText, Optional: true},
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
 				{Name: "Emoji", Type: common.QuotedText, Optional: true},
@@ -128,7 +128,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "edit", Type: common.Flag},
 				{Name: "role", Type: common.Flag},
 				{Name: "Role Name/ID", Type: common.QuotedText},
-				{Name: "Print", Type: common.QuotedText, Optional: true},
+				{Name: "Print Name", Type: common.QuotedText, Optional: true},
 				{Name: "Alias, Alias...", Type: common.QuotedText, Optional: true},
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
 				{Name: "Emoji", Type: common.QuotedText, Optional: true},
@@ -150,13 +150,13 @@ func (p *Plugin) Help() *common.PluginHelp {
 			},
 		}, {
 			Name:        "Role Info",
-			Description: "view current role categories and roles confirgured on the server.",
+			Description: "View current role categories and roles configured on the server.",
 			Params: []common.CommandParam{
 				{Name: "info", Type: common.Flag},
 			},
 		}, {
 			Name:        "List Auto role",
-			Description: "Lists our the currently set auto roles.",
+			Description: "Lists the currently set auto roles.",
 			Params: []common.CommandParam{
 				{Name: "auto", Type: common.Flag},
 				{Name: "list", Type: common.Flag, Optional: true},
@@ -168,7 +168,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "auto", Type: common.Flag},
 				{Name: "add", Type: common.Flag},
 				{Name: "Role Name", Type: common.QuotedText},
-				{Name: "Delay in minutes/hours/days", Type: common.QuotedText, Optional: true},
+				{Name: "Delay in seconds", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name: "Remove Auto role",
@@ -198,6 +198,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 func (p *Plugin) Action(event *events.Event) bool {
 	switch event.Type {
 
+	case events.MessageReactionAddType:
+		return p.handleUserRoleReactionRequest(event)
 	case events.MessageCreateType:
 		return p.handleAsCommand(event)
 

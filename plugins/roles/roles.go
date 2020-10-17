@@ -47,7 +47,7 @@ func (p *Plugin) createRole(event *events.Event) {
 	}
 
 	var categoryID uint
-	if len(event.Fields()) >= 7 {
+	if len(event.Fields()) >= 7 && event.Fields()[6] != "" {
 
 		existingCategory, err := p.getCategoryByName(event.Fields()[6], event.GuildID)
 		if err != nil {
@@ -210,7 +210,7 @@ func (p *Plugin) updateRole(event *events.Event) {
 	}
 
 	var categoryID uint
-	if len(event.Fields()) >= 7 {
+	if len(event.Fields()) >= 7 && event.Fields()[6] != "" {
 
 		existingCategory, err := p.getCategoryByName(event.Fields()[6], event.GuildID)
 		if err != nil {
