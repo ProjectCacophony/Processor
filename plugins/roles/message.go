@@ -53,9 +53,15 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 		}
 	}
 
+	reactions := make([]string, 0)
 	roleNames := make([]string, len(uncategorizedRoles))
-	for _, role := range uncategorizedRoles {
-		roleNames = append(roleNames, fmt.Sprintf("`%s`", role.Name(event.State())))
+	for i, role := range uncategorizedRoles {
+		if role.Emoji == "" {
+			roleNames[i] = fmt.Sprintf("`%s`", role.Name(event.State()))
+		} else {
+			reactions = append(reactions, role.Emoji)
+			roleNames[i] = fmt.Sprintf("`%s` %s", role.Name(event.State()), role.Emoji)
+		}
 	}
 
 	var categoryList string
@@ -66,7 +72,12 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 
 		var roleNames []string
 		for _, role := range category.Roles {
-			roleNames = append(roleNames, fmt.Sprintf("`%s`", role.Name(event.State())))
+			if role.Emoji == "" {
+				roleNames = append(roleNames, fmt.Sprintf("`%s`", role.Name(event.State())))
+			} else {
+				reactions = append(reactions, role.Emoji)
+				roleNames = append(roleNames, fmt.Sprintf("`%s` %s", role.Name(event.State()), role.Emoji))
+			}
 		}
 
 		var limitText string
@@ -78,12 +89,16 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 	}
 
 	discord.Delete(event.Redis(), event.Discord(), event.ChannelID, event.MessageID, event.DM())
-	_, err = event.Send(targetChannel.ID, "roles.message",
+	msg, err := event.Send(targetChannel.ID, "roles.message",
 		"uncategorizedRolesList", strings.Join(roleNames, ", "),
 		"categoryList", categoryList,
 	)
 	if err != nil {
 		event.Except(err)
 		return
+	}
+
+	for _, reaction := range reactions {
+		discord.React(event.Redis(), event.Discord(), msg[0].ChannelID, msg[0].ID, false, reaction)
 	}
 }

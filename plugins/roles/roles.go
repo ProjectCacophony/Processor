@@ -7,6 +7,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/regexp"
 )
 
 func (p *Plugin) createRole(event *events.Event) {
@@ -61,12 +62,23 @@ func (p *Plugin) createRole(event *events.Event) {
 		categoryID = existingCategory.ID
 	}
 
+	var emoji string
+	if len(event.Fields()) >= 8 {
+		emojiParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(event.Fields()[7])
+		if emojiParts == nil {
+			event.Respond("roles.role.error-parsing-role-emoji")
+			return
+		}
+		emoji = emojiParts[0]
+	}
+
 	role := &Role{
 		ServerRoleID: "",
 		CategoryID:   categoryID,
 		PrintName:    printName,
 		Aliases:      aliases,
 		GuildID:      event.GuildID,
+		Emoji:        emoji,
 		Enabled:      true,
 	}
 
@@ -211,9 +223,20 @@ func (p *Plugin) updateRole(event *events.Event) {
 
 	}
 
+	var emoji string
+	if len(event.Fields()) >= 8 {
+		emojiParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(event.Fields()[7])
+		if emojiParts == nil {
+			event.Respond("roles.role.error-parsing-role-emoji")
+			return
+		}
+		emoji = emojiParts[0]
+	}
+
 	existingRole.CategoryID = categoryID
 	existingRole.PrintName = printName
 	existingRole.Aliases = aliases
+	existingRole.Emoji = emoji
 
 	if badAlias, ok := p.validateRolePrintAndAliases(existingRole); !ok {
 		event.Respond("roles.role.alias-already-exists", "aliasName", badAlias)

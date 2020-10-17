@@ -115,7 +115,11 @@ func (p *Plugin) formatRoleOutput(role Role, guildID string) string {
 		return ""
 	}
 
-	roleText += fmt.Sprintf("\t**%s** (%s) ", serverRole.Name, role.ServerRoleID)
+	if role.Emoji != "" {
+		roleText += fmt.Sprintf("\t**%s** %s (%s) ", serverRole.Name, role.Emoji, role.ServerRoleID)
+	} else {
+		roleText += fmt.Sprintf("\t**%s** (%s) ", serverRole.Name, role.ServerRoleID)
+	}
 	if role.PrintName != "" {
 		roleText += fmt.Sprintf("__Print__=%s ", role.PrintName)
 	}

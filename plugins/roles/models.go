@@ -48,6 +48,7 @@ type Role struct {
 	GuildID      string
 	ServerRoleID string
 	PrintName    string
+	Emoji        string
 	Enabled      bool
 	Aliases      pq.StringArray `gorm:"type:varchar[]"`
 	// Reactions []string

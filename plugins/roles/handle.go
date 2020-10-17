@@ -119,6 +119,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Print", Type: common.QuotedText, Optional: true},
 				{Name: "Alias, Alias...", Type: common.QuotedText, Optional: true},
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
+				{Name: "Emoji", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name:                "Edit Role",
@@ -130,6 +131,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "Print", Type: common.QuotedText, Optional: true},
 				{Name: "Alias, Alias...", Type: common.QuotedText, Optional: true},
 				{Name: "Category Name", Type: common.QuotedText, Optional: true},
+				{Name: "Emoji", Type: common.QuotedText, Optional: true},
 			},
 		}, {
 			Name:                "Remove Role",

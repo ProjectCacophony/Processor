@@ -46,6 +46,7 @@ Roles: {{ .uncategorizedRolesList }}\
 "roles.role.role-already-setup" = "This role has already been added to role setup."
 "roles.role.role-not-found" = "Could not find role in the role setup."
 "roles.role.multiple-server-roles-with-name" = "Found multiple server roles with that name, use the id of the specific role you want."
+"roles.role.error-parsing-role-emoji" = "Could not properly parse the roles emoji"
 "roles.role.alias-already-exists" = "The print name or alias **{{ .aliasName }}** already exists for another role."
 "roles.role.already-assigned" = "{{ .userMention }} Looks like you already have the role **{{ .serverRoleName }}** :thinking:"
 "roles.role.not-assigned" = "{{ .userMention }} Doesn't seem like you already have the role **{{ .serverRoleName }}** :thinking:"
