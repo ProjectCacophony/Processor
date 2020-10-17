@@ -14,11 +14,14 @@ import (
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/paginator"
 	"gitlab.com/Cacophony/go-kit/state"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/api/global"
 	"go.opentelemetry.io/otel/api/trace"
 	"go.opentelemetry.io/otel/label"
 	"go.uber.org/zap"
 )
+
+var b3Prop = b3.B3{}
 
 func handle(
 	logger *zap.Logger,
@@ -37,9 +40,10 @@ func handle(
 	l := logger.With(zap.String("service", "processor"))
 
 	return func(event *events.Event) error { // nolint: unparam
-		ctx, span := global.Tracer("cacophony.dev/processor").Start(context.Background(), "handle.Event",
+		ctx := b3Prop.Extract(context.Background(), &event.SpanContext)
+		ctx, span := global.Tracer("cacophony.dev/processor").Start(ctx, "handle.Event",
 			trace.WithAttributes(
-				label.String("cacophony.dev/eventing/type", string(event.Type)),
+				label.String("cacophony.dev/eventing_type", string(event.Type)),
 				label.String("cacophony.dev/discord/bot_user_id", event.BotUserID),
 				label.String("cacophony.dev/discord/guild_id", event.GuildID),
 				label.String("cacophony.dev/discord/channel_id", event.ChannelID),
