@@ -260,6 +260,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			case "add":
 				p.createAutoRole(event)
 				return true
+			case "remove":
+				p.deleteAutoRole(event)
+				return true
 			case "list":
 				p.listAutoRoles(event)
 				return true

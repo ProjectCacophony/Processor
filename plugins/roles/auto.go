@@ -67,6 +67,38 @@ func (p *Plugin) createAutoRole(event *events.Event) {
 	)
 }
 
+func (p *Plugin) deleteAutoRole(event *events.Event) {
+	if len(event.Fields()) < 4 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	serverRole, err := p.getServerRoleByNameOrID(event.Fields()[3], event.GuildID)
+	if err != nil {
+		event.Respond("roles.role.role-not-found-on-server")
+		return
+	}
+
+	autoRole, err := p.getAutoRolesByServerRoleID(serverRole.ID, event.GuildID)
+	if err != nil {
+		event.Respond("roles.autorole.not-found")
+		return
+	}
+
+	err = p.db.
+		Delete(autoRole.Rule.Actions, "rule_id = ?", autoRole.Rule.ID).
+		Delete(autoRole.Rule).
+		Delete(autoRole).Error
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	event.Respond("roles.autorole.deleted",
+		"roleName", serverRole.Name,
+	)
+}
+
 func (p *Plugin) listAutoRoles(event *events.Event)  {
 	autoRoles, err := p.getAutoRoles(event.GuildID)
 	if err != nil || len(autoRoles) == 0 {

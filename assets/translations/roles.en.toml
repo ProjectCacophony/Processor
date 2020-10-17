@@ -14,6 +14,7 @@
 "roles.role.removed-role" = "{{ .userMention }} I've removed your role **{{ .serverRoleName }}** :thumbsup:"
 
 "roles.autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
+"roles.autorole.deleted" = "Deleted auto role setup for **{{ .roleName }}**"
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
@@ -51,3 +52,4 @@ Roles: {{ .uncategorizedRolesList }}\
 "roles.role.rolename-not-found" = "{{ .userMention }} Could not find the role `{{ .roleName }}` in the role setup."
 
 "roles.autorole.none-found" = "Could not find any auto roles set up for this server."
+"roles.autorole.not-found" = "Could not find an auto role set up on this server with that role."
