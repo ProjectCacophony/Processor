@@ -46,7 +46,6 @@ func (p *Plugin) Passthrough() bool {
 }
 
 func (p *Plugin) Help() *common.PluginHelp {
-	// TODO: help
 	return &common.PluginHelp{
 		Names:       p.Names(),
 		Description: "vlive.help.description",
