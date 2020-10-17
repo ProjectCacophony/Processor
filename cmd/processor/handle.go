@@ -16,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
 )
 
@@ -41,6 +42,15 @@ func handle(
 		ctx, span := global.Tracer("cacophony.dev/processor").Start(
 			b3Prop.Extract(context.Background(), &event.SpanContext),
 			"handle.Event",
+			trace.WithAttributes(
+				events.SpanLabelEventingType.String(string(event.Type)),
+				events.SpanLabelEventingIsCommand.Bool(event.Command()),
+				events.SpanLabelDiscordBotUserID.String(event.BotUserID),
+				events.SpanLabelDiscordGuildID.String(event.GuildID),
+				events.SpanLabelDiscordChannelID.String(event.ChannelID),
+				events.SpanLabelDiscordUserID.String(event.UserID),
+				events.SpanLabelDiscordMessageID.String(event.MessageID),
+			),
 		)
 		defer span.End()
 		var err error
@@ -88,7 +98,12 @@ func handle(
 			return nil
 		}
 
+		ctx = event.Context()
 		for _, plugin := range plugins.PluginList {
+			pluginContext, span := global.Tracer("cacophony.dev/processor").Start(ctx, "Plugin."+plugin.Names()[0])
+			defer span.End()
+			event.WithContext(pluginContext)
+
 			if !event.IsEnabled(featureFlagPluginKey(plugin.Names()[0]), true) {
 				l.Debug("skipping plugin as it is disabled by feature flags",
 					zap.String("plugin_name", plugin.Names()[0]),
