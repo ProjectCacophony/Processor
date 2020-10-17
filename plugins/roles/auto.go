@@ -99,6 +99,56 @@ func (p *Plugin) deleteAutoRole(event *events.Event) {
 	)
 }
 
+func (p *Plugin) applyAutoRole(event *events.Event) {
+	if len(event.Fields()) < 3 {
+		event.Respond("common.invalid-params")
+		return
+	}
+
+	autoRoles, err := p.getAutoRoles(event.GuildID)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	userIDs, err := event.State().GuildMembers(event.GuildID)
+	if err != nil {
+		event.Respond("roles.autorole.guild-members-not-found")
+		return
+	}
+
+	var memberCount int
+	for _, aRole := range autoRoles {
+
+		for _, userID := range userIDs {
+			member, err := event.State().Member(event.GuildID, userID)
+			if err != nil {
+				continue
+			}
+			
+			hasRole := false
+			for _, userRoleID := range member.Roles {
+				if userRoleID == aRole.ServerRoleID {
+					hasRole = true
+					break
+				}
+			}
+
+			if !hasRole {
+				err = event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
+				if err == nil {
+					memberCount++
+				}
+			}
+		}
+
+	}
+
+	event.Respond("roles.autorole.applied",
+		"memeberCount", memberCount,
+	)
+}
+
 func (p *Plugin) listAutoRoles(event *events.Event)  {
 	autoRoles, err := p.getAutoRoles(event.GuildID)
 	if err != nil || len(autoRoles) == 0 {

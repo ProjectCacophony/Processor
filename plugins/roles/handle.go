@@ -177,7 +177,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 			},
 		}, {
 			Name:        "Auto Role Apply",
-			Description: "Applies auto roles to users. Will only apply to users who meet time requirements a delay exists on the auto role.",
+			Description: "Applies auto roles to users. Will only apply to users who meet time requirements a if delay exists on the auto role.",
 			Params: []common.CommandParam{
 				{Name: "auto", Type: common.Flag},
 				{Name: "apply", Type: common.Flag},
@@ -262,6 +262,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 				return true
 			case "remove":
 				p.deleteAutoRole(event)
+				return true
+			case "apply":
+				p.applyAutoRole(event)
 				return true
 			case "list":
 				p.listAutoRoles(event)

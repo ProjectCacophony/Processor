@@ -15,6 +15,7 @@
 
 "roles.autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
 "roles.autorole.deleted" = "Deleted auto role setup for **{{ .roleName }}**"
+"roles.autorole.applied" = "Applied auto roles for to {{ .memeberCount }} users"
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
@@ -53,3 +54,4 @@ Roles: {{ .uncategorizedRolesList }}\
 
 "roles.autorole.none-found" = "Could not find any auto roles set up for this server."
 "roles.autorole.not-found" = "Could not find an auto role set up on this server with that role."
+"roles.autorole.guild-members-not-found" = "Could not retrieve servers user list to apply roles."
