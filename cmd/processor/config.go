@@ -26,4 +26,5 @@ type config struct {
 	DiscordAPIBase            string               `envconfig:"DISCORD_API_BASE"`
 	GoogleCloudBucketName     string               `envconfig:"GCLOUD_BUCKET_NAME"`
 	ObjectStorageFQDN         string               `envconfig:"OBJECT_STORAGE_FQDN"`
+	HoneycombAPIKey           string               `envconfig:"HONEYCOMB_API_KEY"`
 }

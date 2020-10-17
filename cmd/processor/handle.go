@@ -14,6 +14,9 @@ import (
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/paginator"
 	"gitlab.com/Cacophony/go-kit/state"
+	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/api/trace"
+	"go.opentelemetry.io/otel/label"
 	"go.uber.org/zap"
 )
 
@@ -34,9 +37,21 @@ func handle(
 	l := logger.With(zap.String("service", "processor"))
 
 	return func(event *events.Event) error { // nolint: unparam
+		ctx, span := global.Tracer("cacophony.dev/processor").Start(context.Background(), "handle.Event",
+			trace.WithAttributes(
+				label.String("cacophony.dev/eventing/type", string(event.Type)),
+				label.String("cacophony.dev/discord/bot_user_id", event.BotUserID),
+				label.String("cacophony.dev/discord/guild_id", event.GuildID),
+				label.String("cacophony.dev/discord/channel_id", event.ChannelID),
+				label.String("cacophony.dev/discord/user_id", event.UserID),
+				label.String("cacophony.dev/discord/message_id", event.MessageID),
+				label.Bool("cacophony.dev/eventing/is_command", event.Command()),
+			),
+		)
+		defer span.End()
 		var err error
 
-		ctx, cancel := context.WithTimeout(context.Background(), processingDeadline)
+		ctx, cancel := context.WithTimeout(ctx, processingDeadline)
 		defer cancel()
 
 		event.WithContext(ctx)
