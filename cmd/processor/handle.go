@@ -14,11 +14,12 @@ import (
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/paginator"
 	"gitlab.com/Cacophony/go-kit/state"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/api/global"
-	"go.opentelemetry.io/otel/api/trace"
-	"go.opentelemetry.io/otel/label"
 	"go.uber.org/zap"
 )
+
+var b3Prop = b3.B3{}
 
 func handle(
 	logger *zap.Logger,
@@ -37,16 +38,9 @@ func handle(
 	l := logger.With(zap.String("service", "processor"))
 
 	return func(event *events.Event) error { // nolint: unparam
-		ctx, span := global.Tracer("cacophony.dev/processor").Start(context.Background(), "handle.Event",
-			trace.WithAttributes(
-				label.String("cacophony.dev/eventing/type", string(event.Type)),
-				label.String("cacophony.dev/discord/bot_user_id", event.BotUserID),
-				label.String("cacophony.dev/discord/guild_id", event.GuildID),
-				label.String("cacophony.dev/discord/channel_id", event.ChannelID),
-				label.String("cacophony.dev/discord/user_id", event.UserID),
-				label.String("cacophony.dev/discord/message_id", event.MessageID),
-				label.Bool("cacophony.dev/eventing/is_command", event.Command()),
-			),
+		ctx, span := global.Tracer("cacophony.dev/processor").Start(
+			b3Prop.Extract(context.Background(), &event.SpanContext),
+			"handle.Event",
 		)
 		defer span.End()
 		var err error
@@ -69,6 +63,19 @@ func handle(
 		event.WithPublisher(publisher)
 
 		event.Parse()
+
+		span.SetAttributes(
+			events.SpanLabelEventingType.String(string(event.Type)),
+			events.SpanLabelEventingIsCommand.Bool(event.Command()),
+			events.SpanLabelDiscordBotUserID.String(event.BotUserID),
+			events.SpanLabelDiscordGuildID.String(event.GuildID),
+			events.SpanLabelDiscordChannelID.String(event.ChannelID),
+			events.SpanLabelDiscordUserID.String(event.UserID),
+			events.SpanLabelDiscordMessageID.String(event.MessageID),
+		)
+		if event.Command() {
+			span.SetAttributes(events.SpanLabelEventingCommand.String(event.Fields()[0]))
+		}
 
 		switch event.Type {
 		case events.MessageCreateType:
@@ -94,7 +101,12 @@ func handle(
 			return nil
 		}
 
+		ctx = event.Context()
 		for _, plugin := range plugins.PluginList {
+			pluginContext, span := global.Tracer("cacophony.dev/processor").Start(ctx, "Plugin."+plugin.Names()[0])
+			defer span.End()
+			event.WithContext(pluginContext)
+
 			if !event.IsEnabled(featureFlagPluginKey(plugin.Names()[0]), true) {
 				l.Debug("skipping plugin as it is disabled by feature flags",
 					zap.String("plugin_name", plugin.Names()[0]),

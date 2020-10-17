@@ -1,5 +1,6 @@
 run:
   timeout: 30m
+  deadline: 30m # for old version of golangci-lint
 
 linters:
   disable-all: true

@@ -12,7 +12,9 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/paginator"
+	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/api/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/go-redis/redis"
@@ -76,8 +78,9 @@ func main() {
 			logger.Fatal("failure initialising honeycomb exporter", zap.Error(err))
 		}
 		defer func() {
-			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			honeycombExporter.Shutdown(ctx)
+			cancel()
 		}()
 
 		provider := sdktrace.NewTracerProvider(
@@ -87,6 +90,12 @@ func main() {
 			sdktrace.WithSyncer(honeycombExporter),
 		)
 		global.SetTracerProvider(provider)
+
+		b3Prop := b3.B3{}
+		global.SetPropagators(propagation.New(
+			propagation.WithExtractors(b3Prop),
+			propagation.WithInjectors(b3Prop),
+		))
 	}
 
 	// init raven

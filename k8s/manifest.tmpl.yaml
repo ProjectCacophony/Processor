@@ -27,6 +27,7 @@ stringData:
   trelloToken: "{{TRELLO_TOKEN}}"
   googleMapsKey: "{{GOOGLE_MAPS_KEY}}"
   darkSkyKey: "{{DARK_SKY_KEY}}"
+  honyecombAPIKey: "{{HONEYCOMB_API_KEY}}"
 
 
 ---
@@ -200,6 +201,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: darkSkyKey
+          - name: HONEYCOMB_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: honyecombAPIKey
       volumes:
         - name: google-cloud
           secret:
