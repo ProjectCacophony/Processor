@@ -2,6 +2,7 @@ package main
 
 import (
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.opentelemetry.io/otel/label"
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
@@ -21,7 +22,7 @@ func (s *customSampler) ShouldSample(parameters trace.SamplingParameters) trace.
 			continue
 		}
 
-		if attr.Value.AsBool() {
+		if attr.Value.Type() == label.BOOL && attr.Value.AsBool() {
 			return trace.SamplingResult{
 				Decision: trace.RecordAndSample,
 			}
