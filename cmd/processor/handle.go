@@ -73,6 +73,9 @@ func handle(
 			events.SpanLabelDiscordUserID.String(event.UserID),
 			events.SpanLabelDiscordMessageID.String(event.MessageID),
 		)
+		if event.Command() {
+			span.SetAttributes(events.SpanLabelEventingCommand.String(event.Fields()[0]))
+		}
 
 		switch event.Type {
 		case events.MessageCreateType:
