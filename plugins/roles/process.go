@@ -22,7 +22,7 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 	// check if the message was sent in a role channel
 	inRoleChannel := false
 	channels := p.getCachedRoleChannels(event.GuildID)
-	if channels != nil && len(channels) > 0 {
+	if len(channels) > 0 {
 		for _, channel := range channels {
 			if channel == event.ChannelID {
 				inRoleChannel = true
@@ -58,12 +58,11 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
-	allRoles := make([]*Role, 0)
-	for _, role := range uncategorizedRoles {
-		allRoles = append(allRoles, role)
-	}
+	allRoles := append([]*Role{}, uncategorizedRoles...)
+
 	for _, category := range categories {
 		for _, role := range category.Roles {
+			role := role
 			allRoles = append(allRoles, &role)
 		}
 	}
@@ -231,11 +230,7 @@ func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) b
 		}
 	}
 
-	if hasRoleCount >= category.Limit {
-		return true
-	}
-
-	return false
+	return hasRoleCount >= category.Limit
 }
 
 func (p *Plugin) assignRole(event *events.Event, serverRoleID string) error {

@@ -32,8 +32,6 @@ func (p *Plugin) startRoleChannelCacheLoop() {
 			p.logger.Debug("cached role channels")
 		}
 	}()
-
-	return
 }
 
 func (p *Plugin) cacheRoleChannels() error {
@@ -78,15 +76,6 @@ func (p *Plugin) cacheRoleChannels() error {
 	p.guildRoleChannels = channels
 	p.guildRoleChannelsLock.Unlock()
 	return nil
-}
-
-func (p *Plugin) updateRoleChannelCache(guildID string, channelID string) {
-	if p.guildRoleChannels == nil {
-		return
-	}
-	p.guildRoleChannelsLock.Lock()
-	p.guildRoleChannels[guildID] = append(p.guildRoleChannels[guildID], channelID)
-	p.guildRoleChannelsLock.Unlock()
 }
 
 func (p *Plugin) getCachedRoleChannels(guildID string) []string {

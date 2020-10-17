@@ -179,12 +179,12 @@ func (p *Plugin) listAutoRoles(event *events.Event)  {
 		return
 	}
 
-	msg := fmt.Sprintf("**__Auto Roles__**")
+	msg := "**__Auto Roles__**"
 	for _, aRole := range autoRoles {
 		
 		serverRole, err := p.getServerRoleByNameOrID(aRole.ServerRoleID, event.GuildID)
 		if err != nil {
-			msg += fmt.Sprintf("*Unknown*")
+			msg += "*Unknown*"
 			continue
 		}
 
@@ -213,7 +213,7 @@ func newAutoRoleRule(
 ) *models.Rule {
 	rule := &models.Rule{
 		GuildID: event.GuildID,
-		Name:    fmt.Sprintf("Auto Role"),
+		Name:    "Auto Role",
 		Actions: []models.RuleAction{
 			{
 				Name: "apply_role",

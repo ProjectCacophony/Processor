@@ -13,7 +13,7 @@ const (
 	ServerRoleNotFound          string = "roles.role.role-not-found-on-server"
 	MultipleServerRolesWithName string = "roles.role.multiple-server-roles-with-name"
 
-	DELETE_DELAY time.Duration = 3
+	deleteDelay time.Duration = 3
 )
 
 func (p *Plugin) getServerRoleByNameOrID(input string, guildID string) (*discordgo.Role, error) {
@@ -42,6 +42,6 @@ func (p *Plugin) getServerRoleByNameOrID(input string, guildID string) (*discord
 
 func (p *Plugin) deleteWithDelay(event *events.Event, messageID string) {
 	defer recover()
-	time.Sleep(DELETE_DELAY * time.Second)
+	time.Sleep(deleteDelay * time.Second)
 	discord.Delete(event.Redis(), event.Discord(), event.ChannelID, messageID, false)
 }

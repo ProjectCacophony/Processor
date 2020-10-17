@@ -38,7 +38,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 
 		outputText += fmt.Sprintf("**Role Channel:** %s", channel.Mention())
 	} else {
-		outputText += fmt.Sprintf("**No Role Channel Set**")
+		outputText += "**No Role Channel Set**"
 	}
 
 	categoriesText := ""
@@ -47,7 +47,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 		roleText := ""
 
 		for _, role := range roles {
-			roleText += p.formatRoleOutput(role, event.GuildID)
+			roleText += p.formatRoleOutput(*role, event.GuildID)
 		}
 
 		categoryText := fmt.Sprintf("**%s** \n%s\n",
@@ -88,7 +88,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 			roleText = ""
 
 			for _, role := range cat.Roles {
-				roleText += p.formatRoleOutput(&role, event.GuildID)
+				roleText += p.formatRoleOutput(role, event.GuildID)
 			}
 		}
 
@@ -108,7 +108,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 	event.Respond(outputText)
 }
 
-func (p *Plugin) formatRoleOutput(role *Role, guildID string) string {
+func (p *Plugin) formatRoleOutput(role Role, guildID string) string {
 	roleText := ""
 	serverRole, err := p.state.Role(guildID, role.ServerRoleID)
 	if err != nil {

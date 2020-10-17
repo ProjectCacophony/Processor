@@ -211,7 +211,6 @@ func (p *Plugin) toggleCategory(event *events.Event) {
 		break
 	case "disable":
 		toggle = false
-		break
 	default:
 		event.Respond("common.invalid-params")
 		return
@@ -254,7 +253,6 @@ func (p *Plugin) toggleCategoryVisibility(event *events.Event) {
 		break
 	case "hide":
 		toggle = true
-		break
 	default:
 		event.Respond("common.invalid-params")
 		return

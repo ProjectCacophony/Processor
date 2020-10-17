@@ -128,7 +128,6 @@ func (p *Plugin) createRole(event *events.Event) {
 					event.Redis(), event.Discord(), messages[0].ChannelID, messages[0].ID, false, "❌",
 				)
 
-				return
 			} else {
 				event.Respond(err.Error())
 			}

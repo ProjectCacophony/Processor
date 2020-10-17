@@ -53,7 +53,7 @@ func (p *Plugin) displayRoleMessage(event *events.Event) {
 		}
 	}
 
-	var roleNames []string
+	roleNames := make([]string, len(uncategorizedRoles))
 	for _, role := range uncategorizedRoles {
 		roleNames = append(roleNames, fmt.Sprintf("`%s`", role.Name(event.State())))
 	}
