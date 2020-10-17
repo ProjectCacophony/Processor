@@ -16,6 +16,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.opentelemetry.io/contrib/propagators/b3"
 	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/api/trace"
 	"go.uber.org/zap"
 )
 
@@ -38,17 +39,11 @@ func handle(
 	l := logger.With(zap.String("service", "processor"))
 
 	return func(event *events.Event) error { // nolint: unparam
-		ctx, span := global.Tracer("cacophony.dev/processor").Start(
-			b3Prop.Extract(context.Background(), &event.SpanContext),
-			"handle.Event",
-		)
-		defer span.End()
 		var err error
 
-		ctx, cancel := context.WithTimeout(ctx, processingDeadline)
+		ctx, cancel := context.WithTimeout(context.Background(), processingDeadline)
 		defer cancel()
 
-		event.WithContext(ctx)
 		event.WithTokens(discordTokens)
 		event.WithLocalizations(plugins.LocalizationsList)
 		event.WithState(stateClient)
@@ -64,15 +59,22 @@ func handle(
 
 		event.Parse()
 
-		span.SetAttributes(
-			events.SpanLabelEventingType.String(string(event.Type)),
-			events.SpanLabelEventingIsCommand.Bool(event.Command()),
-			events.SpanLabelDiscordBotUserID.String(event.BotUserID),
-			events.SpanLabelDiscordGuildID.String(event.GuildID),
-			events.SpanLabelDiscordChannelID.String(event.ChannelID),
-			events.SpanLabelDiscordUserID.String(event.UserID),
-			events.SpanLabelDiscordMessageID.String(event.MessageID),
+		ctx, span := global.Tracer("cacophony.dev/processor").Start(
+			b3Prop.Extract(ctx, &event.SpanContext),
+			"handle.Event",
+			trace.WithAttributes(
+				events.SpanLabelEventingType.String(string(event.Type)),
+				events.SpanLabelEventingIsCommand.Bool(event.Command()),
+				events.SpanLabelDiscordBotUserID.String(event.BotUserID),
+				events.SpanLabelDiscordGuildID.String(event.GuildID),
+				events.SpanLabelDiscordChannelID.String(event.ChannelID),
+				events.SpanLabelDiscordUserID.String(event.UserID),
+				events.SpanLabelDiscordMessageID.String(event.MessageID),
+			),
 		)
+		defer span.End()
+		event.WithContext(ctx)
+
 		if event.Command() {
 			span.SetAttributes(events.SpanLabelEventingCommand.String(event.Fields()[0]))
 		}
@@ -104,7 +106,6 @@ func handle(
 		ctx = event.Context()
 		for _, plugin := range plugins.PluginList {
 			pluginContext, span := global.Tracer("cacophony.dev/processor").Start(ctx, "Plugin."+plugin.Names()[0])
-			defer span.End()
 			event.WithContext(pluginContext)
 
 			if !event.IsEnabled(featureFlagPluginKey(plugin.Names()[0]), true) {
@@ -113,6 +114,7 @@ func handle(
 					zap.String("user_id", event.UserID),
 					zap.String("event_id", event.ID),
 				)
+				span.End()
 				continue
 			}
 
@@ -126,16 +128,21 @@ func handle(
 				go func(pl plugins.Plugin) {
 					defer wg.Done()
 
+					// TODO: figure out span, linked span?
+
 					executePlugin(l, pl, event)
 				}(plugin)
+				span.End()
 				continue
 			}
 
 			// else, wait for result, exit if handled
 			handled = executePlugin(l, plugin, event)
 			if handled {
+				span.End()
 				return nil
 			}
+			span.End()
 		}
 
 		wg.Wait()
