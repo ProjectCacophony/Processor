@@ -86,11 +86,11 @@ func main() {
 		provider := sdktrace.NewTracerProvider(
 			sdktrace.WithConfig(sdktrace.Config{
 				DefaultSampler: sdktrace.ParentBased(
-					sdktrace.TraceIDRatioBased(0.01),
+					&customSampler{base: sdktrace.TraceIDRatioBased(0.01)},
 					sdktrace.WithRemoteParentSampled(sdktrace.AlwaysSample()),
-					sdktrace.WithRemoteParentNotSampled(sdktrace.TraceIDRatioBased(0.01)),
+					sdktrace.WithRemoteParentNotSampled(&customSampler{base: sdktrace.TraceIDRatioBased(0.01)}),
 					sdktrace.WithLocalParentSampled(sdktrace.AlwaysSample()),
-					sdktrace.WithLocalParentNotSampled(sdktrace.TraceIDRatioBased(0.01)),
+					sdktrace.WithLocalParentNotSampled(&customSampler{base: sdktrace.TraceIDRatioBased(0.01)}),
 				),
 			}),
 			sdktrace.WithSyncer(honeycombExporter),
