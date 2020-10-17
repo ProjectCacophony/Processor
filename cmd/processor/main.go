@@ -76,8 +76,9 @@ func main() {
 			logger.Fatal("failure initialising honeycomb exporter", zap.Error(err))
 		}
 		defer func() {
-			ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			honeycombExporter.Shutdown(ctx)
+			cancel()
 		}()
 
 		provider := sdktrace.NewTracerProvider(
