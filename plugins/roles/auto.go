@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/Processor/plugins/automod/filters"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -64,6 +65,40 @@ func (p *Plugin) createAutoRole(event *events.Event) {
 	event.Respond("roles.autorole.creation",
 		"roleName", serverRole.Name,
 	)
+}
+
+func (p *Plugin) listAutoRoles(event *events.Event)  {
+	autoRoles, err := p.getAutoRoles(event.GuildID)
+	if err != nil || len(autoRoles) == 0 {
+		event.Respond("roles.autorole.none-found")
+		return
+	}
+
+	msg := fmt.Sprintf("**__Auto Roles__**")
+	for _, aRole := range autoRoles {
+		
+		serverRole, err := p.getServerRoleByNameOrID(aRole.ServerRoleID, event.GuildID)
+		if err != nil {
+			msg += fmt.Sprintf("*Unknown*")
+			continue
+		}
+
+		var delay string
+		for _, action := range aRole.Rule.Actions {
+			if action.Name == (filters.Wait{}).Name() {
+				delay = action.Values[0]
+			}
+		}
+		
+		if delay == "" {
+			msg += fmt.Sprintf("\n**%s** (%s)", serverRole.Name, serverRole.ID)
+			continue
+		}
+
+		msg += fmt.Sprintf("\n**%s** - %s delay (%s)", serverRole.Name, delay, serverRole.ID)
+	}
+
+	event.Respond(msg)
 }
 
 func newAutoRoleRule(

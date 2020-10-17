@@ -247,6 +247,7 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			return true
 		case "auto":
 			if len(event.Fields()) < 3 {
+				p.listAutoRoles(event)
 				return true
 			}
 
@@ -258,6 +259,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			switch event.Fields()[2] {
 			case "add":
 				p.createAutoRole(event)
+				return true
+			case "list":
+				p.listAutoRoles(event)
 				return true
 			}
 

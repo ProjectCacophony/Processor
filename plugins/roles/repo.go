@@ -73,3 +73,15 @@ func (p *Plugin) getRoleByServerRoleID(serverRoleID string, guildID string) (*Ro
 	}
 	return &role, nil
 }
+
+func (p *Plugin) getAutoRoles(guildID string) ([]*AutoRole, error) {
+	var autoRoles []*AutoRole
+	err := p.db.
+		Preload("Rule").
+		Preload("Rule.Actions").
+		Find(&autoRoles, "guild_id = ?", guildID).Error
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		return nil, err
+	}
+	return autoRoles, nil
+}
