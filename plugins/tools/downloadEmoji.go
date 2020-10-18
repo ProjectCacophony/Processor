@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -88,6 +89,10 @@ func (p *Plugin) handleDownloadEmoji(event *events.Event) {
 
 	zipWriter := zip.NewWriter(outFile)
 
+	emojiMap := make(map[string]bool)
+
+	var filename string
+	var filenameI int
 	for _, emoji := range emojiList {
 		extension := filepath.Ext(emoji.Link)
 
@@ -103,7 +108,18 @@ func (p *Plugin) handleDownloadEmoji(event *events.Event) {
 			return
 		}
 
-		file, err := zipWriter.Create(filepath.Join(zipName, emoji.Emoji.Name+extension))
+		filename = emoji.Emoji.Name + extension
+		filenameI = 0
+		for {
+			if !emojiMap[filename] {
+				break
+			}
+			filenameI++
+			filename = emoji.Emoji.Name + strconv.Itoa(filenameI) + extension
+		}
+
+		emojiMap[filename] = true
+		file, err := zipWriter.Create(filepath.Join(zipName, filename))
 		if err != nil {
 			event.Except(err)
 			return
