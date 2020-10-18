@@ -26,22 +26,31 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 		return false
 	}
 
+	snowflake := fmt.Sprintf(":%s:%s", event.MessageReactionAdd.Emoji.Name, event.MessageReactionAdd.Emoji.ID)
+
+	go discord.RemoveReact(
+		event.Redis(),
+		event.Discord(),
+		event.MessageReactionAdd.ChannelID,
+		event.MessageReactionAdd.MessageID,
+		event.UserID,
+		false,
+		snowflake,
+	)
+
 	allRoles, err := p.getAllRoles(event.GuildID)
 	if err != nil {
 		event.Except(err)
 		return true
 	}
 
-	snowflake := fmt.Sprintf(":%s:%s", event.MessageReactionAdd.Emoji.Name, event.MessageReactionAdd.Emoji.ID)
 	var selectedRole *Role
 	for _, role := range allRoles {
 		if role.Emoji == "" {
 			continue
 		}
 
-		fmt.Printf("%s - %s\n\n", snowflake, emoji.GetWithout(role.Emoji))
 		if snowflake == emoji.GetWithout(role.Emoji) {
-			fmt.Println("FOUND\n\n\n")
 			selectedRole = role
 		}
 	}
@@ -59,18 +68,47 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 	if hasRole {
 		p.removeRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
 	} else {
-		p.assignRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
-	}
+		if selectedRole.CategoryID == 0 {
+			p.assignRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
+		} else {
+			categories, err := p.getCategoryByChannel(event.ChannelID)
+			if err != nil {
+				event.ExceptSilent(err)
+				return true
+			}
 
-	discord.RemoveReact(
-		event.Redis(),
-		event.Discord(),
-		event.MessageReactionAdd.ChannelID,
-		event.MessageReactionAdd.MessageID,
-		event.UserID,
-		false,
-		snowflake,
-	)
+			var selectedCategory *Category
+		CatLoop:
+			for _, cat := range categories {
+				for _, crole := range cat.Roles {
+					if crole.ServerRoleID == selectedRole.ServerRoleID {
+						selectedCategory = cat
+						break CatLoop
+					}
+				}
+			}
+
+			if selectedCategory == nil {
+				return true
+			}
+
+			member, err := event.State().Member(event.GuildID, event.UserID)
+			if err != nil {
+				event.ExceptSilent(err)
+				return false
+			}
+
+			if p.isOverRoleLimit(member, selectedCategory) {
+				msgs, err := event.Send(event.ChannelID, "roles.role.at-category-limit", "userMention", member.Mention())
+				if err != nil {
+					return false
+				}
+
+				go p.deleteWithDelay(event, msgs[0].ID)
+				return true
+			}
+		}
+	}
 
 	return true
 }
@@ -81,7 +119,13 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
-	if event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+	if len(event.MessageCreate.Content) < 2 {
+		go p.deleteWithDelay(event, event.MessageID)
+		return true
+	}
+	plusMinus := event.MessageCreate.Content[0:1]
+
+	if event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) && plusMinus != PLUS && plusMinus != MINUS {
 		return false
 	}
 
@@ -92,10 +136,6 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 	}
 
 	// check plus or minus
-	if len(event.MessageCreate.Content) < 2 {
-		return false
-	}
-	plusMinus := event.MessageCreate.Content[0:1]
 	if plusMinus != PLUS && plusMinus != MINUS {
 		return false
 	}
