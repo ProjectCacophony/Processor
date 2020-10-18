@@ -25,6 +25,9 @@ func (p *Plugin) Names() []string {
 }
 
 func (p *Plugin) Start(params common.StartParameters) error {
+	p.db = params.DB
+	p.logger = params.Logger
+
 	err := params.DB.AutoMigrate(User{}).Error
 	if err != nil {
 		return err
@@ -44,9 +47,6 @@ func (p *Plugin) Start(params common.StartParameters) error {
 		config.Key,
 		config.Secret,
 	)
-
-	p.db = params.DB
-	p.logger = params.Logger
 
 	return nil
 }
