@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	INTERVAL = time.Minute
+	INTERVAL = 30 * time.Minute
 )
 
 func (p *Plugin) startRoleChannelCacheLoop() {
