@@ -135,7 +135,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 			if err != nil {
 				continue
 			}
-			
+
 			// check if user has been in the server for less time than the delay
 			if delay > 0 {
 				mem, err := event.State().Member(event.GuildID, userID)
@@ -152,8 +152,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 					continue
 				}
 			}
-			
-			
+
 			hasRole := false
 			for _, userRoleID := range member.Roles {
 				if userRoleID == aRole.ServerRoleID {
@@ -161,7 +160,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 					break
 				}
 			}
-			
+
 			if !hasRole {
 				event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
 			}
@@ -172,7 +171,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 	event.Respond("roles.autorole.applied")
 }
 
-func (p *Plugin) listAutoRoles(event *events.Event)  {
+func (p *Plugin) listAutoRoles(event *events.Event) {
 	autoRoles, err := p.getAutoRoles(event.GuildID)
 	if err != nil || len(autoRoles) == 0 {
 		event.Respond("roles.autorole.none-found")
@@ -181,7 +180,7 @@ func (p *Plugin) listAutoRoles(event *events.Event)  {
 
 	msg := "**__Auto Roles__**"
 	for _, aRole := range autoRoles {
-		
+
 		serverRole, err := p.getServerRoleByNameOrID(aRole.ServerRoleID, event.GuildID)
 		if err != nil {
 			msg += "*Unknown*"
@@ -194,7 +193,7 @@ func (p *Plugin) listAutoRoles(event *events.Event)  {
 				delay = action.Values[0]
 			}
 		}
-		
+
 		if delay == "" {
 			msg += fmt.Sprintf("\n**%s** (%s)", serverRole.Name, serverRole.ID)
 			continue
