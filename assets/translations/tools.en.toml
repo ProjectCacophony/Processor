@@ -4,6 +4,8 @@
 "tools.help.shorten.description" = "Will tell you a shortened version of the link"
 "tools.help.choose.name" = "Choose item"
 "tools.help.choose.description" = "Makes the Bot choose from various options"
+"tools.help.get.name" = "Get the code for a Message"
+"tools.help.get.description" = "Generates the Message code for a given message"
 "tools.help.say.name" = "Send a Message"
 "tools.help.say.description" = "Sends the given message as the bot in the given channel"
 "tools.help.edit.name" = "Edit a Message"
@@ -68,3 +70,7 @@
 "tools.download-emoji.preparing" = "Your emoji zip is being prepared… :loading:"
 "tools.download-emoji.success" = "<@{{.userID}}> **Here you go!** All emoji of this server in one zip:\n<{{.file.GetLink}}>"
 "tools.download-emoji.no-attach-files-permission" = "Please give me the permission to attach files in this channel!"
+
+# handleGet
+"tools.get.too-few" = "Please send me a message link."
+"tools.get.result" = "{{.code | Escape | QuoteText}}"

@@ -68,7 +68,7 @@ func (p *Plugin) Help() *common.PluginHelp {
 				Description: "admin.help.in.description",
 				Params: []common.CommandParam{
 					{Name: "in", Type: common.Flag},
-					{Name: "user", Type: common.Channel},
+					{Name: "channel", Type: common.Channel},
 					{Name: "command", Type: common.Text},
 					{Name: "…", Type: common.Text},
 				},

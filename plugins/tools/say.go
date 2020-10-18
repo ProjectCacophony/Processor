@@ -53,3 +53,21 @@ func (p *Plugin) handleSay(event *events.Event) {
 
 	event.React("ok")
 }
+
+func (p *Plugin) handleGet(event *events.Event) {
+	if len(event.Fields()) < 2 {
+		event.Respond("tools.get.too-few")
+		return
+	}
+
+	message, err := event.FindMessageLink(event.Fields()[1])
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	code := discord.MessageCodeFromMessage(message)
+
+	_, err = event.Respond("tools.get.result", "code", code)
+	event.Except(err)
+}
