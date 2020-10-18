@@ -27,6 +27,9 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 	}
 
 	snowflake := fmt.Sprintf(":%s:%s", event.MessageReactionAdd.Emoji.Name, event.MessageReactionAdd.Emoji.ID)
+	if event.MessageReactionAdd.Emoji.Animated {
+		snowflake = "a" + snowflake
+	}
 
 	go discord.RemoveReact(
 		event.Redis(),
@@ -107,6 +110,7 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 				go p.deleteWithDelay(event, msgs[0].ID)
 				return true
 			}
+			p.assignRole(event, event.MessageReactionAdd.ChannelID, selectedRole.ServerRoleID)
 		}
 	}
 
