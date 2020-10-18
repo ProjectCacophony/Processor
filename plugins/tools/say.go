@@ -53,6 +53,7 @@ func (p *Plugin) handleSay(event *events.Event) {
 
 	event.React("ok")
 }
+
 func (p *Plugin) handleGet(event *events.Event) {
 	if len(event.Fields()) < 2 {
 		event.Respond("tools.get.too-few")
