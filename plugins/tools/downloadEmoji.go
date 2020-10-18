@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -77,8 +78,9 @@ func (p *Plugin) handleDownloadEmoji(event *events.Event) {
 	}()
 
 	zipName := fmt.Sprintf("cacophony-emoji-%s", alphanumericRegex.ReplaceAllString(guild.Name, ""))
+	zipFilename := zipName + ".zip"
 
-	zipPath := filepath.Join(tempDir, fmt.Sprintf("%s.zip", zipName))
+	zipPath := filepath.Join(tempDir, zipFilename)
 
 	outFile, err := os.Create(zipPath)
 	if err != nil {
@@ -153,15 +155,30 @@ func (p *Plugin) handleDownloadEmoji(event *events.Event) {
 	}
 	defer file.Close()
 
+	fileData, err := ioutil.ReadAll(file)
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
+	uploaded, err := event.AddFile(fileData, &events.FileInfo{
+		Filename:   zipFilename,
+		UserID:     event.UserID,
+		ChannelID:  event.ChannelID,
+		GuildID:    event.GuildID,
+		MimeType:   "application/zip",
+		UploadDate: time.Now(),
+		Filesize:   len(fileData),
+		Public:     true,
+	})
+	if err != nil {
+		event.Except(err)
+		return
+	}
+
 	_, err = event.RespondComplex(&discordgo.MessageSend{
 		Content: "tools.download-emoji.success",
-		Files: []*discordgo.File{
-			{
-				Name:   fmt.Sprintf("%s.zip", zipName),
-				Reader: file,
-			},
-		},
-	}, "userID", event.UserID)
+	}, "userID", event.UserID, "file", uploaded)
 	if err != nil {
 		event.Except(err)
 		return

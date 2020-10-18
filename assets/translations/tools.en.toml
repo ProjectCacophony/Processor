@@ -66,5 +66,5 @@
 # handleDownloadEmoji
 "tools.download-emoji.none-emoji" = "No emoji to export found."
 "tools.download-emoji.preparing" = "Your emoji zip is being prepared… :loading:"
-"tools.download-emoji.success" = "<@{{.userID}}> **Here you go!** All emoji of this server in one zip."
+"tools.download-emoji.success" = "<@{{.userID}}> **Here you go!** All emoji of this server in one zip:\n<{{.file.GetLink}}>"
 "tools.download-emoji.no-attach-files-permission" = "Please give me the permission to attach files in this channel!"
