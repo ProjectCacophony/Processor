@@ -43,6 +43,19 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Description: "tools.help.description",
 		Commands: []common.Command{
 			{
+				Name:            "tools.help.get.name",
+				Description:     "tools.help.get.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "get", Type: common.Flag},
+					{Name: "link to message", Type: common.Link},
+				},
+				PermissionsRequired: common.Permissions{
+					permissions.DiscordManageChannels,
+					permissions.DiscordManageMessages,
+				},
+			},
+			{
 				Name:            "tools.help.say.name",
 				Description:     "tools.help.say.description",
 				SkipRootCommand: true,
@@ -160,6 +173,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	case "dice":
 		p.handleDice(event)
+		return true
+	case "get":
+		event.Require(func() {
+			p.handleGet(event)
+		}, permissions.Or(permissions.DiscordManageChannels, permissions.DiscordManageMessages))
 		return true
 	case "say":
 		event.Require(func() {
