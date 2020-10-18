@@ -13,7 +13,7 @@ const (
 )
 
 func (p *Plugin) startRoleChannelCacheLoop() {
-	err := p.cacheRoleChannels()
+	err := p.cacheAllRoleChannels()
 	if err != nil {
 		return
 	}
@@ -23,7 +23,7 @@ func (p *Plugin) startRoleChannelCacheLoop() {
 		for {
 			time.Sleep(INTERVAL)
 
-			err = p.cacheRoleChannels()
+			err = p.cacheAllRoleChannels()
 			if err != nil {
 				p.logger.Error("failed to cache role channels", zap.Error(err))
 				continue
@@ -34,7 +34,7 @@ func (p *Plugin) startRoleChannelCacheLoop() {
 	}()
 }
 
-func (p *Plugin) cacheRoleChannels() error {
+func (p *Plugin) cacheAllRoleChannels() error {
 
 	var categories []Category
 	err := p.db.Find(&categories).Error
@@ -74,6 +74,33 @@ func (p *Plugin) cacheRoleChannels() error {
 
 	p.guildRoleChannelsLock.Lock()
 	p.guildRoleChannels = channels
+	p.guildRoleChannelsLock.Unlock()
+	return nil
+}
+
+func (p *Plugin) cacheGuildsRoleChannels(guildID string) error {
+
+	var categories []Category
+	err := p.db.Where("guild_id = ?", guildID).Find(&categories).Error
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		return err
+	}
+
+	channels := make([]string, 0)
+
+	for _, cat := range categories {
+		if cat.ChannelID != "" {
+			channels = append(channels, cat.ChannelID)
+		}
+	}
+
+	defaultRoleChannel, err := config.GuildGetString(p.db, guildID, guildRoleChannelKey)
+	if err == nil && defaultRoleChannel != "" {
+		channels = append(channels, defaultRoleChannel)
+	}
+
+	p.guildRoleChannelsLock.Lock()
+	p.guildRoleChannels[guildID] = channels
 	p.guildRoleChannelsLock.Unlock()
 	return nil
 }

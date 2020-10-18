@@ -158,6 +158,7 @@ func (p *Plugin) createRole(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.role.creation",
 		"roleName", serverRole.Name,
 	)
@@ -249,6 +250,7 @@ func (p *Plugin) updateRole(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.role.update",
 		"roleName", roleName,
 	)
@@ -286,6 +288,7 @@ func (p *Plugin) deleteRole(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.role.deleted",
 		"roleName", serverRole.Name,
 	)

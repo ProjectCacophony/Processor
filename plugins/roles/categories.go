@@ -64,6 +64,7 @@ func (p *Plugin) createCategory(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.category.creation",
 		"category", category,
 	)
@@ -122,6 +123,7 @@ func (p *Plugin) updateCategory(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.category.update",
 		"category", existingCategory,
 	)
@@ -194,6 +196,7 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	event.Respond("roles.category.deleted",
 		"category", category,
 	)
