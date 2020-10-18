@@ -9,6 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/discord/emoji"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 const (
@@ -80,8 +81,15 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		return false
 	}
 
-	// remove users message
+	if event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+		return false
+	}
+
 	go p.deleteWithDelay(event, event.MessageID)
+
+	if event.Command() {
+		return true
+	}
 
 	// check plus or minus
 	if len(event.MessageCreate.Content) < 2 {

@@ -49,7 +49,7 @@ func (p *Plugin) Stop(params common.StopParameters) error {
 }
 
 func (p *Plugin) Priority() int {
-	return 0
+	return 100
 }
 
 func (p *Plugin) Passthrough() bool {
@@ -218,8 +218,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 }
 
 func (p *Plugin) handleAsCommand(event *events.Event) bool {
+	if p.handleUserRoleRequest(event) {
+		return true
+	}
+
 	if !event.Command() {
-		return p.handleUserRoleRequest(event)
+		return false
 	}
 
 	if event.Fields()[0] != "roles" &&
