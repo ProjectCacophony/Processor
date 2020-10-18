@@ -123,7 +123,11 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
 	requests, err := p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles)
 	if err != nil {
-		event.Except(err)
+		event.ExceptSilent(err)
+		msgs, err := event.Send(event.ChannelID, err.Error())
+		if err == nil {
+			go p.deleteWithDelay(event, msgs[0].ID)
+		}
 		return true
 	}
 
