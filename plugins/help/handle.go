@@ -51,15 +51,11 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Commands: []common.Command{
 			{
 				Name: "List All Modules",
-				Params: []common.CommandParam{
-					{Name: "public", Type: common.Flag, Optional: true},
-				},
 			},
 			{
 				Name: "List Module Commands",
 				Params: []common.CommandParam{
 					{Name: "module name", Type: common.Text},
-					{Name: "public", Type: common.Flag, Optional: true},
 				},
 			},
 			{
@@ -87,13 +83,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 		return true
 	}
 
-	var displayInChannel bool
-
-	for _, field := range event.Fields() {
-		if field == "public" {
-			displayInChannel = true
-		}
-	}
+	// Note: originally help messages were dm by default
+	//   and required "public" to be passed as a command param.
+	//   That's no longer the case but not going to restructure
+	//   that to much incase we decide to go back
+	displayInChannel := true
 
 	if len(event.Fields()) == 1 {
 		listCommands(event, p.pluginHelpList, displayInChannel)
