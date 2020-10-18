@@ -149,10 +149,10 @@ func (p *Plugin) Help() *common.PluginHelp {
 				{Name: "channel", Type: common.Channel, Optional: true},
 			},
 		}, {
-			Name:        "Role Info",
+			Name:        "Role List",
 			Description: "View current role categories and roles configured on the server.",
 			Params: []common.CommandParam{
-				{Name: "info", Type: common.Flag},
+				{Name: "list", Type: common.Flag},
 			},
 		}, {
 			Name:        "List Auto role",
@@ -238,6 +238,9 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 
 	if len(event.Fields()) > 1 {
 		switch event.Fields()[1] {
+		case "guide":
+			event.Respond("roles.guide")
+			return true
 		case "show", "hide":
 			p.toggleCategoryVisibility(event)
 			return true
@@ -247,7 +250,7 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		case "channel":
 			p.setRoleChannel(event)
 			return true
-		case "info":
+		case "info", "list":
 			p.displayRoleInfo(event)
 			return true
 		case "message":
