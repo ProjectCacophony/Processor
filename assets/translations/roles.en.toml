@@ -44,9 +44,9 @@ Please react with ✅ if you do."
 To add this role to the bots role configuration it must be on the server first, would you like to make this role on the server?\n\
 Please react with ✅ if you do."
 
-"roles.message" = "Use `+role` **to add** or `-role` **to remove** a role.\n\n\
+"roles.message" = "Use `+role` **to add** or `-role` **to remove** a role.\
 {{ if .uncategorizedRolesList }}\
-Roles: {{ .uncategorizedRolesList }}\
+\n\nRoles: {{ .uncategorizedRolesList }}\
 {{ end }}\
 {{ .categoryList }}"
 
