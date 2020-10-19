@@ -60,6 +60,13 @@ func (t *ReactItem) Do(env *models.Env) (bool, error) {
 	doneMessageIDs := make(map[string]interface{})
 
 	for _, message := range env.Messages {
+		if message == nil {
+			continue
+		}
+		if message.Bot {
+			continue
+		}
+
 		if doneMessageIDs[message.ID] != nil {
 			continue
 		}
