@@ -318,8 +318,8 @@ func optionsForGuild(old, new *discordgo.Guild) []ItemOption {
 
 	options = append(options, ItemOption{
 		Key:           "default_message_notifications",
-		PreviousValue: strconv.Itoa(old.DefaultMessageNotifications),
-		NewValue:      strconv.Itoa(new.DefaultMessageNotifications),
+		PreviousValue: strconv.Itoa(int(old.DefaultMessageNotifications)),
+		NewValue:      strconv.Itoa(int(new.DefaultMessageNotifications)),
 		Type:          EntityTypeNumber,
 	})
 

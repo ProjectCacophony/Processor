@@ -29,6 +29,10 @@ func (p *Plugin) add(event *events.Event) {
 	}
 
 	vliveChannelID := extractVLiveChannelID(fields[0])
+	if vliveChannelID == "" {
+		event.Respond("vlive.add.too-few")
+		return
+	}
 
 	entries, err := entryFindMany(p.db,
 		"((guild_id = ? AND dm = false) OR (channel_or_user_id = ? AND dm = true)) AND dm = ?",
