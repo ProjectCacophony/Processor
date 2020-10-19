@@ -4,13 +4,13 @@ import (
 	"regexp"
 )
 
-var vliveRegexp = regexp.MustCompile(".*vlive.tv/(channels/)?([^/]+).*")
+var vliveRegexp = regexp.MustCompile(".*vlive.(tv|com)/(channels/)?([^/]+).*")
 
 func extractVLiveChannelID(input string) string {
 	parts := vliveRegexp.FindStringSubmatch(input)
-	if len(parts) < 3 {
+	if len(parts) < 4 {
 		return input
 	}
 
-	return parts[2]
+	return parts[3]
 }

@@ -39,5 +39,5 @@ You can add one: `{{.prefix}}vlive add <VLive Channel Link>`\
 "vlive.help.list.description" = "Displays all VLive Channel Feeds set up on this Server, or in your DMs."
 "vlive.help.add.name" = "Add an VLive Channel Feed"
 "vlive.help.add.description" = "Adds a given VLive Channel to the current channel, or a specific channel if given."
-"vlive.help.remove.name" = "Remove an VLive Channel Feed"
+"vlive.help.remove.name" = "Remove a VLive Channel Feed"
 "vlive.help.remove.description" = "Removes a given VLive Channel from the feeds."
