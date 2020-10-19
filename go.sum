@@ -425,6 +425,8 @@ gitlab.com/Cacophony/go-kit v0.0.0-20201018173721-b233a19b2756 h1:QdfIaVfuFNMUWC
 gitlab.com/Cacophony/go-kit v0.0.0-20201018173721-b233a19b2756/go.mod h1:dj7wwpSfhyk+qXkvzBPTIo6l/6X11X8MstlQSvaFrfs=
 gitlab.com/Cacophony/go-kit v0.0.0-20201018174953-5224277d3ab5 h1:5pVE6vBjj6P+Gv5asMzh2UVYyrnd5/o+xZxQSYnBW4Q=
 gitlab.com/Cacophony/go-kit v0.0.0-20201018174953-5224277d3ab5/go.mod h1:dj7wwpSfhyk+qXkvzBPTIo6l/6X11X8MstlQSvaFrfs=
+gitlab.com/Cacophony/go-kit v0.0.0-20201019095221-c62448153d3a h1:ReC1l3fd56KR0yN8ZY8O6xRyUHDH+Cvs/Fw3HMFoUMg=
+gitlab.com/Cacophony/go-kit v0.0.0-20201019095221-c62448153d3a/go.mod h1:dj7wwpSfhyk+qXkvzBPTIo6l/6X11X8MstlQSvaFrfs=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.21.0 h1:mU6zScU4U1YAFPHEHYk+3JC4SY7JxgkqS10ZOSyksNg=
