@@ -79,7 +79,7 @@ Message: `{MESSAGE_CONTENT}`, `{MESSAGE_LINK}`, and `{MESSAGE_ID}`.\n\
 It may take up to one minute until the change will be applied."
 
 # Triggers
-"automod.triggers.when_message" = "Triggers when a new Message is sent.\n\
+"automod.triggers.when_message" = "Triggers when a new Message is sent. Messages by Bots are ignored.\n\
 Does not trigger for Messages sent by Bots.\n\
 Adds the Messages, the senders User, and the messages Channel to the Rule context. []"
 "automod.triggers.when_bucket_updated" = "Triggers when a Bucket is updated.\n\
