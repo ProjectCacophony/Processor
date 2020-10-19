@@ -48,5 +48,6 @@ var (
 		actions.React{},
 		actions.Wait{},
 		actions.DeleteBotMessage{},
+		actions.Publish{},
 	}
 )

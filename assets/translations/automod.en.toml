@@ -134,7 +134,8 @@ Types: guild, channel, or user [tag; type; decay duration; amount]"
 Types: guild, channel, or user [tag; type]"
 "automod.actions.react" = "Reacts with the given Emoji. [emoji…]"
 "automod.actions.wait" = "Pauses the execution of the rule for the given duration.\n\
-[duration]"
+[duration (5s10m)]"
+"automod.actions.publish" = "Publishes all Messages found in the Rule Context (for News Channels)."
 
 # cmdHistory
 "automod.history.content" = "\
