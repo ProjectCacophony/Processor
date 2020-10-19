@@ -8,7 +8,7 @@ require (
 	github.com/Seklfreak/lastfm-go v0.0.0-20180325112940-ff0cf6912942
 	github.com/VojtechVitek/go-trello v0.0.0-20161023024849-28ebf2756ecc
 	github.com/bsm/redis-lock v8.0.0+incompatible
-	github.com/bwmarrin/discordgo v0.20.3-0.20200617034334-9b1ba78bc6f4
+	github.com/bwmarrin/discordgo v0.22.1-0.20201016070959-7ab242d361c0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/getsentry/raven-go v0.2.0
 	github.com/go-chi/chi v4.0.2+incompatible
@@ -24,7 +24,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.9.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20201019095221-c62448153d3a
+	gitlab.com/Cacophony/go-kit v0.0.0-20201019154055-8b9ebdcd053f
 	go.opentelemetry.io/contrib/propagators v0.12.0
 	go.opentelemetry.io/otel v0.12.0
 	go.opentelemetry.io/otel/sdk v0.12.0
