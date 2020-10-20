@@ -26,7 +26,7 @@ func (t BotMessage) NewItem(env *models.Env, args []string) (interfaces.TriggerI
 }
 
 func (t BotMessage) Description() string {
-	return "automod.triggers.when_bot_Message"
+	return "automod.triggers.when_bot_message"
 }
 
 type BotMessageItem struct {
