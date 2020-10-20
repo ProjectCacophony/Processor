@@ -92,6 +92,9 @@ Adds the User to the Rule Context. []"
 Adds the User to the Rule Context. []"
 "automod.triggers.when_unban" = "Triggers when a user gets unbanned.\n\
 Adds the User to the Rule Context. []"
+"automod.triggers.when_bot_Message" = "Triggers when a new Message is sent by a Bot.\n\
+Only works with certain actions: `publish`.\n\
+Adds the Messages, the senders User, and the messages Channel to the Rule context. []"
 
 # Filters
 "automod.filters.if_message_content_regex" = "Matches when the given RegEx matches with the Message Content. [regex]"
