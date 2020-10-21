@@ -15,6 +15,7 @@ var (
 		triggers.Leave{},
 		triggers.Ban{},
 		triggers.Unban{},
+		triggers.BotMessage{},
 	}
 
 	FiltersList = []interfaces.FilterInterface{
