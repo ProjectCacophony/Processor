@@ -8,8 +8,6 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
-	"gitlab.com/Cacophony/go-kit/interfaces"
-	"gitlab.com/Cacophony/go-kit/permissions"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -58,9 +56,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 		Names:       p.Names(),
 		Description: "wolfram.description",
 		Commands: []common.Command{{
-			Name:                "Add Role Category",
-			Description:         "Add additional role categories for roles to be added too.",
-			PermissionsRequired: []interfaces.Permission{permissions.DiscordManageRoles},
+			Name:        "Ask a question",
+			Description: "",
 			Params: []common.CommandParam{
 				{Name: "question...", Type: common.QuotedText},
 			},

@@ -1,4 +1,4 @@
-"wolfram.description" = "Ask questions that will be answered by Wolfram Alpha. Visit https://wolframalpha.com for more information"
+"wolfram.description" = "Ask questions that will be answered by Wolfram Alpha. Visit <https://wolframalpha.com> for more information"
 
 "wolfram.no-question" = "It doesn't seem like you asked a question :thinking:"
 "wolfram.invalid-question" = "I couldn't understand the question :thinking:"
