@@ -44,7 +44,7 @@ func (p *Plugin) Stop(params common.StopParameters) error {
 }
 
 func (p *Plugin) Priority() int {
-	return 100
+	return 0
 }
 
 func (p *Plugin) Passthrough() bool {
@@ -82,6 +82,10 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 
 	if event.Fields()[0] != "wolfram" &&
 		event.Fields()[0] != "w" {
+		return false
+	}
+
+	if p.wolframClient == nil {
 		return false
 	}
 
