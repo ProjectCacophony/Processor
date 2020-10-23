@@ -1,0 +1,12 @@
+"autoroles.help.description" = "Set one or more roles to be automatically applied to users who join the server."
+
+"autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
+"autorole.deleted" = "Deleted auto role setup for **{{ .roleName }}**"
+"autorole.applied" = "Applied auto roles"
+
+"autorole.none-found" = "Could not find any auto roles set up for this server."
+"autorole.not-found" = "Could not find an auto role set up on this server with that role."
+"autorole.guild-members-not-found" = "Could not retrieve servers user list to apply roles."
+
+# \n\n__Auto Roles__\n\
+# The Roles module can also be used to automatically assign a role to every user who joins the server. You can have the bot do this immediatly or after a set amount of time. To do this run `{{ .prefix }}roles auto add '<Role Name>' '<?Delay in seconds>'`\

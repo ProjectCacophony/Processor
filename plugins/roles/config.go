@@ -25,6 +25,7 @@ func (p *Plugin) setRoleChannel(event *events.Event) {
 		return
 	}
 
+	p.cacheGuildsRoleChannels(event.GuildID)
 	_, err = event.Respond("roles.config.channel", "channelName", channel.Name)
 	if err != nil {
 		event.Except(err)

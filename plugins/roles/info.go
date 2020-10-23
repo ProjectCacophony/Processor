@@ -51,7 +51,7 @@ func (p *Plugin) displayRoleInfo(event *events.Event) {
 		}
 
 		categoryText := fmt.Sprintf("**%s** \n%s\n",
-			"Uncategorized Roles",
+			"Roles",
 			roleText,
 		)
 		categoriesText += categoryText

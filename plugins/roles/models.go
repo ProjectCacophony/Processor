@@ -3,7 +3,6 @@ package roles
 import (
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/state"
 )
 
@@ -26,19 +25,6 @@ type Category struct {
 
 func (*Category) TableName() string {
 	return "role_categories"
-}
-
-type AutoRole struct {
-	gorm.Model
-
-	GuildID      string
-	ServerRoleID string
-	RuleID       uint
-	Rule         models.Rule
-}
-
-func (*AutoRole) TableName() string {
-	return "auto_role"
 }
 
 type Role struct {

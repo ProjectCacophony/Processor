@@ -1,21 +1,14 @@
 "roles.help.description" = "Set up many different roles and allow your users to add or remove them on their own."
 
 # message
-"roles.guide" = "**Roles Guide**\n\n\
-__What is this?__\n\
-The Roles module is used to allow users in your discord server to add and remove their own roles. This is especially useful for public servers with a large amount of members.\
-\n\n__Basic set up__\n\
+"roles.guide" = "__**Roles Guide**__\n\
+The Roles module is used to allow users in your Discord server to manage their own roles. This is especially useful for public servers with a large amount of members.\
+\n\n**Basic set up**\n\
 We'll go over the steps to get a basic role set up going, but if you just want to view all the commands in the roles modules you can run `{{ .prefix }}roles help`.\n\n\
-First, you must determine which server roles you want your users to be able to manage. To do this run `{{ .prefix }}roles add role '<Role Name>'`. You can do this for as many roles as you like.\n\
-Second, you will need to determine a channel used for role management. To do this run `{{ .prefix }}roles channel <channel>`. It's important the channel you chose is **only** used for roles, as any miscellaneous messages sent in the channel will be automatically deleted.\n\
-Last, in your roles channel you'll need a message so users know what roles they can apply. The server mods can type their own if they wish or you can use the default message by running `{{ .prefix }}roles message` in your roles channel.\n\n\
-You can do much more using role categories and applying limits, but that's all it takes to set up a basic roles channel.\
-\n\n__Rules channel set up__\n\
-In many larger servers they prefer to have users see a rules channel before accessing the rest of the server. We'll show how to set that up in the roles modules.\n\n\
-First, you'll need to set another channel to work with roles. You can do this by creating a seporate roles category for that channel by running `{{ .prefix }}roles add category '<Category Name>' <channel>`.\n\
-Second, add the role users will need to access the rest of your server by running `{{ .prefix }}roles add role '<Role Name>' '' '' '<Category Name>'`\
-\n\n__Auto Roles__\n\
-The Roles module can also be used to automatically assign a role to every user who joins the server. You can have the bot do this immediatly or after a set amount of time. To do this run `{{ .prefix }}roles auto add '<Role Name>' '<?Delay in seconds>'`\
+1) You must determine which server roles you want your users to be able to self manage. To do this run `{{ .prefix }}roles add role '<Role Name>'`. You can do this for as many server roles as you like.\n\
+2) You will need to determine a channel used for role management. To do this run `{{ .prefix }}roles channel <channel>`. It's important the channel you chose is **only** used for roles, as any other messages sent in the channel will be automatically deleted.\n\
+3) In your roles channel you'll need a message so users know what roles they can apply. The server mods can type their own if they wish or you can use the default message by running `{{ .prefix }}roles message` in your roles channel.\n\
+That's all it takes to set up a basic roles channel! You can do much more such as using emojis reactions, setting up role categories and applying limits.\
 "
 
 "roles.category.creation" = "Added the role category **{{ .category.Name }}**"
@@ -29,10 +22,6 @@ The Roles module can also be used to automatically assign a role to every user w
 "roles.role.deleted" = "Deleted role **{{ .roleName }}** from the role setup"
 "roles.role.assigned" = "{{ .userMention }} I've assigned you the role **{{ .serverRoleName }}** :thumbsup:"
 "roles.role.removed-role" = "{{ .userMention }} I've removed your role **{{ .serverRoleName }}** :thumbsup:"
-
-"roles.autorole.creation" = "Auto role has been setup for **{{ .roleName }}**"
-"roles.autorole.deleted" = "Deleted auto role setup for **{{ .roleName }}**"
-"roles.autorole.applied" = "Applied auto roles"
 
 "roles.config.channel" = "The channel **{{ .channelName }}** has been set for role management."
 
@@ -71,6 +60,3 @@ To learn how to set up the roles module: `{{.prefix}}roles guide`"
 "roles.role.at-category-limit" = "{{ .userMention }} You are already at the role limit for that roles category :stop:"
 "roles.role.rolename-not-found" = "{{ .userMention }} Could not find the role `{{ .roleName }}` in the role setup."
 
-"roles.autorole.none-found" = "Could not find any auto roles set up for this server."
-"roles.autorole.not-found" = "Could not find an auto role set up on this server with that role."
-"roles.autorole.guild-members-not-found" = "Could not retrieve servers user list to apply roles."

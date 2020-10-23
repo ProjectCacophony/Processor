@@ -21,6 +21,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/admin"
 	"gitlab.com/Cacophony/Processor/plugins/automod"
+	"gitlab.com/Cacophony/Processor/plugins/autoroles"
 	"gitlab.com/Cacophony/Processor/plugins/color"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/customcommands"
@@ -95,6 +96,7 @@ var (
 		&rpg.Plugin{},
 		&tiktok.Plugin{},
 		&vlive.Plugin{},
+		&autoroles.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization

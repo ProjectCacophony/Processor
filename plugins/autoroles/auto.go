@@ -1,4 +1,4 @@
-package roles
+package autoroles
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 func (p *Plugin) createAutoRole(event *events.Event) {
-	if len(event.Fields()) < 4 {
+	if len(event.Fields()) < 3 {
 		event.Respond("common.invalid-params")
 		return
 	}
@@ -21,15 +21,15 @@ func (p *Plugin) createAutoRole(event *events.Event) {
 	var err error
 
 	// check for duration
-	if len(event.Fields()) == 5 {
-		duration, err = strconv.Atoi(event.Fields()[4])
+	if len(event.Fields()) == 4 {
+		duration, err = strconv.Atoi(event.Fields()[3])
 		if err != nil {
 			event.Respond("common.invalid-params")
 			return
 		}
 	}
 
-	serverRoleID := event.Fields()[3]
+	serverRoleID := event.Fields()[2]
 	if serverRoleID == "" {
 		event.Respond("roles.role.role-not-found-on-server")
 		return
@@ -62,18 +62,18 @@ func (p *Plugin) createAutoRole(event *events.Event) {
 		return
 	}
 
-	event.Respond("roles.autorole.creation",
+	event.Respond("autorole.creation",
 		"roleName", serverRole.Name,
 	)
 }
 
 func (p *Plugin) deleteAutoRole(event *events.Event) {
-	if len(event.Fields()) < 4 {
+	if len(event.Fields()) < 3 {
 		event.Respond("common.invalid-params")
 		return
 	}
 
-	serverRole, err := p.getServerRoleByNameOrID(event.Fields()[3], event.GuildID)
+	serverRole, err := p.getServerRoleByNameOrID(event.Fields()[2], event.GuildID)
 	if err != nil {
 		event.Respond("roles.role.role-not-found-on-server")
 		return
@@ -81,7 +81,7 @@ func (p *Plugin) deleteAutoRole(event *events.Event) {
 
 	autoRole, err := p.getAutoRolesByServerRoleID(serverRole.ID, event.GuildID)
 	if err != nil {
-		event.Respond("roles.autorole.not-found")
+		event.Respond("autorole.not-found")
 		return
 	}
 
@@ -94,13 +94,13 @@ func (p *Plugin) deleteAutoRole(event *events.Event) {
 		return
 	}
 
-	event.Respond("roles.autorole.deleted",
+	event.Respond("autorole.deleted",
 		"roleName", serverRole.Name,
 	)
 }
 
 func (p *Plugin) applyAutoRole(event *events.Event) {
-	if len(event.Fields()) < 3 {
+	if len(event.Fields()) < 2 {
 		event.Respond("common.invalid-params")
 		return
 	}
@@ -113,7 +113,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 
 	userIDs, err := event.State().GuildMembers(event.GuildID)
 	if err != nil {
-		event.Respond("roles.autorole.guild-members-not-found")
+		event.Respond("autorole.guild-members-not-found")
 		return
 	}
 
@@ -138,12 +138,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 
 			// check if user has been in the server for less time than the delay
 			if delay > 0 {
-				mem, err := event.State().Member(event.GuildID, userID)
-				if err != nil {
-					continue
-				}
-
-				join, err := mem.JoinedAt.Parse()
+				join, err := member.JoinedAt.Parse()
 				if err != nil {
 					continue
 				}
@@ -153,8 +148,12 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 				}
 			}
 
+			fmt.Println("-------", aRole.ServerRoleID)
 			hasRole := false
+			fmt.Println("name: ", member.User.Username)
 			for _, userRoleID := range member.Roles {
+				fmt.Println("user role id - ", userRoleID)
+
 				if userRoleID == aRole.ServerRoleID {
 					hasRole = true
 					break
@@ -162,19 +161,21 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 			}
 
 			if !hasRole {
-				event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
+				err := event.Discord().Client.GuildMemberRoleAdd(event.GuildID, userID, aRole.ServerRoleID)
+				if err != nil {
+					event.ExceptSilent(err)
+				}
 			}
 		}
-
 	}
 
-	event.Respond("roles.autorole.applied")
+	event.Respond("autorole.applied")
 }
 
 func (p *Plugin) listAutoRoles(event *events.Event) {
 	autoRoles, err := p.getAutoRoles(event.GuildID)
 	if err != nil || len(autoRoles) == 0 {
-		event.Respond("roles.autorole.none-found")
+		event.Respond("autorole.none-found")
 		return
 	}
 
