@@ -29,6 +29,7 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	p.logger = params.Logger
 	p.db = params.DB
 	p.state = params.State
+	p.guildRoleChannels = make(map[string][]string)
 
 	err := p.db.AutoMigrate(
 		Category{},
