@@ -2,6 +2,7 @@ module gitlab.com/Cacophony/Processor
 
 require (
 	github.com/Jeffail/gabs v1.4.0
+	github.com/Krognol/go-wolfram v0.0.0-20180610151123-5b91101b92a8
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/Seklfreak/geverse v0.0.0-20190817092859-48c631630586
 	github.com/Seklfreak/ginside v0.0.0-20191026115949-9c193065876c

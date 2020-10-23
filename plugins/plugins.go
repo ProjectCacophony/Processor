@@ -15,6 +15,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/vlive"
 	"gitlab.com/Cacophony/Processor/plugins/weather"
 	"gitlab.com/Cacophony/Processor/plugins/weverse"
+	"gitlab.com/Cacophony/Processor/plugins/wolfram"
 	"gitlab.com/Cacophony/go-kit/localization"
 
 	"github.com/go-redis/redis"
@@ -97,6 +98,7 @@ var (
 		&tiktok.Plugin{},
 		&vlive.Plugin{},
 		&autoroles.Plugin{},
+		&wolfram.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
