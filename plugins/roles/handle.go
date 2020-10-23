@@ -211,6 +211,15 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 		case "guide":
 			event.Respond("roles.guide")
 			return true
+		}
+	}
+	if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
+		event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
+		return true
+	}
+
+	if len(event.Fields()) > 1 {
+		switch event.Fields()[1] {
 		case "show", "hide":
 			p.toggleCategoryVisibility(event)
 			return true
@@ -231,11 +240,6 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 				return true
 			}
 
-			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
-				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
-				return true
-			}
-
 			switch event.Fields()[2] {
 			case "category":
 
@@ -247,11 +251,6 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 			}
 		case "edit", "update":
 			if len(event.Fields()) < 3 {
-				return true
-			}
-
-			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
-				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
 				return true
 			}
 
@@ -268,11 +267,6 @@ func (p *Plugin) handleAsCommand(event *events.Event) bool {
 
 		case "delete", "remove":
 			if len(event.Fields()) < 3 {
-				return true
-			}
-
-			if !event.HasOr(permissions.DiscordAdministrator, permissions.DiscordManageRoles) {
-				event.Respond("common.missing-role", "roleName", permissions.DiscordManageRoles.Name())
 				return true
 			}
 
