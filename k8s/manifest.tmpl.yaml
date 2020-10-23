@@ -28,6 +28,7 @@ stringData:
   googleMapsKey: "{{GOOGLE_MAPS_KEY}}"
   darkSkyKey: "{{DARK_SKY_KEY}}"
   honyecombAPIKey: "{{HONEYCOMB_API_KEY}}"
+  wolframAPPID: "{{WOLFRAM_APP_ID}}"
 
 
 ---
@@ -206,6 +207,11 @@ spec:
               secretKeyRef:
                 name: processor-secret
                 key: honyecombAPIKey
+          - name: WOLFRAM_APP_ID
+            valueFrom:
+              secretKeyRef:
+                name: processor-secret
+                key: wolframAPPID
       volumes:
         - name: google-cloud
           secret:
