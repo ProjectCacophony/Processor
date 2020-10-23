@@ -1,4 +1,4 @@
-"roles.help.description" = "Set up many different roles and allow your users to add or remove them on their own."
+"roles.help.description" = "Set up many different roles and allow your users to add or remove them on their own. View the guide with `{{ .prefix }}roles guide`"
 
 # message
 "roles.guide" = "__**Roles Guide**__\n\
