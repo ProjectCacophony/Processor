@@ -153,24 +153,51 @@ func (i *Item) Summary(state *state.State, highlightID string) string {
 			}
 		}
 
-		summary += " "
+		summary += " By "
 		if author.ID == highlightID {
 			summary += "**"
 		}
-		summary += "By " + author.String() + " #" + author.ID
+		summary += discord.EscapeDiscordStrict(author.String()) + " #" + author.ID
 		if author.ID == highlightID {
 			summary += "**"
 		}
 	}
 
 	if i.TargetValue != "" {
-		summary += " "
+		summary += " On "
 		if i.TargetValue == highlightID {
 			summary += "**"
 		}
-		summary += "On " + i.TargetType.StringWithoutMention(state, i.GuildID, i.TargetValue)
+		summary += i.TargetType.StringWithoutMention(state, i.GuildID, i.TargetValue)
 		if i.TargetValue == highlightID {
 			summary += "**"
+		}
+	}
+
+	for _, option := range i.Options {
+		switch option.Key {
+		case "message code":
+			if option.NewValue != "" && i.ActionType == ActionTypeModDM {
+				summary += "\nMessage: `" + discord.EscapeDiscordStrict(option.NewValue) + "`"
+			}
+		case "reason":
+			if option.NewValue != "" {
+				optionAuthor, err := state.User(option.AuthorID)
+				if err != nil {
+					optionAuthor = &discordgo.User{
+						Username: "N/A",
+					}
+				}
+
+				summary += "\nReason: `" + discord.EscapeDiscordStrict(option.NewValue) + "` by "
+				if optionAuthor.ID == highlightID {
+					summary += "**"
+				}
+				summary += discord.EscapeDiscordStrict(optionAuthor.String()) + " #" + optionAuthor.ID
+				if optionAuthor.ID == highlightID {
+					summary += "**"
+				}
+			}
 		}
 	}
 

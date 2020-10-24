@@ -31,7 +31,7 @@ You can enable it using `{{.prefix}}eventlog enable`\
 
 # handleHistory
 "eventlog.history.content" = "\
-{{if le (len .items) 0}}No items found for {{.targetUser.String}}.{{else}}\
+{{if le (len .items) 0}}No items found for {{.user.String | Escape}}.{{else}}\
 {{range $item := .items}}\
 {{TimeFormatShort $item.CreatedAt $.timezone}}:\n\
 {{$item.Summary}}\n\
