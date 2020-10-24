@@ -1,10 +1,21 @@
 package lastfm
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/config"
 )
 
+const configKey = "cacophony:lastfm:username"
+
 func getLastFmUsername(db *gorm.DB, userID string) string {
+	lastFMUsername, _ := config.UserGetString(db, userID, configKey)
+	if lastFMUsername != "" {
+		return lastFMUsername
+	}
+
+	// fallback to legacy storage
 	var user User
 	db.Where(&User{UserID: userID}).First(&user)
 
@@ -12,16 +23,9 @@ func getLastFmUsername(db *gorm.DB, userID string) string {
 }
 
 func setLastFmUsername(db *gorm.DB, userID, lastFmUsername string) error {
-	var user User
-
-	err := db.Where(&User{
-		UserID: userID,
-	}).Assign(&User{
-		LastFMUsername: lastFmUsername,
-	}).FirstOrCreate(&user).Error
-	if err != nil {
-		return err
+	if userID == "" {
+		return errors.New("user ID cannot be empty")
 	}
 
-	return nil
+	return config.UserSetString(db, userID, configKey, lastFmUsername)
 }
