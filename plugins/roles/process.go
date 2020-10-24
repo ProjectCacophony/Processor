@@ -321,9 +321,8 @@ func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, ro
 func hasPrefix(s string, prefix string, caseSensitive bool) bool {
 	if caseSensitive {
 		return strings.HasPrefix(s, prefix)
-	} else {
-		return strings.HasPrefix(strings.ToLower(s), strings.ToLower(prefix))
 	}
+	return strings.HasPrefix(strings.ToLower(s), strings.ToLower(prefix))
 }
 
 func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) bool {
