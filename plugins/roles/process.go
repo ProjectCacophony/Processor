@@ -165,7 +165,7 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		}
 	}
 
-	// try case sensitive matching first, then try case insensitive
+	// Try case sensitive matching first, then try case insensitive
 	requests, err := p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles, true)
 	if err != nil {
 		requests, err = p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles, false)
