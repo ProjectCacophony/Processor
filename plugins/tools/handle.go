@@ -149,6 +149,23 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer, permissions.DiscordManageEmojis},
 			},
+			{
+				Name:            "tools.help.time.name",
+				Description:     "tools.help.time.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "time", Type: common.Flag},
+				},
+			},
+			{
+				Name:            "tools.help.timezone.name",
+				Description:     "tools.help.timezone.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "timezone", Type: common.Flag},
+					{Name: "your timezone", Type: common.Text, Example: "Europe/Berlin"},
+				},
+			},
 		},
 	}
 }
@@ -198,6 +215,12 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.Require(func() {
 			p.handleDownloadEmoji(event)
 		}, permissions.DiscordManageServer, permissions.DiscordManageEmojis, permissions.Not(permissions.DiscordChannelDM))
+	case "time":
+		p.handleTime(event)
+		return true
+	case "timezone":
+		p.handleTimezone(event)
+		return true
 	}
 
 	return false

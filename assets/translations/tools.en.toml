@@ -18,6 +18,10 @@
 "tools.help.dice.description" = "Casts a given dice. Eg 1d6, or 1d%\\*10"
 "tools.help.download-emoji.name" = "Download Emoji"
 "tools.help.download-emoji.description" = "Sends you a zip with all emoji of the current server"
+"tools.help.time.name" = "Display the time"
+"tools.help.time.description" = "Displays various times around the world, including yours if you have configured your timezone."
+"tools.help.timezone.name" = "Set your timezone"
+"tools.help.timezone.description" = "Configure your timezone. Messages containing the time will be adjusted to your timezone. Other users may see your timezone. List of timezones: <https://byul.ro/timezones> (Column \"TZ database name\")."
 
 # handleShorten
 "tools.shorten.too-few" = "Please tell me a link to shorten :thinking:"
@@ -74,3 +78,16 @@
 # handleGet
 "tools.get.too-few" = "Please send me a message link."
 "tools.get.result" = "{{.code | Escape | QuoteText}}"
+
+# handleTime
+"tools.time.content" = "\
+**Current Time**\n\
+{{TimeFormatShort .now $.timezone}} Your time (change with `{{$.prefix}}timezone`)\n\
+{{TimeFormatShort .now .utc}} UTC\n\
+{{TimeFormatShort .now .kst}} KST\
+"
+
+# handleTimezone
+"tools.timezone.too-few" = "Please tell me your timezone. List of timezones: <https://byul.ro/timezones> (Column \"TZ database name\")."
+"tools.timezone.not-found" = "The timezone you sent me is not valid. List of timezones: <https://byul.ro/timezones> (Column \"TZ database name\")."
+"tools.timezone.done" = "I saved your new timezone!"

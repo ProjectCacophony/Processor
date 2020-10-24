@@ -423,8 +423,8 @@ github.com/vmihailenco/tagparser v0.1.1 h1:quXMXlA39OCbd2wAdTsGDlK9RkOk6Wuw+x37w
 github.com/vmihailenco/tagparser v0.1.1/go.mod h1:OeAg3pn3UbLjkWt+rN9oFYB6u/cQgqMEUPoW2WPyhdI=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
-gitlab.com/Cacophony/go-kit v0.0.0-20201024201828-f1d5a54749e3 h1:cycNLT1c3lKL5dhnSGc0vpRpI3qKQqD3Spw3FE0ggOA=
-gitlab.com/Cacophony/go-kit v0.0.0-20201024201828-f1d5a54749e3/go.mod h1:2TdxKWNljn4mn+q/lxaCSltamjc7greZasuE94ln8gM=
+gitlab.com/Cacophony/go-kit v0.0.0-20201024211852-cd914601a583 h1:7kscb5qCvDARoGnRd3dVqye33fWMLU9gLKwI4aKHF7w=
+gitlab.com/Cacophony/go-kit v0.0.0-20201024211852-cd914601a583/go.mod h1:2TdxKWNljn4mn+q/lxaCSltamjc7greZasuE94ln8gM=
 go.opencensus.io v0.15.0/go.mod h1:UffZAU+4sDEINUGP/B7UfBBkq4fqLu9zXAX7ke6CHW0=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.21.0 h1:mU6zScU4U1YAFPHEHYk+3JC4SY7JxgkqS10ZOSyksNg=
