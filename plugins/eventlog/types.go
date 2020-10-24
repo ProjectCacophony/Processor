@@ -171,11 +171,12 @@ func (t entityType) String(state *state.State, guildID, value string) string {
 			}
 
 			if permission.Allow > 0 {
-				text += "Allow " + permissionsText(permission.Allow)
+				text += " Allow: " + permissionsText(permission.Allow) + " "
 			}
 			if permission.Deny > 0 {
-				text += "Deny " + permissionsText(permission.Deny)
+				text += " Deny: " + permissionsText(permission.Deny) + " "
 			}
+			text = strings.TrimRight(text, " ")
 
 			text += "; "
 		}
