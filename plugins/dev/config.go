@@ -20,7 +20,7 @@ func (p *Plugin) handleConfig(event *events.Event) {
 	case "guild":
 		value, err = config.GuildGetBytes(event.DB(), event.GuildID, event.Fields()[3])
 	case "user":
-		value, err = config.UserGetBytes(event.DB(), event.GuildID, event.Fields()[3])
+		value, err = config.UserGetBytes(event.DB(), event.UserID, event.Fields()[3])
 	default:
 		event.Except(events.NewUserError("config type not found"))
 		return
