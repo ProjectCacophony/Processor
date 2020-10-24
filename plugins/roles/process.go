@@ -165,7 +165,11 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 		}
 	}
 
-	requests, err := p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles)
+	// try case sensitive matching first, then try case insensitive
+	requests, err := p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles, true)
+	if err != nil {
+		requests, err = p.parseRoleRequestMessage(event, strings.TrimSpace(event.MessageCreate.Content), allRoles, false)
+	}
 	if err != nil {
 		event.ExceptSilent(err)
 		msgs, err := event.Send(event.ChannelID, err.Error())
@@ -251,7 +255,7 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 	return false
 }
 
-func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, roles []*Role) (map[*Role]rune, error) {
+func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, roles []*Role, caseSensitive bool) (map[*Role]rune, error) {
 	requestsMap := make(map[*Role]rune)
 	ignoreChars := 0
 	skipSpace := false
@@ -279,7 +283,7 @@ func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, ro
 		RoleLoop:
 			for _, role := range roles {
 				roleName := role.Name(p.state)
-				if len(roleName) != 0 && strings.HasPrefix(remainingMsg, roleName) {
+				if len(roleName) != 0 && hasPrefix(remainingMsg, roleName, caseSensitive) {
 					ignoreChars = len(roleName)
 					requestsMap[role] = str
 					foundRole = true
@@ -288,7 +292,7 @@ func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, ro
 				}
 
 				for _, alias := range role.Aliases {
-					if len(alias) != 0 && strings.HasPrefix(remainingMsg, alias) {
+					if len(alias) != 0 && hasPrefix(remainingMsg, alias, caseSensitive) {
 						ignoreChars = len(alias)
 						requestsMap[role] = str
 						foundRole = true
@@ -312,6 +316,14 @@ func (p *Plugin) parseRoleRequestMessage(event *events.Event, userMsg string, ro
 	}
 
 	return requestsMap, nil
+}
+
+func hasPrefix(s string, prefix string, caseSensitive bool) bool {
+	if caseSensitive {
+		return strings.HasPrefix(s, prefix)
+	} else {
+		return strings.HasPrefix(strings.ToLower(s), strings.ToLower(prefix))
+	}
 }
 
 func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) bool {
