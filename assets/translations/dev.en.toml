@@ -42,3 +42,9 @@
 
 # handleConfig
 "dev.config.content" = "Value\n```\n\"{{.value}}\"\n```"
+
+# handleRuntime
+"dev.runtime.content" = "\
+Go Version `{{.goVersion}}`\n\
+Goroutines `{{HumanizeNumber .goroutines}}`\n\
+"

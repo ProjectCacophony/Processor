@@ -125,6 +125,12 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "config key", Type: common.Text},
 				},
 			},
+			{
+				Name: "Runtime info",
+				Params: []common.CommandParam{
+					{Name: "runtime", Type: common.Flag},
+				},
+			},
 		},
 	}
 }
@@ -198,6 +204,11 @@ func (p *Plugin) handleAsCommand(event *events.Event) {
 	case "config":
 
 		p.handleConfig(event)
+		return
+
+	case "runtime":
+
+		p.handleRuntime(event)
 		return
 	}
 
