@@ -485,6 +485,26 @@ func optionsForEmoji(old, new *discordgo.Emoji) []ItemOption {
 		options = append(options, option)
 	}
 
+	option = ItemOption{
+		Key:  "image",
+		Type: EntityTypeImageURL,
+	}
+	if old != nil {
+		if !old.Animated {
+			option.PreviousValue = discordgo.EndpointEmoji(old.ID)
+		} else {
+			option.PreviousValue = discordgo.EndpointEmojiAnimated(old.ID)
+		}
+	}
+	if new != nil {
+		if !new.Animated {
+			option.NewValue = discordgo.EndpointEmoji(new.ID)
+		} else {
+			option.NewValue = discordgo.EndpointEmojiAnimated(new.ID)
+		}
+	}
+	options = append(options, option)
+
 	return filterEqualOptions(options)
 }
 
