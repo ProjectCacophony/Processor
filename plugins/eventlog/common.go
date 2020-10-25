@@ -1,9 +1,13 @@
 package eventlog
 
 import (
+	"encoding/base64"
+	"io/ioutil"
+	"net/http"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -136,4 +140,19 @@ func stringSliceContains(a string, b []string) bool {
 	}
 
 	return false
+}
+
+func discordImageBase64(httpClient *http.Client, imageURL string) (string, error) {
+	resp, err := httpClient.Get(imageURL)
+	if err != nil {
+		return "", errors.Wrap(err, "failure downloading image")
+	}
+	defer resp.Body.Close()
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.Wrap(err, "failure reading image")
+	}
+
+	return "data:" + http.DetectContentType(respBody) + ";base64," + base64.StdEncoding.EncodeToString(respBody), nil
 }

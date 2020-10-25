@@ -116,11 +116,32 @@ func (i *Item) Revert(event *events.Event) error {
 
 				guildParams.AfkTimeout = value
 				edited = true
+			case "icon":
+				image, err := discordImageBase64(event.HTTPClient(), option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				guildParams.Icon = image
+				edited = true
+			case "splash":
+				image, err := discordImageBase64(event.HTTPClient(), option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				guildParams.Splash = image
+				edited = true
+			case "banner":
+				image, err := discordImageBase64(event.HTTPClient(), option.PreviousValue)
+				if err != nil {
+					return err
+				}
+
+				guildParams.Banner = image
+				edited = true
 			}
 		}
-
-		// TODO: revert icon
-		// TODO: revert splash
 
 		if !edited {
 			return events.NewUserError("no revertable value found")
