@@ -3,13 +3,25 @@ package eventlog
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/getsentry/raven-go"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
 )
+
+func isEnabled(event *events.Event) bool {
+	enabled, err := config.GuildGetBool(event.DB(), event.GuildID, eventlogEnableKey)
+	if err != nil && !strings.Contains(err.Error(), "record not found") {
+		event.ExceptSilent(err)
+		return false
+	}
+
+	return enabled
+}
 
 func CreateItem(db *gorm.DB, publisher *events.Publisher, item *Item) error {
 	if item == nil {

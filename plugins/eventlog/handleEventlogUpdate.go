@@ -9,6 +9,10 @@ import (
 )
 
 func (p *Plugin) handleEventlogUpdate(event *events.Event) {
+	if !isEnabled(event) {
+		return
+	}
+
 	item, err := GetItem(event.DB(), event.EventlogUpdate.ItemID)
 	if err != nil {
 		event.ExceptSilent(err)

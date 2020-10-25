@@ -6,6 +6,10 @@ import (
 )
 
 func (p *Plugin) handleModEvent(event *events.Event) {
+	if !isEnabled(event) {
+		return
+	}
+
 	var items []*Item
 
 	switch event.Type {
