@@ -63,12 +63,6 @@
 "And… :game_die: **{{.result}}**!"
 ]
 
-# handleModDM
-"tools.help.moddm.name" = "Send a Moderator DM"
-"tools.help.moddm.description" = "Sends a Moderator DM to the given user. The message will be recorded in the eventlog. Your name will not be revealed, but the name of the server."
-"tools.help.moddm.dm-prefix" = "📬 A moderator from the server **{{.guild.Name}}** sent you a message:"
-"tools.help.moddm.success" = "I sent the message to {{.user.String}}."
-
 # handleDownloadEmoji
 "tools.download-emoji.none-emoji" = "No emoji to export found."
 "tools.download-emoji.preparing" = "Your emoji zip is being prepared… :loading:"

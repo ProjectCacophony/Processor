@@ -130,17 +130,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 			},
 			{
-				Name:            "tools.help.moddm.name",
-				Description:     "tools.help.moddm.description",
-				SkipRootCommand: true,
-				Params: []common.CommandParam{
-					{Name: "mod-dm", Type: common.Flag},
-					{Name: "User or User ID", Type: common.User},
-					{Name: "Message Code", Type: common.Text},
-				},
-				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
-			},
-			{
 				Name:            "tools.help.download-emoji.name",
 				Description:     "tools.help.download-emoji.description",
 				SkipRootCommand: true,
@@ -205,11 +194,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.Require(func() {
 			p.handleEdit(event)
 		}, permissions.DiscordManageChannels, permissions.DiscordManageMessages)
-		return true
-	case "mod-dm", "moddm", "modm":
-		event.Require(func() {
-			p.handleModDM(event)
-		}, permissions.DiscordManageServer)
 		return true
 	case "emoji-download", "download-emoji", "emojis-download", "download-emojis":
 		event.Require(func() {

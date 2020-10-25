@@ -1,4 +1,4 @@
-package tools
+package mod
 
 import (
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
@@ -30,7 +30,7 @@ func (p *Plugin) handleModDM(event *events.Event) {
 		return
 	}
 
-	fullMessage := event.Translate("tools.help.moddm.dm-prefix", "guild", targetGuild) + "\n" + message
+	fullMessage := event.Translate("mod.help.moddm.dm-prefix", "guild", targetGuild) + "\n" + message
 
 	_, err = event.SendComplexDM(targetUser.ID, discord.MessageCodeToMessage(fullMessage))
 	if err != nil {
@@ -38,7 +38,7 @@ func (p *Plugin) handleModDM(event *events.Event) {
 		return
 	}
 
-	event.Respond("tools.help.moddm.success", "user", targetUser)
+	event.Respond("mod.help.moddm.success", "user", targetUser)
 
 	err = eventlog.CreateItem(event.DB(), event.Publisher(), &eventlog.Item{
 		GuildID:     targetGuild.ID,
