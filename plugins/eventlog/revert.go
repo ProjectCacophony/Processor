@@ -481,6 +481,44 @@ func (i *Item) Revert(event *events.Event) error {
 		if err != nil {
 			return err
 		}
+	case ActionTypeEmojiDelete:
+		if !permissions.DiscordManageEmojis.Match(
+			event.State(),
+			event.DB(),
+			event.BotUserID,
+			event.ChannelID,
+			false,
+			false,
+		) {
+			return events.NewUserError("I have insufficient permissions")
+		}
+
+		var emojiName, emojiImage string
+		var emojiRoles []string
+		for _, option := range i.Options {
+			switch option.Key {
+			case "name":
+				emojiName = option.NewValue
+			case "roles":
+				emojiRoles = strings.Split(option.NewValue, ",")
+			case "image":
+				image, err := discordImageBase64(event.HTTPClient(), option.NewValue)
+				if err != nil {
+					return err
+				}
+
+				emojiImage = image
+			}
+		}
+
+		if emojiName == "" && emojiImage == "" {
+			return events.NewUserError("no revertable value found")
+		}
+
+		_, err = event.Discord().Client.GuildEmojiCreate(i.GuildID, emojiName, emojiImage, emojiRoles)
+		if err != nil {
+			return err
+		}
 	default:
 		return events.NewUserError("action not revertable")
 	}
