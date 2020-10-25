@@ -15,6 +15,7 @@ import (
 // Actions
 const (
 	ActionTypeModDM         actionType = "cacophony_mod_dm"
+	ActionTypeModNote       actionType = "cacophony_mod_note"
 	ActionTypeDiscordBan    actionType = "discord_ban"
 	ActionTypeDiscordUnban  actionType = "discord_unban"
 	ActionTypeDiscordJoin   actionType = "discord_join"

@@ -177,7 +177,7 @@ func (i *Item) Summary(state *state.State, highlightID string) string {
 	for _, option := range i.Options {
 		switch option.Key {
 		case "message code":
-			if option.NewValue != "" && i.ActionType == ActionTypeModDM {
+			if option.NewValue != "" && (i.ActionType == ActionTypeModDM || i.ActionType == ActionTypeModNote) {
 				summary += "\nMessage: `" + discord.EscapeDiscordStrict(option.NewValue) + "`"
 			}
 		case "reason":

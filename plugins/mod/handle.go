@@ -47,6 +47,17 @@ func (p *Plugin) Help() *common.PluginHelp {
 				},
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
 			},
+			{
+				Name:            "mod.help.modnote.name",
+				Description:     "mod.help.modnote.description",
+				SkipRootCommand: true,
+				Params: []common.CommandParam{
+					{Name: "mod-note", Type: common.Flag},
+					{Name: "User or User ID", Type: common.User},
+					{Name: "Message Code", Type: common.Text},
+				},
+				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageServer},
+			},
 		},
 	}
 }
@@ -63,6 +74,11 @@ func (p *Plugin) Action(event *events.Event) bool {
 	case "mod-dm", "moddm", "modm":
 		event.Require(func() {
 			p.handleModDM(event)
+		}, permissions.DiscordManageServer)
+		return true
+	case "mod-note", "modnote":
+		event.Require(func() {
+			p.handleModNote(event)
 		}, permissions.DiscordManageServer)
 		return true
 	}
