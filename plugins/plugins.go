@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi"
 	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/greeter"
+	"gitlab.com/Cacophony/Processor/plugins/metrics"
 	"gitlab.com/Cacophony/Processor/plugins/mod"
 	"gitlab.com/Cacophony/Processor/plugins/rpg"
 	"gitlab.com/Cacophony/Processor/plugins/stats"
@@ -101,6 +102,7 @@ var (
 		&autoroles.Plugin{},
 		&wolfram.Plugin{},
 		&mod.Plugin{},
+		&metrics.Plugin{},
 	}
 
 	LocalizationsList []interfaces.Localization
