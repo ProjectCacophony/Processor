@@ -41,7 +41,10 @@ func (p *Plugin) Passthrough() bool {
 }
 
 func (p *Plugin) Help() *common.PluginHelp {
-	return nil
+	return &common.PluginHelp{
+		Names: p.Names(),
+		Hide:  true,
+	}
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
