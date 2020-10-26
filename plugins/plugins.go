@@ -125,10 +125,15 @@ func StartPlugins(
 	// load localizations
 	loadLocalizations(logger)
 
-	// get help list from all pluguins for help module
+	// get help list from all plugins for help module
 	pluginHelpList := make([]*common.PluginHelp, len(PluginList))
 	for i, plugin := range PluginList {
 		pluginHelpList[i] = plugin.Help()
+	}
+
+	// log plugins
+	for _, plugin := range PluginList {
+		logger.Info("found plugin", zap.String("name", plugin.Names()[0]), zap.Int("priority", plugin.Priority()))
 	}
 
 	var err error
