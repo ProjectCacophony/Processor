@@ -3,6 +3,7 @@ package whitelist
 import (
 	"github.com/go-redis/redis"
 	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/localization"
 
 	"gitlab.com/Cacophony/go-kit/permissions"
 
@@ -42,6 +43,9 @@ func (p *Plugin) Start(params common.StartParameters) error {
 	if err != nil {
 		return err
 	}
+
+	// hardcode specific pretty invite URLs
+	localization.MapURL(inviteURL("546415428570972160"), "https://nana.dev/invite")
 
 	return nil
 }
