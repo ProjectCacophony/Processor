@@ -64,7 +64,8 @@ func (p *Plugin) createRole(event *events.Event) {
 
 	var emoji string
 	if len(event.Fields()) >= 8 {
-		emojiParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(event.Fields()[7])
+
+		emojiParts := regexp.EmojiRegex.FindStringSubmatch(event.Fields()[7])
 		if emojiParts == nil {
 			event.Respond("roles.role.error-parsing-role-emoji")
 			return
@@ -226,7 +227,7 @@ func (p *Plugin) updateRole(event *events.Event) {
 
 	var emoji string
 	if len(event.Fields()) >= 8 {
-		emojiParts := regexp.DiscordEmojiRegexp.FindStringSubmatch(event.Fields()[7])
+		emojiParts := regexp.EmojiRegex.FindStringSubmatch(event.Fields()[7])
 		if emojiParts == nil {
 			event.Respond("roles.role.error-parsing-role-emoji")
 			return

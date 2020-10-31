@@ -25,7 +25,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1
 	github.com/pkg/errors v0.9.1
 	github.com/shawntoffel/darksky v1.3.1
-	gitlab.com/Cacophony/go-kit v0.0.0-20201031184124-a95f88af98d2
+	gitlab.com/Cacophony/go-kit v0.0.0-20201031192550-5e1d1bfefd76
 	go.opentelemetry.io/contrib/propagators v0.12.0
 	go.opentelemetry.io/otel v0.12.0
 	go.opentelemetry.io/otel/sdk v0.12.0

@@ -53,7 +53,7 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 			continue
 		}
 
-		if snowflake == emoji.GetWithout(role.Emoji) {
+		if snowflake == emoji.GetWithout(role.Emoji) || snowflake == fmt.Sprintf(":%s:", role.Emoji) {
 			selectedRole = role
 		}
 	}
