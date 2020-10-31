@@ -1,5 +1,7 @@
 module gitlab.com/Cacophony/Processor
 
+go 1.15
+
 require (
 	github.com/Jeffail/gabs v1.4.0
 	github.com/Krognol/go-wolfram v0.0.0-20180610151123-5b91101b92a8
@@ -34,4 +36,3 @@ require (
 	mvdan.cc/xurls/v2 v2.0.0
 )
 
-go 1.13
