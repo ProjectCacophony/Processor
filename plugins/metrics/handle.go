@@ -53,5 +53,10 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.ExceptSilent(err)
 	}
 
+	if event.Type == events.MessageCreateType {
+		err := totalMessagesReceived.Inc(event.DB())
+		event.ExceptSilent(err)
+	}
+
 	return false
 }
