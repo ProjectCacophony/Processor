@@ -4,7 +4,15 @@
 
 # handleCmdMetrics
 "metrics.content" = "\
+```\n\
+{{/* Calculate padding length from longest key+buffer */}}\
+{{$paddingLength := 0}}\
 {{range .metrics}}\
-`{{.Key}}`: `{{HumanizeNumber (.Get $.db)}}`\n\
+{{if (gt (len .Key) $paddingLength)}}{{$paddingLength = (len .Key)}}{{end}}\
 {{end}}\
+{{$paddingLength = (int (add $paddingLength 1))}}\
+{{range .metrics}}\
+{{Pad .Key $paddingLength}}: {{HumanizeNumber (.Get $.db)}}\n\
+{{end}}\
+```\n\
 "
