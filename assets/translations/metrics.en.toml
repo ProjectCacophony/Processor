@@ -1,0 +1,10 @@
+# help
+"metrics.help.description" = "Module which collects various anonymous metrics."
+"metrics.help.metrics.name" = "Display metrics"
+
+# handleCmdMetrics
+"metrics.content" = "\
+{{range .metrics}}\
+`{{.Key}}`: `{{HumanizeNumber (.Get $.db)}}`\n\
+{{end}}\
+"

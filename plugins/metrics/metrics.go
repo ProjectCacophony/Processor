@@ -5,7 +5,9 @@ import (
 )
 
 type metric interface {
+	Key() string
 	Register(*gorm.DB) error
+	Get(*gorm.DB) (int, error)
 }
 
 var (

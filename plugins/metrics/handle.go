@@ -3,6 +3,8 @@ package metrics
 import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 type Plugin struct {
@@ -42,8 +44,14 @@ func (p *Plugin) Passthrough() bool {
 
 func (p *Plugin) Help() *common.PluginHelp {
 	return &common.PluginHelp{
-		Names: p.Names(),
-		Hide:  true,
+		Names:               p.Names(),
+		Description:         "metrics.help.description",
+		PermissionsRequired: []interfaces.Permission{permissions.BotAdmin},
+		Commands: []common.Command{
+			{
+				Name: "metrics.help.metrics.name",
+			},
+		},
 	}
 }
 
@@ -58,5 +66,16 @@ func (p *Plugin) Action(event *events.Event) bool {
 		event.ExceptSilent(err)
 	}
 
-	return false
+	if !event.Command() || event.Fields()[0] != "metrics" {
+		return false
+	}
+
+	event.Require(func() {
+		p.handleAsCommand(event)
+	}, permissions.BotAdmin)
+	return true
+}
+
+func (p *Plugin) handleAsCommand(event *events.Event) {
+	p.handleCmdMetrics(event)
 }
