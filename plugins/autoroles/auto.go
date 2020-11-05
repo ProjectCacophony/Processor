@@ -148,11 +148,8 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 				}
 			}
 
-			fmt.Println("-------", aRole.ServerRoleID)
 			hasRole := false
-			fmt.Println("name: ", member.User.Username)
 			for _, userRoleID := range member.Roles {
-				fmt.Println("user role id - ", userRoleID)
 
 				if userRoleID == aRole.ServerRoleID {
 					hasRole = true
