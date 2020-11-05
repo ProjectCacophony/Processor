@@ -190,7 +190,7 @@ func (p *Plugin) deleteCategory(event *events.Event) {
 		return
 	}
 
-	err = p.db.Delete(category.Roles).Delete(category).Error
+	err = p.db.Delete(category).Error
 	if err != nil {
 		event.Except(err)
 		return
