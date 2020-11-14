@@ -39,6 +39,7 @@ func (p *Plugin) endpointCommands() func(w http.ResponseWriter, r *http.Request)
 					p.localizations,
 					pluginHelp.Commands[i].Description,
 				)
+				pluginHelp.Commands[i].PermissionsString = pluginHelp.Commands[i].PermissionsRequired.String()
 			}
 
 			for i := range pluginHelp.Reactions {
@@ -46,8 +47,10 @@ func (p *Plugin) endpointCommands() func(w http.ResponseWriter, r *http.Request)
 					p.localizations,
 					pluginHelp.Reactions[i].Description,
 				)
+				pluginHelp.Reactions[i].PermissionsString = pluginHelp.Reactions[i].PermissionsRequired.String()
 			}
 
+			pluginHelp.PermissionsString = pluginHelp.PermissionsRequired.String()
 			responseHelpList = append(responseHelpList, pluginHelp)
 		}
 

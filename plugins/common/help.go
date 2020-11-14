@@ -28,6 +28,7 @@ type PluginHelp struct {
 	Reactions           []Reaction
 	Hide                bool
 	PermissionsRequired Permissions
+	PermissionsString   string
 }
 
 type Reaction struct {
@@ -35,6 +36,7 @@ type Reaction struct {
 	EmojiName           string
 	Description         string
 	PermissionsRequired Permissions
+	PermissionsString   string
 }
 
 type Command struct {
@@ -44,6 +46,7 @@ type Command struct {
 	Params              []CommandParam
 	Description         string
 	PermissionsRequired Permissions
+	PermissionsString   string
 }
 
 type CommandParam struct {
