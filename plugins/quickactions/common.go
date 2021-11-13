@@ -6,7 +6,6 @@ import (
 
 // TODO: put into go-kit
 func convertMessageToEmbed(message *discordgo.Message) *discordgo.MessageEmbed {
-
 	embed := &discordgo.MessageEmbed{}
 
 	if message != nil {

@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type ResetBucket struct {
-}
+type ResetBucket struct{}
 
 func (t ResetBucket) Name() string {
 	return "reset_bucket"

@@ -1,13 +1,11 @@
 package filters
 
 import (
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-type True struct {
-}
+type True struct{}
 
 func (f True) Name() string {
 	return "if_true"
@@ -29,8 +27,7 @@ func (f True) Description() string {
 	return "automod.filters.if_true"
 }
 
-type TrueItem struct {
-}
+type TrueItem struct{}
 
 func (f *TrueItem) Match(env *models.Env) bool {
 	return env.Event != nil

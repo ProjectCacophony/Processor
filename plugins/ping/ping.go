@@ -6,7 +6,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/discord"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

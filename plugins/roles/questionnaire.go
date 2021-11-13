@@ -9,7 +9,6 @@ import (
 )
 
 func (p *Plugin) handleConfirmCategoryDelete(event *events.Event) {
-
 	switch event.MessageReactionAdd.Emoji.APIName() {
 	case "✅":
 		messageID, ok := event.QuestionnaireMatch.Payload["messageID"].(string)
@@ -76,7 +75,6 @@ func (p *Plugin) handleConfirmCategoryDelete(event *events.Event) {
 }
 
 func (p *Plugin) handleConfirmCreateRole(event *events.Event) {
-
 	switch event.MessageReactionAdd.Emoji.APIName() {
 	case "✅":
 		messageID, ok := event.QuestionnaireMatch.Payload["messageID"].(string)

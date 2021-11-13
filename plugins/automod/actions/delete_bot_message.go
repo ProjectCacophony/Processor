@@ -1,15 +1,13 @@
 package actions
 
 import (
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type DeleteBotMessage struct {
-}
+type DeleteBotMessage struct{}
 
 func (t DeleteBotMessage) Name() string {
 	return "delete_bot_message"
@@ -31,8 +29,7 @@ func (t DeleteBotMessage) Description() string {
 	return "automod.actions.delete_bot_message"
 }
 
-type DeleteBotMessageItem struct {
-}
+type DeleteBotMessageItem struct{}
 
 func (t *DeleteBotMessageItem) Do(env *models.Env) (bool, error) {
 	// TODO: group messages by channel ID, use bulk delete endpoint

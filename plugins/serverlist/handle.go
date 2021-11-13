@@ -227,7 +227,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 				case "create", "add":
 
 					event.Require(func() {
-
 						p.handleCategoryCreate(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
@@ -251,7 +250,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 				if event.Fields()[2] == "refresh" {
 
 					event.Require(func() {
-
 						p.handleQueueRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
@@ -262,7 +260,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 			}
 
 			event.Require(func() {
-
 				p.handleQueue(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
@@ -273,27 +270,22 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "list":
 
 			if len(event.Fields()) >= 3 {
-
 				switch event.Fields()[2] {
-
 				case "refresh":
 
 					event.Require(func() {
-
 						p.handleListRefresh(event)
 					},
 						permissions.Not(permissions.DiscordChannelDM),
 						p.staffPermissions,
 					)
 					return true
-
 				}
 			}
 
 		case "reject":
 
 			event.Require(func() {
-
 				p.handleQueueReject(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
@@ -314,7 +306,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "log":
 
 			event.Require(func() {
-
 				p.handleLog(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),
@@ -330,7 +321,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		case "censor", "uncensor":
 
 			event.Require(func() {
-
 				p.handleCensor(event)
 			},
 				permissions.Not(permissions.DiscordChannelDM),

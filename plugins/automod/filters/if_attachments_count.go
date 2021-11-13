@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type AttachmentsCount struct {
-}
+type AttachmentsCount struct{}
 
 func (f AttachmentsCount) Name() string {
 	return "if_attachments_count"

@@ -7,9 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	cacheInterval = time.Minute
-)
+var cacheInterval = time.Minute
 
 func (h *Handler) startRulesCaching() error {
 	err := h.cacheRules()

@@ -1,10 +1,9 @@
 package instagram
 
 import (
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 func feedsPerGuildLimit(event *events.Event) int {

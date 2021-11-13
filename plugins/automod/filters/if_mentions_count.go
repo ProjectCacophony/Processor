@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type MentionsCount struct {
-}
+type MentionsCount struct{}
 
 func (f MentionsCount) Name() string {
 	return "if_mentions_count"

@@ -4,10 +4,9 @@ import (
 	"strings"
 	"time"
 
-	"go.uber.org/zap"
-
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
 )
 
 func (p *Plugin) startWhitelistAndBlacklistCaching() error {

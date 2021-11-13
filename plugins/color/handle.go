@@ -3,7 +3,6 @@ package color
 import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
-
 	"go.uber.org/zap"
 )
 
@@ -58,7 +57,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		p.handleColor(event)
 
 		return true
-
 	}
 
 	return false

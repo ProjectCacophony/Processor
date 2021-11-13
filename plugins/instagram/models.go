@@ -3,10 +3,9 @@ package instagram
 import (
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/feed"
-
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
+	"gitlab.com/Cacophony/go-kit/feed"
 )
 
 type Entry struct {

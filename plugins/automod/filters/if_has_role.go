@@ -4,13 +4,11 @@ import (
 	"errors"
 	"strings"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-type Role struct {
-}
+type Role struct{}
 
 func (f Role) Name() string {
 	return "if_has_role"

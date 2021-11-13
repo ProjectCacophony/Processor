@@ -7,8 +7,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type Plugin struct {
-}
+type Plugin struct{}
 
 func (p *Plugin) Names() []string {
 	return []string{"mod"}

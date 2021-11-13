@@ -4,14 +4,12 @@ import (
 	"errors"
 	"strings"
 
-	"go.uber.org/zap"
-
-	"github.com/jinzhu/gorm"
-
 	"github.com/Seklfreak/lastfm-go/lastfm"
+	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.uber.org/zap"
 )
 
 type Plugin struct {

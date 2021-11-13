@@ -5,13 +5,10 @@ import (
 	"time"
 
 	lock "github.com/bsm/redis-lock"
-
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"github.com/bwmarrin/discordgo"
-
 	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"go.uber.org/zap"
 )

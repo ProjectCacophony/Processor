@@ -8,8 +8,7 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
-type RegexUserName struct {
-}
+type RegexUserName struct{}
 
 func (f RegexUserName) Name() string {
 	return "if_user_name_regex"

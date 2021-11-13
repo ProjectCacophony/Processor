@@ -3,16 +3,13 @@ package rss
 import (
 	"strings"
 
-	"github.com/mmcdole/gofeed"
-
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/jinzhu/gorm"
-	"gitlab.com/Cacophony/go-kit/state"
-
+	"github.com/mmcdole/gofeed"
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 
@@ -66,7 +63,8 @@ func (p *Plugin) Help() *common.PluginHelp {
 					{Name: "link", Type: common.Text},
 					{Name: "channel", Type: common.Channel, Optional: true},
 				},
-			}, {
+			},
+			{
 				Name:                "rss.help.add.description",
 				Description:         "rss.help.remove.description",
 				PermissionsRequired: []interfaces.Permission{permissions.DiscordManageChannels},

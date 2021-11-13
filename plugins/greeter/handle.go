@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type Plugin struct {
-}
+type Plugin struct{}
 
 func (p *Plugin) Names() []string {
 	return []string{"greeter"}
@@ -96,7 +95,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 	}
 
 	event.Require(func() {
-
 		if len(event.Fields()) >= 2 {
 			switch event.Fields()[1] {
 
@@ -128,7 +126,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		}
 
 		p.handleStatus(event)
-
 	}, permissions.Not(permissions.DiscordChannelDM))
 
 	return true

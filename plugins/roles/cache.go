@@ -35,7 +35,6 @@ func (p *Plugin) startRoleChannelCacheLoop() {
 }
 
 func (p *Plugin) cacheAllRoleChannels() error {
-
 	var categories []Category
 	err := p.db.Find(&categories).Error
 	if err != nil && !strings.Contains(err.Error(), "record not found") {
@@ -79,7 +78,6 @@ func (p *Plugin) cacheAllRoleChannels() error {
 }
 
 func (p *Plugin) cacheGuildsRoleChannels(guildID string) error {
-
 	var categories []Category
 	err := p.db.Where("guild_id = ?", guildID).Find(&categories).Error
 	if err != nil && !strings.Contains(err.Error(), "record not found") {

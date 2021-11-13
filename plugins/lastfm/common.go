@@ -96,5 +96,4 @@ func isCollageRequest(args []string) (bool, []string) {
 		return true, append(args[:i], args[i+1:]...)
 	}
 	return false, args
-
 }

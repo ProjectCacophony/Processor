@@ -66,7 +66,6 @@ func (p *Plugin) Help() *common.PluginHelp {
 }
 
 func (p *Plugin) Action(event *events.Event) bool {
-
 	switch event.Type {
 	case events.MessageCreateType:
 		return p.handleAsCommand(event)

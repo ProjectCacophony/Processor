@@ -2,14 +2,12 @@ package actions
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
 )
 
-type BanUser struct {
-}
+type BanUser struct{}
 
 func (t BanUser) Name() string {
 	return "ban_user"
@@ -31,8 +29,7 @@ func (t BanUser) Description() string {
 	return "automod.actions.ban_user"
 }
 
-type BanUserItem struct {
-}
+type BanUserItem struct{}
 
 func (t *BanUserItem) Do(env *models.Env) (bool, error) {
 	doneUserIDs := make(map[string]interface{})

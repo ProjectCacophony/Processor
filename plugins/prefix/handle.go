@@ -69,7 +69,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 		if event.Fields()[1] == "set" {
 
 			event.Require(func() {
-
 				handleSetPrefix(event, p.db)
 			}, permissions.DiscordAdministrator)
 

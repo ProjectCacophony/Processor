@@ -7,16 +7,14 @@ import (
 	"time"
 
 	"github.com/Seklfreak/geverse"
+	"github.com/jinzhu/gorm"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
-	"gitlab.com/Cacophony/go-kit/interfaces"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
-	"github.com/jinzhu/gorm"
-	"gitlab.com/Cacophony/go-kit/state"
-
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 type Plugin struct {

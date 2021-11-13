@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/Seklfreak/ginside"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

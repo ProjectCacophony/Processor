@@ -150,7 +150,6 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 
 			hasRole := false
 			for _, userRoleID := range member.Roles {
-
 				if userRoleID == aRole.ServerRoleID {
 					hasRole = true
 					break

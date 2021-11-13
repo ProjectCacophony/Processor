@@ -31,7 +31,6 @@ func (d sortPrintValuesByName) Less(i, j int) bool {
 }
 
 func (p *Plugin) cmdElements(event *events.Event) {
-
 	triggers := make([]printValues, 0, len(list.TriggerList))
 	for _, item := range list.TriggerList {
 		if item.Deprecated() {

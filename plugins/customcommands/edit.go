@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -161,7 +160,6 @@ func (p *Plugin) editCommand(event *events.Event) {
 }
 
 func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
-
 	newContent, ok := event.QuestionnaireMatch.Payload["newContent"].(string)
 	if !ok {
 		event.Except(errors.New("received invalid questionnaire match payload"))
@@ -214,7 +212,6 @@ func (p *Plugin) handleEditResponse(event *events.Event, enteredNum int) bool {
 }
 
 func (p *Plugin) processCommandEdit(event *events.Event, originalCommand CustomCommand, newContent string, newAttachement *discordgo.MessageAttachment, isUserOperation bool) {
-
 	if originalCommand.File != nil {
 		err := event.DeleteFile(originalCommand.File)
 		if err != nil {
@@ -320,7 +317,6 @@ func (p *Plugin) deleteCommand(event *events.Event) {
 }
 
 func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool {
-
 	commandBytes, ok := event.QuestionnaireMatch.Payload["commands"].(string)
 	if !ok {
 		event.Except(errors.New("received invalid questionnaire match payload"))
@@ -351,7 +347,6 @@ func (p *Plugin) handleDeleteResponse(event *events.Event, enteredNum int) bool 
 }
 
 func (p *Plugin) processCommandDelete(event *events.Event, command CustomCommand, isUserOperation bool) {
-
 	if command.File != nil {
 		err := event.DeleteFile(command.File)
 		if err != nil {

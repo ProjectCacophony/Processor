@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/paginator"
-
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
 	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/paginator"
 )
 
 func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, offset int) {
@@ -96,7 +95,7 @@ func (p *Plugin) handleTopAlbums(event *events.Event, lastfmClient *lastfm.Api, 
 			}
 		}
 
-		var send = discord.TranslateMessageSend(
+		send := discord.TranslateMessageSend(
 			event.Localizations(),
 			&discordgo.MessageSend{
 				Embed: embed,

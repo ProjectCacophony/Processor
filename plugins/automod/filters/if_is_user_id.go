@@ -4,14 +4,12 @@ import (
 	"errors"
 	"strings"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
 // deprecated: use if_is_user
-type UserID struct {
-}
+type UserID struct{}
 
 func (f UserID) Name() string {
 	return "if_is_user_id"

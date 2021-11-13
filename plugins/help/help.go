@@ -13,7 +13,6 @@ import (
 const PluginHelpListKey = "pluginHelpList"
 
 func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, displayInChannel bool) {
-
 	// sort plugins by name
 	sort.Slice(pluginHelpList, func(i, j int) bool {
 		return pluginHelpList[i].Names[0] < pluginHelpList[j].Names[0]
@@ -58,13 +57,11 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		_, err := event.RespondDM(helpText)
 		event.Except(err)
 	}
-
 }
 
 func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, displayInChannel bool) {
 	// hidden module commands should only show for bot admins in dm
 	if pluginHelp.Hide {
-
 		if !event.Has(permissions.BotAdmin) {
 			event.Respond("help.no-plugin-doc")
 			return

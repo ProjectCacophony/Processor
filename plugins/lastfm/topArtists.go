@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
 	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

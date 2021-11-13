@@ -14,8 +14,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-type Plugin struct {
-}
+type Plugin struct{}
 
 func (p *Plugin) Names() []string {
 	return []string{"tools"}

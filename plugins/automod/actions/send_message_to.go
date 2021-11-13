@@ -3,15 +3,13 @@ package actions
 import (
 	"errors"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type SendMessageTo struct {
-}
+type SendMessageTo struct{}
 
 func (t SendMessageTo) Name() string {
 	return "send_message_to"

@@ -5,21 +5,6 @@ import (
 	"sort"
 
 	"github.com/go-chi/chi"
-	"gitlab.com/Cacophony/Processor/plugins/eventlog"
-	"gitlab.com/Cacophony/Processor/plugins/greeter"
-	"gitlab.com/Cacophony/Processor/plugins/metrics"
-	"gitlab.com/Cacophony/Processor/plugins/mod"
-	"gitlab.com/Cacophony/Processor/plugins/rpg"
-	"gitlab.com/Cacophony/Processor/plugins/stats"
-	"gitlab.com/Cacophony/Processor/plugins/tiktok"
-	"gitlab.com/Cacophony/Processor/plugins/tools"
-	"gitlab.com/Cacophony/Processor/plugins/uploads"
-	"gitlab.com/Cacophony/Processor/plugins/vlive"
-	"gitlab.com/Cacophony/Processor/plugins/weather"
-	"gitlab.com/Cacophony/Processor/plugins/weverse"
-	"gitlab.com/Cacophony/Processor/plugins/wolfram"
-	"gitlab.com/Cacophony/go-kit/localization"
-
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/admin"
@@ -29,23 +14,37 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/Processor/plugins/customcommands"
 	"gitlab.com/Cacophony/Processor/plugins/dev"
+	"gitlab.com/Cacophony/Processor/plugins/eventlog"
 	"gitlab.com/Cacophony/Processor/plugins/gall"
+	"gitlab.com/Cacophony/Processor/plugins/greeter"
 	"gitlab.com/Cacophony/Processor/plugins/help"
 	"gitlab.com/Cacophony/Processor/plugins/instagram"
 	"gitlab.com/Cacophony/Processor/plugins/lastfm"
+	"gitlab.com/Cacophony/Processor/plugins/metrics"
+	"gitlab.com/Cacophony/Processor/plugins/mod"
 	"gitlab.com/Cacophony/Processor/plugins/patreon"
 	"gitlab.com/Cacophony/Processor/plugins/ping"
 	"gitlab.com/Cacophony/Processor/plugins/prefix"
 	"gitlab.com/Cacophony/Processor/plugins/quickactions"
 	"gitlab.com/Cacophony/Processor/plugins/roles"
+	"gitlab.com/Cacophony/Processor/plugins/rpg"
 	"gitlab.com/Cacophony/Processor/plugins/rss"
 	"gitlab.com/Cacophony/Processor/plugins/serverlist"
+	"gitlab.com/Cacophony/Processor/plugins/stats"
 	"gitlab.com/Cacophony/Processor/plugins/stocks"
+	"gitlab.com/Cacophony/Processor/plugins/tiktok"
+	"gitlab.com/Cacophony/Processor/plugins/tools"
 	"gitlab.com/Cacophony/Processor/plugins/trello"
+	"gitlab.com/Cacophony/Processor/plugins/uploads"
+	"gitlab.com/Cacophony/Processor/plugins/vlive"
+	"gitlab.com/Cacophony/Processor/plugins/weather"
+	"gitlab.com/Cacophony/Processor/plugins/weverse"
 	"gitlab.com/Cacophony/Processor/plugins/whitelist"
+	"gitlab.com/Cacophony/Processor/plugins/wolfram"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/localization"
 	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
@@ -58,13 +57,9 @@ type Plugin interface {
 
 	// TODO: add context for deadline
 	Stop(common.StopParameters) error
-
 	Priority() int
-
 	Passthrough() bool
-
 	Action(event *events.Event) bool
-
 	Help() *common.PluginHelp
 }
 
@@ -123,7 +118,6 @@ func StartPlugins(
 	publisher *events.Publisher,
 	httpMux *chi.Mux,
 ) {
-
 	// load localizations
 	loadLocalizations(logger)
 

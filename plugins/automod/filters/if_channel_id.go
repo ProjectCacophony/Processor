@@ -4,15 +4,13 @@ import (
 	"errors"
 	"strings"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
 // deprecated: use if_channel
-type ChannelID struct {
-}
+type ChannelID struct{}
 
 func (f ChannelID) Name() string {
 	return "if_channel_id"

@@ -3,11 +3,10 @@ package lastfm
 import (
 	"strings"
 
-	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
-
 	"github.com/Seklfreak/lastfm-go/lastfm"
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
+	lastfmclient "gitlab.com/Cacophony/Processor/plugins/lastfm/lastfm-client"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

@@ -5,12 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"github.com/bwmarrin/discordgo"
-
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
+	"gitlab.com/Cacophony/go-kit/discord"
 )
 
 type SortBy string

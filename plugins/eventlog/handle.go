@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/jinzhu/gorm"
-
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/interfaces"
@@ -130,7 +129,6 @@ func (p *Plugin) Action(event *events.Event) bool {
 }
 
 func (p *Plugin) handleCommand(event *events.Event) {
-
 	if len(event.Fields()) >= 2 {
 		switch strings.ToLower(event.Fields()[1]) {
 

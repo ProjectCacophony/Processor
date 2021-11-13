@@ -12,8 +12,7 @@ import (
 
 var emojiRegex = regexp.MustCompile(`[\x{00A0}-\x{1F9EF}]|<(a)?:[^<>:]+:[0-9]+>`)
 
-type EmojiCount struct {
-}
+type EmojiCount struct{}
 
 func (f EmojiCount) Name() string {
 	return "if_emoji_count"

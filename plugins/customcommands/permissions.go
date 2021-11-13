@@ -63,7 +63,6 @@ func (p *Plugin) viewAllPermissions(event *events.Event) {
 		"canEveryoneCreate", canEveryoneCreate,
 		"enabledRoles", strings.Join(roleNames, ", "),
 	)
-
 }
 
 func (p *Plugin) toggleCreatePermission(event *events.Event, enable bool) {

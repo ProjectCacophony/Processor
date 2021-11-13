@@ -3,13 +3,11 @@ package serverlist
 import (
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-
-	"gitlab.com/Cacophony/go-kit/state"
-
 	"github.com/bwmarrin/discordgo"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/regexp"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 // TODO: match category by direct linking the channel,

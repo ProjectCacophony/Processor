@@ -5,11 +5,9 @@ import (
 
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
-
 	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/regexp"
-
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/regexp"
 )
 
 func extractExistingServerFromArg(redis *redis.Client, db *gorm.DB, session *discord.Session, arg string) *Server {

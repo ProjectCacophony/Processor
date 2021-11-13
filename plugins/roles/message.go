@@ -11,7 +11,6 @@ import (
 )
 
 func (p *Plugin) displayRoleMessage(event *events.Event) {
-
 	var targetChannel *discordgo.Channel
 	var err error
 

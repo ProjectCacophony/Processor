@@ -4,14 +4,12 @@ import (
 	"errors"
 	"regexp"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type RegexMessageContent struct {
-}
+type RegexMessageContent struct{}
 
 func (f RegexMessageContent) Name() string {
 	return "if_message_content_regex"

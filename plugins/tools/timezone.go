@@ -3,7 +3,9 @@ package tools
 import (
 	"strings"
 	"time"
-	_ "time/tzdata" // embed timezones
+
+	// embed timezones
+	_ "time/tzdata"
 
 	"gitlab.com/Cacophony/go-kit/events"
 )

@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Message struct {
-}
+type Message struct{}
 
 func (t Message) Name() string {
 	return "when_message"
@@ -29,8 +28,7 @@ func (t Message) Description() string {
 	return "automod.triggers.when_message"
 }
 
-type MessageItem struct {
-}
+type MessageItem struct{}
 
 func (t *MessageItem) Match(env *models.Env) bool {
 	if env.Event == nil {

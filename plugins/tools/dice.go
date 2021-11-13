@@ -88,7 +88,6 @@ func parseDiceText(text string) (float64, error) {
 }
 
 func parseDiceItem(item []string) dice {
-
 	count, _ := strconv.Atoi(item[2])
 
 	amount, _ := strconv.Atoi(item[4])

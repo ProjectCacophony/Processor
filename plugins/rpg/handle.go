@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Plugin struct {
-}
+type Plugin struct{}
 
 func (p *Plugin) Names() []string {
 	return []string{"rpg"}

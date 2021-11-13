@@ -5,16 +5,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/bwmarrin/discordgo"
-
-	"gitlab.com/Cacophony/go-kit/discord"
-
+	"github.com/jinzhu/gorm"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 const AutomodLogKey = "cacophony:processor:automod:log-channel-id"

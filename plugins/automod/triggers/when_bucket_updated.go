@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type BucketUpdated struct {
-}
+type BucketUpdated struct{}
 
 func (t BucketUpdated) Name() string {
 	return "when_bucket_updated"

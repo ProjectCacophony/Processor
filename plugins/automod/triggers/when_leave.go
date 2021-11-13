@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Leave struct {
-}
+type Leave struct{}
 
 func (t Leave) Name() string {
 	return "when_leave"
@@ -29,8 +28,7 @@ func (t Leave) Description() string {
 	return "automod.triggers.when_leave"
 }
 
-type LeaveItem struct {
-}
+type LeaveItem struct{}
 
 func (t *LeaveItem) Match(env *models.Env) bool {
 	if env.Event == nil {

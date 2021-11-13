@@ -5,14 +5,12 @@ import (
 	"errors"
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/events"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Wait struct {
-}
+type Wait struct{}
 
 func (t Wait) Name() string {
 	return "wait"

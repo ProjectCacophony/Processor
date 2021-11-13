@@ -18,7 +18,6 @@ const (
 )
 
 func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
-
 	if event.BotUserID == event.MessageReactionAdd.UserID ||
 		event.MessageReactionAdd == nil ||
 		event.MessageReactionAdd.Emoji.Name == "" ||
@@ -118,7 +117,6 @@ func (p *Plugin) handleUserRoleReactionRequest(event *events.Event) bool {
 }
 
 func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
-
 	if event.MessageCreate == nil || event.MessageCreate.Author == nil || event.MessageCreate.Author.Bot || !p.isInRoleChannel(event) {
 		return false
 	}
@@ -186,7 +184,6 @@ func (p *Plugin) handleUserRoleRequest(event *events.Event) bool {
 
 		// check if default server role channel first
 		if defaultChannelID != "" && event.ChannelID == defaultChannelID {
-
 			for _, urole := range uncategorizedRoles {
 				if urole.ServerRoleID == role.ServerRoleID {
 
@@ -347,7 +344,6 @@ func (p *Plugin) isOverRoleLimit(member *discordgo.Member, category *Category) b
 }
 
 func (p *Plugin) assignRole(event *events.Event, channelID string, serverRoleID string) error {
-
 	// check if user already has role
 	member, err := event.State().Member(event.GuildID, event.UserID)
 	if err != nil {
@@ -385,7 +381,6 @@ func (p *Plugin) assignRole(event *events.Event, channelID string, serverRoleID 
 }
 
 func (p *Plugin) removeRole(event *events.Event, channelID string, serverRoleID string) error {
-
 	// confirm the user has the role
 	member, err := event.State().Member(event.GuildID, event.UserID)
 	if err != nil {
@@ -429,7 +424,6 @@ func (p *Plugin) removeRole(event *events.Event, channelID string, serverRoleID 
 }
 
 func (p *Plugin) userHasRole(event *events.Event, serverRoleID string) (bool, error) {
-
 	// confirm the user has the role
 	member, err := event.State().Member(event.GuildID, event.UserID)
 	if err != nil {

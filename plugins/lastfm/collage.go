@@ -105,7 +105,6 @@ func CollageFromBytes(
 
 		imageItem, _, err := image.Decode(bytes.NewReader(imageItemData))
 		if err == nil {
-
 			draw.NearestNeighbor.Scale(img, tileRectangle, imageItem, imageItem.Bounds(), draw.Over, nil)
 		}
 

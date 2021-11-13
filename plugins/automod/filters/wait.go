@@ -10,8 +10,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Wait struct {
-}
+type Wait struct{}
 
 func (f Wait) Name() string {
 	return "wait"

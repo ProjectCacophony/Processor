@@ -6,14 +6,11 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/mmcdole/gofeed"
-
 	"github.com/PuerkitoBio/goquery"
-
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/mmcdole/gofeed"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
 func feedsPerGuildLimit(event *events.Event) int {

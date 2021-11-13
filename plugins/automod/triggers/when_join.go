@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Join struct {
-}
+type Join struct{}
 
 func (t Join) Name() string {
 	return "when_join"
@@ -29,8 +28,7 @@ func (t Join) Description() string {
 	return "automod.triggers.when_join"
 }
 
-type JoinItem struct {
-}
+type JoinItem struct{}
 
 func (t *JoinItem) Match(env *models.Env) bool {
 	if env.Event == nil {

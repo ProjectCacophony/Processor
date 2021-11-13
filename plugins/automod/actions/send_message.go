@@ -4,15 +4,13 @@ import (
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type SendMessage struct {
-}
+type SendMessage struct{}
 
 func (t SendMessage) Name() string {
 	return "send_message"

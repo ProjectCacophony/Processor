@@ -4,14 +4,12 @@ import (
 	"errors"
 	"strings"
 
-	"gitlab.com/Cacophony/Processor/plugins/automod/models"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
+	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 )
 
 // deprecated: use if_role
-type RoleID struct {
-}
+type RoleID struct{}
 
 func (f RoleID) Name() string {
 	return "if_has_role_id"

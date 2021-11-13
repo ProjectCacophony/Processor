@@ -5,15 +5,13 @@ import (
 	"strings"
 	"time"
 
-	"gitlab.com/Cacophony/go-kit/interfaces"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"github.com/Seklfreak/ginside"
 	"github.com/jinzhu/gorm"
-	"gitlab.com/Cacophony/go-kit/state"
-
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/interfaces"
+	"gitlab.com/Cacophony/go-kit/permissions"
+	"gitlab.com/Cacophony/go-kit/state"
 	"go.uber.org/zap"
 )
 

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-
 	humanize "github.com/dustin/go-humanize"
 	"gitlab.com/Cacophony/go-kit/events"
 )
@@ -170,7 +169,6 @@ func (p *Plugin) getCommandInfo(event *events.Event) {
 }
 
 func (p *Plugin) displayCommandsInfo(event *events.Event, commands []CustomCommand) {
-
 	sort.Slice(commands, func(i, j int) bool {
 		return commands[i].Model.CreatedAt.Before(commands[j].Model.CreatedAt)
 	})

@@ -8,7 +8,6 @@ import (
 )
 
 func (p *Plugin) displayRoleInfo(event *events.Event) {
-
 	categories, err := p.getAllCategories(event.GuildID)
 	if err != nil {
 		event.Except(err)

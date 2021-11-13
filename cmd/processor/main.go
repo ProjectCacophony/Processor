@@ -8,15 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	cacophonyConfig "gitlab.com/Cacophony/go-kit/config"
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/events"
-	"gitlab.com/Cacophony/go-kit/paginator"
-	"go.opentelemetry.io/contrib/propagators/b3"
-	"go.opentelemetry.io/otel/api/global"
-	"go.opentelemetry.io/otel/api/propagation"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-
 	"github.com/go-redis/redis"
 	"github.com/honeycombio/opentelemetry-exporter-go/honeycomb"
 	"github.com/jinzhu/gorm"
@@ -25,11 +16,19 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/Processor/plugins"
 	"gitlab.com/Cacophony/go-kit/api"
+	cacophonyConfig "gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/errortracking"
+	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/featureflag"
 	"gitlab.com/Cacophony/go-kit/logging"
+	"gitlab.com/Cacophony/go-kit/paginator"
 	"gitlab.com/Cacophony/go-kit/state"
 	objectStorage "gitlab.com/Cacophony/go-kit/storage"
+	"go.opentelemetry.io/contrib/propagators/b3"
+	"go.opentelemetry.io/otel/api/global"
+	"go.opentelemetry.io/otel/api/propagation"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.uber.org/zap"
 )
 
@@ -309,5 +308,4 @@ func main() {
 			zap.Error(err),
 		)
 	}
-
 }

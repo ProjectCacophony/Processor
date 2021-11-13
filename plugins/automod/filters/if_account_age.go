@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/discord"
 )
 
-type AccountAge struct {
-}
+type AccountAge struct{}
 
 func (f AccountAge) Name() string {
 	return "if_account_age"

@@ -4,14 +4,12 @@ import (
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
 )
 
-type ApplyRole struct {
-}
+type ApplyRole struct{}
 
 func (t ApplyRole) Name() string {
 	return "apply_role"

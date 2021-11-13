@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/config"
 	"gitlab.com/Cacophony/go-kit/events"

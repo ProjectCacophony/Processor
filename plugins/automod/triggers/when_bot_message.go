@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type BotMessage struct {
-}
+type BotMessage struct{}
 
 func (t BotMessage) Name() string {
 	return "when_bot_message"
@@ -29,8 +28,7 @@ func (t BotMessage) Description() string {
 	return "automod.triggers.when_bot_message"
 }
 
-type BotMessageItem struct {
-}
+type BotMessageItem struct{}
 
 var botMessageAllowedActions = map[string]bool{
 	"publish": true,

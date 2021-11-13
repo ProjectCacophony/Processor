@@ -157,7 +157,6 @@ func (h *Handler) addBaseToEnv(env *models.Env, event *events.Event) {
 }
 
 func (h *Handler) executeFilters(env *models.Env, rule *models.Rule) bool {
-
 	for _, filter := range list.FiltersList {
 		for _, ruleFilter := range rule.Filters {
 			if filter.Name() != ruleFilter.Name {

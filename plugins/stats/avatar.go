@@ -5,20 +5,17 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-var (
-	avatarSizes = [...]string{
-		"1024",
-		"512",
-		"256",
-		"128",
-		"64",
-		"32",
-		"16",
-	}
-)
+var avatarSizes = [...]string{
+	"1024",
+	"512",
+	"256",
+	"128",
+	"64",
+	"32",
+	"16",
+}
 
 func (p *Plugin) handleAvatar(event *events.Event) {
-
 	var user *discordgo.User
 	var err error
 	size := avatarSizes[0]

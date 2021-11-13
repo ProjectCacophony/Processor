@@ -14,8 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-type IncrBucket struct {
-}
+type IncrBucket struct{}
 
 func (t IncrBucket) Name() string {
 	return "incr_bucket"

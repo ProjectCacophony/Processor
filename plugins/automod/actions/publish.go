@@ -2,15 +2,13 @@ package actions
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"gitlab.com/Cacophony/go-kit/discord"
-	"gitlab.com/Cacophony/go-kit/permissions"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/interfaces"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
+	"gitlab.com/Cacophony/go-kit/discord"
+	"gitlab.com/Cacophony/go-kit/permissions"
 )
 
-type Publish struct {
-}
+type Publish struct{}
 
 func (t Publish) Name() string {
 	return "publish"
@@ -32,8 +30,7 @@ func (t Publish) Description() string {
 	return "automod.actions.publish"
 }
 
-type PublishItem struct {
-}
+type PublishItem struct{}
 
 func (t *PublishItem) Do(env *models.Env) (bool, error) {
 	doneMessageIDs := make(map[string]interface{})

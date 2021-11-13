@@ -5,11 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"github.com/bwmarrin/discordgo"
 	humanize "github.com/dustin/go-humanize"
+	"github.com/jinzhu/gorm"
+	"gitlab.com/Cacophony/go-kit/discord"
 )
 
 func (p *Plugin) getLogApprovedEmbed(server *Server) *discordgo.MessageEmbed {

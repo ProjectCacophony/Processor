@@ -14,8 +14,7 @@ var discordInviteRegex = regexp.MustCompile(
 	`(http(s)?:\/\/)?(discord\.gg(\/invite)?|discordapp\.com\/invite)\/([A-Za-z0-9-]+)`,
 )
 
-type InvitesCount struct {
-}
+type InvitesCount struct{}
 
 func (f InvitesCount) Name() string {
 	return "if_invites_count"

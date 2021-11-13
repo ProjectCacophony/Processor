@@ -9,8 +9,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type BucketAmount struct {
-}
+type BucketAmount struct{}
 
 func (f BucketAmount) Name() string {
 	return "if_bucket_amount"

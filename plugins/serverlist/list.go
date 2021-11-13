@@ -40,9 +40,7 @@ func (p *Plugin) clearListCache(botID string) error {
 	}
 
 	for _, item := range allList {
-
 		for _, category := range item.Categories {
-
 			for _, name := range item.Names {
 
 				categoryChannel, err := p.state.Channel(category.Category.ChannelID)
@@ -97,9 +95,7 @@ func (p *Plugin) refreshList(botID string) error {
 	var serversToPost []*ChannelServersToPost
 
 	for _, item := range allList {
-
 		for _, category := range item.Categories {
-
 			for _, name := range item.Names {
 
 				categoryChannel, err := p.state.Channel(category.Category.ChannelID)

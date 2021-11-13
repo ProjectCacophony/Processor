@@ -5,11 +5,10 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/Processor/plugins/automod/handler"
-	"gitlab.com/Cacophony/go-kit/discord"
-
 	"gitlab.com/Cacophony/Processor/plugins/automod/list"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/config"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
@@ -113,7 +112,6 @@ func (p *Plugin) cmdAdd(event *events.Event) {
 	}
 
 	for _, field := range fields {
-
 		switch field {
 		case "stop":
 			newRule.Stop = true

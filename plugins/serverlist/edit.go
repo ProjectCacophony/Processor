@@ -3,15 +3,12 @@ package serverlist
 import (
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/discord"
-
-	"gitlab.com/Cacophony/go-kit/state"
-
-	"github.com/lib/pq"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/lib/pq"
+	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/regexp"
+	"gitlab.com/Cacophony/go-kit/state"
 )
 
 func (p *Plugin) handleEdit(event *events.Event) {

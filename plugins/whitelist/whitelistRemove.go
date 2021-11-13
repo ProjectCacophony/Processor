@@ -3,11 +3,9 @@ package whitelist
 import (
 	"strings"
 
-	"gitlab.com/Cacophony/go-kit/permissions"
-
-	"go.uber.org/zap"
-
 	"gitlab.com/Cacophony/go-kit/events"
+	"gitlab.com/Cacophony/go-kit/permissions"
+	"go.uber.org/zap"
 )
 
 func (p *Plugin) whitelistRemove(event *events.Event) {

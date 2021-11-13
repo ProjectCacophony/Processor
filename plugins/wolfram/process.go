@@ -10,7 +10,6 @@ import (
 )
 
 func (p *Plugin) askWolfram(event *events.Event) {
-
 	if len(event.Fields()) == 1 {
 		event.Respond("wolfram.no-question")
 		return

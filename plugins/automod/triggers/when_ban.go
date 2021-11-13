@@ -6,8 +6,7 @@ import (
 	"gitlab.com/Cacophony/go-kit/events"
 )
 
-type Ban struct {
-}
+type Ban struct{}
 
 func (t Ban) Name() string {
 	return "when_ban"
@@ -29,8 +28,7 @@ func (t Ban) Description() string {
 	return "automod.triggers.when_ban"
 }
 
-type BanItem struct {
-}
+type BanItem struct{}
 
 func (t *BanItem) Match(env *models.Env) bool {
 	if env.Event == nil {

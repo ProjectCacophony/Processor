@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"gitlab.com/Cacophony/go-kit/config"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

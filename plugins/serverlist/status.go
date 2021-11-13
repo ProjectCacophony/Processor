@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-
 	"gitlab.com/Cacophony/go-kit/events"
 )
 

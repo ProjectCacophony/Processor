@@ -3,9 +3,8 @@ package whitelist
 import (
 	"strings"
 
-	"go.uber.org/zap"
-
 	"gitlab.com/Cacophony/go-kit/events"
+	"go.uber.org/zap"
 )
 
 func (p *Plugin) whitelistAdd(event *events.Event) {
