@@ -19,7 +19,7 @@ func (p *Plugin) handleDevPermission(event *events.Event) {
 		return
 	}
 
-	permissionID, err := strconv.Atoi(event.Fields()[2])
+	permissionID, err := strconv.ParseInt(event.Fields()[2], 10, 64)
 	if err != nil {
 		event.Except(err)
 		return

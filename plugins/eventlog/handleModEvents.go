@@ -235,11 +235,10 @@ func (p *Plugin) handleModEvent(event *events.Event) {
 			if invite.Inviter != nil {
 				inviterID = invite.Inviter.ID
 			}
-			at, _ := invite.CreatedAt.Parse()
 
 			items = append(items, &Item{
 				Model: gorm.Model{
-					CreatedAt: at,
+					CreatedAt: invite.CreatedAt,
 				},
 				GuildID:     event.GuildID,
 				ActionType:  ActionTypeInviteCreate,

@@ -10,6 +10,8 @@ import (
 	"github.com/pkg/errors"
 	"gitlab.com/Cacophony/go-kit/discord"
 	"gitlab.com/Cacophony/go-kit/state"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 // Actions
@@ -164,12 +166,12 @@ func (t entityType) String(state *state.State, guildID, value string) string {
 			}
 
 			switch permission.Type {
-			case "role":
+			case discordgo.PermissionOverwriteTypeRole:
 				text += "<@&" + permission.ID + "> "
-			case "member":
+			case discordgo.PermissionOverwriteTypeMember:
 				text += "<@" + permission.ID + "> "
 			default:
-				text += permission.Type + " #" + permission.ID
+				text += strconv.Itoa(int(permission.Type)) + " #" + permission.ID
 			}
 
 			if permission.Allow > 0 {
@@ -188,7 +190,7 @@ func (t entityType) String(state *state.State, guildID, value string) string {
 
 		return "#" + discord.ColorCodeToHex(parsed)
 	case EntityTypePermission:
-		parsed, _ := strconv.Atoi(value)
+		parsed, _ := strconv.ParseInt(value, 10, 64)
 
 		return permissionsText(parsed)
 	case EntityTypeDiscordInvite:
@@ -291,7 +293,7 @@ func (t entityType) StringWithoutMention(state *state.State, guildID, value stri
 }
 
 func titleify(input string) string {
-	return strings.Title(strings.Replace(
+	return cases.Title(language.English).String(strings.Replace(
 		strings.TrimPrefix(strings.TrimPrefix(input, "cacophony_"), "discord_"),
 		"_", " ", -1))
 }

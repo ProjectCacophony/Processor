@@ -35,7 +35,7 @@ services:
       AMQP_DSN: "amqp://guest:guest@rabbitmq:5672/"
       REDIS_ADDRESS: "redis:6379"
     env_file:
-      - env.list # should contain DISCORD_TOKENS=<your Bot ID>:<your Discord Token>
+      - .env # should contain DISCORD_TOKENS=<your Bot ID>:<your Discord Token>
     depends_on:
       rabbitmq:
         condition: service_healthy

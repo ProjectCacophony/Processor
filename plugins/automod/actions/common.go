@@ -7,6 +7,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/Processor/plugins/automod/models"
 	"gitlab.com/Cacophony/go-kit/discord"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func automodReason(env *models.Env, action string) string {
@@ -20,7 +22,7 @@ func automodReason(env *models.Env, action string) string {
 		ruleNameText = env.Rule.Name
 	}
 
-	return strings.Title(action) + " by " + botUserText + " Automod Rule: " + ruleNameText
+	return cases.Title(language.English).String(action) + " by " + botUserText + " Automod Rule: " + ruleNameText
 }
 
 func ReplaceText(env *models.Env, input string) string {

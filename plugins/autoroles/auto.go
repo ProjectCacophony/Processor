@@ -138,12 +138,7 @@ func (p *Plugin) applyAutoRole(event *events.Event) {
 
 			// check if user has been in the server for less time than the delay
 			if delay > 0 {
-				join, err := member.JoinedAt.Parse()
-				if err != nil {
-					continue
-				}
-
-				if time.Since(join) < delay {
+				if time.Since(member.JoinedAt) < delay {
 					continue
 				}
 			}

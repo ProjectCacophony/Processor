@@ -8,6 +8,8 @@ import (
 	"gitlab.com/Cacophony/Processor/plugins/common"
 	"gitlab.com/Cacophony/go-kit/events"
 	"gitlab.com/Cacophony/go-kit/permissions"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const PluginHelpListKey = "pluginHelpList"
@@ -26,7 +28,7 @@ func listCommands(event *events.Event, pluginHelpList []*common.PluginHelp, disp
 		}
 
 		summeryText := fmt.Sprintf("__**%s**__ | `%shelp %s`",
-			strings.Title(pluginHelp.Names[0]), event.Prefix(), pluginHelp.Names)
+			cases.Title(language.English).String(pluginHelp.Names[0]), event.Prefix(), pluginHelp.Names)
 
 		if containsBotAdminPermission(pluginHelp.PermissionsRequired) && !event.Has(permissions.BotAdmin) {
 			continue
@@ -69,7 +71,7 @@ func displayPluginCommands(event *events.Event, pluginHelp *common.PluginHelp, d
 	}
 
 	// Display module name
-	output := fmt.Sprintf("__**%s**__", strings.Title(pluginHelp.Names[0]))
+	output := fmt.Sprintf("__**%s**__", cases.Title(language.English).String(pluginHelp.Names[0]))
 
 	// Check and display overall module permissions
 	if len(pluginHelp.PermissionsRequired) > 0 {

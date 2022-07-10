@@ -20,7 +20,7 @@ const (
 	reactionRevert     = "↩"
 )
 
-func permissionsText(permissions int) string {
+func permissionsText(permissions int64) string {
 	if permissions == 0 {
 		return "/"
 	}

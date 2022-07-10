@@ -21,3 +21,4 @@ win_build/
 vendor/
 
 .idea
+.env

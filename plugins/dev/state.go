@@ -50,12 +50,7 @@ func (p *Plugin) handleDevState(event *events.Event) {
 	memberJoinedAtText := unavailablePlaceholder
 	if member != nil {
 		memberRolesText = strconv.Itoa(len(member.Roles))
-		memberJoinedAt, _ := member.JoinedAt.Parse()
-		// if err != nil {
-		// 	event.Except(err)
-		// 	return
-		// }
-		memberJoinedAtText = humanize.Time(memberJoinedAt)
+		memberJoinedAtText = humanize.Time(member.JoinedAt)
 	}
 	memberIs, err := p.state.IsMember(
 		event.MessageCreate.GuildID,

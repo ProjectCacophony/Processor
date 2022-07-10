@@ -196,7 +196,7 @@ func (i *Item) Revert(event *events.Event) error {
 					return errors.Wrap(err, "failure parsing rate_limit_per_user")
 				}
 
-				channelParams.RateLimitPerUser = value
+				channelParams.RateLimitPerUser = &value
 				edited = true
 			case "parent":
 				channelParams.ParentID = option.PreviousValue
@@ -344,7 +344,7 @@ func (i *Item) Revert(event *events.Event) error {
 				roleColour = value
 				edited = true
 			case "permission":
-				value, err := strconv.Atoi(option.PreviousValue)
+				value, err := strconv.ParseInt(option.PreviousValue, 10, 64)
 				if err != nil {
 					return errors.Wrap(err, "failure parsing permission")
 				}
@@ -413,7 +413,7 @@ func (i *Item) Revert(event *events.Event) error {
 
 				roleColour = value
 			case "permission":
-				value, err := strconv.Atoi(option.NewValue)
+				value, err := strconv.ParseInt(option.NewValue, 10, 64)
 				if err != nil {
 					return errors.Wrap(err, "failure parsing permission")
 				}

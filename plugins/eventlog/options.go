@@ -215,10 +215,10 @@ func optionsForRole(old, new *discordgo.Role) []ItemOption {
 		Type: EntityTypePermission,
 	}
 	if old != nil {
-		option.PreviousValue = strconv.Itoa(old.Permissions)
+		option.PreviousValue = strconv.FormatInt(old.Permissions, 10)
 	}
 	if new != nil {
-		option.NewValue = strconv.Itoa(new.Permissions)
+		option.NewValue = strconv.FormatInt(new.Permissions, 10)
 	}
 	options = append(options, option)
 

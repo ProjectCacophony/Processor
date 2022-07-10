@@ -88,11 +88,6 @@ func (p *Plugin) handleInvite(event *events.Event) {
 		}
 	}
 
-	var createdAt time.Time
-	if invite.CreatedAt != "" {
-		createdAt, _ = invite.CreatedAt.Parse()
-	}
-
 	var iconURL, splashURL, bannerURL string
 	if invite.Guild != nil {
 		if invite.Guild.Icon != "" {
@@ -132,7 +127,7 @@ func (p *Plugin) handleInvite(event *events.Event) {
 			},
 		},
 		"invite", invite,
-		"createdAt", createdAt,
+		"createdAt", invite.CreatedAt,
 		"iconURL", iconURL,
 		"splashURL", splashURL,
 		"bannerURL", bannerURL,

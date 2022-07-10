@@ -10,13 +10,7 @@ import (
 )
 
 func (p *Plugin) handlePing(event *events.Event) {
-	createdAt, err := event.MessageCreate.Timestamp.Parse()
-	if err != nil {
-		event.Except(err)
-		return
-	}
-
-	discordToGateway := event.ReceivedAt.Sub(createdAt).Round(time.Millisecond)
+	discordToGateway := event.ReceivedAt.Sub(event.MessageCreate.Timestamp).Round(time.Millisecond)
 	gatewayToProcessor := time.Since(event.ReceivedAt).Round(time.Millisecond)
 
 	var proxyDuration time.Duration

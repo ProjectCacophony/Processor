@@ -2,7 +2,6 @@ package stats
 
 import (
 	"sort"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"gitlab.com/Cacophony/go-kit/events"
@@ -19,13 +18,9 @@ func (p *Plugin) handleUser(event *events.Event) {
 
 	// optional information for members
 	var userNr int
-	var joinedAt, premiumSince time.Time
 	var roles []*discordgo.Role
 	member, err := event.State().Member(event.GuildID, user.ID)
 	if err == nil {
-		joinedAt, _ = member.JoinedAt.Parse()
-		premiumSince, _ = member.PremiumSince.Parse()
-
 		roles = make([]*discordgo.Role, len(member.Roles))
 		for i, roleID := range member.Roles {
 			role, err := event.State().Role(event.GuildID, roleID)
@@ -110,8 +105,8 @@ func (p *Plugin) handleUser(event *events.Event) {
 		"user", user,
 		"member", member,
 		"createdAt", createdAt,
-		"joinedAt", joinedAt,
-		"premiumSince", premiumSince,
+		"joinedAt", member.JoinedAt,
+		"premiumSince", member.PremiumSince,
 		"roles", roles,
 		"userNr", userNr,
 	)
