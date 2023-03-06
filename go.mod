@@ -40,7 +40,7 @@ require (
 	cloud.google.com/go v0.58.0 // indirect
 	cloud.google.com/go/storage v1.9.0 // indirect
 	github.com/BurntSushi/toml v0.3.1 // indirect
-	github.com/Masterminds/goutils v1.1.0 // indirect
+	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.20.0+incompatible // indirect
 	github.com/Seklfreak/polr-go v0.0.0-20190324143256-a87fed130937 // indirect
